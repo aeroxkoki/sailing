@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TrainingCenterDatabase xmlns="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2">
+  <Activities>
+    <Activity Sport="Sailing">
+      <Id>2023-01-01T10:00:00Z</Id>
+      <Lap StartTime="2023-01-01T10:00:00Z">
+        <TotalTimeSeconds>90.0</TotalTimeSeconds>
+        <DistanceMeters>500.0</DistanceMeters>
+        <Track>
+          <Trackpoint>
+            <Time>2023-01-01T10:00:00Z</Time>
+            <Position>
+              <LatitudeDegrees>35.621</LatitudeDegrees>
+              <LongitudeDegrees>139.751</LongitudeDegrees>
+            </Position>
+            <AltitudeMeters>10.5</AltitudeMeters>
+            <Extensions>
+              <ns3:TPX>
+                <ns3:Speed>5.2</ns3:Speed>
+                <ns3:Course>180.5</ns3:Course>
+              </ns3:TPX>
+            </Extensions>
+          </Trackpoint>
+          <Trackpoint>
+            <Time>2023-01-01T10:00:10Z</Time>
+            <Position>
+              <LatitudeDegrees>35.622</LatitudeDegrees>
+              <LongitudeDegrees>139.752</LongitudeDegrees>
+            </Position>
+            <AltitudeMeters>10.4</AltitudeMeters>
+            <Extensions>
+              <ns3:TPX>
+                <ns3:Speed>5.3</ns3:Speed>
+                <ns3:Course>181.0</ns3:Course>
+              </ns3:TPX>
+            </Extensions>
+          </Trackpoint>
+          <Trackpoint>
+            <Time>2023-01-01T10:00:20Z</Time>
+            <Position>
+              <LatitudeDegrees>35.623</LatitudeDegrees>
+              <LongitudeDegrees>139.753</LongitudeDegrees>
+            </Position>
+            <AltitudeMeters>10.3</AltitudeMeters>
+            <Extensions>
+              <ns3:TPX>
+                <ns3:Speed>5.4</ns3:Speed>
+                <ns3:Course>182.5</ns3:Course>
+              </ns3:TPX>
+            </Extensions>
+          </Trackpoint>
+        </Track>
+      </Lap>
+    </Activity>
+  </Activities>
+</TrainingCenterDatabase>

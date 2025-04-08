@@ -1,0 +1,683 @@
+"""
+StrategyDetectorWithPropagation 
+
+StrategyDetector5Wfnﾕ�nW_&e_ﾐ娶~Y
+"""
+
+import numpy as np
+import math
+import warnings
+import logging
+from typing import Dict, List, Tuple, Optional, Union, Any
+from datetime import datetime, timedelta
+from functools import lru_cache
+
+# n
+from sailing_data_processor.strategy.detector import StrategyDetector
+from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
+
+# -
+logger = logging.getLogger(__name__)
+
+class StrategyDetectorWithPropagation(StrategyDetector):
+    """
+    nﾕ�nW_&eh
+    
+    StrategyDetector鮖�5Wn,ﾕ�nW_
+    ﾘｦj&eﾝ､_ﾐ娶~Y
+    """
+    
+    def __init__(self, vmg_calculator=None, wind_fusion_system=None):
+        """
+        
+        
+        Parameters:
+        -----------
+        vmg_calculator : OptimalVMGCalculator, optional
+            VMG_
+        wind_fusion_system : WindFieldFusionSystem, optional
+            q
+        """
+        # n
+        super().__init__(vmg_calculator)
+        
+        # q-
+        self.wind_fusion_system = wind_fusion_system
+        
+        # ﾕ�,-
+        self.propagation_config = {
+            'wind_shift_prediction_horizon': 1800,  # ﾈ�,	
+            'prediction_time_step': 300,           # ,B	
+            'wind_shift_confidence_threshold': 0.7, # <$
+            'min_propagation_distance': 1000,      # ,	
+            'prediction_confidence_decay': 0.1,    # ,<pBB_	
+            'use_historical_data': True            # Nn(
+        }
+    
+    def detect_wind_shifts_with_propagation(self, course_data: Dict[str, Any], 
+                                         wind_field: Dict[str, Any]) -> List[WindShiftPoint]:
+        """
+        nﾕ�nW_ﾝ､n
+        
+        Parameters:
+        -----------
+        course_data : Dict[str, Any]
+            P
+        wind_field : Dict[str, Any]
+            n4
+            
+        Returns:
+        --------
+        List[WindShiftPoint]
+            U_ﾝ､
+        """
+        if not wind_field or 'wind_direction' not in wind_field:
+            return []
+        
+        # qLBp,ﾈ椿�
+        predicted_shifts = []
+        
+        if self.wind_fusion_system and hasattr(self.wind_fusion_system, 'predict_wind_field'):
+            try:
+                # B
+                reference_time = None
+                if 'time' in wind_field:
+                    reference_time = wind_field['time']
+                elif 'start_time' in course_data:
+                    reference_time = course_data['start_time']
+                
+                if reference_time:
+                    # ,hB
+                    horizon = self.propagation_config['wind_shift_prediction_horizon']
+                    time_step = self.propagation_config['prediction_time_step']
+                    
+                    # ,Bﾝ､gn4,
+                    for t in range(time_step, horizon + 1, time_step):
+                        target_time = reference_time + timedelta(seconds=t)
+                        
+                        # n4,ﾖ�
+                        predicted_field = self.wind_fusion_system.predict_wind_field(
+                            target_time=target_time,
+                            current_wind_field=wind_field
+                        )
+                        
+                        if predicted_field:
+                            # ,n4Kﾈ�
+                            leg_shifts = self._detect_wind_shifts_in_legs(
+                                course_data, predicted_field, target_time
+                            )
+                            
+                            # ,<BLNgp
+                            for shift in leg_shifts:
+                                decay_factor = 1.0 - (t / horizon) * self.propagation_config['prediction_confidence_decay']
+                                shift.shift_probability *= decay_factor
+                            
+                            predicted_shifts.extend(leg_shifts)
+            
+            except Exception as e:
+                logger.error(f"ﾈ�,-kLzW~W_: {e}")
+        
+        # (nn4gnn	
+        current_shifts = super().detect_wind_shifts(course_data, wind_field)
+        
+        # (h,nﾈ単
+        all_shifts = current_shifts + predicted_shifts
+        
+        # Yﾝ､ﾈ鍔｣
+        filtered_shifts = self._filter_duplicate_shift_points(all_shifts)
+        
+        # $keDfﾕ｣
+        threshold = self.propagation_config['wind_shift_confidence_threshold']
+        final_shifts = [shift for shift in filtered_shifts 
+                      if shift.shift_probability >= threshold]
+        
+        return final_shifts
+    
+    def _detect_wind_shifts_in_legs(self, course_data: Dict[str, Any], 
+                                 wind_field: Dict[str, Any],
+                                 target_time: datetime) -> List[WindShiftPoint]:
+        """
+        �ｰ�nﾈ�
+        
+        Parameters:
+        -----------
+        course_data : Dict[str, Any]
+            P
+        wind_field : Dict[str, Any]
+            n4
+        target_time : datetime
+            aB
+            
+        Returns:
+        --------
+        List[WindShiftPoint]
+            U_ﾝ､
+        """
+        # kLjD4ozﾈ炭
+        if 'legs' not in course_data:
+            return []
+        
+        shift_points = []
+        
+        # kWf
+        for leg in course_data['legs']:
+            # ﾑｹﾝ､LjD4o
+            if 'path' not in leg or 'path_points' not in leg['path']:
+                continue
+            
+            path_points = leg['path']['path_points']
+            
+            # ﾑｹﾝ､LjYN4o
+            if len(path_points) < 2:
+                continue
+            
+            # Mnﾝ､n1
+            prev_wind = None
+            
+            # ﾑｹﾝ､kWf
+            for i, point in enumerate(path_points):
+                # Mn1
+                if 'lat' not in point or 'lon' not in point:
+                    continue
+                
+                lat, lon = point['lat'], point['lon']
+                
+                # 1ﾖ�
+                wind = self._get_wind_at_position(lat, lon, target_time, wind_field)
+                
+                # 1Lﾖ揚MjD4o
+                if not wind:
+                    continue
+                
+                # Mnﾝ､n1LB4ﾈ�
+                if prev_wind:
+                    # n
+                    dir_diff = self._angle_difference(
+                        wind['direction'], prev_wind['direction']
+                    )
+                    
+                    # ﾒｦH4
+                    min_shift = self.config['min_wind_shift_angle']
+                    if abs(dir_diff) >= min_shift:
+                        # nMn(nhMnn	
+                        midlat = (lat + path_points[i-1]['lat']) / 2
+                        midlon = (lon + path_points[i-1]['lon']) / 2
+                        
+                        # <n!n1n<n	
+                        confidence = min(
+                            wind.get('confidence', 0.8),
+                            prev_wind.get('confidence', 0.8)
+                        )
+                        
+                        # 	'n
+                        variability = max(
+                            wind.get('variability', 0.2),
+                            prev_wind.get('variability', 0.2)
+                        )
+                        
+                        # ﾝ､ﾈ箪
+                        shift_point = WindShiftPoint(
+                            position=(midlat, midlon),
+                            time_estimate=target_time
+                        )
+                        
+                        # 1-
+                        shift_point.shift_angle = dir_diff
+                        shift_point.before_direction = prev_wind['direction']
+                        shift_point.after_direction = wind['direction']
+                        shift_point.wind_speed = (prev_wind['speed'] + wind['speed']) / 2
+                        
+                        # <
+                        raw_probability = confidence * (1.0 - variability)
+                        
+                        # ﾒｦkeOQ
+                        # 'Mj{iﾍ�
+                        angle_weight = min(1.0, abs(dir_diff) / 45.0)
+                        shift_point.shift_probability = raw_probability * (0.5 + 0.5 * angle_weight)
+                        
+                        # ﾆｸﾃｯ
+                        strategic_score, note = self._calculate_strategic_score(
+                            "wind_shift", "", "",
+                            (midlat, midlon), target_time, wind_field
+                        )
+                        
+                        shift_point.strategic_score = strategic_score
+                        shift_point.note = note
+                        
+                        # k
+                        shift_points.append(shift_point)
+                
+                # (n1X
+                prev_wind = wind
+        
+        return shift_points
+    
+    def _filter_duplicate_shift_points(self, shift_points: List[WindShiftPoint]) -> List[WindShiftPoint]:
+        """
+        Yﾝ､ﾈ鍔｣
+        
+        Parameters:
+        -----------
+        shift_points : List[WindShiftPoint]
+            ﾝ､n
+            
+        Returns:
+        --------
+        List[WindShiftPoint]
+            ﾕ｣nﾝ､
+        """
+        if len(shift_points) <= 1:
+            return shift_points
+        
+        filtered_points = []
+        sorted_points = sorted(shift_points, 
+                              key=lambda p: self._normalize_to_timestamp(p.time_estimate))
+        
+        for point in sorted_points:
+            is_duplicate = False
+            
+            for existing in filtered_points:
+                # MnkDK300m	
+                position_close = self._calculate_distance(
+                    point.position[0], point.position[1],
+                    existing.position[0], existing.position[1]
+                ) < 300
+                
+                # BkDK5	
+                time_diff = self._get_time_difference_seconds(
+                    point.time_estimate, existing.time_estimate
+                )
+                time_close = time_diff < 300
+                
+                # ﾒｦL^<WfDK15	
+                angle_similar = abs(self._angle_difference(
+                    point.shift_angle, existing.shift_angle
+                )) < 15
+                
+                # a
+                if position_close and time_close and angle_similar:
+                    # <LD
+                    if point.shift_probability > existing.shift_probability:
+                        # Xﾝ､ﾈ地MH
+                        filtered_points.remove(existing)
+                        filtered_points.append(point)
+                    
+                    is_duplicate = True
+                    break
+            
+            if not is_duplicate:
+                filtered_points.append(point)
+        
+        return filtered_points
+    
+    def _normalize_to_timestamp(self, t) -> float:
+        """
+        讒倥��縺ｪ譎る俣陦ｨ迴ｾ縺九ｉ邨ｱ荳�縺励◆UNIX繧ｿ繧､繝�繧ｹ繧ｿ繝ｳ繝励ｒ菴懈��
+        
+        Parameters:
+        -----------
+        t : any
+            讒倥��縺ｪ譎る俣陦ｨ迴ｾ(datetime, timedelta, int, float遲�)
+            
+        Returns:
+        --------
+        float
+            UNIX繧ｿ繧､繝�繧ｹ繧ｿ繝ｳ繝怜ｽ｢蠑上�ｮ蛟､
+        """
+        if isinstance(t, datetime):
+            # datetime繧旦NIX繧ｿ繧､繝�繧ｹ繧ｿ繝ｳ繝励↓螟画鋤
+            return t.timestamp()
+        elif isinstance(t, timedelta):
+            # timedelta繧堤ｧ偵↓螟画鋤
+            return t.total_seconds()
+        elif isinstance(t, (int, float)):
+            # 謨ｰ蛟､縺ｯ縺昴�ｮ縺ｾ縺ｾfloat縺ｧ霑斐☆
+            return float(t)
+        elif isinstance(t, dict):
+            # 霎樊嶌蝙九�ｮ蝣ｴ蜷�
+            if 'timestamp' in t:
+                # timestamp繧ｭ繝ｼ繧呈戟縺､霎樊嶌縺ｮ蝣ｴ蜷�
+                return float(t['timestamp'])
+            else:
+                # timestamp繧ｭ繝ｼ縺後↑縺�霎樊嶌縺ｮ蝣ｴ蜷医�ｯ繧ｨ繝ｩ繝ｼ髦ｲ豁｢縺ｮ縺溘ａ辟｡髯仙､ｧ繧定ｿ斐☆
+                return float('inf')
+        elif isinstance(t, str):
+            try:
+                # 謨ｰ蛟､譁�蟄怜�励�ｮ蝣ｴ蜷医�ｯ謨ｰ蛟､縺ｫ螟画鋤
+                return float(t)
+            except ValueError:
+                try:
+                    # ISO蠖｢蠑上�ｮ譌･譎よ枚蟄怜��
+                    dt = datetime.fromisoformat(t.replace('Z', '+00:00'))
+                    return dt.timestamp()
+                except ValueError:
+                    # 螟画鋤縺ｧ縺阪↑縺�蝣ｴ蜷医�ｯ辟｡髯仙､ｧ
+                    return float('inf')
+        else:
+            # 縺昴�ｮ莉悶�ｮ蝙九�ｯ譁�蟄怜�励↓螟画鋤縺励※縺九ｉ謨ｰ蛟､蛹�
+            try:
+                return float(str(t))
+            except ValueError:
+                # 螟画鋤縺ｧ縺阪↑縺�蝣ｴ蜷医�ｯ辟｡髯仙､ｧ�ｼ亥ｯｾ蠢懊☆繧矩��蠎擾ｼ�
+                return float('inf')
+    def _get_time_difference_seconds(self, time1, time2) -> float:
+        """
+        pjBﾗ渡gﾖ雄p
+        
+        Parameters:
+        -----------
+        time1, time2 : any
+            YB$datetime, timedelta, int, float, etc	
+            
+        Returns:
+        --------
+        float
+            B		gMjD4o!P'
+        """
+        # !nBcWfnv$Y
+        try:
+            ts1 = self._normalize_to_timestamp(time1)
+            ts2 = self._normalize_to_timestamp(time2)
+            
+            # DZKL!P'n4o
+            if ts1 == float('inf') or ts2 == float('inf'):
+                return float('inf')
+                
+            return abs(ts1 - ts2)
+        except Exception as e:
+            logger.error(f"B: {e}")
+            # LzW_4o!P'Y
+            return float('inf')
+    
+    def detect_optimal_tacks(self, course_data: Dict[str, Any], 
+                          wind_field: Dict[str, Any]) -> List[TackPoint]:
+        """
+        ijﾃｯﾝ､ﾈ�
+        
+        Parameters:
+        -----------
+        course_data : Dict[str, Any]
+            P
+        wind_field : Dict[str, Any]
+            n4
+            
+        Returns:
+        --------
+        List[TackPoint]
+            U_iﾃｯﾝ､
+        """
+        # VMG_LjQpzﾈ炭
+        if not self.vmg_calculator:
+            logger.warning("VMGCalculatorL-UfDjD_iﾃｯﾝ､nLgM~[")
+            return []
+        
+        # hXﾅ�(ek5	
+        return super().detect_optimal_tacks(course_data, wind_field)
+    
+    def detect_laylines(self, course_data: Dict[str, Any], 
+                      wind_field: Dict[str, Any]) -> List[LaylinePoint]:
+        """
+        ﾝ､ﾈ�
+        
+        Parameters:
+        -----------
+        course_data : Dict[str, Any]
+            P
+        wind_field : Dict[str, Any]
+            n4
+            
+        Returns:
+        --------
+        List[LaylinePoint]
+            U_ﾝ､
+        """
+        # VMG_LjQpzﾈ炭
+        if not self.vmg_calculator:
+            logger.warning("VMGCalculatorL-UfDjD_ﾝ､nLgM~[")
+            return []
+        
+        # hXﾅ�(ek5	
+        return super().detect_laylines(course_data, wind_field)
+    
+    def _determine_tack_type(self, bearing: float, wind_direction: float) -> str:
+        """
+        ﾃｯ/	$
+        
+        Parameters:
+        -----------
+        bearing : float
+            Gn2L	
+        wind_direction : float
+            L9DfO	
+            
+        Returns:
+        --------
+        str
+            ﾃｯ ('port'~_o'starboard')
+        """
+        # h2Lnﾒｦ
+        relative_angle = self._angle_difference(bearing, wind_direction)
+        
+        # ﾒｦg$j7KLeﾈｿﾃｯ	
+        return 'port' if relative_angle < 0 else 'starboard'
+    
+    def _calculate_strategic_score(self, maneuver_type: str, 
+                                 before_tack_type: str, 
+                                 after_tack_type: str,
+                                 position: Tuple[float, float], 
+                                 time_point, 
+                                 wind_field: Dict[str, Any]) -> Tuple[float, str]:
+        """
+        n&e
+        
+        Parameters:
+        -----------
+        maneuver_type : str
+            n.^ ('tack', 'gybe', 'wind_shift'I)
+        before_tack_type : str
+            Mnﾃｯ ('port'~_o'starboard')
+        after_tack_type : str
+            ﾐ系ﾃｯ ('port'~_o'starboard')
+        position : Tuple[float, float]
+            nMn, L	
+        time_point : any
+            nB
+        wind_field : Dict[str, Any]
+            n4
+            
+        Returns:
+        --------
+        Tuple[float, str]
+            (&e0-1	, )
+        """
+        score = 0.5  # ﾕｩo-$
+        note = "j&eﾍ�'"
+        
+        # 1ﾖ�
+        wind = self._get_wind_at_position(position[0], position[1], time_point, wind_field)
+        
+        if not wind:
+            return score, note
+        
+        # ﾐｿThkpj
+        if maneuver_type == 'tack':
+            # ﾃｯn4
+            wind_shift_probability = wind.get('variability', 0.2)
+            
+            # ﾃｯ
+            if before_tack_type != after_tack_type:
+                # ﾃｯgW_4
+                if wind_shift_probability > 0.6:
+                    # 	'nDgoﾃｯLﾍ�
+                    score = 0.8
+                    note = "n	kY_nﾍ）ﾃｯ"
+                elif wind.get('confidence', 0.5) < 0.4:
+                    # <'nNDn-gnﾃｯ
+                    score = 0.3
+                    note = "n<'LND-gnﾃｯ�ｹｯB	"
+                else:
+                    # jﾃｯ
+                    score = 0.5
+                    note = "jﾃｯ"
+            
+        elif maneuver_type == 'wind_shift':
+            # n4
+            shift_angle = abs(self._angle_difference(
+                wind.get('direction', 0), 
+                wind.get('before_direction', wind.get('direction', 0))
+            ))
+            
+            if shift_angle > 20:
+                # 'Mj
+                score = 0.9
+                note = "ﾍ）	ﾝ､"
+            elif shift_angle > 10:
+                # -n
+                score = 0.7
+                note = "YyM	"
+            else:
+                # Uj
+                score = 0.5
+                note = "j	"
+            
+            # n	n
+            if 'before_speed' in wind and 'speed' in wind:
+                speed_change = abs(wind['speed'] - wind['before_speed'])
+                if speed_change > 5:
+                    score += 0.1
+                    note += "'MO		"
+        
+        # nMnL	kDKﾃｯ
+        if 'lat_grid' in wind_field and 'lon_grid' in wind_field:
+            # tek	
+            pass
+        
+        return min(1.0, score), note
+    
+    def _filter_duplicate_tack_points(self, tack_points: List[TackPoint]) -> List[TackPoint]:
+        """
+        Yﾃｯﾝ､ﾈ鍔｣
+        
+        Parameters:
+        -----------
+        tack_points : List[TackPoint]
+            ﾃｯﾝ､n
+            
+        Returns:
+        --------
+        List[TackPoint]
+            ﾕ｣nﾃｯﾝ､
+        """
+        # o _filter_duplicate_shift_points h^<
+        if len(tack_points) <= 1:
+            return tack_points
+        
+        filtered_points = []
+        for point in tack_points:
+            is_duplicate = False
+            
+            for existing in filtered_points:
+                # MnkDK
+                position_close = self._calculate_distance(
+                    point.position[0], point.position[1],
+                    existing.position[0], existing.position[1]
+                ) < 200  # ﾃｯ(koWDg$
+                
+                # VMG9L^<WfDK
+                vmg_similar = abs(point.vmg_gain - existing.vmg_gain) < 0.05
+                
+                if position_close and vmg_similar:
+                    # VMG9L'MD
+                    if point.vmg_gain > existing.vmg_gain:
+                        filtered_points.remove(existing)
+                        filtered_points.append(point)
+                    
+                    is_duplicate = True
+                    break
+            
+            if not is_duplicate:
+                filtered_points.append(point)
+        
+        return filtered_points
+    
+    def _filter_duplicate_laylines(self, layline_points: List[LaylinePoint]) -> List[LaylinePoint]:
+        """
+        Yﾝ､ﾈ鍔｣
+        
+        Parameters:
+        -----------
+        layline_points : List[LaylinePoint]
+            ﾝ､n
+            
+        Returns:
+        --------
+        List[LaylinePoint]
+            ﾕ｣nﾝ､
+        """
+        # o _filter_duplicate_shift_points h^<
+        if len(layline_points) <= 1:
+            return layline_points
+        
+        filtered_points = []
+        for point in layline_points:
+            is_duplicate = False
+            
+            for existing in filtered_points:
+                # XxnK
+                same_mark = point.mark_id == existing.mark_id
+                
+                # MnkDK
+                position_close = self._calculate_distance(
+                    point.position[0], point.position[1],
+                    existing.position[0], existing.position[1]
+                ) < 300
+                
+                if same_mark and position_close:
+                    # <LD
+                    if point.confidence > existing.confidence:
+                        filtered_points.remove(existing)
+                        filtered_points.append(point)
+                    
+                    is_duplicate = True
+                    break
+            
+            if not is_duplicate:
+                filtered_points.append(point)
+        
+        return filtered_points
+    
+    def _calculate_distance(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+        """
+        2n	
+        
+        Parameters:
+        -----------
+        lat1, lon1 : float
+            ﾋｹnL
+        lat2, lon2 : float
+            BnL
+            
+        Returns:
+        --------
+        float
+            	
+        """
+        # 0nJ	
+        R = 6371000
+        
+        # L鮑｢k	
+        lat1_rad = math.radians(lat1)
+        lon1_rad = math.radians(lon1)
+        lat2_rad = math.radians(lat2)
+        lon2_rad = math.radians(lon2)
+        
+        # 
+        dlat = lat2_rad - lat1_rad
+        dlon = lon2_rad - lon1_rad
+        
+        # Haversinel
+        a = math.sin(dlat/2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon/2)**2
+        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
+        distance = R * c
+        
+        return distance

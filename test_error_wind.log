@@ -1,0 +1,94 @@
+テスト実行日時: Fri Mar 28 16:34:50 JST 2025
+プロジェクトルート: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer
+環境情報:
+----------------------------
+Python 3.9.6
+----------------------------
+====== test_strategy_detector_with_propagation FAILED ======
+/Users/koki_air/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+test_calculate_strategic_score (__main__.TestStrategyDetectorWithPropagation)
+タックの戦略的スコア計算機能のテスト ... ERROR
+test_detect_wind_shifts_with_propagation (__main__.TestStrategyDetectorWithPropagation)
+風の移動を考慮した風向シフト検出機能のテスト ... ok
+test_determine_tack_type (__main__.TestStrategyDetectorWithPropagation)
+タックタイプ（ポート/スターボード）の判定機能のテスト ... ok
+test_filter_duplicate_shift_points (__main__.TestStrategyDetectorWithPropagation)
+重複する風向シフトポイントのフィルタリング機能のテスト ... ok
+test_initialization (__main__.TestStrategyDetectorWithPropagation)
+初期化のテスト ... ok
+
+======================================================================
+ERROR: test_calculate_strategic_score (__main__.TestStrategyDetectorWithPropagation)
+タックの戦略的スコア計算機能のテスト
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/standalone_tests/test_strategy_detector_with_propagation.py", line 188, in test_calculate_strategic_score
+    score, note = self.strategy_detector._calculate_strategic_score(
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy/strategy_detector_with_propagation.py", line 1072, in _calculate_strategic_score
+    current_wind = self._get_wind_at_position_and_time(position, time_point, wind_field)
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy/strategy_detector_with_propagation.py", line 1202, in _get_wind_at_position_and_time
+    return super()._get_wind_at_position(lat, lon, time_point, wind_field)
+TypeError: unhashable type: 'dict'
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.020s
+
+FAILED (errors=1)
+StrategyDetectorWithPropagation モジュールのスタンドアロンテストを実行します...
+風向シフト検出テストはエラーが発生しました: unhashable type: 'dict'
+この機能は統合テスト環境で適切にテストする必要があります
+===============================
+====== test_wind_field_fusion_system FAILED ======
+/Users/koki_air/Library/Python/3.9/lib/python/site-packages/urllib3/__init__.py:35: NotOpenSSLWarning: urllib3 v2 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with 'LibreSSL 2.8.3'. See: https://github.com/urllib3/urllib3/issues/3020
+  warnings.warn(
+test_add_wind_data_point (__main__.TestWindFieldFusionSystem)
+風データポイント追加機能のテスト ... /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/wind_field_fusion_system.py:75: UserWarning: Wind data point missing required keys
+  warnings.warn("Wind data point missing required keys")
+ok
+test_fuse_wind_data (__main__.TestWindFieldFusionSystem)
+風データ融合機能のテスト ... FAIL
+test_get_prediction_quality_report (__main__.TestWindFieldFusionSystem)
+予測品質レポート機能のテスト ... ok
+test_haversine_distance (__main__.TestWindFieldFusionSystem)
+Haversine距離計算のテスト ... ok
+test_initialization (__main__.TestWindFieldFusionSystem)
+初期化のテスト ... ok
+test_predict_wind_field (__main__.TestWindFieldFusionSystem)
+風の場予測機能のテスト ... FAIL
+test_update_with_boat_data (__main__.TestWindFieldFusionSystem)
+複数艇データからの風の場更新機能のテスト ... FAIL
+
+======================================================================
+FAIL: test_fuse_wind_data (__main__.TestWindFieldFusionSystem)
+風データ融合機能のテスト
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/standalone_tests/test_wind_field_fusion_system.py", line 129, in test_fuse_wind_data
+    self.assertIsNotNone(self.fusion_system.current_wind_field)
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_predict_wind_field (__main__.TestWindFieldFusionSystem)
+風の場予測機能のテスト
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/standalone_tests/test_wind_field_fusion_system.py", line 156, in test_predict_wind_field
+    self.assertIsNotNone(predicted_field)
+AssertionError: unexpectedly None
+
+======================================================================
+FAIL: test_update_with_boat_data (__main__.TestWindFieldFusionSystem)
+複数艇データからの風の場更新機能のテスト
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/standalone_tests/test_wind_field_fusion_system.py", line 116, in test_update_with_boat_data
+    self.assertIsNotNone(result)
+AssertionError: unexpectedly None
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.056s
+
+FAILED (failures=3)
+WindFieldFusionSystem モジュールのスタンドアロンテストを実行します...
+===============================

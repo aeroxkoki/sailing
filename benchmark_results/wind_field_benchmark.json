@@ -1,0 +1,90 @@
+[
+  {
+    "module": "WindFieldFusionSystem (1\u8247x50\u70b9)",
+    "avg_time": 0.022014379501342773,
+    "avg_memory": 0.07121976216634114,
+    "times": [
+      0.02245497703552246,
+      0.021630287170410156,
+      0.021957874298095703
+    ],
+    "memories": [
+      0.11318778991699219,
+      0.0502471923828125,
+      0.05022430419921875
+    ],
+    "success": true,
+    "config": {
+      "num_boats": 1,
+      "points_per_boat": 50,
+      "time_span_minutes": 60,
+      "area_size": 0.05
+    }
+  },
+  {
+    "module": "WindFieldFusionSystem (2\u8247x50\u70b9)",
+    "avg_time": 0.051558335622151695,
+    "avg_memory": 0.09870719909667969,
+    "times": [
+      0.043811798095703125,
+      0.048757076263427734,
+      0.06210613250732422
+    ],
+    "memories": [
+      0.10209369659423828,
+      0.09704303741455078,
+      0.09698486328125
+    ],
+    "success": true,
+    "config": {
+      "num_boats": 2,
+      "points_per_boat": 50,
+      "time_span_minutes": 60,
+      "area_size": 0.05
+    }
+  },
+  {
+    "module": "WindFieldFusionSystem (1\u8247x100\u70b9)",
+    "avg_time": 0.041753689448038735,
+    "avg_memory": 0.10412184397379558,
+    "times": [
+      0.04556107521057129,
+      0.03703498840332031,
+      0.04266500473022461
+    ],
+    "memories": [
+      0.10712718963623047,
+      0.102630615234375,
+      0.10260772705078125
+    ],
+    "success": true,
+    "config": {
+      "num_boats": 1,
+      "points_per_boat": 100,
+      "time_span_minutes": 60,
+      "area_size": 0.05
+    }
+  },
+  {
+    "module": "WindFieldFusionSystem (2\u8247x100\u70b9)",
+    "avg_time": 0.08084829648335774,
+    "avg_memory": 0.20007197062174478,
+    "times": [
+      0.08403778076171875,
+      0.08368301391601562,
+      0.07482409477233887
+    ],
+    "memories": [
+      0.1980113983154297,
+      0.20702171325683594,
+      0.19518280029296875
+    ],
+    "success": true,
+    "config": {
+      "num_boats": 2,
+      "points_per_boat": 100,
+      "time_span_minutes": 60,
+      "area_size": 0.05
+    }
+  }
+]

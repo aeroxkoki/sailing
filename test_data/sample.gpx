@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" version="1.1" creator="Sailing Strategy Analyzer">
+  <metadata>
+    <name>Sample Sailing Track</name>
+    <author>
+      <name>Test User</name>
+    </author>
+    <time>2023-01-01T10:00:00Z</time>
+  </metadata>
+  <trk>
+    <name>Sample Track</name>
+    <trkseg>
+      <trkpt lat="35.621" lon="139.751">
+        <ele>10.5</ele>
+        <time>2023-01-01T10:00:00Z</time>
+        <extensions>
+          <speed>5.2</speed>
+          <course>180.5</course>
+        </extensions>
+      </trkpt>
+      <trkpt lat="35.622" lon="139.752">
+        <ele>10.4</ele>
+        <time>2023-01-01T10:00:10Z</time>
+        <extensions>
+          <speed>5.3</speed>
+          <course>181.0</course>
+        </extensions>
+      </trkpt>
+      <trkpt lat="35.623" lon="139.753">
+        <ele>10.3</ele>
+        <time>2023-01-01T10:00:20Z</time>
+        <extensions>
+          <speed>5.4</speed>
+          <course>182.5</course>
+        </extensions>
+      </trkpt>
+      <trkpt lat="35.624" lon="139.754">
+        <ele>10.2</ele>
+        <time>2023-01-01T10:00:30Z</time>
+        <extensions>
+          <speed>5.5</speed>
+          <course>183.0</course>
+        </extensions>
+      </trkpt>
+      <trkpt lat="35.625" lon="139.755">
+        <ele>10.1</ele>
+        <time>2023-01-01T10:00:40Z</time>
+        <extensions>
+          <speed>5.6</speed>
+          <course>184.5</course>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
