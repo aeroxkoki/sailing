@@ -1,0 +1,7 @@
+2025-04-09 13:52:57,651 - __main__ - ERROR - モジュールの読み込みに失敗しました: cannot import name 'MetricsCalculator' from 'sailing_data_processor.validation.quality_metrics' (/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics.py)
+2025-04-09 13:52:57,814 - __main__ - ERROR - ページレンダリングエラー: name 'render_project_management' is not defined
+2025-04-09 13:52:57,815 - __main__ - ERROR - Traceback (most recent call last):
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui/app_v5.py", line 64, in <module>
+    render_project_management()
+NameError: name 'render_project_management' is not defined
+
