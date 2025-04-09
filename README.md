@@ -150,27 +150,31 @@ sailing-strategy-analyzer/
 │   ├── project/              # プロジェクト管理
 │   ├── storage/              # ストレージ管理
 │   └── validation/           # データ検証
-├── visualization/            # 可視化モジュール
-│   ├── map_display.py        # マップ表示機能
-│   ├── performance_charts.py # パフォーマンス分析グラフ
-│   ├── timeline_view.py      # タイムライン表示
-│   └── wind_field_view.py    # 風場の可視化
-├── ui/                       # ユーザーインターフェース
-│   ├── components/           # UIコンポーネント
-│   ├── integrated/           # 統合UIモジュール
-│   ├── pages/                # ページ定義
-│   └── app_v5.py             # メインStreamlitアプリ
-├── streamlit_app.py          # Streamlit Cloudエントリーポイント
-├── tests/                    # テストコード
 ├── docs/                     # ドキュメント
-│   ├── user_guide.md         # ユーザーガイド
-│   ├── deployment.md         # デプロイ手順
-│   └── future_work.md        # 将来の課題
+│   ├── development/          # 開発者向けドキュメント
+│   ├── technical/            # 技術仕様書
+│   └── user-guides/          # ユーザーガイド
+├── resources/                # リソースファイル
+│   ├── static/               # 静的リソース（画像、CSS等）
+│   └── sample_data/          # サンプルデータ
+├── scripts/                  # 実行スクリプト（デモや開発用）
+├── ui/                       # ユーザーインターフェース
+│   ├── apps/                 # アプリケーションレベルのコンポーネント
+│   ├── components/           # UIコンポーネント
+│   ├── demo/                 # デモアプリケーション
+│   ├── integrated/           # 統合UIモジュール
+│   └── pages/                # ページコンポーネント
+├── deployment/               # デプロイメント関連ファイル
+├── tests/                    # テストコード
+├── archive/                  # 過去バージョン（参照用）
+├── streamlit_app.py          # Streamlit Cloudエントリーポイント
 ├── requirements.txt          # 依存パッケージリスト
 ├── run_app.sh                # 起動スクリプト(Linux/Mac)
 ├── run_app.bat               # 起動スクリプト(Windows)
 └── setup.py                  # インストールスクリプト
 ```
+
+詳細なディレクトリ構造と各ディレクトリの役割については、[docs/development/directory_structure.md](docs/development/directory_structure.md)を参照してください。
 
 ## コントリビューション
 
