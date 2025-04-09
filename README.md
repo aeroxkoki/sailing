@@ -83,12 +83,24 @@ pytest -v
 ### Webインターフェースの起動
 
 ```bash
-# Streamlitアプリケーションの起動
-cd ui
-streamlit run app.py
+# Streamlitアプリケーションの起動（Linux/macOS）
+./run_app.sh
+
+# または（Windows）
+run_app.bat
 ```
 
 ブラウザで自動的に http://localhost:8501 が開き、Webインターフェースにアクセスできます。
+
+### オンライン版（Streamlit Cloud）
+
+以下のURLから、Streamlit Cloudにホストされているバージョンにアクセスすることもできます：
+
+```
+https://sailing-strategy-analyzer.streamlit.app
+```
+
+注: オンライン版ではストレージの制限があるため、重要なデータは必ずローカルにエクスポートしてください。
 
 ### 主な操作方法
 
@@ -128,21 +140,36 @@ map_object = visualizer.create_track_map()
 
 ```
 sailing-strategy-analyzer/
-├── sailing_data_processor/   # コアデータ処理モジュール
-│   ├── core.py              # メインデータプロセッサクラス
-│   ├── wind_estimator.py    # 風向風速推定機能
-│   ├── strategy/            # 戦略ポイント検出アルゴリズム
-│   ├── utilities/           # ユーティリティ関数
-│   └── data/                # 極座標データなど
-├── visualization/           # 可視化モジュール
-│   ├── map_display.py       # マップ表示機能
-│   ├── performance_plots.py # パフォーマンス分析グラフ
-│   └── sailing_visualizer.py # 可視化統合インターフェース
-├── ui/                      # ユーザーインターフェース
-│   └── app.py               # Streamlitアプリケーション
-├── tests/                   # テストコード
-├── docs/                    # ドキュメント
-└── setup.py                 # インストールスクリプト
+├── .streamlit/                # Streamlit設定ファイル
+├── sailing_data_processor/    # コアデータ処理モジュール
+│   ├── analysis/             # 分析モジュール
+│   │   ├── strategy_detector.py  # 戦略検出機能
+│   │   └── wind_estimator.py     # 風向風速推定機能
+│   ├── exporters/            # エクスポート機能
+│   ├── importers/            # インポート機能
+│   ├── project/              # プロジェクト管理
+│   ├── storage/              # ストレージ管理
+│   └── validation/           # データ検証
+├── visualization/            # 可視化モジュール
+│   ├── map_display.py        # マップ表示機能
+│   ├── performance_charts.py # パフォーマンス分析グラフ
+│   ├── timeline_view.py      # タイムライン表示
+│   └── wind_field_view.py    # 風場の可視化
+├── ui/                       # ユーザーインターフェース
+│   ├── components/           # UIコンポーネント
+│   ├── integrated/           # 統合UIモジュール
+│   ├── pages/                # ページ定義
+│   └── app_v5.py             # メインStreamlitアプリ
+├── streamlit_app.py          # Streamlit Cloudエントリーポイント
+├── tests/                    # テストコード
+├── docs/                     # ドキュメント
+│   ├── user_guide.md         # ユーザーガイド
+│   ├── deployment.md         # デプロイ手順
+│   └── future_work.md        # 将来の課題
+├── requirements.txt          # 依存パッケージリスト
+├── run_app.sh                # 起動スクリプト(Linux/Mac)
+├── run_app.bat               # 起動スクリプト(Windows)
+└── setup.py                  # インストールスクリプト
 ```
 
 ## コントリビューション

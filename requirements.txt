@@ -18,6 +18,15 @@ pytest>=7.4.0
 
 # グラフエクスポート
 kaleido>=0.2.1
+svglib>=1.5.1
+reportlab>=4.0.4
+Pillow>=10.0.0
+openpyxl>=3.1.2
+XlsxWriter>=3.1.0
+fpdf2>=2.7.0
+markdown>=3.5
+pdfkit>=1.0.0
+weasyprint>=60.1
 
 # システム監視用
 psutil>=5.9.0

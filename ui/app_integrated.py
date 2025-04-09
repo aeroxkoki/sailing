@@ -165,6 +165,13 @@ def render_sidebar():
         
         # 可視化・エクスポート
         with st.expander("レポートと可視化", expanded=True):
+            st.button("結果ダッシュボード", 
+                     on_click=navigate_to, 
+                     kwargs={"page_name": "results_dashboard"},
+                     key="btn_results_dashboard",
+                     use_container_width=True,
+                     type="primary" if st.session_state.current_page == "results_dashboard" else "secondary")
+            
             st.button("マップビュー", 
                      on_click=navigate_to, 
                      kwargs={"page_name": "map_view"},
@@ -172,19 +179,26 @@ def render_sidebar():
                      use_container_width=True,
                      type="primary" if st.session_state.current_page == "map_view" else "secondary")
             
-            st.button("統計ダッシュボード", 
+            st.button("統計チャート", 
                      on_click=navigate_to, 
                      kwargs={"page_name": "statistics_dashboard"},
                      key="btn_statistics",
                      use_container_width=True,
                      type="primary" if st.session_state.current_page == "statistics_dashboard" else "secondary")
             
-            st.button("データエクスポート", 
+            st.button("タイムライン分析", 
                      on_click=navigate_to, 
-                     kwargs={"page_name": "data_export"},
-                     key="btn_data_export",
+                     kwargs={"page_name": "timeline_view"},
+                     key="btn_timeline",
                      use_container_width=True,
-                     type="primary" if st.session_state.current_page == "data_export" else "secondary")
+                     type="primary" if st.session_state.current_page == "timeline_view" else "secondary")
+            
+            st.button("エクスポート", 
+                     on_click=navigate_to, 
+                     kwargs={"page_name": "export"},
+                     key="btn_export",
+                     use_container_width=True,
+                     type="primary" if st.session_state.current_page == "export" else "secondary")
         
         # 設定
         with st.expander("設定", expanded=False):
@@ -266,13 +280,28 @@ def render_main_content():
     
     # 可視化・エクスポート関連ページ
     elif current_page == "map_view":
-        render_temp_page("マップビュー", "マップビュー機能のページです。実装中...")
+        from ui.integrated.pages.map_view import render_page
+        render_page()
         return
     elif current_page == "statistics_dashboard":
-        render_temp_page("統計ダッシュボード", "統計ダッシュボード機能のページです。実装中...")
+        from ui.integrated.pages.chart_view import render_page
+        render_page()
+        return
+    elif current_page == "timeline_view":
+        from ui.integrated.pages.timeline_view import render_page
+        render_page()
+        return
+    elif current_page == "results_dashboard":
+        from ui.integrated.pages.results_dashboard import render_page
+        render_page()
         return
     elif current_page == "data_export":
-        render_temp_page("データエクスポート", "データエクスポート機能のページです。実装中...")
+        from ui.integrated.pages.data_export import render_page
+        render_page()
+        return
+    elif current_page == "export":
+        from ui.integrated.pages.export import render_page
+        render_page()
         return
     
     # 設定関連ページ

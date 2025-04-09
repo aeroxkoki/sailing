@@ -1,0 +1,18 @@
+[theme]
+primaryColor = "#1E88E5"  # メインカラー
+backgroundColor = "#FFFFFF"  # 背景色
+secondaryBackgroundColor = "#F0F2F6"  # セカンダリ背景色
+textColor = "#262730"  # テキスト色
+font = "sans serif"  # フォントファミリー
+
+[server]
+maxUploadSize = 200  # 最大アップロードサイズ (MB)
+enableXsrfProtection = true  # XSRFプロテクション有効
+enableCORS = true  # CORS有効
+
+[browser]
+gatherUsageStats = false  # 使用統計の収集を無効化
+serverAddress = "localhost"  # サーバーアドレス
+
+[logger]
+level = "info"  # ログレベル
