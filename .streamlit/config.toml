@@ -8,8 +8,10 @@ font = "sans serif"  # フォントファミリー
 [server]
 maxUploadSize = 200  # 最大アップロードサイズ (MB)
 enableXsrfProtection = true  # XSRFプロテクション有効
-enableCORS = true  # CORS有効
+enableCORS = false  # Streamlit Cloud環境では必要に応じてCORSを無効化
 headless = true  # クラウド環境で必要
+fileWatcherType = "none"  # ファイル監視を無効化（パフォーマンス向上）
+port = 8501  # ポート設定（デフォルト）
 
 [browser]
 gatherUsageStats = false  # 使用統計の収集を無効化

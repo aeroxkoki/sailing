@@ -439,7 +439,18 @@ class ProjectManager:
         base_path : str, optional
             プロジェクトデータを保存するベースパス, by default "projects"
         """
-        self.base_path = Path(base_path)
+        # Streamlit Cloud環境を検出
+        self.is_cloud_env = self._detect_cloud_environment()
+        
+        if self.is_cloud_env:
+            # Streamlit Cloudではテンポラリディレクトリを使用
+            import tempfile
+            temp_dir = tempfile.gettempdir()
+            self.base_path = Path(temp_dir) / "sailing_analyzer"
+        else:
+            # ローカル環境では指定されたパスを使用
+            self.base_path = Path(base_path)
+        
         self.projects_path = self.base_path / "projects"
         self.sessions_path = self.base_path / "sessions"
         self.data_path = self.base_path / "data"
@@ -455,14 +466,49 @@ class ProjectManager:
         
         # キャッシュの初期化
         self.reload()
+        
+    def _detect_cloud_environment(self) -> bool:
+        """
+        Streamlit Cloud環境を検出する
+        
+        Returns
+        -------
+        bool
+            Streamlit Cloud環境の場合True
+        """
+        import os
+        
+        # Streamlit Cloud環境で設定される環境変数を確認
+        cloud_indicators = [
+            "STREAMLIT_SHARING_MODE",
+            "STREAMLIT_SERVER_PORT",
+            "STREAMLIT_SERVER_HEADLESS"
+        ]
+        
+        for indicator in cloud_indicators:
+            if os.environ.get(indicator):
+                return True
+        
+        # Streamlit Cloud特有のパスをチェック
+        if os.path.exists("/mount/src"):
+            return True
+            
+        return False
     
     def _create_directories(self) -> None:
         """必要なディレクトリを作成"""
-        self.projects_path.mkdir(parents=True, exist_ok=True)
-        self.sessions_path.mkdir(parents=True, exist_ok=True)
-        self.data_path.mkdir(parents=True, exist_ok=True)
-        self.state_path.mkdir(parents=True, exist_ok=True)
-        self.results_path.mkdir(parents=True, exist_ok=True)
+        try:
+            self.projects_path.mkdir(parents=True, exist_ok=True)
+            self.sessions_path.mkdir(parents=True, exist_ok=True)
+            self.data_path.mkdir(parents=True, exist_ok=True)
+            self.state_path.mkdir(parents=True, exist_ok=True)
+            self.results_path.mkdir(parents=True, exist_ok=True)
+        except Exception as e:
+            import logging
+            logging.error(f"ディレクトリ作成中にエラーが発生しました: {str(e)}")
+            if self.is_cloud_env:
+                # クラウド環境ではディレクトリ作成のエラーは無視する
+                logging.warning("クラウド環境ではディレクトリ作成をスキップします")
     
     def reload(self) -> None:
         """
@@ -471,25 +517,47 @@ class ProjectManager:
         self.projects = {}
         self.sessions = {}
         
-        # プロジェクトの読み込み
-        for project_file in self.projects_path.glob("*.json"):
-            try:
-                with open(project_file, 'r', encoding='utf-8') as f:
-                    project_data = json.load(f)
-                    project = Project.from_dict(project_data)
-                    self.projects[project.project_id] = project
-            except Exception as e:
-                print(f"Failed to load project file {project_file}: {e}")
+        import logging
         
-        # セッションの読み込み
-        for session_file in self.sessions_path.glob("*.json"):
-            try:
-                with open(session_file, 'r', encoding='utf-8') as f:
-                    session_data = json.load(f)
-                    session = Session.from_dict(session_data)
-                    self.sessions[session.session_id] = session
-            except Exception as e:
-                print(f"Failed to load session file {session_file}: {e}")
+        # ディレクトリが存在するか確認
+        if not self.projects_path.exists():
+            logging.warning(f"プロジェクトディレクトリが存在しません: {self.projects_path}")
+            if self.is_cloud_env:
+                logging.info("クラウド環境ではこの警告は無視されます")
+        else:
+            # プロジェクトの読み込み
+            project_files = list(self.projects_path.glob("*.json"))
+            logging.info(f"プロジェクトファイル数: {len(project_files)}")
+            
+            for project_file in project_files:
+                try:
+                    with open(project_file, 'r', encoding='utf-8') as f:
+                        project_data = json.load(f)
+                        project = Project.from_dict(project_data)
+                        self.projects[project.project_id] = project
+                        logging.info(f"プロジェクトを読み込みました: {project.name} ({project.project_id})")
+                except Exception as e:
+                    logging.error(f"プロジェクトファイルの読み込みに失敗しました {project_file}: {e}")
+        
+        # セッションディレクトリが存在するか確認
+        if not self.sessions_path.exists():
+            logging.warning(f"セッションディレクトリが存在しません: {self.sessions_path}")
+            if self.is_cloud_env:
+                logging.info("クラウド環境ではこの警告は無視されます")
+        else:
+            # セッションの読み込み
+            session_files = list(self.sessions_path.glob("*.json"))
+            logging.info(f"セッションファイル数: {len(session_files)}")
+            
+            for session_file in session_files:
+                try:
+                    with open(session_file, 'r', encoding='utf-8') as f:
+                        session_data = json.load(f)
+                        session = Session.from_dict(session_data)
+                        self.sessions[session.session_id] = session
+                        logging.info(f"セッションを読み込みました: {session.name} ({session.session_id})")
+                except Exception as e:
+                    logging.error(f"セッションファイルの読み込みに失敗しました {session_file}: {e}")
     
     def create_project(self, name: str, description: str = "", 
                        tags: List[str] = None, metadata: Dict[str, Any] = None) -> Project:
@@ -1089,8 +1157,16 @@ class ProjectManager:
         """
         project_file = self.projects_path / f"{project.project_id}.json"
         
-        with open(project_file, 'w', encoding='utf-8') as f:
-            json.dump(project.to_dict(), f, ensure_ascii=False, indent=2)
+        try:
+            with open(project_file, 'w', encoding='utf-8') as f:
+                json.dump(project.to_dict(), f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            import logging
+            logging.error(f"プロジェクト保存中にエラーが発生しました: {str(e)}")
+            # クラウド環境ではファイル書き込みに失敗することがあるため、
+            # メモリ内のデータだけを更新する
+            if self.is_cloud_env:
+                logging.warning("クラウド環境ではファイルへの書き込みをスキップします")
     
     def _save_session(self, session: Session) -> None:
         """
@@ -1103,5 +1179,13 @@ class ProjectManager:
         """
         session_file = self.sessions_path / f"{session.session_id}.json"
         
-        with open(session_file, 'w', encoding='utf-8') as f:
-            json.dump(session.to_dict(), f, ensure_ascii=False, indent=2)
+        try:
+            with open(session_file, 'w', encoding='utf-8') as f:
+                json.dump(session.to_dict(), f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            import logging
+            logging.error(f"セッション保存中にエラーが発生しました: {str(e)}")
+            # クラウド環境ではファイル書き込みに失敗することがあるため、
+            # メモリ内のデータだけを更新する
+            if self.is_cloud_env:
+                logging.warning("クラウド環境ではファイルへの書き込みをスキップします")
