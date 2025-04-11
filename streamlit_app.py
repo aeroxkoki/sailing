@@ -51,31 +51,25 @@ st.set_page_config(
 # デバッグモードを有効化
 os.environ['STREAMLIT_DEBUG'] = 'true'
 
-# validation ディレクトリの存在確認（デバッグ用）
+# ディレクトリの存在確認
+ui_dir = os.path.join(current_dir, 'ui')
+ui_pages_dir = os.path.join(ui_dir, 'pages')
+ui_components_dir = os.path.join(ui_dir, 'components')
 validation_dir = os.path.join(current_dir, 'sailing_data_processor', 'validation')
-if not os.path.exists(validation_dir):
-    try:
-        os.makedirs(validation_dir)
-        st.warning(f"validation ディレクトリが存在しなかったため作成しました: {validation_dir}")
-    except Exception as e:
-        st.error(f"validation ディレクトリの作成に失敗しました: {e}")
 
-# UIコンポーネントの存在確認も追加
-ui_components_dir = os.path.join(current_dir, 'ui', 'components')
-if os.path.exists(ui_components_dir):
-    st.success(f"ui/components ディレクトリが見つかりました")
-else:
-    st.error(f"ui/components ディレクトリが見つかりません: {ui_components_dir}")
+# ディレクトリ構造の確認
+st.header("ディレクトリ構造の確認")
+st.write(f"ui ディレクトリ: {os.path.exists(ui_dir)}")
+st.write(f"ui/pages ディレクトリ: {os.path.exists(ui_pages_dir)}")
+st.write(f"ui/components ディレクトリ: {os.path.exists(ui_components_dir)}")
+st.write(f"sailing_data_processor/validation ディレクトリ: {os.path.exists(validation_dir)}")
 
-# pagesディレクトリも確認
-ui_pages_dir = os.path.join(current_dir, 'ui', 'pages')
+# ui/pages ディレクトリの内容を確認
 if os.path.exists(ui_pages_dir):
-    st.success(f"ui/pages ディレクトリが見つかりました")
-    # 内容も表示
-    if os.listdir(ui_pages_dir):
-        st.write("pages ディレクトリの内容:")
-        for item in os.listdir(ui_pages_dir):
-            st.write(f"- {item}")
+    pages_files = os.listdir(ui_pages_dir)
+    st.write("pages ディレクトリの内容:")
+    for file in pages_files:
+        st.write(f"- {file}")
 else:
     st.error(f"ui/pages ディレクトリが見つかりません: {ui_pages_dir}")
 
@@ -116,47 +110,44 @@ try:
         st.success("QualityMetricsCalculator クラスが正常にインポートされました。")
     except ImportError as e:
         st.error(f"QualityMetricsCalculator クラスのインポートに失敗しました: {e}")
-        
-    # メインアプリを実行（ページ設定は既に行われているため直接インポート）
-    try:
-        logger.info("ui.app_v5 モジュールのインポートを開始")
-        st.info("メインアプリケーションを読み込んでいます...")
-        
-        # まずapp_v5の存在を確認
-        app_path = os.path.join(current_dir, 'ui', 'app_v5.py')
-        if os.path.exists(app_path):
-            st.success(f"app_v5.py ファイルが見つかりました")
-            
-            # モジュールとしてインポート
-            try:
-                # 内容の一部を表示してデバッグに役立てる
-                with open(app_path, 'r', encoding='utf-8') as f:
-                    first_50_lines = "".join([f.readline() for _ in range(20)])
-                    with st.expander("app_v5.py の先頭部分", expanded=False):
-                        st.code(first_50_lines, language="python")
-                
-                # インポート前にUI関連パスの設定を確認
-                st.write("インポート前の設定確認:")
-                st.write(f"- ui ディレクトリパス: {ui_path}")
-                st.write(f"- sys.path 内の ui 関連パス: {[p for p in sys.path if 'ui' in p]}")
-                
-                import ui.app_v5
-                st.success("app_v5 モジュールのインポートに成功しました")
-                
-                # UI関連のコンポーネントが正しく読み込まれたか確認
-                with st.expander("UIモジュール内容確認", expanded=False):
-                    st.write("ui.app_v5 モジュール内容:")
-                    ui_items = dir(ui.app_v5)
-                    st.write(ui_items)
-            except Exception as module_error:
-                st.error(f"モジュール読み込み中のエラー: {module_error}")
-                st.code(traceback.format_exc())
-        else:
-            st.error(f"app_v5.py ファイルが見つかりません: {app_path}")
-    except Exception as e:
-        st.error(f"app_v5 モジュールのインポートに失敗: {e}")
-        st.code(traceback.format_exc())
     
+    # メインアプリケーションをロードする前に状態を表示
+    st.info("メインアプリケーションを読み込んでいます...")
+    
+    # app_v5.pyファイルの存在確認
+    app_v5_path = os.path.join(ui_path, 'app_v5.py')
+    if os.path.exists(app_v5_path):
+        st.success(f"app_v5.py ファイルが見つかりました")
+        # ファイルの先頭部分を表示して確認
+        with open(app_v5_path, 'r', encoding='utf-8') as f:
+            content = f.read(500)  # 先頭500文字だけを読み込む
+            st.write("app_v5.py の先頭部分")
+            st.code(content, language="python")
+    else:
+        st.error(f"app_v5.py ファイルが見つかりません: {app_v5_path}")
+        st.stop()
+    
+    # インポート前の設定確認
+    st.write("インポート前の設定確認:")
+    st.write(f"ui ディレクトリパス: {ui_path}")
+    st.write(f"sys.path 内の ui 関連パス: {[p for p in sys.path if 'ui' in p]}")
+    
+    # app_v5モジュールのインポートをより詳細に
+    logger.info("ui.app_v5 モジュールのインポートを試行中...")
+    try:
+        import ui.app_v5
+        logger.info("app_v5 モジュールのインポートに成功")
+        st.success("app_v5 モジュールのインポートに成功しました")
+        
+        # モジュールの内容を確認
+        st.write("UIモジュール内容確認")
+        logger.info(f"app_v5 モジュールの内容: {dir(ui.app_v5)}")
+    except Exception as app_import_error:
+        logger.error(f"app_v5 モジュールのインポート中にエラー: {app_import_error}")
+        logger.error(traceback.format_exc())
+        st.error(f"app_v5 モジュールのインポート中にエラーが発生しました: {app_import_error}")
+        st.code(traceback.format_exc())
+        
 except Exception as e:
     st.error(f"アプリケーションの読み込み中にエラーが発生しました: {e}")
     st.code(traceback.format_exc())
@@ -180,22 +171,3 @@ except Exception as e:
     # モジュールのインポートパスを表示
     st.write(f"Pythonパス: {sys.path}")
     st.info("開発者向け情報: このファイルはStreamlit Cloudデプロイ用のエントリーポイントです。")
-    
-    # 依存関係情報の表示（デバッグ用）
-    if os.environ.get('STREAMLIT_DEBUG', '').lower() == 'true':
-        try:
-            import pandas as pd
-            import numpy as np
-            st.success("主要ライブラリ (pandas, numpy) の読み込みに成功しました。")
-        except ImportError as e:
-            st.error(f"主要ライブラリの読み込みに失敗しました: {e}")
-        
-        # ディレクトリ構造を表示
-        st.write("ディレクトリ構造:")
-        for root, dirs, files in os.walk(".", topdown=True, maxdepth=3):
-            level = root.count(os.sep)
-            indent = ' ' * 4 * level
-            st.write(f"{indent}{os.path.basename(root)}/")
-            sub_indent = ' ' * 4 * (level + 1)
-            for f in files:
-                st.write(f"{sub_indent}{f}")

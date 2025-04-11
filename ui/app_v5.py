@@ -159,10 +159,59 @@ try:
             st.error(error_msg)
             return None
     
-    # 段階的にモジュールをインポート
-    basic_project_management = import_with_detailed_error('ui.pages.basic_project_management', '基本プロジェクト管理')
-    data_validation = import_with_detailed_error('ui.pages.data_validation', 'データ検証')
-    session_management = import_with_detailed_error('ui.pages.session_management', 'セッション管理')
+    # 段階的にモジュールをインポート - 直接インポートを試みてより詳細なエラー情報を取得
+    try:
+        logger.info("basic_project_managementモジュールのインポートを試みます...")
+        # フルパスとモジュール名の詳細をログに記録
+        module_path = os.path.join(os.path.dirname(__file__), 'pages', 'basic_project_management.py')
+        logger.info(f"モジュールパス: {module_path}, 存在: {os.path.exists(module_path)}")
+        
+        # 通常のインポートを試す
+        import ui.pages.basic_project_management
+        basic_project_management = ui.pages.basic_project_management
+        logger.info(f"basic_project_managementモジュールの内容: {dir(basic_project_management)}")
+        logger.info("basic_project_managementモジュールのインポートに成功しました")
+    except Exception as e:
+        logger.error(f"basic_project_managementモジュールのインポートに失敗: {e}")
+        logger.error(traceback.format_exc())
+        global last_error_trace
+        last_error_trace = traceback.format_exc()
+        st.error(f"basic_project_managementモジュールのインポートに失敗: {e}")
+        basic_project_management = None
+        
+    try:
+        logger.info("data_validationモジュールのインポートを試みます...")
+        module_path = os.path.join(os.path.dirname(__file__), 'pages', 'data_validation.py')
+        logger.info(f"モジュールパス: {module_path}, 存在: {os.path.exists(module_path)}")
+        
+        import ui.pages.data_validation
+        data_validation = ui.pages.data_validation
+        logger.info("data_validationモジュールのインポートに成功しました")
+    except Exception as e:
+        logger.error(f"data_validationモジュールのインポートに失敗: {e}")
+        logger.error(traceback.format_exc())
+        if 'last_error_trace' not in globals() or last_error_trace is None:
+            global last_error_trace
+            last_error_trace = traceback.format_exc()
+        st.error(f"data_validationモジュールのインポートに失敗: {e}")
+        data_validation = None
+        
+    try:
+        logger.info("session_managementモジュールのインポートを試みます...")
+        module_path = os.path.join(os.path.dirname(__file__), 'pages', 'session_management.py')
+        logger.info(f"モジュールパス: {module_path}, 存在: {os.path.exists(module_path)}")
+        
+        import ui.pages.session_management
+        session_management = ui.pages.session_management
+        logger.info("session_managementモジュールのインポートに成功しました")
+    except Exception as e:
+        logger.error(f"session_managementモジュールのインポートに失敗: {e}")
+        logger.error(traceback.format_exc())
+        if 'last_error_trace' not in globals() or last_error_trace is None:
+            global last_error_trace
+            last_error_trace = traceback.format_exc()
+        st.error(f"session_managementモジュールのインポートに失敗: {e}")
+        session_management = None
     
     # インポートが成功したかチェック
     if basic_project_management and data_validation and session_management:
