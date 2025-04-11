@@ -31,17 +31,82 @@ logger = logging.getLogger(__name__)
 
 # 先に依存モジュールが正しくロードされているか確認
 try:
-    # 明示的に依存モジュールをインポート
-    import sailing_data_processor.validation.quality_metrics_integration as quality_metrics_integration
-    logger.info("Quality metrics integration モジュールのロードに成功")
+    # システムパスを出力（デバッグ用）
+    logger.info(f"システムパス: {sys.path}")
+    
+    # 明示的にsailing_data_processorディレクトリをパスに追加（デプロイ環境対応）
+    project_root = os.path.dirname(os.path.dirname(__file__))
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+        logger.info(f"プロジェクトルートをパスに追加: {project_root}")
+    
+    # 明示的に依存モジュールの存在をチェック
+    import importlib.util
+    
+    # quality_metrics モジュールの存在確認
+    qm_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
+                          'sailing_data_processor/validation/quality_metrics.py')
+    logger.info(f"quality_metrics.py パス: {qm_path}")
+    logger.info(f"ファイルは存在するか: {os.path.exists(qm_path)}")
+    
+    if os.path.exists(qm_path):
+        with open(qm_path, 'r', encoding='utf-8') as f:
+            logger.info(f"quality_metrics.py 先頭50文字: {f.read(50)}")
+    
+    # モジュールをインポート
+    try:
+        # まず直接インポートを試す
+        try:
+            import sailing_data_processor.validation.quality_metrics_integration as quality_metrics_integration
+            logger.info("Quality metrics integration モジュールのロードに成功")
+            logger.info(f"モジュール内容: {dir(quality_metrics_integration)}")
+        except ImportError as e1:
+            logger.warning(f"標準的なインポートに失敗: {e1}")
+            
+            # 代替インポート方法を試す
+            try:
+                import importlib.util
+                integration_path = os.path.join(project_root, 'sailing_data_processor/validation/quality_metrics_integration.py')
+                spec = importlib.util.spec_from_file_location("quality_metrics_integration", integration_path)
+                quality_metrics_integration = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(quality_metrics_integration)
+                logger.info("代替方法でのQuality metrics integrationモジュールのロードに成功")
+            except Exception as e2:
+                logger.error(f"代替インポート方法でも失敗: {e2}")
+                raise ImportError(f"両方のインポート方法に失敗: {e1}, {e2}")
+    except Exception as e:
+        logger.error(f"Quality metrics モジュールロードエラー: {e}")
+        logger.error(traceback.format_exc())
+        st.error(f"Quality metrics モジュールのロードに失敗: {e}")
     
     # MetricsCalculator のインポート問題を診断
     try:
-        from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
-        logger.info("QualityMetricsCalculator クラスのロードに成功")
-    except ImportError as e:
+        # 直接インポートしてみる
+        try:
+            from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
+            logger.info("QualityMetricsCalculator クラスのロードに成功")
+            logger.info(f"QualityMetricsCalculator クラスの内容: {dir(QualityMetricsCalculator)}")
+            logger.info(f"クラスタイプ: {type(QualityMetricsCalculator)}")
+        except ImportError as e1:
+            logger.warning(f"標準的なQualityMetricsCalculatorインポートに失敗: {e1}")
+            
+            # 代替インポート方法を試す
+            try:
+                import importlib.util
+                metrics_path = os.path.join(project_root, 'sailing_data_processor/validation/quality_metrics.py')
+                spec = importlib.util.spec_from_file_location("quality_metrics", metrics_path)
+                quality_metrics = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(quality_metrics)
+                
+                QualityMetricsCalculator = quality_metrics.QualityMetricsCalculator
+                logger.info("代替方法でのQualityMetricsCalculatorクラスのロードに成功")
+            except Exception as e2:
+                logger.error(f"代替インポート方法でも失敗: {e2}")
+                raise ImportError(f"両方のインポート方法に失敗: {e1}, {e2}")
+    except Exception as e:
         logger.error(f"QualityMetricsCalculator ロードエラー: {e}")
-        st.warning("QualityMetricsCalculator クラスのロードに失敗しました")
+        logger.error(traceback.format_exc())
+        st.warning(f"QualityMetricsCalculator クラスのロードに失敗しました: {e}")
     
     # 各モジュールの存在を確認
     import os
@@ -96,13 +161,18 @@ except ImportError as e:
     render_data_validation = dummy_render
     render_session_management = dummy_render
 
-# ページ設定
-st.set_page_config(
-    page_title="セーリング戦略分析システム",
-    page_icon="🌊",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# ページ設定の確認（既に設定されている場合はスキップ）
+try:
+    # ページ設定を試みる（既に設定されていると例外が発生する）
+    st.set_page_config(
+        page_title="セーリング戦略分析システム",
+        page_icon="🌊",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+except Exception as e:
+    # 既にページ設定されているなど、エラーは無視する
+    logger.info(f"ページ設定スキップ: {e}")
 
 # アプリケーションのタイトル
 st.title('セーリング戦略分析システム')

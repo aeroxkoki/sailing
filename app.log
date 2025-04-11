@@ -12,3 +12,68 @@ NameError: name 'render_project_management' is not defined
     render_project_management()
 NameError: name 'render_project_management' is not defined
 
+2025-04-12 00:36:57,002 - ui.app_v5 - ERROR - 依存モジュール診断エラー: name 'go' is not defined
+2025-04-12 00:36:57,026 - ui.app_v5 - ERROR - Traceback (most recent call last):
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui/app_v5.py", line 35, in <module>
+    import sailing_data_processor.validation.quality_metrics_integration as quality_metrics_integration
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics_integration.py", line 14, in <module>
+    from sailing_data_processor.validation.quality_metrics_improvements import QualityMetricsCalculatorExtension
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics_improvements.py", line 14, in <module>
+    class QualityMetricsCalculatorExtension:
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics_improvements.py", line 428, in QualityMetricsCalculatorExtension
+    def generate_quality_score_visualization(self) -> Tuple[go.Figure, go.Figure]:
+NameError: name 'go' is not defined
+
+2025-04-12 00:36:57,026 - ui.app_v5 - INFO - UIページのインポートを開始...
+2025-04-12 00:36:57,308 - ui.app_v5 - ERROR - モジュールの読み込みに失敗しました: cannot import name 'ProjectListView' from 'ui.components.project.project_list' (/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui/components/project/project_list.py)
+2025-04-12 00:51:05,229 - ui.app_v5 - INFO - システムパス: ['/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload', '/Users/koki_air/Library/Python/3.9/lib/python/site-packages', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages']
+2025-04-12 00:51:05,230 - ui.app_v5 - INFO - quality_metrics.py パス: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics.py
+2025-04-12 00:51:05,230 - ui.app_v5 - INFO - ファイルは存在するか: True
+2025-04-12 00:51:05,231 - ui.app_v5 - INFO - quality_metrics.py 先頭50文字: """
+sailing_data_processor.validation.quality_metr
+2025-04-12 00:51:05,251 - sailing_data_processor.validation.quality_metrics_integration - CRITICAL - すべてのインポート方法に失敗: name 'go' is not defined
+2025-04-12 00:51:05,251 - ui.app_v5 - INFO - Quality metrics integration モジュールのロードに成功
+2025-04-12 00:51:05,252 - ui.app_v5 - INFO - モジュール内容: ['Any', 'Dict', 'EnhancedQualityMetricsCalculator', 'List', 'Optional', 'QualityMetricsCalculator', 'QualityMetricsCalculatorExtension', 'Set', 'Tuple', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'datetime', 'logger', 'logging', 'np', 'os', 'pd', 'sys', 'timedelta']
+2025-04-12 00:51:05,252 - ui.app_v5 - INFO - QualityMetricsCalculator クラスのロードに成功
+2025-04-12 00:51:05,252 - ui.app_v5 - INFO - QualityMetricsCalculator クラスの内容: ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_determine_impact_level']
+2025-04-12 00:51:05,252 - ui.app_v5 - INFO - クラスタイプ: <class 'type'>
+2025-04-12 00:51:05,252 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics.py ✓
+2025-04-12 00:51:05,253 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics_improvements.py ✓
+2025-04-12 00:51:05,253 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics_integration.py ✓
+2025-04-12 00:51:05,253 - ui.app_v5 - INFO - ファイル存在確認: ui/pages/basic_project_management.py ✓
+2025-04-12 00:51:05,253 - ui.app_v5 - INFO - UIページのインポートを開始...
+2025-04-12 00:51:05,420 - ui.app_v5 - ERROR - モジュールの読み込みに失敗しました: cannot import name 'MetricsCalculator' from 'sailing_data_processor.validation.quality_metrics' (/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics.py)
+2025-04-12 00:51:37,546 - ui.app_v5 - INFO - システムパス: ['/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload', '/Users/koki_air/Library/Python/3.9/lib/python/site-packages', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages']
+2025-04-12 00:51:37,546 - ui.app_v5 - INFO - quality_metrics.py パス: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics.py
+2025-04-12 00:51:37,547 - ui.app_v5 - INFO - ファイルは存在するか: True
+2025-04-12 00:51:37,547 - ui.app_v5 - INFO - quality_metrics.py 先頭50文字: """
+sailing_data_processor.validation.quality_metr
+2025-04-12 00:51:37,550 - sailing_data_processor.validation.quality_metrics_integration - CRITICAL - すべてのインポート方法に失敗: name 'go' is not defined
+2025-04-12 00:51:37,551 - ui.app_v5 - INFO - Quality metrics integration モジュールのロードに成功
+2025-04-12 00:51:37,551 - ui.app_v5 - INFO - モジュール内容: ['Any', 'Dict', 'EnhancedQualityMetricsCalculator', 'List', 'Optional', 'QualityMetricsCalculator', 'QualityMetricsCalculatorExtension', 'Set', 'Tuple', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'datetime', 'logger', 'logging', 'np', 'os', 'pd', 'sys', 'timedelta']
+2025-04-12 00:51:37,551 - ui.app_v5 - INFO - QualityMetricsCalculator クラスのロードに成功
+2025-04-12 00:51:37,552 - ui.app_v5 - INFO - QualityMetricsCalculator クラスの内容: ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_determine_impact_level']
+2025-04-12 00:51:37,552 - ui.app_v5 - INFO - クラスタイプ: <class 'type'>
+2025-04-12 00:51:37,552 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics.py ✓
+2025-04-12 00:51:37,552 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics_improvements.py ✓
+2025-04-12 00:51:37,552 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics_integration.py ✓
+2025-04-12 00:51:37,552 - ui.app_v5 - INFO - ファイル存在確認: ui/pages/basic_project_management.py ✓
+2025-04-12 00:51:37,552 - ui.app_v5 - INFO - UIページのインポートを開始...
+2025-04-12 00:51:37,765 - ui.app_v5 - ERROR - モジュールの読み込みに失敗しました: cannot import name 'ProjectListView' from 'ui.components.project.project_list' (/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui/components/project/project_list.py)
+2025-04-12 00:52:23,412 - ui.app_v5 - INFO - システムパス: ['/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload', '/Users/koki_air/Library/Python/3.9/lib/python/site-packages', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages']
+2025-04-12 00:52:23,412 - ui.app_v5 - INFO - quality_metrics.py パス: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics.py
+2025-04-12 00:52:23,412 - ui.app_v5 - INFO - ファイルは存在するか: True
+2025-04-12 00:52:23,413 - ui.app_v5 - INFO - quality_metrics.py 先頭50文字: """
+sailing_data_processor.validation.quality_metr
+2025-04-12 00:52:23,417 - sailing_data_processor.validation.quality_metrics_integration - CRITICAL - すべてのインポート方法に失敗: name 'go' is not defined
+2025-04-12 00:52:23,417 - ui.app_v5 - INFO - Quality metrics integration モジュールのロードに成功
+2025-04-12 00:52:23,417 - ui.app_v5 - INFO - モジュール内容: ['Any', 'Dict', 'EnhancedQualityMetricsCalculator', 'List', 'Optional', 'QualityMetricsCalculator', 'QualityMetricsCalculatorExtension', 'Set', 'Tuple', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'datetime', 'logger', 'logging', 'np', 'os', 'pd', 'sys', 'timedelta']
+2025-04-12 00:52:23,417 - ui.app_v5 - INFO - QualityMetricsCalculator クラスのロードに成功
+2025-04-12 00:52:23,418 - ui.app_v5 - INFO - QualityMetricsCalculator クラスの内容: ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_determine_impact_level']
+2025-04-12 00:52:23,418 - ui.app_v5 - INFO - クラスタイプ: <class 'type'>
+2025-04-12 00:52:23,418 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics.py ✓
+2025-04-12 00:52:23,418 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics_improvements.py ✓
+2025-04-12 00:52:23,418 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics_integration.py ✓
+2025-04-12 00:52:23,418 - ui.app_v5 - INFO - ファイル存在確認: ui/pages/basic_project_management.py ✓
+2025-04-12 00:52:23,418 - ui.app_v5 - INFO - UIページのインポートを開始...
+2025-04-12 00:52:23,644 - ui.app_v5 - ERROR - モジュールの読み込みに失敗しました: cannot import name 'ProjectManagerView' from 'ui.components.project.project_manager' (/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui/components/project/project_manager.py)

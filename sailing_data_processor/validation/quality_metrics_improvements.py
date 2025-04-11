@@ -9,7 +9,13 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-from sailing_data_processor.data_model.container import GPSDataContainer
+# データモデルインポートエラーのリスクを回避するため、直接インポートは行わない
+# 代わりに動的インポートまたはタイプヒントのみの参照を使用
+try:
+    from sailing_data_processor.data_model.container import GPSDataContainer
+except ImportError:
+    # インポートが失敗した場合でもクラス自体の定義は可能に
+    pass
 
 class QualityMetricsCalculatorExtension:
     """
@@ -19,7 +25,7 @@ class QualityMetricsCalculatorExtension:
     
     def __init__(self, validation_results=None, data=None):
         """
-        初期化メソッド
+        初期化メソッド - 簡略化バージョン
         元のクラスに対応するダミーの初期化メソッド
         
         Parameters
@@ -29,16 +35,31 @@ class QualityMetricsCalculatorExtension:
         data : pd.DataFrame, optional
             検証されたデータフレーム
         """
-        # これは継承用のプレースホルダーで、直接インスタンス化して使用するためのものではありません
+        # 簡略化した初期化
         self.validation_results = validation_results if validation_results else []
         self.data = data if data is not None else pd.DataFrame()
-        self.problematic_indices = {"all": set()}
+        self.problematic_indices = {
+            "missing_data": [],
+            "out_of_range": [],
+            "duplicates": [],
+            "spatial_anomalies": [],
+            "temporal_anomalies": [],
+            "all": []
+        }
         
         # ルールカテゴリーの定義
         self.rule_categories = {
             "completeness": ["Required Columns Check", "No Null Values Check"],
             "accuracy": ["Value Range Check", "Spatial Consistency Check"],
             "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
+        }
+        
+        # 品質スコアを簡略化
+        self.quality_scores = {
+            "completeness": 100.0,
+            "accuracy": 100.0,
+            "consistency": 100.0,
+            "total": 100.0
         }
     
     def calculate_quality_scores(self) -> Dict[str, float]:
@@ -96,7 +117,7 @@ class QualityMetricsCalculatorExtension:
     
     def calculate_category_quality_scores(self) -> Dict[str, float]:
         """
-        カテゴリ別の品質スコアを計算。
+        カテゴリ別の品質スコアを計算。（基本バージョン）
         
         完全性（Completeness）: 欠損値や必須項目の充足度
         正確性（Accuracy）: 値の範囲や形式の正確さ
@@ -104,8 +125,8 @@ class QualityMetricsCalculatorExtension:
         
         Returns
         -------
-        Dict[str, Dict[str, float]]
-            カテゴリ別の詳細スコア
+        Dict[str, float]
+            カテゴリ別のスコア
         """
         total_records = len(self.data)
         if total_records == 0:
@@ -136,195 +157,11 @@ class QualityMetricsCalculatorExtension:
             "consistency": round(consistency_score, 1)
         }
     
-    def calculate_temporal_quality_scores(self) -> List[Dict[str, Any]]:
-        """
-        時間帯別の品質スコアを計算。
-        
-        1日を複数の時間帯に分割し、各時間帯の品質スコアを計算します。
-        
-        Returns
-        -------
-        List[Dict[str, Any]]
-            各時間帯の品質情報
-        """
-        if "timestamp" not in self.data.columns or len(self.data) == 0:
-            return []
-        
-        # タイムスタンプがdatetime型でない場合は変換
-        if not pd.api.types.is_datetime64_any_dtype(self.data["timestamp"]):
-            try:
-                timestamps = pd.to_datetime(self.data["timestamp"])
-            except:
-                return []
-        else:
-            timestamps = self.data["timestamp"]
-        
-        # 時間帯の定義（4時間ごと）
-        time_periods = [
-            {"period": "早朝", "start_time": "04:00:00", "end_time": "08:00:00"},
-            {"period": "午前", "start_time": "08:00:00", "end_time": "12:00:00"},
-            {"period": "午後", "start_time": "12:00:00", "end_time": "16:00:00"},
-            {"period": "夕方", "start_time": "16:00:00", "end_time": "20:00:00"},
-            {"period": "夜間", "start_time": "20:00:00", "end_time": "00:00:00"},
-            {"period": "深夜", "start_time": "00:00:00", "end_time": "04:00:00"}
-        ]
-        
-        results = []
-        
-        for period in time_periods:
-            # 時間範囲の開始と終了を解析
-            start_hour, start_minute, start_second = map(int, period["start_time"].split(":"))
-            end_hour, end_minute, end_second = map(int, period["end_time"].split(":"))
-            
-            # 時間帯に対応するインデックスを取得
-            period_indices = []
-            for i, ts in enumerate(timestamps):
-                hour = ts.hour
-                if start_hour <= end_hour:
-                    if start_hour <= hour < end_hour:
-                        period_indices.append(i)
-                else:  # 夜間など、日付をまたぐ場合
-                    if hour >= start_hour or hour < end_hour:
-                        period_indices.append(i)
-            
-            # 該当時間帯のレコード数
-            total_count = len(period_indices)
-            
-            if total_count == 0:
-                continue  # この時間帯のデータがなければスキップ
-            
-            # 問題のあるレコード数
-            problem_count = len(set(period_indices).intersection(self.problematic_indices.get("all", set())))
-            
-            # 品質スコアの計算
-            quality_score = 100.0 if total_count == 0 else max(0, 100 - (problem_count * 100 / total_count))
-            
-            # 問題タイプの分布を計算
-            problem_type_distribution = self._calculate_problem_type_distribution_for_period(period_indices)
-            
-            results.append({
-                "period": period["period"],
-                "start_time": period["start_time"],
-                "end_time": period["end_time"],
-                "quality_score": round(quality_score, 1),
-                "problem_count": problem_count,
-                "total_count": total_count,
-                "problem_distribution": problem_type_distribution
-            })
-        
-        return results
+    # 注: このメソッドは次の重複定義と統合されました
     
-    def calculate_spatial_quality_scores(self) -> List[Dict[str, Any]]:
-        """
-        空間グリッド別の品質スコアを計算。
-        
-        地図を格子状に分割し、各グリッドの品質スコアを計算します。
-        
-        Returns
-        -------
-        List[Dict[str, Any]]
-            各グリッドの品質情報
-        """
-        if "latitude" not in self.data.columns or "longitude" not in self.data.columns or len(self.data) == 0:
-            return []
-        
-        # 緯度と経度の範囲を確認
-        lat_min = self.data["latitude"].min()
-        lat_max = self.data["latitude"].max()
-        lon_min = self.data["longitude"].min()
-        lon_max = self.data["longitude"].max()
-        
-        # グリッドのサイズを計算（エリアを5x5に分割）
-        grid_rows = 5
-        grid_cols = 5
-        lat_step = (lat_max - lat_min) / grid_rows if lat_max > lat_min else 0.01
-        lon_step = (lon_max - lon_min) / grid_cols if lon_max > lon_min else 0.01
-        
-        # 小さすぎるステップを防止
-        lat_step = max(lat_step, 0.01)
-        lon_step = max(lon_step, 0.01)
-        
-        results = []
-        
-        for row in range(grid_rows):
-            for col in range(grid_cols):
-                # グリッドの境界を計算
-                min_lat = lat_min + row * lat_step
-                max_lat = min_lat + lat_step
-                min_lon = lon_min + col * lon_step
-                max_lon = min_lon + lon_step
-                
-                # グリッドIDを作成（例：A1, B2など）
-                grid_id = f"{chr(65 + row)}{col + 1}"
-                
-                # グリッド内のレコードのインデックスを特定
-                grid_indices = []
-                for i, (lat, lon) in enumerate(zip(self.data["latitude"], self.data["longitude"])):
-                    if min_lat <= lat < max_lat and min_lon <= lon < max_lon:
-                        grid_indices.append(i)
-                
-                # 該当グリッドのレコード数
-                total_count = len(grid_indices)
-                
-                if total_count == 0:
-                    continue  # このグリッドにデータがなければスキップ
-                
-                # 問題のあるレコード数
-                problem_count = len(set(grid_indices).intersection(self.problematic_indices.get("all", set())))
-                
-                # 品質スコアの計算
-                quality_score = 100.0 if total_count == 0 else max(0, 100 - (problem_count * 100 / total_count))
-                
-                # 問題タイプの分布を計算
-                problem_type_distribution = self._calculate_problem_type_distribution_for_period(grid_indices)
-                
-                results.append({
-                    "grid_id": grid_id,
-                    "center": [(min_lat + max_lat) / 2, (min_lon + max_lon) / 2],
-                    "bounds": {
-                        "min_lat": min_lat,
-                        "max_lat": max_lat,
-                        "min_lon": min_lon,
-                        "max_lon": max_lon
-                    },
-                    "quality_score": round(quality_score, 1),
-                    "problem_count": problem_count,
-                    "total_count": total_count,
-                    "problem_distribution": problem_type_distribution
-                })
-        
-        return results
+    # 注: このメソッドは次の重複定義と統合されました
     
-    def _calculate_problem_type_distribution_for_period(self, period_indices: List[int]) -> Dict[str, int]:
-        """
-        特定の期間における問題タイプの分布を計算
-
-        Parameters
-        ----------
-        period_indices : List[int]
-            期間内のレコードインデックス
-
-        Returns
-        -------
-        Dict[str, int]
-            問題タイプ別のカウント
-        """
-        problem_type_counts = {
-            "missing_data": 0,
-            "out_of_range": 0,
-            "duplicates": 0,
-            "spatial_anomalies": 0,
-            "temporal_anomalies": 0
-        }
-        
-        # 期間内の各問題タイプのカウントを計算
-        for problem_type, indices in self.problematic_indices.items():
-            if problem_type != "all":
-                # 期間内のインデックスと問題タイプのインデックスの交差を計算
-                intersection = set(period_indices).intersection(set(indices))
-                problem_type_counts[problem_type] = len(intersection)
-        
-        return problem_type_counts
+    # このメソッドは重複しているため、コードの後半の定義のみを使用します
     
     def calculate_temporal_quality_scores(self) -> List[Dict[str, Any]]:
         """
@@ -518,16 +355,16 @@ class QualityMetricsCalculatorExtension:
             print(f"空間的な品質スコア計算中にエラー: {e}")
             return []
             
-    def calculate_category_quality_scores(self) -> Dict[str, Dict[str, float]]:
+    def calculate_category_quality_scores_detailed(self) -> Dict[str, Dict[str, Any]]:
         """
-        カテゴリ別の品質スコアを計算。
+        カテゴリ別の詳細な品質スコアを計算。
         
         各品質カテゴリ（完全性、正確性、一貫性）の詳細なスコアと問題情報を計算します。
         カテゴリごとの細分化された問題タイプやその影響範囲も含みます。
         
         Returns
         -------
-        Dict[str, Dict[str, float]]
+        Dict[str, Dict[str, Any]]
             カテゴリ別の詳細スコア
         """
         category_scores = {}

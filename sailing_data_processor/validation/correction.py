@@ -14,7 +14,7 @@ from copy import deepcopy
 from sailing_data_processor.data_model.container import GPSDataContainer
 from sailing_data_processor.validation.data_validator import DataValidator
 from sailing_data_processor.validation.data_cleaner import FixProposal, DataCleaner
-from sailing_data_processor.validation.quality_metrics import MetricsCalculator
+from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator as MetricsCalculator
 
 
 class CorrectionProcessor:
