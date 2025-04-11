@@ -69,6 +69,7 @@ def create_navigation(logo_path: Optional[str] = None, mobile_responsive: bool =
         # ナビゲーション項目
         nav_items = {
             "マップビュー": {"icon": "map-marker-alt", "desc": "GPSデータの地図表示", "badge": None},
+            "プロジェクト管理": {"icon": "project-diagram", "desc": "プロジェクトの作成・管理", "badge": None},
             "データ管理": {"icon": "database", "desc": "データのインポート・エクスポート", 
                       "badge": len(st.session_state.get('boats_data', {})) if st.session_state.get('boats_data') else None},
             "パフォーマンス分析": {"icon": "chart-line", "desc": "速度・風向の分析", "badge": None},
@@ -200,6 +201,7 @@ def create_navigation(logo_path: Optional[str] = None, mobile_responsive: bool =
         
         mobile_nav_items = {
             "マップビュー": "map-marker-alt",
+            "プロジェクト管理": "project-diagram",
             "データ管理": "database",
             "パフォーマンス分析": "chart-line",
             "設定": "cog"

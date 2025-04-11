@@ -3432,3 +3432,7 @@ class QualityMetricsCalculator:
                 issue_data["description"] = f"{issue_data['issue_count']}個の問題: " + ", ".join(issue_data["issues"])
         
         return record_issues
+
+# MetricsCalculatorという名前でQualityMetricsCalculatorをエクスポート
+# これはインポート互換性のために追加されています
+MetricsCalculator = QualityMetricsCalculator
