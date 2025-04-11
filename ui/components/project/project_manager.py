@@ -16,7 +16,8 @@ import uuid
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../..')))
 
 # 自作モジュールのインポート
-from sailing_data_processor.project.project_manager import ProjectManager, Project
+from sailing_data_processor.project.project_manager import ProjectManager
+from sailing_data_processor.project.project_model import Project
 from ui.components.common.alerts import alert
 
 

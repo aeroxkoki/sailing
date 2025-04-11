@@ -13,7 +13,8 @@ from streamlit_folium import folium_static
 import plotly.express as px
 import plotly.graph_objects as go
 
-from sailing_data_processor.project.project_manager import ProjectManager, Session
+from sailing_data_processor.project.project_manager import ProjectManager
+from sailing_data_processor.project.project_model import Session
 from sailing_data_processor.project.session_manager import SessionManager
 from ui.components.common.card import card
 
