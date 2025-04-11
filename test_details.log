@@ -1,0 +1,27 @@
+2025-04-12 01:50:27,973 - sailing_test - INFO - ======== テスト環境情報 ========
+2025-04-12 01:50:27,976 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
+2025-04-12 01:50:27,977 - sailing_test - INFO - Python version: 3.9.6
+2025-04-12 01:50:27,977 - sailing_test - INFO - Hostname: MacBook-Air-2.local
+2025-04-12 01:50:27,977 - sailing_test - DEBUG - Python path: [
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload",
+  "/Users/koki_air/Library/Python/3.9/lib/python/site-packages",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
+]
+2025-04-12 01:50:27,977 - sailing_test - DEBUG - Environment variables:
+2025-04-12 01:50:27,978 - sailing_test - DEBUG -   PATH: /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
+2025-04-12 01:50:27,978 - sailing_test - INFO - ======== テスト開始 ========
+2025-04-12 01:50:27,979 - sailing_test - INFO - テスト開始: test_predict_wind_field
+2025-04-12 01:50:28,418 - sailing_test - INFO - テスト終了: test_predict_wind_field
+2025-04-12 01:50:28,436 - sailing_test - INFO - テスト開始: test_spatial_consistency
+2025-04-12 01:50:28,467 - sailing_test - INFO - テスト終了: test_spatial_consistency
+2025-04-12 01:50:28,471 - sailing_test - INFO - テスト開始: test_update_with_boat_data
+2025-04-12 01:50:28,524 - sailing_test - INFO - テスト終了: test_update_with_boat_data
+2025-04-12 01:50:28,525 - sailing_test - INFO - ======== テスト終了 ========
