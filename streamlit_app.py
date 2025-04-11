@@ -145,14 +145,19 @@ try:
         
         # モジュールをロード
         module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
         
         # グローバル名前空間にモジュールを追加
         import sys
         sys.modules["ui.app_v5"] = module
         
-        # 通常のimportでも参照できるようにする
-        import ui.app_v5
+        try:
+            spec.loader.exec_module(module)
+            # 通常のimportでも参照できるようにする
+            import ui.app_v5
+        except SyntaxError as e:
+            st.error(f"ui.app_v5に構文エラーがあります: {e}")
+            st.code(traceback.format_exc())
+            raise
         
         logger.info("app_v5 モジュールのインポートに成功")
         st.success("app_v5 モジュールのインポートに成功しました")

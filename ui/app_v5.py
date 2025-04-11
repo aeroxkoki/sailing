@@ -149,10 +149,10 @@ try:
             logger.info(f"{module_name}のインポートに成功しました。")
             return module
         except Exception as e:
-            nonlocal last_error_trace  # グローバルの代わりにnonlocalを使用
+            global last_error_trace  # グローバル変数を使用
             error_msg = f"{module_name}のインポートに失敗: {e}"
             error_trace = traceback.format_exc()
-            last_error_trace = error_trace  # nonlocal変数に代入
+            last_error_trace = error_trace  # グローバル変数に代入
             logger.error(error_msg)
             logger.error(error_trace)
             st.error(error_msg)
@@ -177,8 +177,9 @@ try:
         raise ImportError("必要なモジュールのいずれかのインポートに失敗しました")
         
 except Exception as e:
+    global last_error_trace  # グローバル変数を使用するため宣言
     error_trace = traceback.format_exc()
-    last_error_trace = error_trace  # グローバル変数に直接代入（すでに定義済み）
+    last_error_trace = error_trace  # グローバル変数に代入
     logger.error(f"モジュールの読み込みに失敗しました: {e}")
     logger.error(error_trace)
     
