@@ -135,7 +135,25 @@ try:
     # app_v5モジュールのインポートをより詳細に
     logger.info("ui.app_v5 モジュールのインポートを試行中...")
     try:
+        # importlib.util で詳細な情報を得ながらインポート
+        import importlib.util
+        
+        # モジュールの仕様を取得
+        spec = importlib.util.find_spec("ui.app_v5")
+        if spec is None:
+            raise ImportError("モジュール仕様が取得できませんでした")
+        
+        # モジュールをロード
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        
+        # グローバル名前空間にモジュールを追加
+        import sys
+        sys.modules["ui.app_v5"] = module
+        
+        # 通常のimportでも参照できるようにする
         import ui.app_v5
+        
         logger.info("app_v5 モジュールのインポートに成功")
         st.success("app_v5 モジュールのインポートに成功しました")
         

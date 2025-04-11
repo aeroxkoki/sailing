@@ -18,9 +18,6 @@ import folium
 # プロジェクトのルートディレクトリをパスに追加
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-# エラー追跡用のグローバル変数
-last_error_trace = None
-
 # ロギング設定
 logging.basicConfig(
     level=logging.INFO,
@@ -31,6 +28,10 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
+# エラー追跡用のグローバル変数
+last_error_trace = None
+UI_MODULES_LOADED = False
 
 # 先に依存モジュールが正しくロードされているか確認
 try:
@@ -148,70 +149,19 @@ try:
             logger.info(f"{module_name}のインポートに成功しました。")
             return module
         except Exception as e:
-            # グローバル宣言は関数定義の直後でここでは不要（上で宣言済み）
+            nonlocal last_error_trace  # グローバルの代わりにnonlocalを使用
             error_msg = f"{module_name}のインポートに失敗: {e}"
             error_trace = traceback.format_exc()
-            # グローバル変数への代入
-            global last_error_trace
-            last_error_trace = error_trace
+            last_error_trace = error_trace  # nonlocal変数に代入
             logger.error(error_msg)
             logger.error(error_trace)
             st.error(error_msg)
             return None
     
-    # 段階的にモジュールをインポート - 直接インポートを試みてより詳細なエラー情報を取得
-    try:
-        logger.info("basic_project_managementモジュールのインポートを試みます...")
-        # フルパスとモジュール名の詳細をログに記録
-        module_path = os.path.join(os.path.dirname(__file__), 'pages', 'basic_project_management.py')
-        logger.info(f"モジュールパス: {module_path}, 存在: {os.path.exists(module_path)}")
-        
-        # 通常のインポートを試す
-        import ui.pages.basic_project_management
-        basic_project_management = ui.pages.basic_project_management
-        logger.info(f"basic_project_managementモジュールの内容: {dir(basic_project_management)}")
-        logger.info("basic_project_managementモジュールのインポートに成功しました")
-    except Exception as e:
-        logger.error(f"basic_project_managementモジュールのインポートに失敗: {e}")
-        logger.error(traceback.format_exc())
-        global last_error_trace
-        last_error_trace = traceback.format_exc()
-        st.error(f"basic_project_managementモジュールのインポートに失敗: {e}")
-        basic_project_management = None
-        
-    try:
-        logger.info("data_validationモジュールのインポートを試みます...")
-        module_path = os.path.join(os.path.dirname(__file__), 'pages', 'data_validation.py')
-        logger.info(f"モジュールパス: {module_path}, 存在: {os.path.exists(module_path)}")
-        
-        import ui.pages.data_validation
-        data_validation = ui.pages.data_validation
-        logger.info("data_validationモジュールのインポートに成功しました")
-    except Exception as e:
-        logger.error(f"data_validationモジュールのインポートに失敗: {e}")
-        logger.error(traceback.format_exc())
-        if 'last_error_trace' not in globals() or last_error_trace is None:
-            global last_error_trace
-            last_error_trace = traceback.format_exc()
-        st.error(f"data_validationモジュールのインポートに失敗: {e}")
-        data_validation = None
-        
-    try:
-        logger.info("session_managementモジュールのインポートを試みます...")
-        module_path = os.path.join(os.path.dirname(__file__), 'pages', 'session_management.py')
-        logger.info(f"モジュールパス: {module_path}, 存在: {os.path.exists(module_path)}")
-        
-        import ui.pages.session_management
-        session_management = ui.pages.session_management
-        logger.info("session_managementモジュールのインポートに成功しました")
-    except Exception as e:
-        logger.error(f"session_managementモジュールのインポートに失敗: {e}")
-        logger.error(traceback.format_exc())
-        if 'last_error_trace' not in globals() or last_error_trace is None:
-            global last_error_trace
-            last_error_trace = traceback.format_exc()
-        st.error(f"session_managementモジュールのインポートに失敗: {e}")
-        session_management = None
+    # 段階的にモジュールをインポート
+    basic_project_management = import_with_detailed_error('ui.pages.basic_project_management', '基本プロジェクト管理')
+    data_validation = import_with_detailed_error('ui.pages.data_validation', 'データ検証')
+    session_management = import_with_detailed_error('ui.pages.session_management', 'セッション管理')
     
     # インポートが成功したかチェック
     if basic_project_management and data_validation and session_management:
@@ -227,11 +177,10 @@ try:
         raise ImportError("必要なモジュールのいずれかのインポートに失敗しました")
         
 except Exception as e:
-    # グローバル変数を使用する前にグローバル宣言（こちらも修正）
     error_trace = traceback.format_exc()
+    last_error_trace = error_trace  # グローバル変数に直接代入（すでに定義済み）
     logger.error(f"モジュールの読み込みに失敗しました: {e}")
     logger.error(error_trace)
-    UI_MODULES_LOADED = False
     
     # インポートが失敗した場合のダミー関数を定義
     def dummy_render():
@@ -272,11 +221,11 @@ try:
     if not UI_MODULES_LOADED:
         st.error("アプリケーションモジュールの読み込みに失敗しました。")
         st.info("診断モード: ロード中に発生したエラーのトレースを表示します。")
-        st.warning("解決策: MetricsCalculatorのインポートエラーが発生しています。モジュールパス設定を確認してください。")
+        st.warning("解決策: モジュールパス設定やインポートの問題を確認してください。")
         
         # エラーの詳細を表示
         with st.expander("エラーの詳細", expanded=True):
-            if 'last_error_trace' in globals():
+            if last_error_trace:
                 st.code(last_error_trace)
             else:
                 st.code(traceback.format_exc())
@@ -372,11 +321,11 @@ try:
         
         # ヘルプページにバージョン情報とリリースノートを追加
         st.subheader("バージョン情報")
-        st.info("セーリング戦略分析システム v1.0.0 (2023年4月)")
+        st.info("セーリング戦略分析システム v1.0.0 (2025年4月)")
         
         with st.expander("リリースノート"):
             st.markdown("""
-            ### v1.0.0 (2023年4月9日)
+            ### v1.0.0 (2025年4月9日)
             
             - 初期リリース
             - 基本的なプロジェクト管理機能
