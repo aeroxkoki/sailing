@@ -18,6 +18,9 @@ import folium
 # プロジェクトのルートディレクトリをパスに追加
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+# エラー追跡用のグローバル変数
+last_error_trace = None
+
 # ロギング設定
 logging.basicConfig(
     level=logging.INFO,
@@ -132,22 +135,52 @@ try:
     # インポート順序を変更して問題を回避
     logger.info("UIページのインポートを開始...")
     
-    # 明示的に基本モジュールをインポート
-    import ui.pages.basic_project_management
-    import ui.pages.data_validation
-    import ui.pages.session_management
+    # パス情報を記録（デバッグ用）
+    logger.info(f"UI pages パス: {os.path.join(os.path.dirname(__file__), 'pages')}")
+    logger.info(f"基本プロジェクト管理ファイルパス: {os.path.join(os.path.dirname(__file__), 'pages', 'basic_project_management.py')}")
+    logger.info(f"ファイルは存在するか: {os.path.exists(os.path.join(os.path.dirname(__file__), 'pages', 'basic_project_management.py'))}")
     
-    # 実際の関数をインポート
-    from ui.pages.basic_project_management import render_page as render_project_management
-    from ui.pages.data_validation import render_page as render_data_validation
-    from ui.pages.session_management import render_page as render_session_management
+    # スタックトレースを取得するためのヘルパー関数
+    def import_with_detailed_error(module_path, module_name):
+        try:
+            logger.info(f"{module_name}のインポートを試みます...")
+            module = __import__(module_path, fromlist=[''])
+            logger.info(f"{module_name}のインポートに成功しました。")
+            return module
+        except Exception as e:
+            global last_error_trace
+            error_msg = f"{module_name}のインポートに失敗: {e}"
+            error_trace = traceback.format_exc()
+            last_error_trace = error_trace
+            logger.error(error_msg)
+            logger.error(error_trace)
+            st.error(error_msg)
+            return None
     
-    # 追加のインポートを必要に応じて行う
-    logger.info("UI モジュールの読み込みに成功しました。")
-    UI_MODULES_LOADED = True
-except ImportError as e:
+    # 段階的にモジュールをインポート
+    basic_project_management = import_with_detailed_error('ui.pages.basic_project_management', '基本プロジェクト管理')
+    data_validation = import_with_detailed_error('ui.pages.data_validation', 'データ検証')
+    session_management = import_with_detailed_error('ui.pages.session_management', 'セッション管理')
+    
+    # インポートが成功したかチェック
+    if basic_project_management and data_validation and session_management:
+        # 実際の関数をインポート
+        render_project_management = basic_project_management.render_page
+        render_data_validation = data_validation.render_page
+        render_session_management = session_management.render_page
+        
+        # 追加のインポートを必要に応じて行う
+        logger.info("UI モジュールの読み込みに成功しました。")
+        UI_MODULES_LOADED = True
+    else:
+        raise ImportError("必要なモジュールのいずれかのインポートに失敗しました")
+        
+except Exception as e:
+    global last_error_trace
+    error_trace = traceback.format_exc()
+    last_error_trace = error_trace
     logger.error(f"モジュールの読み込みに失敗しました: {e}")
-    traceback.print_exc()
+    logger.error(error_trace)
     UI_MODULES_LOADED = False
     
     # インポートが失敗した場合のダミー関数を定義
@@ -193,7 +226,36 @@ try:
         
         # エラーの詳細を表示
         with st.expander("エラーの詳細", expanded=True):
-            st.code(traceback.format_exc())
+            if 'last_error_trace' in globals():
+                st.code(last_error_trace)
+            else:
+                st.code(traceback.format_exc())
+            
+            # ファイルの存在確認結果を表示
+            st.subheader("モジュールパス確認")
+            pages_dir = os.path.join(os.path.dirname(__file__), 'pages')
+            files_to_check = [
+                'basic_project_management.py',
+                'data_validation.py',
+                'session_management.py'
+            ]
+            
+            st.write(f"UIページディレクトリ: {pages_dir}")
+            st.write("ファイル存在確認:")
+            
+            for file in files_to_check:
+                file_path = os.path.join(pages_dir, file)
+                exists = os.path.exists(file_path)
+                status = "✅ 存在します" if exists else "❌ 見つかりません"
+                st.write(f" - {file}: {status}")
+                
+            # プロジェクトマネージャーのインポートを試みる
+            try:
+                from ui.components.project.project_manager import initialize_project_manager
+                st.success("プロジェクトマネージャーコンポーネントのインポートに成功しました")
+            except Exception as e:
+                st.error(f"プロジェクトマネージャーコンポーネントのインポートに失敗: {e}")
+                st.code(traceback.format_exc())
             
         # トラブルシューティング情報
         with st.expander("トラブルシューティング", expanded=True):
