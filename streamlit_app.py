@@ -157,6 +157,17 @@ try:
         except SyntaxError as e:
             st.error(f"ui.app_v5に構文エラーがあります: {e}")
             st.code(traceback.format_exc())
+            
+            # エラー位置のコードを表示
+            lineno = e.lineno
+            if lineno:
+                with open(app_v5_path, 'r', encoding='utf-8') as f:
+                    lines = f.readlines()
+                    start_line = max(0, lineno - 5)
+                    end_line = min(len(lines), lineno + 5)
+                    context = ''.join(lines[start_line:end_line])
+                    st.subheader(f"エラー箇所周辺のコード (行 {start_line+1} - {end_line}):")
+                    st.code(context, language="python")
             raise
         
         logger.info("app_v5 モジュールのインポートに成功")

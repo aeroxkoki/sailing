@@ -18,6 +18,9 @@ import folium
 # プロジェクトのルートディレクトリをパスに追加
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+# エラー追跡用のグローバル変数（宣言のみ）
+last_error_trace = None
+
 # ロギング設定
 logging.basicConfig(
     level=logging.INFO,
@@ -28,10 +31,6 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
-
-# エラー追跡用のグローバル変数
-last_error_trace = None
-UI_MODULES_LOADED = False
 
 # 先に依存モジュールが正しくロードされているか確認
 try:
@@ -149,10 +148,11 @@ try:
             logger.info(f"{module_name}のインポートに成功しました。")
             return module
         except Exception as e:
-            global last_error_trace  # グローバル変数を使用
             error_msg = f"{module_name}のインポートに失敗: {e}"
             error_trace = traceback.format_exc()
-            last_error_trace = error_trace  # グローバル変数に代入
+            # グローバル変数はファイルの最上部で宣言済みなのでここではglobal宣言不要
+            global last_error_trace
+            last_error_trace = error_trace
             logger.error(error_msg)
             logger.error(error_trace)
             st.error(error_msg)
@@ -177,11 +177,14 @@ try:
         raise ImportError("必要なモジュールのいずれかのインポートに失敗しました")
         
 except Exception as e:
-    global last_error_trace  # グローバル変数を使用するため宣言
+    # エラートレースをグローバル変数に保存
     error_trace = traceback.format_exc()
-    last_error_trace = error_trace  # グローバル変数に代入
+    # グローバル変数への代入（ファイルの先頭で宣言済み）
+    global last_error_trace
+    last_error_trace = error_trace
     logger.error(f"モジュールの読み込みに失敗しました: {e}")
     logger.error(error_trace)
+    UI_MODULES_LOADED = False
     
     # インポートが失敗した場合のダミー関数を定義
     def dummy_render():
@@ -222,11 +225,11 @@ try:
     if not UI_MODULES_LOADED:
         st.error("アプリケーションモジュールの読み込みに失敗しました。")
         st.info("診断モード: ロード中に発生したエラーのトレースを表示します。")
-        st.warning("解決策: モジュールパス設定やインポートの問題を確認してください。")
+        st.warning("解決策: MetricsCalculatorのインポートエラーが発生しています。モジュールパス設定を確認してください。")
         
         # エラーの詳細を表示
         with st.expander("エラーの詳細", expanded=True):
-            if last_error_trace:
+            if 'last_error_trace' in globals():
                 st.code(last_error_trace)
             else:
                 st.code(traceback.format_exc())
@@ -322,11 +325,11 @@ try:
         
         # ヘルプページにバージョン情報とリリースノートを追加
         st.subheader("バージョン情報")
-        st.info("セーリング戦略分析システム v1.0.0 (2025年4月)")
+        st.info("セーリング戦略分析システム v1.0.0 (2023年4月)")
         
         with st.expander("リリースノート"):
             st.markdown("""
-            ### v1.0.0 (2025年4月9日)
+            ### v1.0.0 (2023年4月9日)
             
             - 初期リリース
             - 基本的なプロジェクト管理機能
