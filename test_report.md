@@ -1,3 +1,15 @@
+# セーリング戦略分析システム テスト結果
+実行日時: Sat Apr 12 01:16:42 JST 2025
+
+## テスト集計
+- 総テスト数: 5
+- 成功: 3
+- 失敗: 2
+- 成功率: 60%
+
+## エラー詳細
+エラーログ内容:
+```
 テスト実行日時: Sat Apr 12 01:16:21 JST 2025
 プロジェクトルート: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer
 環境情報:
@@ -60,3 +72,4 @@ Ran 7 tests in 0.035s
 FAILED (failures=3)
 WindFieldFusionSystem モジュールのスタンドアロンテストを実行します...
 ===============================
+```

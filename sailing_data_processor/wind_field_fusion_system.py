@@ -275,6 +275,83 @@ class WindFieldFusionSystem:
             if 'original_latitude' in point and 'original_longitude' in point:
                 point['latitude'] = point['original_latitude']
                 point['longitude'] = point['original_longitude']
+                
+    def _create_simple_wind_field(self, data_points: List[Dict[str, Any]], 
+                                 grid_resolution: int, 
+                                 timestamp: datetime) -> None:
+        """
+        最も単純な方法で風の場を生成するフォールバックメソッド
+        他の補間方法が失敗した場合の最終手段として使用
+        
+        Parameters:
+        -----------
+        data_points : List[Dict]
+            風データポイントのリスト
+        grid_resolution : int
+            出力グリッド解像度
+        timestamp : datetime
+            風の場のタイムスタンプ
+        """
+        if not data_points:
+            self.current_wind_field = None
+            return
+            
+        # データポイントから緯度・経度の範囲を取得
+        lats = [point['latitude'] for point in data_points]
+        lons = [point['longitude'] for point in data_points]
+        
+        min_lat, max_lat = min(lats), max(lats)
+        min_lon, max_lon = min(lons), max(lons)
+        
+        # 範囲が狭すぎる場合は人工的に広げる
+        if abs(max_lat - min_lat) < 0.005:
+            padding = (0.005 - abs(max_lat - min_lat)) / 2
+            min_lat -= padding
+            max_lat += padding
+            
+        if abs(max_lon - min_lon) < 0.005:
+            padding = (0.005 - abs(max_lon - min_lon)) / 2
+            min_lon -= padding
+            max_lon += padding
+        
+        # グリッドの作成
+        lat_range = np.linspace(min_lat, max_lat, grid_resolution)
+        lon_range = np.linspace(min_lon, max_lon, grid_resolution)
+        grid_lats, grid_lons = np.meshgrid(lat_range, lon_range)
+        
+        # 風向風速の平均値を計算（風向はベクトル平均）
+        sin_sum = 0
+        cos_sum = 0
+        speed_sum = 0
+        
+        for point in data_points:
+            dir_rad = math.radians(point['wind_direction'])
+            sin_sum += math.sin(dir_rad)
+            cos_sum += math.cos(dir_rad)
+            speed_sum += point['wind_speed']
+        
+        # 平均風向
+        avg_dir = math.degrees(math.atan2(sin_sum, cos_sum)) % 360
+        
+        # 平均風速
+        avg_speed = speed_sum / len(data_points)
+        
+        # 全グリッドに同じ値を設定
+        wind_dirs = np.full_like(grid_lats, avg_dir)
+        wind_speeds = np.full_like(grid_lats, avg_speed)
+        
+        # 信頼度は低めに設定
+        confidence = np.full_like(grid_lats, 0.4)
+        
+        # 風の場の設定
+        self.current_wind_field = {
+            'lat_grid': grid_lats,
+            'lon_grid': grid_lons,
+            'wind_direction': wind_dirs,
+            'wind_speed': wind_speeds,
+            'confidence': confidence,
+            'time': timestamp
+        }
     
     def fuse_wind_data(self):
         """
@@ -297,20 +374,33 @@ class WindFieldFusionSystem:
             if time_diff <= 1800:  # 30分 = 1800秒
                 recent_data.append(point)
         
+        # データポイントが少なすぎる場合は処理を中止
+        if len(recent_data) < 3:
+            warnings.warn("Not enough recent data points for fusion")
+            return
+        
         # grid_densityパラメータの設定
         grid_density = 20  # 20x20のグリッド
+        
+        # Qhull精度エラー回避のためのオプション
+        qhull_options = 'QJ'
         
         # 基本的にデータをスケーリング - このステップにより多くのQhull関連エラーを回避
         scaled_data = self._scale_data_points(recent_data)
         
-        # field_interpolatorを使用して風の場を生成 - 常にQJオプションを使用
+        # スケーリングに失敗した場合の対策
+        if not scaled_data:
+            warnings.warn("Data scaling failed")
+            return
+        
+        # field_interpolatorを使用して風の場を生成
         try:
             # まずidw方式で補間を試みる（最も安定した方法）
             self.current_wind_field = self.field_interpolator.interpolate_wind_field(
                 scaled_data, 
                 resolution=grid_density, 
                 method='idw',  # より安定した逆距離加重法を使用
-                qhull_options='QJ'  # Qhull精度エラー回避のためにQJオプションを常に追加
+                qhull_options=qhull_options  # Qhull精度エラー回避のためのオプション
             )
             
             # 風の場のタイムスタンプを設定
@@ -343,7 +433,7 @@ class WindFieldFusionSystem:
                     scaled_data, 
                     resolution=grid_density, 
                     method='nearest',
-                    qhull_options='QJ'  # Qhull精度エラー回避のためにQJオプションを追加
+                    qhull_options=qhull_options  # Qhull精度エラー回避のためのオプション
                 )
                 
                 # 風の場のタイムスタンプを設定
@@ -368,11 +458,17 @@ class WindFieldFusionSystem:
                     # 元の座標を復元
                     self._restore_original_coordinates(scaled_data)
             except Exception as e2:
+                # 最後の手段として最も単純な補間手法を試みる
                 warnings.warn(f"Wind field interpolation retry also failed: {e2}")
-                self.current_wind_field = None
+                try:
+                    # 単純な平均に基づく風の場の生成
+                    self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                except Exception as e3:
+                    warnings.warn(f"Simple wind field creation also failed: {e3}")
+                    self.current_wind_field = None
         
         # 風の移動モデルを更新
-        if len(recent_data) >= self.propagation_model.min_data_points:
+        if self.current_wind_field and len(recent_data) >= self.propagation_model.min_data_points:
             self.propagation_model.estimate_propagation_vector(recent_data)
     
     def _haversine_distance(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
@@ -570,7 +666,13 @@ class WindFieldFusionSystem:
         
         # 予測時間が現在に近い場合（5分以内）は補間器を使用
         if abs(time_diff_seconds) <= 300:
-            result = self.field_interpolator.interpolate_wind_field(target_time, grid_resolution)
+            # Qhull精度エラー回避のためのオプション
+            qhull_options = 'QJ'
+            result = self.field_interpolator.interpolate_wind_field(
+                target_time, 
+                resolution=grid_resolution,
+                qhull_options=qhull_options
+            )
         else:
             # 長期予測の場合は風の移動モデルも活用
             

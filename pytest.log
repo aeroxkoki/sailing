@@ -1,0 +1,6 @@
+DEBUG    matplotlib:__init__.py:337 matplotlib data path: /Users/koki_air/Library/Python/3.9/lib/python/site-packages/matplotlib/mpl-data
+DEBUG    matplotlib:__init__.py:337 CONFIGDIR=/Users/koki_air/.matplotlib
+DEBUG    matplotlib:__init__.py:1498 interactive is False
+DEBUG    matplotlib:__init__.py:1499 platform is darwin
+DEBUG    matplotlib:__init__.py:337 CACHEDIR=/Users/koki_air/.matplotlib
+DEBUG    matplotlib.font_manager:font_manager.py:1574 Using fontManager instance from /Users/koki_air/.matplotlib/fontlist-v330.json

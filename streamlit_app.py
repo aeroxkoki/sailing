@@ -60,6 +60,25 @@ if not os.path.exists(validation_dir):
     except Exception as e:
         st.error(f"validation ディレクトリの作成に失敗しました: {e}")
 
+# UIコンポーネントの存在確認も追加
+ui_components_dir = os.path.join(current_dir, 'ui', 'components')
+if os.path.exists(ui_components_dir):
+    st.success(f"ui/components ディレクトリが見つかりました")
+else:
+    st.error(f"ui/components ディレクトリが見つかりません: {ui_components_dir}")
+
+# pagesディレクトリも確認
+ui_pages_dir = os.path.join(current_dir, 'ui', 'pages')
+if os.path.exists(ui_pages_dir):
+    st.success(f"ui/pages ディレクトリが見つかりました")
+    # 内容も表示
+    if os.listdir(ui_pages_dir):
+        st.write("pages ディレクトリの内容:")
+        for item in os.listdir(ui_pages_dir):
+            st.write(f"- {item}")
+else:
+    st.error(f"ui/pages ディレクトリが見つかりません: {ui_pages_dir}")
+
 # 必須モジュールファイルの存在確認
 required_files = [
     os.path.join('sailing_data_processor', 'validation', 'quality_metrics.py'),
@@ -99,7 +118,44 @@ try:
         st.error(f"QualityMetricsCalculator クラスのインポートに失敗しました: {e}")
         
     # メインアプリを実行（ページ設定は既に行われているため直接インポート）
-    import ui.app_v5
+    try:
+        logger.info("ui.app_v5 モジュールのインポートを開始")
+        st.info("メインアプリケーションを読み込んでいます...")
+        
+        # まずapp_v5の存在を確認
+        app_path = os.path.join(current_dir, 'ui', 'app_v5.py')
+        if os.path.exists(app_path):
+            st.success(f"app_v5.py ファイルが見つかりました")
+            
+            # モジュールとしてインポート
+            try:
+                # 内容の一部を表示してデバッグに役立てる
+                with open(app_path, 'r', encoding='utf-8') as f:
+                    first_50_lines = "".join([f.readline() for _ in range(20)])
+                    with st.expander("app_v5.py の先頭部分", expanded=False):
+                        st.code(first_50_lines, language="python")
+                
+                # インポート前にUI関連パスの設定を確認
+                st.write("インポート前の設定確認:")
+                st.write(f"- ui ディレクトリパス: {ui_path}")
+                st.write(f"- sys.path 内の ui 関連パス: {[p for p in sys.path if 'ui' in p]}")
+                
+                import ui.app_v5
+                st.success("app_v5 モジュールのインポートに成功しました")
+                
+                # UI関連のコンポーネントが正しく読み込まれたか確認
+                with st.expander("UIモジュール内容確認", expanded=False):
+                    st.write("ui.app_v5 モジュール内容:")
+                    ui_items = dir(ui.app_v5)
+                    st.write(ui_items)
+            except Exception as module_error:
+                st.error(f"モジュール読み込み中のエラー: {module_error}")
+                st.code(traceback.format_exc())
+        else:
+            st.error(f"app_v5.py ファイルが見つかりません: {app_path}")
+    except Exception as e:
+        st.error(f"app_v5 モジュールのインポートに失敗: {e}")
+        st.code(traceback.format_exc())
     
 except Exception as e:
     st.error(f"アプリケーションの読み込み中にエラーが発生しました: {e}")
