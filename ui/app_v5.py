@@ -148,9 +148,11 @@ try:
             logger.info(f"{module_name}のインポートに成功しました。")
             return module
         except Exception as e:
-            global last_error_trace
+            # グローバル宣言は関数定義の直後でここでは不要（上で宣言済み）
             error_msg = f"{module_name}のインポートに失敗: {e}"
             error_trace = traceback.format_exc()
+            # グローバル変数への代入
+            global last_error_trace
             last_error_trace = error_trace
             logger.error(error_msg)
             logger.error(error_trace)
@@ -176,9 +178,8 @@ try:
         raise ImportError("必要なモジュールのいずれかのインポートに失敗しました")
         
 except Exception as e:
-    global last_error_trace
+    # グローバル変数を使用する前にグローバル宣言（こちらも修正）
     error_trace = traceback.format_exc()
-    last_error_trace = error_trace
     logger.error(f"モジュールの読み込みに失敗しました: {e}")
     logger.error(error_trace)
     UI_MODULES_LOADED = False

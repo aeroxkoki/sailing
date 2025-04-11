@@ -10,6 +10,7 @@ import sys
 import streamlit as st
 import traceback
 import importlib
+import logging
 
 # プロジェクトのルートディレクトリをパスに追加
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -22,7 +23,24 @@ ui_path = os.path.join(current_dir, 'ui')
 sys.path.insert(0, sailing_processor_path)
 sys.path.insert(0, ui_path)
 
-# インポートパスが正しく設定されているか確認（デバッグ用）
+# ロギングの設定（ファイルに書き込まれてデバッグに役立つ）
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(os.path.join(current_dir, "streamlit_cloud.log")),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# システム環境の記録（デバッグ用）
+logger.info(f"Python バージョン: {sys.version}")
+logger.info(f"実行パス: {sys.executable}")
+logger.info(f"作業ディレクトリ: {os.getcwd()}")
+logger.info(f"Python パス: {sys.path}")
+
+# ページ設定（app_v5.pyとの重複を避けるためここで一度だけ設定）
 st.set_page_config(
     page_title="セーリング戦略分析システム",
     page_icon="🌊",
@@ -80,9 +98,9 @@ try:
     except ImportError as e:
         st.error(f"QualityMetricsCalculator クラスのインポートに失敗しました: {e}")
         
-    # メインアプリを実行
-    from ui.app_v5 import *
-    # app_v5.pyのコードが自動的に実行されます
+    # メインアプリを実行（ページ設定は既に行われているため直接インポート）
+    import ui.app_v5
+    
 except Exception as e:
     st.error(f"アプリケーションの読み込み中にエラーが発生しました: {e}")
     st.code(traceback.format_exc())
