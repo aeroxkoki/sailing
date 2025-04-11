@@ -10,8 +10,13 @@ import numpy as np
 from datetime import datetime, timedelta
 import importlib
 
-from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
-from sailing_data_processor.validation.quality_metrics_improvements import QualityMetricsCalculatorExtension
+# 直接クラスをインポートする代わりにモジュール全体をインポート
+import sailing_data_processor.validation.quality_metrics as quality_metrics_module
+import sailing_data_processor.validation.quality_metrics_improvements as quality_metrics_improvements_module
+
+# クラスの参照を取得
+QualityMetricsCalculator = quality_metrics_module.QualityMetricsCalculator
+QualityMetricsCalculatorExtension = quality_metrics_improvements_module.QualityMetricsCalculatorExtension
 
 # QualityMetricsCalculatorの機能を拡張したEnhancedQualityMetricsCalculatorクラスを定義
 class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
@@ -43,6 +48,7 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
         
         # 拡張機能のオブジェクトを作成
         # 内部では使用せず、後で機能コピーのみに利用
+        # QualityMetricsCalculatorExtensionは初期化時に引数が必要ないよう修正
         self._extension = QualityMetricsCalculatorExtension()
         
         # 拡張クラスから機能をコピー

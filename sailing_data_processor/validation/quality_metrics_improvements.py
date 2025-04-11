@@ -17,6 +17,30 @@ class QualityMetricsCalculatorExtension:
     これは既存のQualityMetricsCalculatorに追加される新しいメソッドを含む
     """
     
+    def __init__(self, validation_results=None, data=None):
+        """
+        初期化メソッド
+        元のクラスに対応するダミーの初期化メソッド
+        
+        Parameters
+        ----------
+        validation_results : List[Dict[str, Any]], optional
+            DataValidatorから得られた検証結果
+        data : pd.DataFrame, optional
+            検証されたデータフレーム
+        """
+        # これは継承用のプレースホルダーで、直接インスタンス化して使用するためのものではありません
+        self.validation_results = validation_results if validation_results else []
+        self.data = data if data is not None else pd.DataFrame()
+        self.problematic_indices = {"all": set()}
+        
+        # ルールカテゴリーの定義
+        self.rule_categories = {
+            "completeness": ["Required Columns Check", "No Null Values Check"],
+            "accuracy": ["Value Range Check", "Spatial Consistency Check"],
+            "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
+        }
+    
     def calculate_quality_scores(self) -> Dict[str, float]:
         """
         データ品質スコアを計算。
@@ -747,6 +771,29 @@ class QualityMetricsCalculatorExtension:
             return "#E67E22"  # オレンジ
         else:
             return "#E74C3C"  # 赤
+            
+    def _determine_impact_level(self, score: float) -> str:
+        """
+        品質スコアから影響レベルを決定する
+        
+        Parameters
+        ----------
+        score : float
+            品質スコア (0-100)
+            
+        Returns
+        -------
+        str
+            影響レベル
+        """
+        if score >= 90:
+            return "low"       # 低影響
+        elif score >= 75:
+            return "medium"    # 中程度の影響
+        elif score >= 50:
+            return "high"      # 高影響
+        else:
+            return "critical"  # 重大な影響
             
     def generate_spatial_quality_map(self) -> go.Figure:
         """

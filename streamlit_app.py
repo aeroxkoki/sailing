@@ -13,12 +13,15 @@ import streamlit as st
 current_dir = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, current_dir)
 
+# デバッグモードを有効化
+os.environ['STREAMLIT_DEBUG'] = 'true'
+
 # メインアプリケーションのインポートと実行
 try:
     from ui.app_v5 import *
     # app_v5.pyのコードが自動的に実行されます
 except Exception as e:
-    st.error(f"アプリケーションの読み込み中にエラーが発生しました: {e}")
+    st.error(f"アプリケーションの読み込み中にエラーが発生しました: {e}"\n    import traceback\n    st.code(traceback.format_exc()))
     st.info("開発者向け情報: このファイルはStreamlit Cloudデプロイ用のエントリーポイントです。")
     
     # 依存関係情報の表示（デバッグ用）

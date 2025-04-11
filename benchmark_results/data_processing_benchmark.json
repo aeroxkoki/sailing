@@ -1,0 +1,28 @@
+{
+  "timestamp": "2025-04-10T15:28:29.083633",
+  "data_points": 20000,
+  "iterations": 1,
+  "data_loading": {
+    "data_points": 20001,
+    "standard_load_time": 17.599971055984497,
+    "standard_memory_usage": 0.91796875,
+    "chunked_load_time": 18.840602159500122,
+    "chunked_memory_usage": 4.46875,
+    "speedup": 0.9341511968135237,
+    "memory_reduction": -3.8680851063829786
+  },
+  "anomaly_detection": {
+    "data_points": 20000,
+    "detection_time": 30.515576124191284,
+    "memory_usage": 4.1796875,
+    "raw_data": {
+      "data_points": 20000,
+      "detection_time": [
+        30.515576124191284
+      ],
+      "memory_usage": [
+        4.1796875
+      ]
+    }
+  }
+}

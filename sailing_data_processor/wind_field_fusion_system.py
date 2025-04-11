@@ -171,84 +171,94 @@ class WindFieldFusionSystem:
         if not data_points:
             return []
             
-        # 座標データの範囲を取得
-        lats = [p['latitude'] for p in data_points]
-        lons = [p['longitude'] for p in data_points]
-        winds = [p['wind_speed'] for p in data_points]
-        min_lat, max_lat = min(lats), max(lats)
-        min_lon, max_lon = min(lons), max(lons)
-        min_wind, max_wind = min(winds), max(winds)
+        # メモリ効率のため、必要なデータだけを抽出して事前に配列化
+        num_points = len(data_points)
+        lats = np.zeros(num_points, dtype=np.float32)
+        lons = np.zeros(num_points, dtype=np.float32)
+        winds = np.zeros(num_points, dtype=np.float32)
         
-        # スケーリング係数の計算（範囲が狭すぎる場合に対応）
+        # 一度にデータを抽出（ループで複数回アクセスするのを避ける）
+        for i, point in enumerate(data_points):
+            lats[i] = point['latitude']
+            lons[i] = point['longitude']
+            winds[i] = point['wind_speed']
+        
+        # NumPyの組み込み関数を使用して効率的に最小・最大値を計算
+        min_lat, max_lat = np.min(lats), np.max(lats)
+        min_lon, max_lon = np.min(lons), np.max(lons)
+        min_wind, max_wind = np.min(winds), np.max(winds)
+        
+        # 範囲の計算（一度だけ）
         lat_range = max_lat - min_lat
         lon_range = max_lon - min_lon
         wind_range = max_wind - min_wind
         
-        # データのコピーを作成して元のデータを保持
+        # 前もって結果配列を確保（メモリ効率向上）
         scaled_data = []
-        for point in data_points:
-            scaled_point = point.copy()
-            scaled_data.append(scaled_point)
         
         # 緯度・経度の範囲が狭すぎる場合は人工的に広げる
-        min_range = 0.005  # 約500mの最小範囲に拡大（安全マージンを増やす）
+        min_range = 0.005  # 約500mの最小範囲に拡大
         
-        # 必要に応じて範囲を確保し、より広いパディングを追加
+        # 必要に応じて範囲を確保（より効率的な計算）
         if lat_range < min_range:
-            lat_padding = (min_range - lat_range) / 2 + 0.001  # 追加のパディング
+            lat_padding = (min_range - lat_range) / 2 + 0.001
             min_lat -= lat_padding
             max_lat += lat_padding
             lat_range = min_range + 0.002  # パディング後の範囲更新
         
         if lon_range < min_range:
-            lon_padding = (min_range - lon_range) / 2 + 0.001  # 追加のパディング
+            lon_padding = (min_range - lon_range) / 2 + 0.001
             min_lon -= lon_padding
             max_lon += lon_padding
             lon_range = min_range + 0.002  # パディング後の範囲更新
         
         # 風速の最小範囲を確保
-        min_wind_range = 1.0  # 最小範囲を1.0に増加
+        min_wind_range = 1.0
         if wind_range < min_wind_range:
-            wind_padding = (min_wind_range - wind_range) / 2 + 0.2  # 追加のパディング
+            wind_padding = (min_wind_range - wind_range) / 2 + 0.2
             min_wind = max(0, min_wind - wind_padding)
             max_wind += wind_padding
             wind_range = min_wind_range + 0.4  # パディング後の範囲更新
         
-        # 範囲の一貫性確保のために統一スケール係数を使用
+        # スケール係数を一度だけ計算（ゼロ除算を回避）
         scale_lat = 1.0 / lat_range if lat_range > 0 else 1.0
         scale_lon = 1.0 / lon_range if lon_range > 0 else 1.0
         scale_wind = 1.0 / wind_range if wind_range > 0 else 1.0
         
-        # すべてのデータポイントをスケーリングと正規化
-        for point in scaled_data:
-            # 1. 正規化: 0-1の範囲に変換
-            norm_lat = (point['latitude'] - min_lat) * scale_lat
-            norm_lon = (point['longitude'] - min_lon) * scale_lon
-            norm_wind = (point['wind_speed'] - min_wind) * scale_wind
+        # ランダムジッター用に予めシード値を固定（再現性確保）
+        np.random.seed(42)
+        
+        # 一度にジッターランダム値を生成（ベクトル化）
+        jitter_lats = np.random.normal(0, 0.002, num_points)
+        jitter_lons = np.random.normal(0, 0.002, num_points)
+        jitter_winds = np.random.normal(0, 0.005, num_points)
+        
+        # データポイントのバッチ処理
+        for i, point in enumerate(data_points):
+            # ポイントデータを変更するのではなく、新しい辞書を作成
+            scaled_point = point.copy()
             
-            # 2. 微小なランダムノイズを追加 (QJオプションと同様の効果)
-            jitter_lat = 0.002  # 0.2%の緯度ジッター
-            jitter_lon = 0.002  # 0.2%の経度ジッター
-            jitter_wind = 0.005  # 0.5%の風速ジッター
+            # 正規化と同時にジッターを追加（計算を1回に統合）
+            norm_lat = (lats[i] - min_lat) * scale_lat + jitter_lats[i]
+            norm_lon = (lons[i] - min_lon) * scale_lon + jitter_lons[i]
+            norm_wind = (winds[i] - min_wind) * scale_wind + jitter_winds[i]
             
-            # スケールに合わせたジッターを追加
-            norm_lat += np.random.normal(0, jitter_lat)
-            norm_lon += np.random.normal(0, jitter_lon)
-            norm_wind += np.random.normal(0, jitter_wind)
+            # スケーリングした座標を設定（中間変数の再利用を最小化）
+            scaled_point['scaled_latitude'] = norm_lat
+            scaled_point['scaled_longitude'] = norm_lon
+            scaled_point['scaled_height'] = norm_wind
             
-            # 3. スケーリングした座標を設定
-            point['scaled_latitude'] = norm_lat
-            point['scaled_longitude'] = norm_lon
-            point['scaled_height'] = norm_wind
-            
-            # 元の値も保持（復元用）
-            point['original_latitude'] = point['latitude']
-            point['original_longitude'] = point['longitude']
+            # 元の値を保持
+            scaled_point['original_latitude'] = lats[i]
+            scaled_point['original_longitude'] = lons[i]
             
             # スケーリングされた値を使用
-            point['latitude'] = norm_lat
-            point['longitude'] = norm_lon
-            point['height'] = norm_wind
+            scaled_point['latitude'] = norm_lat
+            scaled_point['longitude'] = norm_lon
+            scaled_point['height'] = norm_wind
+            
+            # 結果リストに追加
+            scaled_data.append(scaled_point)
             
         return scaled_data
         

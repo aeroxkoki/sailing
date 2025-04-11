@@ -9,10 +9,20 @@ font = "sans serif"  # フォントファミリー
 maxUploadSize = 200  # 最大アップロードサイズ (MB)
 enableXsrfProtection = true  # XSRFプロテクション有効
 enableCORS = true  # CORS有効
+headless = true  # クラウド環境で必要
 
 [browser]
 gatherUsageStats = false  # 使用統計の収集を無効化
-serverAddress = "localhost"  # サーバーアドレス
+# Streamlit Cloudでは自動的に設定されるためコメントアウト
+# serverAddress = "localhost"  # サーバーアドレス 
 
 [logger]
 level = "info"  # ログレベル
+
+[client]
+showErrorDetails = true  # エラー詳細の表示（デバッグ用）
+
+[runner]
+# デバッグのためにメモリ制限を増やす
+magicEnabled = true  # 自動再実行を有効化
+fastReruns = true    # 高速再実行を有効化
