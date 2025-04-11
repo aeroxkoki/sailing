@@ -1,7 +1,7 @@
 """
 ui.components.project
 
-×í¸§¯È¡¢#nUI³óİüÍóÈ’Ğ›Y‹ÑÃ±ü¸
+Project management components for the sailing strategy analyzer UI.
 """
 
 from ui.components.project.project_list import ProjectListView
