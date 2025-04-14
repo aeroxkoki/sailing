@@ -134,18 +134,44 @@ def try_import_with_feedback(import_statement, name, fallback=None):
     失敗時にはフォールバックを返す
     """
     try:
-        exec(import_statement)
-        module_name = import_statement.split()[1].split(' as ')[0]
-        globals()[module_name] = eval(module_name)
-        st.success(f"{name}モジュールが正常にインポートされました。")
-        return True
+        # importlib.importmoduleを使用して明示的にインポート
+        if import_statement.startswith("import "):
+            module_name = import_statement.split()[1].split(' as ')[0]
+            module = importlib.import_module(module_name)
+            globals()[module_name] = module
+            st.success(f"{name}モジュールが正常にインポートされました。")
+            return True
+        elif import_statement.startswith("from "):
+            # "from X import Y" 形式の処理
+            parts = import_statement.split()
+            from_module = parts[1]
+            import_name = parts[3]
+            
+            module = importlib.import_module(from_module)
+            globals()[import_name] = getattr(module, import_name)
+            st.success(f"{name}モジュールが正常にインポートされました。")
+            return True
+        else:
+            # その他のインポート形式
+            exec(import_statement)
+            st.success(f"{name}モジュールが正常にインポートされました。")
+            return True
     except ImportError as e:
         st.error(f"{name}モジュールのインポートに失敗しました: {e}")
         if fallback:
             try:
-                exec(fallback)
-                module_name = fallback.split()[1].split(' as ')[0]
-                globals()[module_name] = eval(module_name)
+                if fallback.startswith("import "):
+                    module_name = fallback.split()[1].split(' as ')[0]
+                    module = importlib.import_module(module_name)
+                    globals()[module_name] = module
+                elif fallback.startswith("from "):
+                    parts = fallback.split()
+                    from_module = parts[1]
+                    import_name = parts[3]
+                    module = importlib.import_module(from_module)
+                    globals()[import_name] = getattr(module, import_name)
+                else:
+                    exec(fallback)
                 st.warning(f"{name}モジュールの代替インポートが成功しました。")
                 return True
             except Exception as e2:
@@ -153,6 +179,8 @@ def try_import_with_feedback(import_statement, name, fallback=None):
         return False
     except Exception as e:
         st.error(f"{name}のインポート中に予期せぬエラーが発生しました: {e}")
+        logger.error(f"{name}のインポート中に予期せぬエラー: {e}")
+        logger.error(traceback.format_exc())
         return False
 
 # メインアプリケーションのインポートと実行
