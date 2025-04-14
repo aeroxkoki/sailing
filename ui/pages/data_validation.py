@@ -118,6 +118,14 @@ def load_sample_data() -> GPSDataContainer:
     return container
 
 
+# app_v5.pyのインターフェースに対応するためのラッパー関数
+def render_page():
+    """
+    アプリケーションの統一インターフェース用のラッパー関数
+    このメソッドはapp_v5.pyから呼び出される
+    """
+    data_validation_page()
+
 # 単体テスト用
 if __name__ == "__main__":
     # サンプルデータをロード

@@ -193,7 +193,8 @@ try:
         
         # モジュールの内容を確認
         st.write("UIモジュール内容確認")
-        logger.info(f"app_v5 モジュールの内容: {dir(ui.app_v5)}")
+        # 直接moduleを参照する（ui.app_v5ではなく）
+        logger.info(f"app_v5 モジュールの内容: {dir(module)}")
     except Exception as app_import_error:
         logger.error(f"app_v5 モジュールのインポート中にエラー: {app_import_error}")
         logger.error(traceback.format_exc())

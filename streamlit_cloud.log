@@ -143,3 +143,43 @@ AttributeError: module 'ui.pages.data_validation' has no attribute 'render_page'
     logger.info(f"app_v5 モジュールの内容: {dir(ui.app_v5)}")
 AttributeError: module 'ui' has no attribute 'app_v5'
 
+2025-04-14 14:29:02,418 - streamlit_app - INFO - ローカル環境用ロギング設定を使用（ログファイル: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/streamlit_cloud.log）
+2025-04-14 14:29:02,421 - streamlit_app - INFO - Python バージョン: 3.9.6 (default, Nov 11 2024, 03:15:39) 
+[Clang 16.0.0 (clang-1600.0.26.6)]
+2025-04-14 14:29:02,421 - streamlit_app - INFO - 実行パス: /Applications/Xcode.app/Contents/Developer/usr/bin/python3
+2025-04-14 14:29:02,421 - streamlit_app - INFO - 作業ディレクトリ: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer
+2025-04-14 14:29:02,421 - streamlit_app - INFO - Python パス: ['/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload', '/Users/koki_air/Library/Python/3.9/lib/python/site-packages', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages']
+2025-04-14 14:29:16,598 - streamlit_app - INFO - ui.app_v5 モジュールのインポートを試行中...
+2025-04-14 14:29:19,037 - ui.app_v5 - INFO - システムパス: ['/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload', '/Users/koki_air/Library/Python/3.9/lib/python/site-packages', '/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer', '/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages']
+2025-04-14 14:29:19,037 - ui.app_v5 - INFO - quality_metrics.py パス: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/validation/quality_metrics.py
+2025-04-14 14:29:19,038 - ui.app_v5 - INFO - ファイルは存在するか: True
+2025-04-14 14:29:19,039 - ui.app_v5 - INFO - quality_metrics.py 先頭50文字: """
+sailing_data_processor.validation.quality_metr
+2025-04-14 14:29:19,054 - sailing_data_processor.validation.quality_metrics_integration - INFO - 方法1でのインポートに成功しました
+2025-04-14 14:29:19,055 - ui.app_v5 - INFO - Quality metrics integration モジュールのロードに成功
+2025-04-14 14:29:19,055 - ui.app_v5 - INFO - モジュール内容: ['Any', 'Dict', 'EnhancedQualityMetricsCalculator', 'List', 'Optional', 'QualityMetricsCalculator', 'QualityMetricsCalculatorExtension', 'Set', 'Tuple', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'datetime', 'logger', 'logging', 'np', 'os', 'pd', 'sys', 'timedelta']
+2025-04-14 14:29:19,056 - ui.app_v5 - INFO - QualityMetricsCalculator クラスのロードに成功
+2025-04-14 14:29:19,056 - ui.app_v5 - INFO - QualityMetricsCalculator クラスの内容: ['__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_determine_impact_level']
+2025-04-14 14:29:19,056 - ui.app_v5 - INFO - クラスタイプ: <class 'type'>
+2025-04-14 14:29:19,057 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics.py ✓
+2025-04-14 14:29:19,058 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics_improvements.py ✓
+2025-04-14 14:29:19,059 - ui.app_v5 - INFO - ファイル存在確認: sailing_data_processor/validation/quality_metrics_integration.py ✓
+2025-04-14 14:29:19,060 - ui.app_v5 - INFO - ファイル存在確認: ui/pages/basic_project_management.py ✓
+2025-04-14 14:29:19,060 - ui.app_v5 - INFO - UIページのインポートを開始...
+2025-04-14 14:29:19,061 - ui.app_v5 - INFO - UI pages パス: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui/pages
+2025-04-14 14:29:19,062 - ui.app_v5 - INFO - 基本プロジェクト管理ファイルパス: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui/pages/basic_project_management.py
+2025-04-14 14:29:19,063 - ui.app_v5 - INFO - ファイルは存在するか: True
+2025-04-14 14:29:19,063 - ui.app_v5 - INFO - 基本プロジェクト管理のインポートを試みます...
+2025-04-14 14:29:19,577 - ui.app_v5 - INFO - 基本プロジェクト管理のインポートに成功しました。
+2025-04-14 14:29:19,580 - ui.app_v5 - INFO - データ検証のインポートを試みます...
+2025-04-14 14:29:19,580 - ui.app_v5 - INFO - データ検証のインポートに成功しました。
+2025-04-14 14:29:19,580 - ui.app_v5 - INFO - セッション管理のインポートを試みます...
+2025-04-14 14:29:19,594 - ui.app_v5 - INFO - セッション管理のインポートに成功しました。
+2025-04-14 14:29:19,620 - ui.app_v5 - ERROR - モジュールの読み込みに失敗しました: module 'ui.pages.session_management' has no attribute 'render_page'
+2025-04-14 14:29:19,620 - ui.app_v5 - ERROR - Traceback (most recent call last):
+  File "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/ui/app_v5.py", line 175, in <module>
+    render_session_management = session_management.render_page
+AttributeError: module 'ui.pages.session_management' has no attribute 'render_page'
+
+2025-04-14 14:29:19,655 - streamlit_app - INFO - app_v5 モジュールのインポートに成功
+2025-04-14 14:29:19,657 - streamlit_app - INFO - app_v5 モジュールの内容: ['QualityMetricsCalculator', 'UI_MODULES_LOADED', '__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', '__warningregistry__', 'basic_pm_path', 'basic_project_management', 'content', 'current_dir', 'data_validation', 'dummy_render', 'error_trace', 'exists', 'feedback_text', 'feedback_type', 'file', 'file_path', 'files_to_check', 'folium', 'folium_static', 'import_with_detailed_error', 'importlib', 'initialize_project_manager', 'last_error_trace', 'logger', 'logging', 'np', 'os', 'page', 'pages_dir', 'pathlib', 'pd', 'project_root', 'qm_path', 'quality_metrics_integration', 'relative_path', 'render_data_validation', 'render_project_management', 'render_session_management', 'required_files', 'session_management', 'st', 'status', 'sys', 'traceback']
