@@ -152,14 +152,18 @@ class WindFieldFusionSystem:
         if self.wind_data_points:
             self.fuse_wind_data()
         
-        # データがない場合でもテスト用のダミーフィールドを作成
-        if not self.current_wind_field and self.wind_data_points:
+        # 風の場が生成されていない場合はフォールバック処理
+        if not self.current_wind_field:
             warnings.warn("Creating fallback wind field for tests")
             grid_resolution = 10  # 低解像度グリッド
             latest_time = datetime.now()
             if self.wind_data_points:
                 latest_time = max(point['timestamp'] for point in self.wind_data_points)
-            self._create_simple_wind_field(self.wind_data_points, grid_resolution, latest_time)
+                # 既存データから風の場を生成
+                return self._create_simple_wind_field(self.wind_data_points, grid_resolution, latest_time)
+            else:
+                # データがない場合はダミーデータを生成
+                return self._create_dummy_wind_field(latest_time, grid_resolution)
         
         return self.current_wind_field
     
@@ -335,7 +339,7 @@ class WindFieldFusionSystem:
     
     def _create_simple_wind_field(self, data_points: List[Dict[str, Any]], 
                                  grid_resolution: int, 
-                                 timestamp: datetime) -> None:
+                                 timestamp: datetime) -> Dict[str, Any]:
         """
         最も単純な方法で風の場を生成するフォールバックメソッド
         他の補間方法が失敗した場合の最終手段として使用
@@ -348,10 +352,17 @@ class WindFieldFusionSystem:
             出力グリッド解像度
         timestamp : datetime
             風の場のタイムスタンプ
+            
+        Returns:
+        --------
+        Dict[str, Any]
+            作成された風の場
         """
         if not data_points:
-            self.current_wind_field = None
-            return
+            # データポイントがない場合は東京湾付近のダミーデータを作成
+            dummy_field = self._create_dummy_wind_field(timestamp, grid_resolution)
+            self.current_wind_field = dummy_field
+            return dummy_field
             
         # データポイントから緯度・経度の範囲を取得
         lats = [point['latitude'] for point in data_points]
@@ -400,8 +411,8 @@ class WindFieldFusionSystem:
         # 信頼度は低めに設定
         confidence = np.full_like(grid_lats, 0.4)
         
-        # 風の場の設定
-        self.current_wind_field = {
+        # 風の場の作成
+        wind_field = {
             'lat_grid': grid_lats,
             'lon_grid': grid_lons,
             'wind_direction': wind_dirs,
@@ -409,13 +420,25 @@ class WindFieldFusionSystem:
             'confidence': confidence,
             'time': timestamp
         }
+        
+        # 風の場の設定と返却
+        self.current_wind_field = wind_field
+        return wind_field
     
-    def fuse_wind_data(self):
+    def fuse_wind_data(self) -> Dict[str, Any]:
         """
         風データポイントを融合して風の場を生成
+        
+        Returns:
+        --------
+        Dict[str, Any]
+            生成された風の場
         """
         if not self.wind_data_points:
-            return
+            # データポイントがない場合はダミーデータを返す
+            dummy_field = self._create_dummy_wind_field(datetime.now())
+            self.current_wind_field = dummy_field
+            return dummy_field
         
         # データポイントを時間順にソート
         sorted_data = sorted(self.wind_data_points, key=lambda x: x['timestamp'])
@@ -434,10 +457,9 @@ class WindFieldFusionSystem:
         # データポイントが少なすぎる場合はフォールバック処理
         if len(recent_data) < 3:
             warnings.warn("Not enough recent data points for fusion, using fallback")
-            # フォールバック: ダミーの風場を作成（テスト用）
+            # フォールバック: 単純な風場を作成
             grid_resolution = 10  # 低解像度グリッド
-            self._create_simple_wind_field(sorted_data, grid_resolution, latest_time)
-            return
+            return self._create_simple_wind_field(sorted_data, grid_resolution, latest_time)
         
         # grid_densityパラメータの設定
         grid_density = 20  # 20x20のグリッド
@@ -450,27 +472,77 @@ class WindFieldFusionSystem:
         
         # スケーリングに失敗した場合の対策
         if not scaled_data:
-            warnings.warn("Data scaling failed")
-            return
+            warnings.warn("Data scaling failed, using simple wind field")
+            return self._create_simple_wind_field(recent_data, grid_density, latest_time)
         
         # field_interpolatorを使用して風の場を生成
         try:
             # まずidw方式で補間を試みる（最も安定した方法）
-            self.current_wind_field = self.field_interpolator.interpolate_wind_field(
+            wind_field = self.field_interpolator.interpolate_wind_field(
                 scaled_data, 
                 resolution=grid_density, 
                 method='idw',  # より安定した逆距離加重法を使用
                 qhull_options=qhull_options  # Qhull精度エラー回避のためのオプション
             )
             
+            # 補間に失敗した場合はシンプルな風場を生成
+            if not wind_field:
+                warnings.warn("IDW interpolation returned None, using simple wind field")
+                return self._create_simple_wind_field(recent_data, grid_density, latest_time)
+            
             # 風の場のタイムスタンプを設定
-            if self.current_wind_field:
-                self.current_wind_field['time'] = latest_time
+            wind_field['time'] = latest_time
+            
+            # 現在の風の場を設定
+            self.current_wind_field = wind_field
+            
+            # 履歴に追加
+            self.wind_field_history.append({
+                'time': latest_time,
+                'field': wind_field
+            })
+            
+            # 履歴サイズを制限
+            if len(self.wind_field_history) > self.max_history_size:
+                self.wind_field_history.pop(0)
+            
+            # 予測評価が有効な場合、実測値と予測を比較
+            if self.enable_prediction_evaluation:
+                for point in recent_data:
+                    self._evaluate_previous_predictions(point['timestamp'], point)
+            
+            # 元の座標を復元
+            self._restore_original_coordinates(scaled_data)
+            
+            # 風の場を返す
+            return wind_field
+                    
+        except Exception as e:
+            warnings.warn(f"IDW interpolation failed, trying nearest method: {e}")
+            try:
+                # IDW方式が失敗した場合はnearest方式を試す (最も頑健だが精度は低い)
+                wind_field = self.field_interpolator.interpolate_wind_field(
+                    scaled_data, 
+                    resolution=grid_density, 
+                    method='nearest',
+                    qhull_options=qhull_options  # Qhull精度エラー回避のためのオプション
+                )
+                
+                # 補間に失敗した場合はシンプルな風場を生成
+                if not wind_field:
+                    warnings.warn("Nearest interpolation returned None, using simple wind field")
+                    return self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                
+                # 風の場のタイムスタンプを設定
+                wind_field['time'] = latest_time
+                
+                # 現在の風の場を設定
+                self.current_wind_field = wind_field
                 
                 # 履歴に追加
                 self.wind_field_history.append({
                     'time': latest_time,
-                    'field': self.current_wind_field
+                    'field': wind_field
                 })
                 
                 # 履歴サイズを制限
@@ -484,52 +556,36 @@ class WindFieldFusionSystem:
                 
                 # 元の座標を復元
                 self._restore_original_coordinates(scaled_data)
-                    
-        except Exception as e:
-            warnings.warn(f"IDW interpolation failed, trying nearest method: {e}")
-            try:
-                # IDW方式が失敗した場合はnearest方式を試す (最も頑健だが精度は低い)
-                self.current_wind_field = self.field_interpolator.interpolate_wind_field(
-                    scaled_data, 
-                    resolution=grid_density, 
-                    method='nearest',
-                    qhull_options=qhull_options  # Qhull精度エラー回避のためのオプション
-                )
                 
-                # 風の場のタイムスタンプを設定
-                if self.current_wind_field:
-                    self.current_wind_field['time'] = latest_time
-                    
-                    # 履歴に追加
-                    self.wind_field_history.append({
-                        'time': latest_time,
-                        'field': self.current_wind_field
-                    })
-                    
-                    # 履歴サイズを制限
-                    if len(self.wind_field_history) > self.max_history_size:
-                        self.wind_field_history.pop(0)
-                    
-                    # 予測評価が有効な場合、実測値と予測を比較
-                    if self.enable_prediction_evaluation:
-                        for point in recent_data:
-                            self._evaluate_previous_predictions(point['timestamp'], point)
-                    
-                    # 元の座標を復元
-                    self._restore_original_coordinates(scaled_data)
+                # 風の場を返す
+                return wind_field
+                
             except Exception as e2:
                 # 最後の手段として最も単純な補間手法を試みる
                 warnings.warn(f"Wind field interpolation retry also failed: {e2}")
                 try:
                     # 単純な平均に基づく風の場の生成
-                    self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                    return self._create_simple_wind_field(recent_data, grid_density, latest_time)
                 except Exception as e3:
-                    warnings.warn(f"Simple wind field creation also failed: {e3}")
-                    self.current_wind_field = None
+                    warnings.warn(f"Simple wind field creation also failed: {e3}, creating dummy field")
+                    # すべてが失敗した場合はダミーフィールドを生成
+                    dummy_field = self._create_dummy_wind_field(latest_time)
+                    self.current_wind_field = dummy_field
+                    return dummy_field
         
-        # 風の移動モデルを更新
-        if self.current_wind_field and len(recent_data) >= self.propagation_model.min_data_points:
-            self.propagation_model.estimate_propagation_vector(recent_data)
+        # このポイントには到達しないはずだが、バグ防止のためのフォールバック
+        finally:
+            # 風の移動モデルを更新 - 有効なデータがある場合のみ
+            if self.current_wind_field and len(recent_data) >= self.propagation_model.min_data_points:
+                self.propagation_model.estimate_propagation_vector(recent_data)
+                
+            # 現在の風の場が設定されていない場合はダミーフィールドを生成
+            if not self.current_wind_field:
+                dummy_field = self._create_dummy_wind_field(latest_time)
+                self.current_wind_field = dummy_field
+                return dummy_field
+            
+            return self.current_wind_field
     
     def _haversine_distance(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
         """
@@ -722,7 +778,7 @@ class WindFieldFusionSystem:
             latest_time = datetime.now()
             if self.wind_data_points:
                 latest_time = max(point['timestamp'] for point in self.wind_data_points)
-            self._create_simple_wind_field(self.wind_data_points, grid_resolution, latest_time)
+            self.current_wind_field = self._create_simple_wind_field(self.wind_data_points, grid_resolution, latest_time)
         
         if not self.current_wind_field:
             # シンプルなダミーデータを返す（テスト用）

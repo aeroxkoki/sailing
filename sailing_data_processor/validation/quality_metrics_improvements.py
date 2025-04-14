@@ -8,6 +8,19 @@ from typing import Dict, List, Any, Optional, Tuple, Set
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+import logging
+
+# ロギング設定
+logger = logging.getLogger(__name__)
+
+# 必要なモジュールを遅延インポートするための準備
+try:
+    import plotly.graph_objects as go
+    from plotly.subplots import make_subplots
+    PLOTLY_AVAILABLE = True
+except ImportError:
+    logger.warning("plotly モジュールをインポートできませんでした。視覚化機能は利用できません。")
+    PLOTLY_AVAILABLE = False
 
 # データモデルインポートエラーのリスクを回避するため、直接インポートは行わない
 # 代わりに動的インポートまたはタイプヒントのみの参照を使用
@@ -446,7 +459,7 @@ class QualityMetricsCalculatorExtension:
         
         return category_scores
             
-    def generate_quality_score_visualization(self) -> Tuple[go.Figure, go.Figure]:
+    def generate_quality_score_visualization(self) -> Tuple:
         """
         品質スコアのゲージチャートとカテゴリ別バーチャートを生成。
         
@@ -455,10 +468,18 @@ class QualityMetricsCalculatorExtension:
         
         Returns
         -------
-        Tuple[go.Figure, go.Figure]
+        Tuple
             ゲージチャートとバーチャート
         """
-        import plotly.graph_objects as go
+        # Plotlyが利用可能かチェック
+        if not PLOTLY_AVAILABLE:
+            logger.warning("Plotlyが利用できないため、視覚化を生成できません")
+            # ダミーオブジェクトを返す（エラー防止用）
+            class DummyFigure:
+                def update_layout(self, *args, **kwargs): pass
+                def add_annotation(self, *args, **kwargs): pass
+                def add_shape(self, *args, **kwargs): pass
+            return DummyFigure(), DummyFigure()
         
         # 品質スコアを取得
         quality_scores = self.calculate_quality_scores()
@@ -632,7 +653,7 @@ class QualityMetricsCalculatorExtension:
         else:
             return "critical"  # 重大な影響
             
-    def generate_spatial_quality_map(self) -> go.Figure:
+    def generate_spatial_quality_map(self):
         """
         空間的な品質分布のマップを生成。
         
@@ -641,10 +662,18 @@ class QualityMetricsCalculatorExtension:
         
         Returns
         -------
-        go.Figure
-            品質マップの図
+        Object
+            品質マップの図（Plotly Figureまたはダミーオブジェクト）
         """
-        import plotly.graph_objects as go
+        # Plotlyが利用可能かチェック
+        if not PLOTLY_AVAILABLE:
+            logger.warning("Plotlyが利用できないため、空間マップを生成できません")
+            # ダミーオブジェクトを返す（エラー防止用）
+            class DummyFigure:
+                def update_layout(self, *args, **kwargs): pass
+                def add_annotation(self, *args, **kwargs): pass
+                def add_trace(self, *args, **kwargs): pass
+            return DummyFigure()
         
         # 空間品質スコアを取得
         spatial_scores = self.calculate_spatial_quality_scores()
@@ -770,7 +799,7 @@ class QualityMetricsCalculatorExtension:
         
         return fig
         
-    def generate_temporal_quality_chart(self) -> go.Figure:
+    def generate_temporal_quality_chart(self):
         """
         時間帯別の品質分布チャートを生成。
         
@@ -779,11 +808,20 @@ class QualityMetricsCalculatorExtension:
         
         Returns
         -------
-        go.Figure
-            時間帯別品質チャート
+        Object
+            時間帯別品質チャート（Plotly Figureまたはダミーオブジェクト）
         """
-        import plotly.graph_objects as go
-        from plotly.subplots import make_subplots
+        # Plotlyが利用可能かチェック
+        if not PLOTLY_AVAILABLE:
+            logger.warning("Plotlyが利用できないため、時間帯別チャートを生成できません")
+            # ダミーオブジェクトを返す（エラー防止用）
+            class DummyFigure:
+                def update_layout(self, *args, **kwargs): pass
+                def add_trace(self, *args, **kwargs): pass
+                def add_shape(self, *args, **kwargs): pass
+                def update_yaxes(self, *args, **kwargs): pass
+                def update_xaxes(self, *args, **kwargs): pass
+            return DummyFigure()
         
         # 時間的品質スコアを取得
         temporal_scores = self.calculate_temporal_quality_scores()

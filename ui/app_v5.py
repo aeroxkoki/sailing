@@ -12,11 +12,14 @@ import os
 import sys
 import logging
 import traceback
+import pathlib
 from streamlit_folium import folium_static
 import folium
 
-# プロジェクトのルートディレクトリをパスに追加
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# プロジェクトのルートディレクトリをパスに追加（pathlib使用でプラットフォーム互換性向上）
+current_dir = pathlib.Path(__file__).parent
+project_root = current_dir.parent.absolute()
+sys.path.insert(0, str(project_root))
 
 # エラー追跡用のグローバル変数（宣言のみ）
 last_error_trace = None
@@ -38,23 +41,22 @@ try:
     logger.info(f"システムパス: {sys.path}")
     
     # 明示的にsailing_data_processorディレクトリをパスに追加（デプロイ環境対応）
-    project_root = os.path.dirname(os.path.dirname(__file__))
-    if project_root not in sys.path:
-        sys.path.insert(0, project_root)
+    # project_rootはすでに設定済み（pathlib使用でプラットフォーム互換性向上）
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
         logger.info(f"プロジェクトルートをパスに追加: {project_root}")
     
     # 明示的に依存モジュールの存在をチェック
     import importlib.util
     
-    # quality_metrics モジュールの存在確認
-    qm_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 
-                          'sailing_data_processor/validation/quality_metrics.py')
+    # quality_metrics モジュールの存在確認（pathlib使用）
+    qm_path = project_root / 'sailing_data_processor' / 'validation' / 'quality_metrics.py'
     logger.info(f"quality_metrics.py パス: {qm_path}")
-    logger.info(f"ファイルは存在するか: {os.path.exists(qm_path)}")
+    logger.info(f"ファイルは存在するか: {qm_path.exists()}")
     
-    if os.path.exists(qm_path):
-        with open(qm_path, 'r', encoding='utf-8') as f:
-            logger.info(f"quality_metrics.py 先頭50文字: {f.read(50)}")
+    if qm_path.exists():
+        content = qm_path.read_text(encoding='utf-8')[:50]
+        logger.info(f"quality_metrics.py 先頭50文字: {content}")
     
     # モジュールをインポート
     try:
@@ -69,8 +71,8 @@ try:
             # 代替インポート方法を試す
             try:
                 import importlib.util
-                integration_path = os.path.join(project_root, 'sailing_data_processor/validation/quality_metrics_integration.py')
-                spec = importlib.util.spec_from_file_location("quality_metrics_integration", integration_path)
+                integration_path = project_root / 'sailing_data_processor' / 'validation' / 'quality_metrics_integration.py'
+                spec = importlib.util.spec_from_file_location("quality_metrics_integration", str(integration_path))
                 quality_metrics_integration = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(quality_metrics_integration)
                 logger.info("代替方法でのQuality metrics integrationモジュールのロードに成功")
@@ -96,8 +98,8 @@ try:
             # 代替インポート方法を試す
             try:
                 import importlib.util
-                metrics_path = os.path.join(project_root, 'sailing_data_processor/validation/quality_metrics.py')
-                spec = importlib.util.spec_from_file_location("quality_metrics", metrics_path)
+                metrics_path = project_root / 'sailing_data_processor' / 'validation' / 'quality_metrics.py'
+                spec = importlib.util.spec_from_file_location("quality_metrics", str(metrics_path))
                 quality_metrics = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(quality_metrics)
                 
@@ -111,21 +113,20 @@ try:
         logger.error(traceback.format_exc())
         st.warning(f"QualityMetricsCalculator クラスのロードに失敗しました: {e}")
     
-    # 各モジュールの存在を確認
-    import os
+    # 各モジュールの存在を確認（pathlib使用）
     required_files = [
-        'sailing_data_processor/validation/quality_metrics.py',
-        'sailing_data_processor/validation/quality_metrics_improvements.py',
-        'sailing_data_processor/validation/quality_metrics_integration.py',
-        'ui/pages/basic_project_management.py'
+        project_root / 'sailing_data_processor' / 'validation' / 'quality_metrics.py',
+        project_root / 'sailing_data_processor' / 'validation' / 'quality_metrics_improvements.py',
+        project_root / 'sailing_data_processor' / 'validation' / 'quality_metrics_integration.py',
+        project_root / 'ui' / 'pages' / 'basic_project_management.py'
     ]
     
     for file_path in required_files:
-        full_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), file_path)
-        if os.path.exists(full_path):
-            logger.info(f"ファイル存在確認: {file_path} ✓")
+        relative_path = file_path.relative_to(project_root)
+        if file_path.exists():
+            logger.info(f"ファイル存在確認: {relative_path} ✓")
         else:
-            logger.error(f"ファイル存在確認: {file_path} ✗ (見つかりません)")
+            logger.error(f"ファイル存在確認: {relative_path} ✗ (見つかりません)")
 except Exception as diag_error:
     logger.error(f"依存モジュール診断エラー: {diag_error}")
     logger.error(traceback.format_exc())
@@ -135,10 +136,12 @@ try:
     # インポート順序を変更して問題を回避
     logger.info("UIページのインポートを開始...")
     
-    # パス情報を記録（デバッグ用）
-    logger.info(f"UI pages パス: {os.path.join(os.path.dirname(__file__), 'pages')}")
-    logger.info(f"基本プロジェクト管理ファイルパス: {os.path.join(os.path.dirname(__file__), 'pages', 'basic_project_management.py')}")
-    logger.info(f"ファイルは存在するか: {os.path.exists(os.path.join(os.path.dirname(__file__), 'pages', 'basic_project_management.py'))}")
+    # パス情報を記録（デバッグ用、pathlib使用）
+    pages_dir = current_dir / 'pages'
+    basic_pm_path = pages_dir / 'basic_project_management.py'
+    logger.info(f"UI pages パス: {pages_dir}")
+    logger.info(f"基本プロジェクト管理ファイルパス: {basic_pm_path}")
+    logger.info(f"ファイルは存在するか: {basic_pm_path.exists()}")
     
     # スタックトレースを取得するためのヘルパー関数
     def import_with_detailed_error(module_path, module_name):
@@ -150,9 +153,10 @@ try:
         except Exception as e:
             error_msg = f"{module_name}のインポートに失敗: {e}"
             error_trace = traceback.format_exc()
-            # グローバル変数はファイルの最上部で宣言済みなのでここではglobal宣言不要
+            # グローバル変数に保存し、外側の変数を更新する（nonlocalは使わない）
             global last_error_trace
             last_error_trace = error_trace
+            # 関数内でログ記録する
             logger.error(error_msg)
             logger.error(error_trace)
             st.error(error_msg)
@@ -179,8 +183,7 @@ try:
 except Exception as e:
     # エラートレースをグローバル変数に保存
     error_trace = traceback.format_exc()
-    # グローバル変数への代入（ファイルの先頭で宣言済み）
-    global last_error_trace
+    # グローバル変数への代入
     last_error_trace = error_trace
     logger.error(f"モジュールの読み込みに失敗しました: {e}")
     logger.error(error_trace)

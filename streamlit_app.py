@@ -11,28 +11,45 @@ import streamlit as st
 import traceback
 import importlib
 import logging
+import pathlib
 
-# プロジェクトのルートディレクトリをパスに追加
-current_dir = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, current_dir)
+# プロジェクトのルートディレクトリをパスに追加（pathlib使用でプラットフォーム互換性向上）
+current_dir = pathlib.Path(__file__).parent.absolute()
+sys.path.insert(0, str(current_dir))
 
 # 明示的にsailing_data_processorとuiモジュールをインポート可能にする
 # Streamlit Cloud環境でのモジュール解決を確実にするため
-sailing_processor_path = os.path.join(current_dir, 'sailing_data_processor')
-ui_path = os.path.join(current_dir, 'ui')
-sys.path.insert(0, sailing_processor_path)
-sys.path.insert(0, ui_path)
+sailing_processor_path = current_dir / 'sailing_data_processor'
+ui_path = current_dir / 'ui'
+sys.path.insert(0, str(sailing_processor_path))
+sys.path.insert(0, str(ui_path))
 
-# ロギングの設定（ファイルに書き込まれてデバッグに役立つ）
+# 環境変数を設定してクラウド環境を識別
+os.environ['SAILING_ANALYZER_ENV'] = os.environ.get('STREAMLIT_SERVER_HEADLESS', 'false')
+
+# ロギングの設定（環境に応じて適切なハンドラを使用）
+is_cloud = os.environ.get('SAILING_ANALYZER_ENV') == 'true'
+
+if is_cloud:
+    # クラウド環境ではファイル書き込みができないためStreamHandlerのみ使用
+    handlers = [logging.StreamHandler()]
+    log_message = "クラウド環境用ロギング設定を使用（ファイル書き込みなし）"
+else:
+    # ローカル環境ではファイルとコンソールの両方にログを出力
+    log_file = str(current_dir / "streamlit_cloud.log")
+    handlers = [
+        logging.FileHandler(log_file),
+        logging.StreamHandler()
+    ]
+    log_message = f"ローカル環境用ロギング設定を使用（ログファイル: {log_file}）"
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler(os.path.join(current_dir, "streamlit_cloud.log")),
-        logging.StreamHandler()
-    ]
+    handlers=handlers
 )
 logger = logging.getLogger(__name__)
+logger.info(log_message)
 
 # システム環境の記録（デバッグ用）
 logger.info(f"Python バージョン: {sys.version}")
@@ -51,41 +68,42 @@ st.set_page_config(
 # デバッグモードを有効化
 os.environ['STREAMLIT_DEBUG'] = 'true'
 
-# ディレクトリの存在確認
-ui_dir = os.path.join(current_dir, 'ui')
-ui_pages_dir = os.path.join(ui_dir, 'pages')
-ui_components_dir = os.path.join(ui_dir, 'components')
-validation_dir = os.path.join(current_dir, 'sailing_data_processor', 'validation')
+# ディレクトリの存在確認（pathlib使用でプラットフォーム互換性向上）
+ui_dir = current_dir / 'ui'
+ui_pages_dir = ui_dir / 'pages'
+ui_components_dir = ui_dir / 'components'
+validation_dir = current_dir / 'sailing_data_processor' / 'validation'
 
 # ディレクトリ構造の確認
 st.header("ディレクトリ構造の確認")
-st.write(f"ui ディレクトリ: {os.path.exists(ui_dir)}")
-st.write(f"ui/pages ディレクトリ: {os.path.exists(ui_pages_dir)}")
-st.write(f"ui/components ディレクトリ: {os.path.exists(ui_components_dir)}")
-st.write(f"sailing_data_processor/validation ディレクトリ: {os.path.exists(validation_dir)}")
+st.write(f"ui ディレクトリ: {ui_dir.exists()}")
+st.write(f"ui/pages ディレクトリ: {ui_pages_dir.exists()}")
+st.write(f"ui/components ディレクトリ: {ui_components_dir.exists()}")
+st.write(f"sailing_data_processor/validation ディレクトリ: {validation_dir.exists()}")
 
 # ui/pages ディレクトリの内容を確認
-if os.path.exists(ui_pages_dir):
-    pages_files = os.listdir(ui_pages_dir)
+if ui_pages_dir.exists():
+    pages_files = list(ui_pages_dir.glob("*.py"))  # Pythonファイルのみリスト
     st.write("pages ディレクトリの内容:")
     for file in pages_files:
-        st.write(f"- {file}")
+        st.write(f"- {file.name}")  # ファイル名のみ表示
 else:
     st.error(f"ui/pages ディレクトリが見つかりません: {ui_pages_dir}")
 
-# 必須モジュールファイルの存在確認
+# 必須モジュールファイルの存在確認（pathlib使用）
 required_files = [
-    os.path.join('sailing_data_processor', 'validation', 'quality_metrics.py'),
-    os.path.join('sailing_data_processor', 'validation', 'quality_metrics_improvements.py'),
-    os.path.join('sailing_data_processor', 'validation', 'quality_metrics_integration.py'),
-    os.path.join('ui', 'pages', 'basic_project_management.py')
+    current_dir / 'sailing_data_processor' / 'validation' / 'quality_metrics.py',
+    current_dir / 'sailing_data_processor' / 'validation' / 'quality_metrics_improvements.py',
+    current_dir / 'sailing_data_processor' / 'validation' / 'quality_metrics_integration.py',
+    current_dir / 'ui' / 'pages' / 'basic_project_management.py'
 ]
 
 missing_files = []
 for file_path in required_files:
-    full_path = os.path.join(current_dir, file_path)
-    if not os.path.exists(full_path):
-        missing_files.append(file_path)
+    if not file_path.exists():
+        # Pathlibオブジェクトを相対パスの文字列に変換して表示
+        relative_path = file_path.relative_to(current_dir)
+        missing_files.append(str(relative_path))
 
 if missing_files:
     st.error("必須ファイルが見つかりません。")
@@ -114,15 +132,14 @@ try:
     # メインアプリケーションをロードする前に状態を表示
     st.info("メインアプリケーションを読み込んでいます...")
     
-    # app_v5.pyファイルの存在確認
-    app_v5_path = os.path.join(ui_path, 'app_v5.py')
-    if os.path.exists(app_v5_path):
+    # app_v5.pyファイルの存在確認（pathlib使用）
+    app_v5_path = ui_path / 'app_v5.py'
+    if app_v5_path.exists():
         st.success(f"app_v5.py ファイルが見つかりました")
-        # ファイルの先頭部分を表示して確認
-        with open(app_v5_path, 'r', encoding='utf-8') as f:
-            content = f.read(500)  # 先頭500文字だけを読み込む
-            st.write("app_v5.py の先頭部分")
-            st.code(content, language="python")
+        # ファイルの先頭部分を表示して確認（pathlib使用）
+        content = app_v5_path.read_text(encoding='utf-8')[:500]  # 先頭500文字だけを読み込む
+        st.write("app_v5.py の先頭部分")
+        st.code(content, language="python")
     else:
         st.error(f"app_v5.py ファイルが見つかりません: {app_v5_path}")
         st.stop()
@@ -158,16 +175,17 @@ try:
             st.error(f"ui.app_v5に構文エラーがあります: {e}")
             st.code(traceback.format_exc())
             
-            # エラー位置のコードを表示
+            # エラー位置のコードを表示（pathlib使用）
             lineno = e.lineno
             if lineno:
-                with open(app_v5_path, 'r', encoding='utf-8') as f:
-                    lines = f.readlines()
-                    start_line = max(0, lineno - 5)
-                    end_line = min(len(lines), lineno + 5)
-                    context = ''.join(lines[start_line:end_line])
-                    st.subheader(f"エラー箇所周辺のコード (行 {start_line+1} - {end_line}):")
-                    st.code(context, language="python")
+                # 全体のコンテンツを読み込む
+                lines = app_v5_path.read_text(encoding='utf-8').splitlines(True)
+                start_line = max(0, lineno - 5)
+                end_line = min(len(lines), lineno + 5)
+                # 該当部分のみ抽出
+                context = ''.join(lines[start_line:end_line])
+                st.subheader(f"エラー箇所周辺のコード (行 {start_line+1} - {end_line}):")
+                st.code(context, language="python")
             raise
         
         logger.info("app_v5 モジュールのインポートに成功")
@@ -192,15 +210,19 @@ except Exception as e:
     st.write(f"実行パス: {sys.executable}")
     st.write(f"作業ディレクトリ: {os.getcwd()}")
     st.write(f"ファイル一覧:")
-    # 最大深度2までのファイル一覧を表示
-    for root, dirs, files in os.walk(".", topdown=True):
-        # ルートからの相対パスの深さを計算
-        depth = root.count(os.sep)
-        if depth > 1:  # 深さ2以上は除外
-            dirs[:] = []  # サブディレクトリの探索をスキップ
-            continue
-        for name in files:
-            st.write(os.path.join(root, name))
+    # 最大深度2までのファイル一覧を表示（pathlib使用で改善）
+    base_path = pathlib.Path('.')
+    st.write("最上位ディレクトリ:")
+    for file_path in base_path.glob('*'):
+        if file_path.is_file():
+            st.write(f"- {file_path}")
+    
+    # 1段階下のサブディレクトリ内のファイルも表示
+    for dir_path in [p for p in base_path.glob('*') if p.is_dir()]:
+        st.write(f"ディレクトリ {dir_path}:")
+        for file_path in dir_path.glob('*'):
+            if file_path.is_file():
+                st.write(f"- {file_path}")
     
     # モジュールのインポートパスを表示
     st.write(f"Pythonパス: {sys.path}")
