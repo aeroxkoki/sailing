@@ -45,8 +45,9 @@ def data_validation_page():
     
     with tab1:
         # 基本的なデータクリーニングコンポーネントを表示
-        cleaner = DataCleaningBasic(key="validation_basic")
-        cleaner.render(container)
+        # コンテナとキーを渡して初期化
+        cleaner = DataCleaningBasic(container=container, key_prefix="validation_basic")
+        cleaner.render()
     
     with tab2:
         # 詳細なデータ検証ダッシュボードを表示

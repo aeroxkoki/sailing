@@ -319,9 +319,10 @@ class DataCleaningBasic:
     """
     
     def __init__(self, 
-                container: GPSDataContainer, 
+                container: Optional[GPSDataContainer] = None, 
                 validator: Optional[DataValidator] = None,
-                key_prefix: str = "data_cleaning"):
+                key_prefix: str = "data_cleaning",
+                key: Optional[str] = None):
         """
         初期化
         
@@ -364,10 +365,26 @@ class DataCleaningBasic:
             "temporal_anomalies": "時間的異常"
         }
     
-    def render(self):
+    def render(self, container=None):
         """
         UIコンポーネントをレンダリング
+        
+        Parameters
+        ----------
+        container : GPSDataContainer, optional
+            GPSデータコンテナ (初期化時に渡されていなければここで渡す)
         """
+        # containerが指定されている場合は更新
+        if container is not None:
+            self.container = container
+            # handlerも更新
+            self.handler = CorrectionHandler(self.container, self.validator)
+            
+        # containerが設定されていない場合はエラーメッセージを表示
+        if self.container is None:
+            st.error("GPSデータコンテナが設定されていません。データをインポートしてください。")
+            return
+            
         st.subheader("データクリーニング")
         
         # データ品質の概要を表示
