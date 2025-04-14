@@ -162,23 +162,101 @@ try:
             st.error(error_msg)
             return None
     
-    # 段階的にモジュールをインポート
+    # デバッグ用に直接インポートも試行
+    try:
+        # 直接インポートを試す（モジュール検索パスとのトラブルシューティング用）
+        import importlib.util
+        sys.path.append(str(current_dir / 'pages'))
+        logger.info(f"pages直接アクセス用にパスを追加: {current_dir / 'pages'}")
+        
+        # モジュールファイルの存在を確認してからインポート
+        page_files = {
+            "basic_project_management": str(current_dir / 'pages' / 'basic_project_management.py'),
+            "data_validation": str(current_dir / 'pages' / 'data_validation.py'),
+            "session_management": str(current_dir / 'pages' / 'session_management.py')
+        }
+        
+        # ファイルの存在確認
+        for name, path in page_files.items():
+            if os.path.exists(path):
+                logger.info(f"ファイル {name} が見つかりました: {path}")
+            else:
+                logger.error(f"ファイル {name} が見つかりません: {path}")
+    except Exception as direct_import_error:
+        logger.warning(f"直接インポート確認中のエラー: {direct_import_error}")
+
+    # 段階的にモジュールをインポート - より堅牢なアプローチ
     basic_project_management = import_with_detailed_error('ui.pages.basic_project_management', '基本プロジェクト管理')
     data_validation = import_with_detailed_error('ui.pages.data_validation', 'データ検証')
     session_management = import_with_detailed_error('ui.pages.session_management', 'セッション管理')
     
     # インポートが成功したかチェック
-    if basic_project_management and data_validation and session_management:
-        # 実際の関数をインポート
-        render_project_management = basic_project_management.render_page
-        render_data_validation = data_validation.render_page
-        render_session_management = session_management.render_page
-        
-        # 追加のインポートを必要に応じて行う
-        logger.info("UI モジュールの読み込みに成功しました。")
+    UI_MODULES_LOADED = False
+    module_import_errors = {}
+    
+    # 各モジュールが存在するかと必要な属性を持っているか確認
+    if basic_project_management:
+        try:
+            render_project_management = basic_project_management.render_page
+            logger.info("プロジェクト管理の render_page 関数が正常にロードされました。")
+        except AttributeError as e:
+            module_import_errors["basic_project_management"] = f"render_page属性がありません: {e}"
+            logger.error(f"プロジェクト管理の render_page 属性エラー: {e}")
+    else:
+        module_import_errors["basic_project_management"] = "モジュールのロードに失敗しました"
+    
+    if data_validation:
+        try:
+            render_data_validation = data_validation.render_page
+            logger.info("データ検証の render_page 関数が正常にロードされました。")
+        except AttributeError as e:
+            module_import_errors["data_validation"] = f"render_page属性がありません: {e}"
+            logger.error(f"データ検証の render_page 属性エラー: {e}")
+    else:
+        module_import_errors["data_validation"] = "モジュールのロードに失敗しました"
+    
+    if session_management:
+        try:
+            render_session_management = session_management.render_page
+            logger.info("セッション管理の render_page 関数が正常にロードされました。")
+        except AttributeError as e:
+            module_import_errors["session_management"] = f"render_page属性がありません: {e}"
+            logger.error(f"セッション管理の render_page 属性エラー: {e}")
+    else:
+        module_import_errors["session_management"] = "モジュールのロードに失敗しました"
+    
+    # すべてのモジュールが正常にロードされたかチェック
+    if not module_import_errors:
+        logger.info("すべてのUI モジュールの読み込みに成功しました。")
         UI_MODULES_LOADED = True
     else:
-        raise ImportError("必要なモジュールのいずれかのインポートに失敗しました")
+        # エラーが発生したが、ロードできたモジュールがあればそれを使う
+        logger.error(f"一部モジュールのロードに問題がありました: {module_import_errors}")
+        
+        # ダミー関数を定義（未定義のrender_*関数を置き換え）
+        def create_dummy_render(module_name, error_detail):
+            def dummy():
+                st.error(f"{module_name}モジュールの読み込みに失敗しました。")
+                st.info(f"エラー詳細: {error_detail}")
+            return dummy
+        
+        # エラーが発生したモジュールにダミー関数を設定
+        if "basic_project_management" in module_import_errors:
+            render_project_management = create_dummy_render("プロジェクト管理", module_import_errors["basic_project_management"])
+        
+        if "data_validation" in module_import_errors:
+            render_data_validation = create_dummy_render("データ検証", module_import_errors["data_validation"])
+        
+        if "session_management" in module_import_errors:
+            render_session_management = create_dummy_render("セッション管理", module_import_errors["session_management"])
+        
+        # 一部でもモジュールがロードできていれば部分的に動作させる
+        if basic_project_management or data_validation or session_management:
+            UI_MODULES_LOADED = True
+            logger.info("一部のモジュールがロードされています。部分的な機能で動作します。")
+        else:
+            UI_MODULES_LOADED = False
+            logger.error("すべてのモジュールのロードに失敗しました。")
         
 except Exception as e:
     # エラートレースをグローバル変数に保存

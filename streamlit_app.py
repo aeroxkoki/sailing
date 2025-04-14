@@ -23,6 +23,20 @@ sailing_processor_path = current_dir / 'sailing_data_processor'
 ui_path = current_dir / 'ui'
 sys.path.insert(0, str(sailing_processor_path))
 sys.path.insert(0, str(ui_path))
+sys.path.insert(0, str(current_dir / 'ui' / 'pages'))  # pagesディレクトリを明示的に追加
+
+# 依存パッケージのバージョン確認（デプロイ環境のデバッグ用）
+try:
+    import streamlit
+    import pandas
+    import numpy
+    import folium
+    logging.info(f"Streamlit version: {streamlit.__version__}")
+    logging.info(f"Pandas version: {pandas.__version__}")
+    logging.info(f"NumPy version: {numpy.__version__}")
+    logging.info(f"Folium version: {folium.__version__}")
+except ImportError as e:
+    logging.error(f"依存パッケージの確認中にエラー: {e}")
 
 # 環境変数を設定してクラウド環境を識別
 os.environ['SAILING_ANALYZER_ENV'] = os.environ.get('STREAMLIT_SERVER_HEADLESS', 'false')
@@ -113,21 +127,53 @@ if missing_files:
     st.info("モジュール構造を修正してください。")
     st.stop()
 
+# モジュールインポートのヘルパー関数
+def try_import_with_feedback(import_statement, name, fallback=None):
+    """
+    モジュールのインポートを試し、成功・失敗を表示する
+    失敗時にはフォールバックを返す
+    """
+    try:
+        exec(import_statement)
+        module_name = import_statement.split()[1].split(' as ')[0]
+        globals()[module_name] = eval(module_name)
+        st.success(f"{name}モジュールが正常にインポートされました。")
+        return True
+    except ImportError as e:
+        st.error(f"{name}モジュールのインポートに失敗しました: {e}")
+        if fallback:
+            try:
+                exec(fallback)
+                module_name = fallback.split()[1].split(' as ')[0]
+                globals()[module_name] = eval(module_name)
+                st.warning(f"{name}モジュールの代替インポートが成功しました。")
+                return True
+            except Exception as e2:
+                st.error(f"{name}の代替インポートも失敗しました: {e2}")
+        return False
+    except Exception as e:
+        st.error(f"{name}のインポート中に予期せぬエラーが発生しました: {e}")
+        return False
+
 # メインアプリケーションのインポートと実行
 try:
-    # 明示的に sailing_data_processor.validation モジュールが利用可能か確認
-    try:
-        import sailing_data_processor.validation
-        st.success("sailing_data_processor.validation モジュールが正常にインポートされました。")
-    except ImportError as e:
-        st.error(f"sailing_data_processor.validation モジュールのインポートに失敗しました: {e}")
-        
-    # QualityMetricsCalculator クラスが利用可能か確認
-    try:
-        from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
-        st.success("QualityMetricsCalculator クラスが正常にインポートされました。")
-    except ImportError as e:
-        st.error(f"QualityMetricsCalculator クラスのインポートに失敗しました: {e}")
+    # パッケージ構造チェック
+    st.subheader("パッケージ構造の診断")
+    # モジュールが存在するかの簡易テスト
+    module_checks = [
+        ("import sailing_data_processor.validation", "sailing_data_processor.validation"),
+        ("from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator", "QualityMetricsCalculator")
+    ]
+    
+    all_imports_ok = True
+    for import_stmt, module_name in module_checks:
+        if not try_import_with_feedback(import_stmt, module_name):
+            all_imports_ok = False
+    
+    if not all_imports_ok:
+        st.warning("⚠️ 一部のモジュールのインポートに問題がありますが、続行を試みます。")
+    else:
+        st.success("✅ すべての必須モジュールのインポートに成功しました。")
     
     # メインアプリケーションをロードする前に状態を表示
     st.info("メインアプリケーションを読み込んでいます...")
