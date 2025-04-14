@@ -162,7 +162,9 @@ try:
     # モジュールが存在するかの簡易テスト
     module_checks = [
         ("import sailing_data_processor.validation", "sailing_data_processor.validation"),
-        ("from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator", "QualityMetricsCalculator")
+        ("from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator", "QualityMetricsCalculator"),
+        # ProjectManagerのget_all_sessionsメソッドが存在するか確認を追加
+        ("from sailing_data_processor.project.project_manager import ProjectManager", "ProjectManager")
     ]
     
     all_imports_ok = True

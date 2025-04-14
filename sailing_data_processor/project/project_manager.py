@@ -1006,6 +1006,17 @@ class ProjectManager:
             sessions = [s for s in sessions if filter_func(s)]
         
         return sorted(sessions, key=lambda s: s.name)
+        
+    def get_all_sessions(self) -> List[Session]:
+        """
+        すべてのセッションを取得
+        
+        Returns
+        -------
+        List[Session]
+            すべてのセッションのリスト
+        """
+        return self.get_sessions()
     
     def get_project_sessions(self, project_id: str) -> List[Session]:
         """
