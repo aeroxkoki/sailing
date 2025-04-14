@@ -7,9 +7,13 @@ GPSデータの検証を行うモジュール
 from typing import Dict, List, Any, Optional, Callable, Tuple, Set
 import pandas as pd
 import numpy as np
+import logging
 from datetime import datetime, timedelta
 
 from sailing_data_processor.data_model.container import GPSDataContainer
+
+# ロガーの設定
+logger = logging.getLogger(__name__)
 
 
 class ValidationRule:
@@ -397,20 +401,33 @@ class SpatialConsistencyRule(ValidationRule):
             curr_lon = sorted_data[self.longitude_column].iloc[i]
             curr_time = sorted_data[self.timestamp_column].iloc[i]
             
-            # 距離の計算（メートル単位）
-            distance = great_circle((prev_lat, prev_lon), (curr_lat, curr_lon)).meters
-            distances.append(distance)
-            
-            # 時間差の計算（秒単位）
-            time_diff = (curr_time - prev_time).total_seconds()
-            time_diffs.append(time_diff)
-            
-            # 速度の計算（ノット単位、1ノット = 0.514444 m/s）
-            if time_diff > 0:
-                speed = (distance / time_diff) / 0.514444
+            # 座標値がNaNや無限大でないか確認
+            if (np.isfinite(prev_lat) and np.isfinite(prev_lon) and 
+                np.isfinite(curr_lat) and np.isfinite(curr_lon)):
+                try:
+                    # 距離の計算（メートル単位）
+                    distance = great_circle((prev_lat, prev_lon), (curr_lat, curr_lon)).meters
+                    distances.append(distance)
+                    
+                    # 時間差の計算（秒単位）
+                    time_diff = (curr_time - prev_time).total_seconds()
+                    time_diffs.append(time_diff)
+                    
+                    # 速度の計算（ノット単位、1ノット = 0.514444 m/s）
+                    if time_diff > 0:
+                        speed = (distance / time_diff) / 0.514444
+                    else:
+                        speed = float('inf')
+                    speeds.append(speed)
+                except ValueError as e:
+                    # 座標値が有効な範囲外の場合（例：緯度が±90度を超える場合）
+                    logger.warning(f"無効な座標値でのdistance計算をスキップ: {e}")
+                    # 計算をスキップ（次の点へ）
+                    continue
             else:
-                speed = float('inf')
-            speeds.append(speed)
+                # 無効な座標値をスキップ
+                logger.warning(f"無効な座標値をスキップ: prev({prev_lat}, {prev_lon}), curr({curr_lat}, {curr_lon})")
+                continue
             
             prev_lat, prev_lon, prev_time = curr_lat, curr_lon, curr_time
         
