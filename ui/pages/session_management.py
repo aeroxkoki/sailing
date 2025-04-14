@@ -355,4 +355,16 @@ def render_page():
     アプリケーションの統一インターフェース用のラッパー関数
     このメソッドはapp_v5.pyから呼び出される
     """
-    session_management_page()
+    try:
+        # セッション管理ページを呼び出し
+        session_management_page()
+    except Exception as e:
+        # エラーが発生した場合、グレースフルにハンドリング
+        st.error(f"セッション管理の表示中にエラーが発生しました: {str(e)}")
+        # エラーメッセージと問題解決のガイダンスを提供
+        st.info("問題が解決しない場合は、ログを確認するか、管理者にお問い合わせください。")
+        # エラーの詳細情報（デバッグ用）
+        import traceback
+        import logging
+        logging.error(f"セッション管理ページエラー: {e}")
+        logging.error(traceback.format_exc())

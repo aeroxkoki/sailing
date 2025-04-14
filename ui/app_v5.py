@@ -215,13 +215,23 @@ try:
     else:
         module_import_errors["data_validation"] = "モジュールのロードに失敗しました"
     
+    # セッション管理の特別な処理 - 既知の問題への対応
     if session_management:
         try:
-            render_session_management = session_management.render_page
-            logger.info("セッション管理の render_page 関数が正常にロードされました。")
+            if hasattr(session_management, 'render_page'):
+                render_session_management = session_management.render_page
+                logger.info("セッション管理の render_page 関数が正常にロードされました。")
+            elif hasattr(session_management, 'session_management_page'):
+                # 代替方法：session_management_page関数を直接使用
+                logger.info("代替方法：session_management_pageを直接使用します")
+                render_session_management = session_management.session_management_page
+            else:
+                raise AttributeError("必要な関数が見つかりません")
         except AttributeError as e:
-            module_import_errors["session_management"] = f"render_page属性がありません: {e}"
-            logger.error(f"セッション管理の render_page 属性エラー: {e}")
+            module_import_errors["session_management"] = f"必要な属性がありません: {e}"
+            logger.error(f"セッション管理の 属性エラー: {e}")
+            # モジュールの内容を詳細にロギング
+            logger.info(f"セッション管理モジュールの内容: {dir(session_management)}")
     else:
         module_import_errors["session_management"] = "モジュールのロードに失敗しました"
     
