@@ -347,3 +347,12 @@ def session_management_page():
                     if st.button("キャンセル", use_container_width=True):
                         save_state("view_state", "list")
                         st.rerun()
+
+
+# app_v5.pyのインターフェースに対応するためのラッパー関数
+def render_page():
+    """
+    アプリケーションの統一インターフェース用のラッパー関数
+    このメソッドはapp_v5.pyから呼び出される
+    """
+    session_management_page()
