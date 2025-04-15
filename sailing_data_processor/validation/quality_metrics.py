@@ -114,3 +114,37 @@ class QualityMetricsCalculator:
             return "high"      # 高影響
         else:
             return "critical"  # 重大な影響
+            
+    def get_quality_summary(self) -> Dict[str, Any]:
+        """
+        データ品質の要約情報を取得
+        
+        Returns
+        -------
+        Dict[str, Any]
+            品質サマリー
+        """
+        # 問題件数のカウント
+        total_issues = len(self.problematic_indices.get("all", []))
+        missing_data_count = len(self.problematic_indices.get("missing_data", []))
+        out_of_range_count = len(self.problematic_indices.get("out_of_range", []))
+        dupes_count = len(self.problematic_indices.get("duplicates", []))
+        spatial_count = len(self.problematic_indices.get("spatial_anomalies", []))
+        temporal_count = len(self.problematic_indices.get("temporal_anomalies", []))
+        
+        # 品質サマリーを構築
+        return {
+            "overall_score": self.quality_scores.get("total", 100.0),
+            "completeness_score": self.quality_scores.get("completeness", 100.0),
+            "accuracy_score": self.quality_scores.get("accuracy", 100.0),
+            "consistency_score": self.quality_scores.get("consistency", 100.0),
+            "total_issues": total_issues,
+            "issue_counts": {
+                "missing_data": missing_data_count,
+                "out_of_range": out_of_range_count,
+                "duplicates": dupes_count,
+                "spatial_anomalies": spatial_count,
+                "temporal_anomalies": temporal_count
+            },
+            "impact_level": self._determine_impact_level(self.quality_scores.get("total", 100.0))
+        }

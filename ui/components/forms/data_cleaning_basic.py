@@ -301,7 +301,59 @@ class CorrectionHandler:
         Dict[str, Any]
             品質サマリー
         """
-        return self.metrics_calculator.get_quality_summary()
+        # metrics_calculator.get_quality_summary() メソッドが存在しないため、
+        # 必要な情報を収集して独自に品質サマリーを構築する
+        
+        quality_scores = self.metrics_calculator.quality_scores
+        problematic_indices = self.metrics_calculator.problematic_indices
+        
+        # 問題件数のカウント
+        total_issues = len(problematic_indices.get("all", []))
+        missing_data_count = len(problematic_indices.get("missing_data", []))
+        out_of_range_count = len(problematic_indices.get("out_of_range", []))
+        dupes_count = len(problematic_indices.get("duplicates", []))
+        spatial_count = len(problematic_indices.get("spatial_anomalies", []))
+        temporal_count = len(problematic_indices.get("temporal_anomalies", []))
+        
+        # 品質サマリーを構築
+        return {
+            "overall_score": quality_scores.get("total", 100.0),
+            "completeness_score": quality_scores.get("completeness", 100.0),
+            "accuracy_score": quality_scores.get("accuracy", 100.0),
+            "consistency_score": quality_scores.get("consistency", 100.0),
+            "total_issues": total_issues,
+            "issue_counts": {
+                "missing_data": missing_data_count,
+                "out_of_range": out_of_range_count,
+                "duplicates": dupes_count,
+                "spatial_anomalies": spatial_count,
+                "temporal_anomalies": temporal_count
+            },
+            "impact_level": self._determine_impact_level(quality_scores.get("total", 100.0))
+        }
+    
+    def _determine_impact_level(self, score: float) -> str:
+        """
+        品質スコアから影響レベルを決定する
+        
+        Parameters
+        ----------
+        score : float
+            品質スコア (0-100)
+            
+        Returns
+        -------
+        str
+            影響レベル
+        """
+        if score >= 90:
+            return "low"       # 低影響
+        elif score >= 75:
+            return "medium"    # 中程度の影響
+        elif score >= 50:
+            return "high"      # 高影響
+        else:
+            return "critical"  # 重大な影響
 
 
 class DataCleaningBasic:
@@ -417,16 +469,27 @@ class DataCleaningBasic:
         
         with col2:
             issue_counts = quality_summary["issue_counts"]
-            st.metric("問題のあるレコード", 
-                     f"{issue_counts['problematic_records']}/{issue_counts['total_records']}",
-                     f"{issue_counts['problematic_percentage']:.1f}%")
+            total_issues = quality_summary["total_issues"]
+            total_records = len(self.handler.container.data) if self.handler.container is not None else 0
+            problematic_records = len(set().union(*[indices for _, indices in self.handler.metrics_calculator.problematic_indices.items() if indices]))
+            
+            # プログレスバーを使って問題の割合を視覚的に表示
+            st.metric("問題レコード数", 
+                     f"{problematic_records}/{total_records}",
+                     f"{problematic_records/max(1, total_records)*100:.1f}%")
         
         with col3:
-            fixable_counts = quality_summary["fixable_counts"]
-            auto_fixable = fixable_counts["auto_fixable"] + fixable_counts["semi_auto_fixable"]
-            st.metric("自動修正可能な問題", 
-                     f"{auto_fixable}",
-                     f"{auto_fixable / max(1, sum(fixable_counts.values())) * 100:.1f}%")
+            # 問題タイプの内訳
+            impact_level = quality_summary.get("impact_level", "low")
+            impact_colors = {
+                "low": "green",
+                "medium": "orange",
+                "high": "red",
+                "critical": "darkred"
+            }
+            
+            st.markdown(f"**影響レベル:** <span style='color:{impact_colors.get(impact_level, 'gray')}'>{impact_level.upper()}</span>", 
+                       unsafe_allow_html=True)
         
         # 品質スコアの可視化
         quality_viz = self.handler.generate_quality_visualizations()
