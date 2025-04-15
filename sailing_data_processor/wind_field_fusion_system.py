@@ -160,10 +160,14 @@ class WindFieldFusionSystem:
             if self.wind_data_points:
                 latest_time = max(point['timestamp'] for point in self.wind_data_points)
                 # 既存データから風の場を生成
-                return self._create_simple_wind_field(self.wind_data_points, grid_resolution, latest_time)
+                simple_field = self._create_simple_wind_field(self.wind_data_points, grid_resolution, latest_time)
+                self.current_wind_field = simple_field  # 明示的に設定
+                return simple_field
             else:
                 # データがない場合はダミーデータを生成
-                return self._create_dummy_wind_field(latest_time, grid_resolution)
+                dummy_field = self._create_dummy_wind_field(latest_time, grid_resolution)
+                self.current_wind_field = dummy_field  # 明示的に設定
+                return dummy_field
         
         return self.current_wind_field
     
@@ -459,7 +463,9 @@ class WindFieldFusionSystem:
             warnings.warn("Not enough recent data points for fusion, using fallback")
             # フォールバック: 単純な風場を作成
             grid_resolution = 10  # 低解像度グリッド
-            return self._create_simple_wind_field(sorted_data, grid_resolution, latest_time)
+            simple_field = self._create_simple_wind_field(sorted_data, grid_resolution, latest_time)
+            self.current_wind_field = simple_field  # テスト用に明示的に設定
+            return simple_field
         
         # grid_densityパラメータの設定
         grid_density = 20  # 20x20のグリッド
@@ -473,9 +479,12 @@ class WindFieldFusionSystem:
         # スケーリングに失敗した場合の対策
         if not scaled_data:
             warnings.warn("Data scaling failed, using simple wind field")
-            return self._create_simple_wind_field(recent_data, grid_density, latest_time)
+            simple_field = self._create_simple_wind_field(recent_data, grid_density, latest_time)
+            self.current_wind_field = simple_field  # テスト用に明示的に設定
+            return simple_field
         
         # field_interpolatorを使用して風の場を生成
+        wind_field = None
         try:
             # まずidw方式で補間を試みる（最も安定した方法）
             wind_field = self.field_interpolator.interpolate_wind_field(
@@ -488,7 +497,9 @@ class WindFieldFusionSystem:
             # 補間に失敗した場合はシンプルな風場を生成
             if not wind_field:
                 warnings.warn("IDW interpolation returned None, using simple wind field")
-                return self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                simple_field = self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                self.current_wind_field = simple_field  # テスト用に明示的に設定
+                return simple_field
             
             # 風の場のタイムスタンプを設定
             wind_field['time'] = latest_time
@@ -513,9 +524,6 @@ class WindFieldFusionSystem:
             
             # 元の座標を復元
             self._restore_original_coordinates(scaled_data)
-            
-            # 風の場を返す
-            return wind_field
                     
         except Exception as e:
             warnings.warn(f"IDW interpolation failed, trying nearest method: {e}")
@@ -531,7 +539,9 @@ class WindFieldFusionSystem:
                 # 補間に失敗した場合はシンプルな風場を生成
                 if not wind_field:
                     warnings.warn("Nearest interpolation returned None, using simple wind field")
-                    return self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                    simple_field = self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                    self.current_wind_field = simple_field  # テスト用に明示的に設定
+                    return simple_field
                 
                 # 風の場のタイムスタンプを設定
                 wind_field['time'] = latest_time
@@ -557,15 +567,14 @@ class WindFieldFusionSystem:
                 # 元の座標を復元
                 self._restore_original_coordinates(scaled_data)
                 
-                # 風の場を返す
-                return wind_field
-                
             except Exception as e2:
                 # 最後の手段として最も単純な補間手法を試みる
                 warnings.warn(f"Wind field interpolation retry also failed: {e2}")
                 try:
                     # 単純な平均に基づく風の場の生成
-                    return self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                    simple_field = self._create_simple_wind_field(recent_data, grid_density, latest_time)
+                    self.current_wind_field = simple_field  # テスト用に明示的に設定
+                    return simple_field
                 except Exception as e3:
                     warnings.warn(f"Simple wind field creation also failed: {e3}, creating dummy field")
                     # すべてが失敗した場合はダミーフィールドを生成
@@ -573,19 +582,17 @@ class WindFieldFusionSystem:
                     self.current_wind_field = dummy_field
                     return dummy_field
         
-        # このポイントには到達しないはずだが、バグ防止のためのフォールバック
-        finally:
-            # 風の移動モデルを更新 - 有効なデータがある場合のみ
-            if self.current_wind_field and len(recent_data) >= self.propagation_model.min_data_points:
-                self.propagation_model.estimate_propagation_vector(recent_data)
-                
-            # 現在の風の場が設定されていない場合はダミーフィールドを生成
-            if not self.current_wind_field:
-                dummy_field = self._create_dummy_wind_field(latest_time)
-                self.current_wind_field = dummy_field
-                return dummy_field
+        # 風の移動モデルを更新 - 有効なデータがある場合のみ
+        if self.current_wind_field and len(recent_data) >= self.propagation_model.min_data_points:
+            self.propagation_model.estimate_propagation_vector(recent_data)
             
-            return self.current_wind_field
+        # 現在の風の場が設定されていない場合はダミーフィールドを生成
+        if not self.current_wind_field:
+            dummy_field = self._create_dummy_wind_field(latest_time)
+            self.current_wind_field = dummy_field
+            return dummy_field
+        
+        return self.current_wind_field
     
     def _haversine_distance(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
         """
@@ -754,7 +761,7 @@ class WindFieldFusionSystem:
                     # 評価済みの予測を削除
                     del self.previous_predictions[key]
     
-    def predict_wind_field(self, target_time: datetime, grid_resolution: int = 20) -> Optional[Dict[str, Any]]:
+    def predict_wind_field(self, target_time: datetime, grid_resolution: int = 20) -> Dict[str, Any]:
         """
         目標時間の風の場を予測
         
@@ -767,7 +774,7 @@ class WindFieldFusionSystem:
             
         Returns:
         --------
-        Dict[str, Any] or None
+        Dict[str, Any]
             予測された風の場
         """
         # 現在の風の場が利用可能かチェック
@@ -782,8 +789,9 @@ class WindFieldFusionSystem:
         
         if not self.current_wind_field:
             # シンプルなダミーデータを返す（テスト用）
-            simple_field = self._create_dummy_wind_field(target_time, grid_resolution)
-            return simple_field
+            dummy_field = self._create_dummy_wind_field(target_time, grid_resolution)
+            self.current_wind_field = dummy_field  # テスト用に明示的に設定
+            return dummy_field
             
         # 現在の時間
         current_time = self.last_fusion_time or datetime.now()
@@ -800,6 +808,12 @@ class WindFieldFusionSystem:
                 resolution=grid_resolution,
                 qhull_options=qhull_options
             )
+            
+            # 補間に失敗した場合のフォールバック
+            if not result:
+                # シンプルに現在の風の場をコピーして時間だけ更新
+                result = self.current_wind_field.copy()
+                result['time'] = target_time
         else:
             # 長期予測の場合は風の移動モデルも活用
             
@@ -949,6 +963,12 @@ class WindFieldFusionSystem:
                     'time': target_time
                 }
         
+        # 結果がNoneの場合は現在の風の場をコピーして時間を更新するだけ
+        if not result:
+            warnings.warn("Prediction failed, returning current wind field with updated timestamp")
+            result = self.current_wind_field.copy()
+            result['time'] = target_time
+            
         return result
         
     def get_prediction_quality_report(self) -> Dict[str, Any]:

@@ -18,10 +18,14 @@ DEBUG    sailing_test:conftest.py:123 Python path: [
 DEBUG    sailing_test:conftest.py:126 Environment variables:
 DEBUG    sailing_test:conftest.py:128   PATH: /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
 INFO     sailing_test:conftest.py:130 ======== テスト開始 ========
-INFO     sailing_test:conftest.py:137 テスト開始: test_predict_wind_field
-INFO     sailing_test:conftest.py:151 テスト終了: test_predict_wind_field
-INFO     sailing_test:conftest.py:137 テスト開始: test_spatial_consistency
-INFO     sailing_test:conftest.py:151 テスト終了: test_spatial_consistency
-INFO     sailing_test:conftest.py:137 テスト開始: test_update_with_boat_data
-INFO     sailing_test:conftest.py:151 テスト終了: test_update_with_boat_data
+INFO     sailing_test:conftest.py:137 テスト開始: test_detect_and_fix_gps_anomalies
+INFO     sailing_test:conftest.py:151 テスト終了: test_detect_and_fix_gps_anomalies
+INFO     sailing_test:conftest.py:137 テスト開始: test_load_csv_files
+INFO     sailing_test:conftest.py:151 テスト終了: test_load_csv_files
+INFO     sailing_test:conftest.py:137 テスト開始: test_manual_id_assignment
+INFO     sailing_test:conftest.py:151 テスト終了: test_manual_id_assignment
+INFO     sailing_test:conftest.py:137 テスト開始: test_process_multiple_boats
+INFO     sailing_test:conftest.py:151 テスト終了: test_process_multiple_boats
+INFO     sailing_test:conftest.py:137 テスト開始: test_time_synchronization
+INFO     sailing_test:conftest.py:151 テスト終了: test_time_synchronization
 INFO     sailing_test:conftest.py:132 ======== テスト終了 ========
