@@ -1,7 +1,7 @@
 [theme]
-primaryColor = "#1E88E5"  # メインカラー
+primaryColor = "#1565C0"  # UIのプライマリーカラー（風向風速デモに合わせて調整）
 backgroundColor = "#FFFFFF"  # 背景色
-secondaryBackgroundColor = "#F0F2F6"  # セカンダリ背景色
+secondaryBackgroundColor = "#F0F7FF"  # セカンダリ背景色（風向風速デモに合わせて調整）
 textColor = "#262730"  # テキスト色
 font = "sans serif"  # フォントファミリー
 
@@ -23,8 +23,11 @@ level = "info"  # ログレベル
 
 [client]
 showErrorDetails = true  # エラー詳細の表示（デバッグ用）
+caching = true  # キャッシュを有効化
+displayEnabled = true  # 表示設定
 
 [runner]
 # デバッグのためにメモリ制限を増やす
 magicEnabled = true  # 自動再実行を有効化
 fastReruns = true    # 高速再実行を有効化
+

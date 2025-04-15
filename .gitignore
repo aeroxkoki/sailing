@@ -1,5 +1,3 @@
-# .gitignoreの作成（Pythonプロジェクト用）
-cat > .gitignore << 'EOF'
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -27,4 +25,17 @@ env/
 # OS specific files
 .DS_Store
 Thumbs.db
-EOF
+
+# Streamlit specific
+.streamlit/secrets.toml
+.streamlit/config.toml.private
+
+# Logs
+*.log
+streamlit_cloud.log
+app.log
+
+# Temporary files
+temp/
+tmp/
+.cache/
