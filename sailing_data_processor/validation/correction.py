@@ -14,7 +14,12 @@ from copy import deepcopy
 from sailing_data_processor.data_model.container import GPSDataContainer
 from sailing_data_processor.validation.data_validator import DataValidator
 from sailing_data_processor.validation.data_cleaner import FixProposal, DataCleaner
-from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator as MetricsCalculator
+try:
+    # 拡張されたメトリクス計算器を優先的に使用
+    from sailing_data_processor.validation.quality_metrics_integration import EnhancedQualityMetricsCalculator as MetricsCalculator
+except ImportError:
+    # フォールバックとして基本メトリクス計算器を使用
+    from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator as MetricsCalculator
 
 
 class CorrectionProcessor:
@@ -388,7 +393,10 @@ class CorrectionSuggester:
         self.processor = CorrectionProcessor(self.cleaner)
         
         # 品質メトリクス計算機を初期化
-        self.metrics_calculator = MetricsCalculator(container)
+        self.metrics_calculator = MetricsCalculator(
+            validation_results=self.validator.validation_results,
+            data=container.data
+        )
         self.metrics_calculator.calculate_metrics()
     
     def generate_fix_proposals(self) -> List[Dict[str, Any]]:
