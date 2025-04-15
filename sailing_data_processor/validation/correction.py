@@ -397,7 +397,9 @@ class CorrectionSuggester:
             validation_results=self.validator.validation_results,
             data=container.data
         )
-        self.metrics_calculator.calculate_metrics()
+        # メトリクス計算器はコンストラクタで自動的に初期化されるため、
+        # calculate_metrics()の呼び出しは必要ありません
+        # ゲッター/セッターメソッドを使用してメトリクスにアクセスします
     
     def generate_fix_proposals(self) -> List[Dict[str, Any]]:
         """
@@ -529,8 +531,14 @@ class CorrectionSuggester:
                 quality_after = current_quality
                 if preview_container:
                     # 品質スコアを計算
-                    preview_calculator = MetricsCalculator(preview_container)
-                    preview_calculator.calculate_metrics()
+                    # 正しいコンストラクタパラメータでMetricsCalculatorを初期化
+                    preview_validator = DataValidator()
+                    preview_validator.validate(preview_container)
+                    preview_calculator = MetricsCalculator(
+                        validation_results=preview_validator.validation_results,
+                        data=preview_container.data
+                    )
+                    # メトリクス計算器はコンストラクタで自動的に初期化されます
                     quality_after = preview_calculator.get_total_quality_score()
                 
                 # 修正方法情報を追加
@@ -629,8 +637,14 @@ class CorrectionSuggester:
                 quality_after = current_quality
                 if preview_container:
                     # 品質スコアを計算
-                    preview_calculator = MetricsCalculator(preview_container)
-                    preview_calculator.calculate_metrics()
+                    # 正しいコンストラクタパラメータでMetricsCalculatorを初期化
+                    preview_validator = DataValidator()
+                    preview_validator.validate(preview_container)
+                    preview_calculator = MetricsCalculator(
+                        validation_results=preview_validator.validation_results,
+                        data=preview_container.data
+                    )
+                    # メトリクス計算器はコンストラクタで自動的に初期化されます
                     quality_after = preview_calculator.get_total_quality_score()
                 
                 # 修正方法情報を追加
