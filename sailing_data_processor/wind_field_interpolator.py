@@ -192,7 +192,7 @@ class WindFieldInterpolator:
         
         # 時間変化が小さい場合は最近傍の風の場をそのまま使用
         if abs(time_diff_minutes) < 1.0:
-            return self._resample_wind_field(base_field, resolution)
+            return self._resample_wind_field(base_field, resolution, qhull_options)
         
         # 補間方法に応じて処理
         if method == 'gp':
@@ -640,13 +640,20 @@ class WindFieldInterpolator:
         
         try:
             # LinearNDInterpolatorはDelaunay三角形分割を使用
-            # qhull_optionsをメソッドパラメータから取得、または実装内でQJ指定
-            qhull_opt = qhull_options or 'QJ'  # QJオプションでエラー回避
-            
-            interp_sin = LinearNDInterpolator(points, values_dir_sin, qhull_options=qhull_opt)
-            interp_cos = LinearNDInterpolator(points, values_dir_cos, qhull_options=qhull_opt)
-            interp_speed = LinearNDInterpolator(points, values_speed, qhull_options=qhull_opt)
-            interp_conf = LinearNDInterpolator(points, values_conf, qhull_options=qhull_opt)
+            # qhull_optionsパラメータは互換性が無いため、Delaunay自体に設定する
+            if qhull_options:
+                # Delaunayにqhull_optionsを指定して作成
+                tri = Delaunay(points, qhull_options=qhull_options)
+                interp_sin = LinearNDInterpolator(tri, values_dir_sin)
+                interp_cos = LinearNDInterpolator(tri, values_dir_cos)
+                interp_speed = LinearNDInterpolator(tri, values_speed)
+                interp_conf = LinearNDInterpolator(tri, values_conf)
+            else:
+                # デフォルト設定で作成
+                interp_sin = LinearNDInterpolator(points, values_dir_sin)
+                interp_cos = LinearNDInterpolator(points, values_dir_cos)
+                interp_speed = LinearNDInterpolator(points, values_speed)
+                interp_conf = LinearNDInterpolator(points, values_conf)
             
             # フォールバックのためのNearestNDInterpolator
             nearest_sin = NearestNDInterpolator(points, values_dir_sin)
