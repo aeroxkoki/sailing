@@ -117,28 +117,70 @@ def create_timeline_control(track_data, callback=None):
     
     # 再生コントロールと速度選択
     with col2:
-        # Streamlit 1.31.0との互換性を確保するため、リストではなくタプルを使用
-        cols = st.columns((1, 1, 1, 5, 2))
+        # Streamlit 1.31.0の互換性問題対応: 個別のコンポーネントに分割
+        play_col = st.container()
+        prev_col = st.container()
+        next_col = st.container()
+        slider_col = st.container()
+        speed_col = st.container()
+        
+        # レイアウト調整用のスタイル
+        st.markdown("""
+        <style>
+        .control-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .button-container {
+            width: 15%;
+            float: left;
+            display: inline-block;
+        }
+        .slider-container {
+            width: 55%;
+            float: left;
+            display: inline-block;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+        .speed-container {
+            width: 15%;
+            float: left;
+            display: inline-block;
+        }
+        </style>
+        """, unsafe_allow_html=True)
+        
+        # コントロールを横並びにするためのコンテナ
+        st.markdown('<div class="control-container">', unsafe_allow_html=True)
         
         # 再生/一時停止ボタン
+        st.markdown('<div class="button-container">', unsafe_allow_html=True)
         play_icon = "⏸️" if st.session_state.timeline_playing else "▶️"
-        if cols[0].button(play_icon, key="timeline_play_button"):
+        if st.button(play_icon, key="timeline_play_button"):
             st.session_state.timeline_playing = not st.session_state.timeline_playing
+        st.markdown('</div>', unsafe_allow_html=True)
         
         # 前へボタン
-        if cols[1].button("⏪", key="timeline_prev_button"):
+        st.markdown('<div class="button-container">', unsafe_allow_html=True)
+        if st.button("⏪", key="timeline_prev_button"):
             st.session_state.timeline_index = max(0, st.session_state.timeline_index - 1)
             if callback:
                 callback(st.session_state.timeline_index)
+        st.markdown('</div>', unsafe_allow_html=True)
         
         # 次へボタン
-        if cols[2].button("⏩", key="timeline_next_button"):
+        st.markdown('<div class="button-container">', unsafe_allow_html=True)
+        if st.button("⏩", key="timeline_next_button"):
             st.session_state.timeline_index = min(data_length - 1, st.session_state.timeline_index + 1)
             if callback:
                 callback(st.session_state.timeline_index)
+        st.markdown('</div>', unsafe_allow_html=True)
         
         # タイムラインスライダー
-        new_index = cols[3].slider(
+        st.markdown('<div class="slider-container">', unsafe_allow_html=True)
+        new_index = st.slider(
             "タイムライン",
             0, data_length - 1, 
             st.session_state.timeline_index,
@@ -150,8 +192,10 @@ def create_timeline_control(track_data, callback=None):
             st.session_state.timeline_index = new_index
             if callback:
                 callback(st.session_state.timeline_index)
+        st.markdown('</div>', unsafe_allow_html=True)
         
         # 再生速度選択
+        st.markdown('<div class="speed-container">', unsafe_allow_html=True)
         speed_options = {
             "0.5x": 0.5,
             "1x": 1.0, 
@@ -159,7 +203,7 @@ def create_timeline_control(track_data, callback=None):
             "5x": 5.0
         }
         
-        selected_speed = cols[4].selectbox(
+        selected_speed = st.selectbox(
             "再生速度",
             list(speed_options.keys()),
             index=list(speed_options.values()).index(st.session_state.timeline_speed),
@@ -168,6 +212,10 @@ def create_timeline_control(track_data, callback=None):
         )
         
         st.session_state.timeline_speed = speed_options[selected_speed]
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # コンテナ終了
+        st.markdown('</div>', unsafe_allow_html=True)
     
     # 自動再生制御（Javascriptを使用）
     if st.session_state.timeline_playing:
