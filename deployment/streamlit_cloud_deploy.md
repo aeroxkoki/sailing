@@ -25,7 +25,7 @@
    - Main file path: `streamlit_app.py`
 
 3. 必要に応じて高度な設定を行います:
-   - Python version: `3.9` (推奨)
+   - Python version: `3.11` (必須: Python 3.12では互換性の問題があります)
    - パッケージ依存関係: `requirements.txt`から自動的に読み込まれます
 
 4. "Deploy" ボタンをクリックしてデプロイを開始します
@@ -93,12 +93,14 @@ else:
 **解決策**:
 - `requirements.txt` に必要なすべての依存関係が記載されていることを確認
 - バージョン制約を追加して互換性を確保
+- Python 3.12では一部のライブラリ（古いnumpy, scipyなど）に互換性問題があるため、Python 3.11を使用する
 
 ```
 # requirements.txt の例
-streamlit==1.38.0
-pandas==2.2.0
-numpy==1.26.3
+streamlit==1.31.0
+pandas>=2.0.3,<2.2.0
+numpy>=1.26.0  # Python 3.12互換バージョン
+scipy>=1.12.0  # Python 3.12互換バージョン
 ```
 
 ### 5. デプロイ後のメンテナンス

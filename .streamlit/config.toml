@@ -1,33 +1,13 @@
-[theme]
-primaryColor = "#1565C0"  # UIのプライマリーカラー（風向風速デモに合わせて調整）
-backgroundColor = "#FFFFFF"  # 背景色
-secondaryBackgroundColor = "#F0F7FF"  # セカンダリ背景色（風向風速デモに合わせて調整）
-textColor = "#262730"  # テキスト色
-font = "sans serif"  # フォントファミリー
-
 [server]
-maxUploadSize = 200  # 最大アップロードサイズ (MB)
-enableXsrfProtection = true  # XSRFプロテクション有効
-enableCORS = false  # Streamlit Cloud環境では必要に応じてCORSを無効化
-headless = true  # クラウド環境で必要
-fileWatcherType = "none"  # ファイル監視を無効化（パフォーマンス向上）
-port = 8501  # ポート設定（デフォルト）
+# Python 3.11を使用するよう指定（Python 3.12の互換性問題を避けるため）
+pythonVersion = "3.11"
 
 [browser]
-gatherUsageStats = false  # 使用統計の収集を無効化
-# Streamlit Cloudでは自動的に設定されるためコメントアウト
-# serverAddress = "localhost"  # サーバーアドレス 
+gatherUsageStats = false
 
-[logger]
-level = "info"  # ログレベル
-
-[client]
-showErrorDetails = true  # エラー詳細の表示（デバッグ用）
-caching = true  # キャッシュを有効化
-displayEnabled = true  # 表示設定
-
-[runner]
-# デバッグのためにメモリ制限を増やす
-magicEnabled = true  # 自動再実行を有効化
-fastReruns = true    # 高速再実行を有効化
-
+[theme]
+base = "light"
+primaryColor = "#0078D7"
+backgroundColor = "#F0F2F5"
+secondaryBackgroundColor = "#E6E8EB"
+textColor = "#262730"
