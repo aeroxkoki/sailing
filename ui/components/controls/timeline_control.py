@@ -103,7 +103,8 @@ def create_timeline_control(track_data, callback=None):
     st.session_state.timeline_index = min(max(0, st.session_state.timeline_index), data_length - 1)
     
     # コントロールレイアウト
-    col1, col2 = st.columns([1, 7])
+    # Streamlit 1.31.0との互換性を確保するため、リストではなくタプルを使用
+    col1, col2 = st.columns((1, 7))
     
     # 現在の時間表示
     if isinstance(timestamps[st.session_state.timeline_index], datetime.datetime):
@@ -116,7 +117,8 @@ def create_timeline_control(track_data, callback=None):
     
     # 再生コントロールと速度選択
     with col2:
-        cols = st.columns([1, 1, 1, 5, 2])
+        # Streamlit 1.31.0との互換性を確保するため、リストではなくタプルを使用
+        cols = st.columns((1, 1, 1, 5, 2))
         
         # 再生/一時停止ボタン
         play_icon = "⏸️" if st.session_state.timeline_playing else "▶️"

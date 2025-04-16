@@ -160,7 +160,7 @@ if active_section == 'dashboard':
     st.title("セーリング戦略分析ダッシュボード")
     
     # メインレイアウト
-    col1, col2 = st.columns([2, 1])
+    col1, col2 = st.columns((2, 1))
     
     with col1:
         st.subheader("GPSトラックと風向風速")
@@ -292,7 +292,7 @@ elif active_section == 'analysis':
     st.title("風向分析")
     
     # レイアウト
-    col1, col2 = st.columns([3, 2])
+    col1, col2 = st.columns((3, 2))
     
     with col1:
         st.subheader("風向風速フィールド")
