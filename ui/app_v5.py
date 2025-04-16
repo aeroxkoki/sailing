@@ -21,9 +21,6 @@ current_dir = pathlib.Path(__file__).parent
 project_root = current_dir.parent.absolute()
 sys.path.insert(0, str(project_root))
 
-# エラー追跡用のグローバル変数（宣言のみ）
-last_error_trace = None
-
 # ロギング設定
 logging.basicConfig(
     level=logging.INFO,
@@ -34,6 +31,9 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
+# エラー追跡用のグローバル変数（宣言のみ）
+last_error_trace = None
 
 # 先に依存モジュールが正しくロードされているか確認
 try:
@@ -145,6 +145,7 @@ try:
     
     # スタックトレースを取得するためのヘルパー関数
     def import_with_detailed_error(module_path, module_name):
+        global last_error_trace  # 最初にグローバル変数宣言
         try:
             logger.info(f"{module_name}のインポートを試みます...")
             module = __import__(module_path, fromlist=[''])
@@ -153,8 +154,7 @@ try:
         except Exception as e:
             error_msg = f"{module_name}のインポートに失敗: {e}"
             error_trace = traceback.format_exc()
-            # グローバル変数に保存し、外側の変数を更新する（nonlocalは使わない）
-            global last_error_trace
+            # グローバル変数に保存
             last_error_trace = error_trace
             # 関数内でログ記録する
             logger.error(error_msg)
@@ -215,18 +215,21 @@ try:
     else:
         module_import_errors["data_validation"] = "モジュールのロードに失敗しました"
     
-    # セッション管理の特別な処理 - 既知の問題への対応
+    # セッション管理の処理 - render_page関数が標準化されたことを前提
     if session_management:
         try:
+            # セッション管理モジュールには標準でrender_page関数が実装されているはず
             if hasattr(session_management, 'render_page'):
                 render_session_management = session_management.render_page
                 logger.info("セッション管理の render_page 関数が正常にロードされました。")
-            elif hasattr(session_management, 'session_management_page'):
-                # 代替方法：session_management_page関数を直接使用
-                logger.info("代替方法：session_management_pageを直接使用します")
-                render_session_management = session_management.session_management_page
             else:
-                raise AttributeError("必要な関数が見つかりません")
+                # 念のためfallback - 旧バージョンの互換性のため
+                logger.warning("セッション管理にrender_page関数が見つかりません。互換性モードを試行します。")
+                if hasattr(session_management, 'session_management_page'):
+                    logger.info("代替方法：session_management_pageを直接使用します")
+                    render_session_management = session_management.session_management_page
+                else:
+                    raise AttributeError("必要な関数が見つかりません")
         except AttributeError as e:
             module_import_errors["session_management"] = f"必要な属性がありません: {e}"
             logger.error(f"セッション管理の 属性エラー: {e}")
@@ -325,9 +328,9 @@ try:
             else:
                 st.code(traceback.format_exc())
             
-            # ファイルの存在確認結果を表示
+            # ファイルの存在確認結果を表示（pathlib使用でクロスプラットフォーム互換性向上）
             st.subheader("モジュールパス確認")
-            pages_dir = os.path.join(os.path.dirname(__file__), 'pages')
+            pages_dir = current_dir / 'pages'
             files_to_check = [
                 'basic_project_management.py',
                 'data_validation.py',
@@ -338,8 +341,8 @@ try:
             st.write("ファイル存在確認:")
             
             for file in files_to_check:
-                file_path = os.path.join(pages_dir, file)
-                exists = os.path.exists(file_path)
+                file_path = pages_dir / file
+                exists = file_path.exists()
                 status = "✅ 存在します" if exists else "❌ 見つかりません"
                 st.write(f" - {file}: {status}")
                 

@@ -11,6 +11,28 @@ import pandas as pd
 import folium
 from streamlit_folium import folium_static
 import datetime
+import os
+import pathlib
+import sys
+import logging
+
+# ロギング設定
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# Streamlit Cloudでの実行かどうかを検出（クラウド環境では'STREAMLIT_BROWSER_GATHER_USAGE_STATS'環境変数が設定されています）
+IS_CLOUD_ENV = os.environ.get("STREAMLIT_SERVER_HEADLESS") == "true"
+logger.info(f"クラウド環境で実行中: {IS_CLOUD_ENV}")
+
+# プロジェクトのルートディレクトリをパスに追加（pathlibを使用してクロスプラットフォーム互換性を向上）
+current_dir = pathlib.Path(__file__).parent
+sys.path.insert(0, str(current_dir))
 
 # 必要なコンポーネントをインポート
 from ui.components.navigation.top_bar import apply_top_bar_style, render_top_bar
