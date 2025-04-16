@@ -155,126 +155,257 @@ if 'wind_data' not in st.session_state:
 # メインコンテンツ部分
 st.markdown('<div class="main-content"></div>', unsafe_allow_html=True)
 
+# レイアウトスタイルを追加
+st.markdown("""
+<style>
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 130px);
+}
+
+.top-row {
+    display: flex;
+    flex-direction: row;
+    height: 75%;
+}
+
+.left-panel {
+    width: 250px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-right: 1px solid #e9ecef;
+    overflow-y: auto;
+}
+
+.map-panel {
+    flex-grow: 1;
+    padding: 0;
+    position: relative;
+}
+
+.timeline-panel {
+    height: 60px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+}
+
+.detail-panel {
+    height: 25%;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-top: 1px solid #e9ecef;
+    overflow-y: auto;
+}
+
+.panel-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #495057;
+}
+
+.collapsible {
+    cursor: pointer;
+}
+
+.panel-content {
+    margin-top: 5px;
+}
+
+/* タブスタイルの調整 */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 40px;
+    padding: 0 16px;
+    white-space: pre-wrap;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #e6f0ff;
+    border-radius: 4px 4px 0 0;
+}
+</style>
+""", unsafe_allow_html=True)
+
 # アクティブなセクションに応じて表示内容を変更
 if active_section == 'dashboard':
-    st.title("セーリング戦略分析ダッシュボード")
-    
-    # メインレイアウト
-    col1, col2 = st.columns((2, 1))
-    
-    with col1:
-        st.subheader("GPSトラックと風向風速")
-        
-        # 地図表示エリア
-        map_container = st.container()
-        with map_container:
-            # トラックデータから地図の中心位置を計算
-            center_lat = np.mean([p['lat'] for p in st.session_state.track_data])
-            center_lon = np.mean([p['lon'] for p in st.session_state.track_data])
-            center = [center_lat, center_lon]
-            
-            # タイムラインコントロール作成
-            timeline_index = create_timeline_control(st.session_state.track_data)
-            
-            # 現在位置のデータ
-            current_pos = st.session_state.track_data[timeline_index]
-            position = [current_pos['lat'], current_pos['lon']]
-            course = current_pos['course']
-            
-            # 風向風速マップを作成
-            m = create_wind_flow_map(center, st.session_state.wind_data)
-            
-            # 艇のトラックを描画
-            track_coords = [[p['lat'], p['lon']] for p in st.session_state.track_data]
-            folium.PolyLine(
-                track_coords,
-                color='#888888',
-                weight=2,
-                opacity=0.7
-            ).add_to(m)
-            
-            # 艇マーカーを追加
-            update_boat_position(m, position, course, timeline_index, st.session_state.track_data)
-            
-            # マップ表示
-            folium_static(m, width=800, height=500)
-    
-    with col2:
-        st.subheader("パフォーマンスデータ")
-        
-        # 現在のデータ表示
-        current_data = st.session_state.track_data[timeline_index]
-        
-        # 風向風速情報
-        st.markdown(
-            f"""
-            <div style="background-color: #f0f8ff; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
-                <h3 style="margin-top: 0;">現在の風情報</h3>
-                <div style="display: flex;">
-                    <div style="flex: 1;">
-                        <p style="font-size: 24px; font-weight: bold; margin: 0;">{current_data['wind_speed']:.1f} kt</p>
-                        <p style="margin: 0;">風速</p>
-                    </div>
-                    <div style="flex: 1;">
-                        <p style="font-size: 24px; font-weight: bold; margin: 0;">{current_data['wind_direction']:.0f}°</p>
-                        <p style="margin: 0;">風向</p>
-                    </div>
-                </div>
+    # マップ中心の新しいレイアウト構造を作成
+    st.markdown("""
+    <div class="main-layout">
+        <div class="top-row">
+            <div class="left-panel" id="leftPanel">
+                <div class="panel-title">データ管理</div>
+                <div class="panel-content" id="leftContent"></div>
             </div>
-            """,
-            unsafe_allow_html=True
-        )
+            <div class="map-panel" id="mapPanel"></div>
+        </div>
+        <div class="timeline-panel" id="timelinePanel"></div>
+        <div class="detail-panel" id="detailPanel">
+            <div class="panel-title collapsible">詳細データ</div>
+            <div class="panel-content" id="detailContent"></div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # 左パネル
+    with st.container():
+        st.markdown('<div id="leftContent-streamlit"></div>', unsafe_allow_html=True)
+        # セッション選択
+        st.subheader("セッション")
+        sessions = ["レース1 (2025-04-10)", "トレーニング (2025-04-05)", "レース2 (2025-03-28)"]
+        selected_session = st.selectbox("セッションを選択", sessions)
         
-        # 艇の情報
-        st.markdown(
-            f"""
-            <div style="background-color: #fff8f0; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
-                <h3 style="margin-top: 0;">艇の状態</h3>
-                <div style="display: flex;">
-                    <div style="flex: 1;">
-                        <p style="font-size: 24px; font-weight: bold; margin: 0;">{current_data['speed']:.1f} kt</p>
-                        <p style="margin: 0;">速度</p>
+        # フィルター設定
+        st.subheader("表示設定")
+        st.checkbox("風向風速を表示", value=True)
+        st.checkbox("戦略ポイントを表示", value=True)
+        
+        # 分析設定
+        st.subheader("分析設定")
+        analysis_type = st.radio("分析タイプ", ["風向分析", "タック効率", "VMG最適化"])
+        
+        # 表示データの更新
+        st.button("データを更新")
+    
+    # マップパネル
+    with st.container():
+        st.markdown('<div id="mapPanel-streamlit"></div>', unsafe_allow_html=True)
+        
+        # マップビューの計算と表示
+        center_lat = np.mean([p['lat'] for p in st.session_state.track_data])
+        center_lon = np.mean([p['lon'] for p in st.session_state.track_data])
+        center = [center_lat, center_lon]
+        
+        # タイムラインコントロール作成（下部に表示するためデータのみ準備）
+        if 'timeline_index' not in st.session_state:
+            st.session_state.timeline_index = 0
+        timeline_index = st.session_state.timeline_index
+        
+        # 現在位置のデータ
+        current_pos = st.session_state.track_data[timeline_index]
+        position = [current_pos['lat'], current_pos['lon']]
+        course = current_pos['course']
+        
+        # 風向風速マップを作成（改良版を使用）
+        map_type = "CartoDB positron"  # デフォルトのマップタイプ
+        m = create_wind_flow_map(center, st.session_state.wind_data, map_type=map_type)
+        
+        # GPSトラックをマップに追加
+        track_coords = [[p['lat'], p['lon']] for p in st.session_state.track_data]
+        folium.PolyLine(
+            track_coords,
+            color='#FF5722',
+            weight=3,
+            opacity=0.7,
+            name="トラック"
+        ).add_to(m)
+        
+        # 艇マーカーを追加
+        update_boat_position(m, position, course, timeline_index, st.session_state.track_data)
+        
+        # マップ表示 - サイズを大きく
+        folium_static(m, width=1000, height=500)
+    
+    # タイムラインパネル
+    with st.container():
+        st.markdown('<div id="timelinePanel-streamlit"></div>', unsafe_allow_html=True)
+        # タイムラインコントロール作成
+        timeline_index = create_timeline_control(st.session_state.track_data, show_key_points=True)
+    
+    # 詳細データパネル
+    with st.container():
+        st.markdown('<div id="detailPanel-streamlit"></div>', unsafe_allow_html=True)
+        
+        # タブでデータビューを整理
+        tab1, tab2, tab3 = st.tabs(["現在値", "グラフ", "統計"])
+        
+        with tab1:
+            # 現在のデータ表示
+            current_data = st.session_state.track_data[timeline_index]
+            
+            # 2列レイアウト
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                # 風向風速情報
+                st.markdown(
+                    f"""
+                    <div style="background-color: #f0f8ff; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        <h4 style="margin-top: 0;">風情報</h4>
+                        <div style="display: flex;">
+                            <div style="flex: 1;">
+                                <p style="font-size: 20px; font-weight: bold; margin: 0;">{current_data['wind_speed']:.1f} kt</p>
+                                <p style="margin: 0;">風速</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <p style="font-size: 20px; font-weight: bold; margin: 0;">{current_data['wind_direction']:.0f}°</p>
+                                <p style="margin: 0;">風向</p>
+                            </div>
+                        </div>
                     </div>
-                    <div style="flex: 1;">
-                        <p style="font-size: 24px; font-weight: bold; margin: 0;">{current_data['course']:.0f}°</p>
-                        <p style="margin: 0;">進行方向</p>
+                    """,
+                    unsafe_allow_html=True
+                )
+            
+            with col2:
+                # 艇の情報
+                st.markdown(
+                    f"""
+                    <div style="background-color: #fff8f0; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+                        <h4 style="margin-top: 0;">艇の状態</h4>
+                        <div style="display: flex;">
+                            <div style="flex: 1;">
+                                <p style="font-size: 20px; font-weight: bold; margin: 0;">{current_data['speed']:.1f} kt</p>
+                                <p style="margin: 0;">速度</p>
+                            </div>
+                            <div style="flex: 1;">
+                                <p style="font-size: 20px; font-weight: bold; margin: 0;">{current_data['course']:.0f}°</p>
+                                <p style="margin: 0;">進行方向</p>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
+                    """,
+                    unsafe_allow_html=True
+                )
         
-        # 統計グラフ
-        st.subheader("速度推移")
+        with tab2:
+            # 速度データの準備
+            speeds = [p['speed'] for p in st.session_state.track_data]
+            timestamps = [p['timestamp'] for p in st.session_state.track_data]
+            
+            # グラフ表示
+            speed_df = pd.DataFrame({
+                '時間': timestamps,
+                '速度 (kt)': speeds
+            })
+            
+            # プロット
+            st.line_chart(speed_df.set_index('時間')['速度 (kt)'])
         
-        # 速度データの準備
-        speeds = [p['speed'] for p in st.session_state.track_data]
-        timestamps = [p['timestamp'] for p in st.session_state.track_data]
-        
-        # グラフ表示
-        speed_df = pd.DataFrame({
-            '時間': timestamps,
-            '速度 (kt)': speeds
-        })
-        
-        # プロット
-        st.line_chart(speed_df.set_index('時間')['速度 (kt)'])
-        
-        # 風向風速の推移
-        st.subheader("風速推移")
-        
-        # 風速データの準備
-        wind_speeds = [p['wind_speed'] for p in st.session_state.track_data]
-        
-        # グラフ表示
-        wind_df = pd.DataFrame({
-            '時間': timestamps,
-            '風速 (kt)': wind_speeds
-        })
-        
-        # プロット
-        st.line_chart(wind_df.set_index('時間')['風速 (kt)'])
+        with tab3:
+            # 統計情報
+            st.markdown("### 統計サマリー")
+            
+            # 基本統計量を表示
+            speeds = [p['speed'] for p in st.session_state.track_data]
+            wind_speeds = [p['wind_speed'] for p in st.session_state.track_data]
+            
+            stats_df = pd.DataFrame({
+                '指標': ['平均速度', '最大速度', '平均風速', '最大風速'],
+                '値': [
+                    f"{np.mean(speeds):.1f} kt",
+                    f"{np.max(speeds):.1f} kt",
+                    f"{np.mean(wind_speeds):.1f} kt",
+                    f"{np.max(wind_speeds):.1f} kt"
+                ]
+            })
+            
+            st.table(stats_df)
 
 elif active_section == 'data':
     st.title("データ管理")

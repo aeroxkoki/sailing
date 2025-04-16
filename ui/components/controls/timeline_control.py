@@ -8,9 +8,9 @@ import streamlit as st
 import pandas as pd
 import datetime
 
-def create_timeline_control(track_data, callback=None):
+def create_timeline_control(track_data, callback=None, show_key_points=True):
     """
-    トラックデータの時間調整コントロールを作成
+    拡張トラックデータ時間調整コントロールを作成
     
     Parameters:
     -----------
@@ -18,26 +18,28 @@ def create_timeline_control(track_data, callback=None):
         GPSトラックデータ
     callback : function, optional
         スライダー値が変更された時に呼び出される関数
-    
+    show_key_points : bool
+        戦略ポイントなどの重要ポイントをタイムラインに表示するか
+        
     Returns:
     --------
     int
         現在選択されている時間インデックス
     """
-    # スタイルの適用
+    # 拡張スタイルの適用
     st.markdown("""
     <style>
     .timeline-container {
         background-color: #f8f9fa;
         padding: 10px;
         border-radius: 5px;
-        margin-top: 15px;
+        margin: 0;
     }
     
     .timeline-controls {
         display: flex;
         align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
     }
     
     .timeline-button {
@@ -45,22 +47,39 @@ def create_timeline_control(track_data, callback=None):
         color: white;
         border: none;
         border-radius: 50%;
-        width: 36px;
-        height: 36px;
+        width: 32px;
+        height: 32px;
         display: flex;
         align-items: center;
         justify-content: center;
         cursor: pointer;
-        margin-right: 10px;
+        margin-right: 8px;
     }
     
     .timeline-info {
-        margin-left: 15px;
+        margin-left: 12px;
         flex-grow: 1;
+        font-size: 14px;
     }
     
     .timeline-speed {
         margin-left: auto;
+    }
+    
+    .timeline-track {
+        position: relative;
+        height: 10px;
+        margin-top: 8px;
+    }
+    
+    .timeline-marker {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background-color: #ff5722;
+        border-radius: 50%;
+        top: -4px;
+        transform: translateX(-50%);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -192,25 +211,44 @@ def create_timeline_control(track_data, callback=None):
             st.session_state.timeline_index = new_index
             if callback:
                 callback(st.session_state.timeline_index)
+        
+        # もし重要ポイントを表示する場合
+        if show_key_points:
+            # サンプルの重要ポイント（実際の実装では計算する）
+            key_points = [
+                {'index': int(data_length * 0.2), 'type': 'tack', 'color': '#ff5722'},
+                {'index': int(data_length * 0.5), 'type': 'windshift', 'color': '#2196f3'},
+                {'index': int(data_length * 0.7), 'type': 'layline', 'color': '#4caf50'}
+            ]
+            
+            # マーカーHTMLを生成
+            markers_html = ""
+            for point in key_points:
+                position = (point['index'] / (data_length - 1)) * 100
+                markers_html += f"""
+                <div class="timeline-marker" style="left: {position}%; background-color: {point['color']};"
+                     title="{point['type']}"></div>
+                """
+            
+            # マーカーを表示
+            st.markdown(f"""
+            <div class="timeline-track">
+                {markers_html}
+            </div>
+            """, unsafe_allow_html=True)
+            
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # 再生速度選択
+        # 再生速度選択（よりコンパクトに）
         st.markdown('<div class="speed-container">', unsafe_allow_html=True)
-        speed_options = {
-            "0.5x": 0.5,
-            "1x": 1.0, 
-            "2x": 2.0,
-            "5x": 5.0
-        }
-        
+        speed_options = {"1x": 1.0, "2x": 2.0}
         selected_speed = st.selectbox(
-            "再生速度",
+            "速度",
             list(speed_options.keys()),
-            index=list(speed_options.values()).index(st.session_state.timeline_speed),
+            index=list(speed_options.values()).index(st.session_state.timeline_speed if st.session_state.timeline_speed in speed_options.values() else 1.0),
             label_visibility="collapsed",
             key="timeline_speed_select"
         )
-        
         st.session_state.timeline_speed = speed_options[selected_speed]
         st.markdown('</div>', unsafe_allow_html=True)
         

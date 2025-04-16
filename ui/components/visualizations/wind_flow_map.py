@@ -9,6 +9,7 @@ import streamlit as st
 import folium
 import json
 import numpy as np
+from folium import plugins
 
 def get_wind_color(speed):
     """風速に応じた色を返す（Windy.comスタイル）"""
@@ -23,9 +24,9 @@ def get_wind_color(speed):
     else:
         return '#F08119'  # 猛烈な風: オレンジ系
 
-def create_wind_flow_map(center, wind_data, gps_track=None):
+def create_wind_flow_map(center, wind_data, gps_track=None, map_type="CartoDB positron"):
     """
-    Windy.com風の風向風速表示を含むマップを作成
+    拡張された風向風速マップを作成
     
     Parameters:
     -----------
@@ -35,19 +36,45 @@ def create_wind_flow_map(center, wind_data, gps_track=None):
         風データ {'lat': [...], 'lon': [...], 'direction': [...], 'speed': [...]}
     gps_track : list, optional
         GPSトラックポイントのリスト
-    
+    map_type : str
+        使用するマップタイル ('CartoDB positron', 'OpenStreetMap', 'Stamen Terrain')
+        
     Returns:
     --------
     folium.Map
         Foliumマップオブジェクト
     """
+    # 利用可能なマップタイル
+    map_tiles = {
+        "CartoDB positron": "CartoDB positron",
+        "OpenStreetMap": "OpenStreetMap",
+        "Stamen Terrain": "Stamen Terrain",
+        "マリンチャート": "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
+    }
+    
     # 基本マップの作成
     m = folium.Map(
         location=center,
         zoom_start=12,
-        tiles='CartoDB positron',
+        tiles=map_tiles.get(map_type, "CartoDB positron"),
         control_scale=True
     )
+    
+    # マップコントロールとタイルレイヤーを追加
+    folium.TileLayer('CartoDB positron', name='標準地図').add_to(m)
+    folium.TileLayer('OpenStreetMap', name='ストリートマップ').add_to(m)
+    folium.TileLayer('Stamen Terrain', name='地形図').add_to(m)
+    
+    # 海図レイヤーの追加
+    folium.TileLayer(
+        tiles='https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
+        name='海図',
+        attr='© OpenSeaMap contributors',
+        overlay=True
+    ).add_to(m)
+    
+    # レイヤーコントロールを追加
+    folium.LayerControl(position='topright').add_to(m)
     
     # GPSトラックの表示（データがある場合）
     if gps_track is not None:
@@ -217,6 +244,21 @@ def create_wind_flow_map(center, wind_data, gps_track=None):
     </div>
     """
     m.get_root().html.add_child(folium.Element(legend_html))
+    
+    # ズームホームボタンの追加
+    plugins.LocateControl(position='topright').add_to(m)
+    
+    # 全画面表示ボタンの追加
+    plugins.Fullscreen(
+        position='topright',
+        title='全画面表示',
+        title_cancel='全画面を終了',
+        force_separate_button=True
+    ).add_to(m)
+    
+    # ミニマップの追加
+    minimap = plugins.MiniMap(position='bottomright')
+    m.add_child(minimap)
     
     return m
 
