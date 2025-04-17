@@ -61,9 +61,23 @@ def create_wind_flow_map(center, wind_data, gps_track=None, map_type="CartoDB po
     )
     
     # マップコントロールとタイルレイヤーを追加
-    folium.TileLayer('CartoDB positron', name='標準地図').add_to(m)
-    folium.TileLayer('OpenStreetMap', name='ストリートマップ').add_to(m)
-    folium.TileLayer('Stamen Terrain', name='地形図').add_to(m)
+    folium.TileLayer(
+        'CartoDB positron', 
+        name='標準地図',
+        attr='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors © <a href="https://carto.com/attributions">CARTO</a>'
+    ).add_to(m)
+    
+    folium.TileLayer(
+        'OpenStreetMap', 
+        name='ストリートマップ',
+        attr='© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    ).add_to(m)
+    
+    folium.TileLayer(
+        'Stamen Terrain', 
+        name='地形図',
+        attr='Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>.'
+    ).add_to(m)
     
     # 海図レイヤーの追加
     folium.TileLayer(
@@ -93,124 +107,177 @@ def create_wind_flow_map(center, wind_data, gps_track=None, map_type="CartoDB po
     <canvas id="wind-layer" style="position:absolute; left:0; top:0; z-index:400; pointer-events:none;"></canvas>
     
     <script>
-    // 風データ
-    const windData = {wind_data_json};
-    
-    // マップインスタンスを取得
-    const map = document.querySelector('.folium-map')._leaflet_map;
-    
-    // キャンバス設定
-    const canvas = document.getElementById('wind-layer');
-    canvas.width = map.getSize().x;
-    canvas.height = map.getSize().y;
-    const ctx = canvas.getContext('2d');
-    
-    // 風向きに応じた色を取得する関数
-    function getWindColor(speed) {{
-        if (speed < 5) return '#2468B4';
-        else if (speed < 10) return '#57AEC7';
-        else if (speed < 15) return '#90C85E';
-        else if (speed < 20) return '#F8C537';
-        else return '#F08119';
-    }}
-    
-    // 風粒子クラス
-    class WindParticle {{
-        constructor() {{
-            this.reset();
-        }}
-        
-        reset() {{
-            // ランダムな位置に配置
-            this.x = Math.random() * canvas.width;
-            this.y = Math.random() * canvas.height;
-            this.age = 0;
-            this.maxAge = 50 + Math.random() * 50;
-        }}
-        
-        update() {{
-            // 現在位置のピクセル座標を地理座標に変換
-            const latlng = map.containerPointToLatLng([this.x, this.y]);
+    // 風データの安全な取得（ページ読み込み完了後）
+    document.addEventListener('DOMContentLoaded', function() {{
+        try {{
+            // 風データ
+            const windData = {wind_data_json};
             
-            // 最も近い風データポイントを見つける
-            let closestPoint = null;
-            let minDist = Infinity;
+            // マップインスタンスの安全な取得
+            let map;
+            let canvas;
+            let ctx;
             
-            for (let i = 0; i < windData.lat.length; i++) {{
-                const dx = windData.lat[i] - latlng.lat;
-                const dy = windData.lon[i] - latlng.lng;
-                const dist = dx * dx + dy * dy;
-                
-                if (dist < minDist) {{
-                    minDist = dist;
-                    closestPoint = i;
+            // マップ要素が準備できるまで待機
+            const initMapInterval = setInterval(function() {{
+                const mapElement = document.querySelector('.folium-map');
+                if (mapElement && mapElement._leaflet_map) {{
+                    map = mapElement._leaflet_map;
+                    clearInterval(initMapInterval);
+                    
+                    // キャンバス設定
+                    canvas = document.getElementById('wind-layer');
+                    if (!canvas) {{
+                        canvas = document.createElement('canvas');
+                        canvas.id = 'wind-layer';
+                        canvas.style.position = 'absolute';
+                        canvas.style.left = '0';
+                        canvas.style.top = '0';
+                        canvas.style.zIndex = '400';
+                        canvas.style.pointerEvents = 'none';
+                        document.body.appendChild(canvas);
+                    }}
+                    
+                    canvas.width = map.getSize().x;
+                    canvas.height = map.getSize().y;
+                    ctx = canvas.getContext('2d');
+                    
+                    // 風のアニメーション初期化
+                    initWindAnimation();
                 }}
+            }}, 100);
+            
+            // 風向きに応じた色を取得する関数
+            function getWindColor(speed) {{
+                if (speed < 5) return '#2468B4';
+                else if (speed < 10) return '#57AEC7';
+                else if (speed < 15) return '#90C85E';
+                else if (speed < 20) return '#F8C537';
+                else return '#F08119';
             }}
             
-            // 風向きと風速を取得
-            if (closestPoint !== null) {{
-                const direction = windData.direction[closestPoint] * Math.PI / 180;
-                const speed = windData.speed[closestPoint];
-                
-                // 風の方向に移動（風向は「風が吹いてくる方向」なので反転）
-                const moveX = Math.sin(direction + Math.PI) * speed * 0.5;
-                const moveY = Math.cos(direction + Math.PI) * speed * 0.5;
-                
-                this.x += moveX;
-                this.y += moveY;
-                
-                // 粒子を描画
-                const alpha = 1 - (this.age / this.maxAge);
-                ctx.strokeStyle = getWindColor(speed);
-                ctx.globalAlpha = alpha;
-                ctx.beginPath();
-                ctx.moveTo(this.x, this.y);
-                ctx.lineTo(this.x - moveX * 2, this.y - moveY * 2);
-                ctx.stroke();
-                
-                // 粒子の寿命を増やす
-                this.age++;
-                
-                // 画面外に出たか寿命が尽きたら新しい粒子にリセット
-                if (this.x < 0 || this.x > canvas.width || 
-                    this.y < 0 || this.y > canvas.height ||
-                    this.age > this.maxAge) {{
-                    this.reset();
+            function initWindAnimation() {{
+                // 風粒子クラス
+                class WindParticle {{
+                    constructor() {{
+                        this.reset();
+                    }}
+                    
+                    reset() {{
+                        // ランダムな位置に配置
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.age = 0;
+                        this.maxAge = 50 + Math.random() * 50;
+                    }}
+                    
+                    update() {{
+                        try {{
+                            // 現在位置のピクセル座標を地理座標に変換
+                            const latlng = map.containerPointToLatLng([this.x, this.y]);
+                            
+                            // 最も近い風データポイントを見つける
+                            let closestPoint = null;
+                            let minDist = Infinity;
+                            
+                            for (let i = 0; i < windData.lat.length; i++) {{
+                                const dx = windData.lat[i] - latlng.lat;
+                                const dy = windData.lon[i] - latlng.lng;
+                                const dist = dx * dx + dy * dy;
+                                
+                                if (dist < minDist) {{
+                                    minDist = dist;
+                                    closestPoint = i;
+                                }}
+                            }}
+                            
+                            // 風向きと風速を取得
+                            if (closestPoint !== null) {{
+                                const direction = windData.direction[closestPoint] * Math.PI / 180;
+                                const speed = windData.speed[closestPoint];
+                                
+                                // 風の方向に移動（風向は「風が吹いてくる方向」なので反転）
+                                const moveX = Math.sin(direction + Math.PI) * speed * 0.5;
+                                const moveY = Math.cos(direction + Math.PI) * speed * 0.5;
+                                
+                                this.x += moveX;
+                                this.y += moveY;
+                                
+                                // 粒子を描画
+                                const alpha = 1 - (this.age / this.maxAge);
+                                ctx.strokeStyle = getWindColor(speed);
+                                ctx.globalAlpha = alpha;
+                                ctx.beginPath();
+                                ctx.moveTo(this.x, this.y);
+                                ctx.lineTo(this.x - moveX * 2, this.y - moveY * 2);
+                                ctx.stroke();
+                                
+                                // 粒子の寿命を増やす
+                                this.age++;
+                                
+                                // 画面外に出たか寿命が尽きたら新しい粒子にリセット
+                                if (this.x < 0 || this.x > canvas.width || 
+                                    this.y < 0 || this.y > canvas.height ||
+                                    this.age > this.maxAge) {{
+                                    this.reset();
+                                }}
+                            }}
+                        }} catch (e) {{
+                            // エラーが発生した場合、粒子をリセット
+                            this.reset();
+                        }}
+                    }}
                 }}
+                
+                // アニメーションのフラグ
+                let animationActive = true;
+                
+                // 粒子の生成
+                const particles = [];
+                const particleCount = 1000;
+                
+                for (let i = 0; i < particleCount; i++) {{
+                    particles.push(new WindParticle());
+                }}
+                
+                // アニメーションループ
+                function animate() {{
+                    if (!animationActive) return;
+                    
+                    // 前のフレームをクリア
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // 粒子を更新
+                    for (let i = 0; i < particles.length; i++) {{
+                        particles[i].update();
+                    }}
+                    
+                    // 次のフレームを要求
+                    requestAnimationFrame(animate);
+                }}
+                
+                // マップのズームや移動時にキャンバスを再調整
+                map.on('moveend', function() {{
+                    canvas.width = map.getSize().x;
+                    canvas.height = map.getSize().y;
+                }});
+                
+                // ページの表示状態が変わったときの処理
+                document.addEventListener('visibilitychange', function() {{
+                    animationActive = !document.hidden;
+                    if (animationActive) {{
+                        // ページがアクティブになったらアニメーション再開
+                        animate();
+                    }}
+                }});
+                
+                // アニメーションを開始
+                animate();
             }}
+        }} catch (e) {{
+            console.error('Wind animation error:', e);
         }}
-    }}
-    
-    // 粒子の生成
-    const particles = [];
-    const particleCount = 1000;
-    
-    for (let i = 0; i < particleCount; i++) {{
-        particles.push(new WindParticle());
-    }}
-    
-    // アニメーションループ
-    function animate() {{
-        // 前のフレームをクリア
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // 粒子を更新
-        for (let i = 0; i < particles.length; i++) {{
-            particles[i].update();
-        }}
-        
-        // 次のフレームを要求
-        requestAnimationFrame(animate);
-    }}
-    
-    // マップのズームや移動時にキャンバスを再調整
-    map.on('moveend', function() {{
-        canvas.width = map.getSize().x;
-        canvas.height = map.getSize().y;
     }});
-    
-    // アニメーションを開始
-    animate();
     </script>
     """
     
@@ -280,7 +347,7 @@ def display_wind_flow_map(center, wind_data, gps_track=None):
     
     # Streamlitに表示
     from streamlit_folium import folium_static
-    folium_static(m, width=800, height=500)
+    folium_static(m, width=800, height=500)  # 数値を使用
     
     # 風向風速情報のサマリー表示
     if wind_data and len(wind_data.get('speed', [])) > 0:

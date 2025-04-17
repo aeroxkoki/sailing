@@ -167,9 +167,11 @@ def render_top_bar(active_section="dashboard", project_name=None, session_name=N
         st.session_state.action = None
     
     # JavaScriptからのコールバックを処理
-    navigation_callback = st.experimental_get_query_params().get('nav', [None])[0]
-    if navigation_callback:
-        st.session_state.navigation = navigation_callback
+    # st.experimental_get_query_params()は非推奨のため、st.query_paramsに置き換え
+    if hasattr(st, 'query_params'):
+        navigation_callback = st.query_params.get('nav', None)
+        if navigation_callback:
+            st.session_state.navigation = navigation_callback
     
     # アクションボタンのコールバック処理
     if st.session_state.action == 'save':
