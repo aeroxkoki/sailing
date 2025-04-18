@@ -12,10 +12,20 @@ GPSデータとAI技術を活用して風向風速を推定し、セーリング
 
 ## システム要件
 
+### 旧システム（Streamlit/Python）
 - Python 3.8以上
 - 必要なパッケージ（requirements.txtに記載）
 
+### 新システム（Next.js + FastAPI + Supabase）
+- Node.js 18.0以上
+- Python 3.9以上
+- Supabaseアカウント
+- Vercelアカウント（フロントエンドデプロイ用）
+- Renderアカウント（バックエンドデプロイ用）
+
 ## インストール方法
+
+### 旧システム（Streamlit/Python）
 
 ```bash
 # リポジトリのクローン
@@ -28,6 +38,39 @@ pip install -r requirements.txt
 # 開発環境でのインストール
 pip install -r requirements-dev.txt
 pip install -e .
+```
+
+### 新システム（Next.js + FastAPI + Supabase）
+
+```bash
+# リポジトリのクローン
+git clone https://github.com/yourusername/sailing-strategy-analyzer.git
+cd sailing-strategy-analyzer
+
+# バックエンドのセットアップ
+cd backend
+python -m venv venv
+source venv/bin/activate  # Windowsの場合: venv\Scripts\activate
+pip install -r requirements.txt
+
+# フロントエンドのセットアップ
+cd ../frontend
+npm install
+
+# 環境変数の設定
+cp .env.example .env  # フロントエンド用
+cp ../backend/.env.example ../backend/.env  # バックエンド用
+# .envファイルを編集して適切な値を設定
+
+# 開発サーバーの起動
+# バックエンド（新しいターミナルで）
+cd backend
+source venv/bin/activate  # Windowsの場合: venv\Scripts\activate
+python main.py
+
+# フロントエンド（新しいターミナルで）
+cd frontend
+npm run dev
 ```
 
 ## テスト実行方法
@@ -80,7 +123,9 @@ pytest -v
 
 ## 使用方法
 
-### Webインターフェースの起動
+### 旧システム（Streamlit/Python）
+
+#### Webインターフェースの起動
 
 ```bash
 # Streamlitアプリケーションの起動（Linux/macOS）
@@ -92,7 +137,7 @@ run_app.bat
 
 ブラウザで自動的に http://localhost:8501 が開き、Webインターフェースにアクセスできます。
 
-### オンライン版（Streamlit Cloud）
+#### オンライン版（Streamlit Cloud）
 
 以下のURLから、Streamlit Cloudにホストされているバージョンにアクセスすることもできます：
 
@@ -101,6 +146,36 @@ https://sailing-strategy-analyzer.streamlit.app
 ```
 
 注: オンライン版ではストレージの制限があるため、重要なデータは必ずローカルにエクスポートしてください。
+
+### 新システム（Next.js + FastAPI + Supabase）
+
+#### 開発サーバーの起動
+
+```bash
+# バックエンドサーバーの起動
+cd backend
+source venv/bin/activate  # Windowsの場合: venv\Scripts\activate
+python main.py
+```
+
+バックエンドサーバーが http://localhost:8000 で起動します。
+
+```bash
+# フロントエンドサーバーの起動
+cd frontend
+npm run dev
+```
+
+フロントエンドが http://localhost:3000 で起動します。
+
+#### デプロイ環境へのアクセス
+
+デプロイ後は以下のURLでアクセスできます：
+
+- フロントエンド: https://sailing-strategy-analyzer.vercel.app (Vercelでデプロイした場合)
+- バックエンドAPI: https://sailing-strategy-analyzer-api.onrender.com (Renderでデプロイした場合)
+
+注: 具体的なURLはデプロイ設定によって異なります。
 
 ### 主な操作方法
 
@@ -138,6 +213,8 @@ map_object = visualizer.create_track_map()
 
 ## ファイル構成
 
+### 旧構成（Streamlit/Python）
+
 ```
 sailing-strategy-analyzer/
 ├── .streamlit/                # Streamlit設定ファイル
@@ -150,28 +227,44 @@ sailing-strategy-analyzer/
 │   ├── project/              # プロジェクト管理
 │   ├── storage/              # ストレージ管理
 │   └── validation/           # データ検証
-├── docs/                     # ドキュメント
-│   ├── development/          # 開発者向けドキュメント
-│   ├── technical/            # 技術仕様書
-│   └── user-guides/          # ユーザーガイド
-├── resources/                # リソースファイル
-│   ├── static/               # 静的リソース（画像、CSS等）
-│   └── sample_data/          # サンプルデータ
-├── scripts/                  # 実行スクリプト（デモや開発用）
 ├── ui/                       # ユーザーインターフェース
-│   ├── apps/                 # アプリケーションレベルのコンポーネント
 │   ├── components/           # UIコンポーネント
 │   ├── demo/                 # デモアプリケーション
-│   ├── integrated/           # 統合UIモジュール
 │   └── pages/                # ページコンポーネント
-├── deployment/               # デプロイメント関連ファイル
-├── tests/                    # テストコード
-├── archive/                  # 過去バージョン（参照用）
 ├── streamlit_app.py          # Streamlit Cloudエントリーポイント
-├── requirements.txt          # 依存パッケージリスト
-├── run_app.sh                # 起動スクリプト(Linux/Mac)
-├── run_app.bat               # 起動スクリプト(Windows)
-└── setup.py                  # インストールスクリプト
+└── requirements.txt          # 依存パッケージリスト
+```
+
+### 新構成（Next.js + FastAPI + Supabase）
+
+```
+sailing-strategy-analyzer/
+├── frontend/                 # Next.jsフロントエンド
+│   ├── public/              # 静的ファイル
+│   ├── src/                 # ソースコード
+│   │   ├── components/      # UIコンポーネント
+│   │   ├── pages/           # ページコンポーネント
+│   │   ├── styles/          # スタイル定義
+│   │   ├── hooks/           # カスタムフック
+│   │   ├── utils/           # ユーティリティ関数
+│   │   └── context/         # Reactコンテキスト
+│   ├── package.json         # 依存関係定義
+│   └── next.config.js       # Next.js設定
+├── backend/                  # FastAPIバックエンド
+│   ├── app/                 # アプリケーションコード
+│   │   ├── api/             # APIエンドポイント
+│   │   ├── core/            # コア機能（風推定、戦略検出など）
+│   │   ├── models/          # データモデル
+│   │   ├── services/        # ビジネスロジック
+│   │   └── utils/           # ユーティリティ関数
+│   ├── tests/               # テストコード
+│   ├── requirements.txt     # 依存関係定義
+│   └── main.py              # アプリケーションエントリポイント
+├── docs/                     # ドキュメント
+│   ├── architecture/        # アーキテクチャドキュメント
+│   ├── api/                 # API仕様書
+│   └── setup/               # セットアップガイド
+└── scripts/                  # ユーティリティスクリプト
 ```
 
 詳細なディレクトリ構造と各ディレクトリの役割については、[docs/development/directory_structure.md](docs/development/directory_structure.md)を参照してください。
