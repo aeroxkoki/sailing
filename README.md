@@ -121,6 +121,12 @@ pytest -v
 3. `.env`ファイルが正しく設定されていること
 ```
 
+### エンドツーエンドテスト
+
+統合されたシステム全体をテストするためのエンドツーエンドテスト計画が用意されています。テスト手順、検証項目、テスト結果の記録方法などが詳細に記載されています。
+
+詳細は [docs/testing/end_to_end_test_plan.md](docs/testing/end_to_end_test_plan.md) を参照してください。
+
 ## 使用方法
 
 ### 旧システム（Streamlit/Python）
@@ -173,9 +179,9 @@ npm run dev
 デプロイ後は以下のURLでアクセスできます：
 
 - フロントエンド: https://sailing-strategy-analyzer.vercel.app (Vercelでデプロイした場合)
-- バックエンドAPI: https://sailing-strategy-analyzer-api.onrender.com (Renderでデプロイした場合)
+- バックエンドAPI: https://sailing-strategy-analyzer-backend.onrender.com (Renderでデプロイした場合)
 
-注: 具体的なURLはデプロイ設定によって異なります。
+注: 具体的なURLはデプロイ設定によって異なります。デプロイ方法の詳細は [docs/deployment/deployment_manual.md](docs/deployment/deployment_manual.md) を参照してください。
 
 ### 主な操作方法
 
@@ -183,6 +189,8 @@ npm run dev
 2. **マップ表示**：「マップビュー」タブでGPS軌跡を表示、複数艇の同時表示も可能
 3. **パフォーマンス分析**：「パフォーマンス分析」タブで速度分析、風向応答、タック分析などを実行
 4. **戦略分析**：風向シフトや最適タックポイントなどの戦略的判断ポイントを検出・表示
+
+詳細な操作方法については、[docs/user_manual/getting_started.md](docs/user_manual/getting_started.md)のユーザーマニュアルを参照してください。
 
 ### プログラムからの利用
 
@@ -263,7 +271,10 @@ sailing-strategy-analyzer/
 ├── docs/                     # ドキュメント
 │   ├── architecture/        # アーキテクチャドキュメント
 │   ├── api/                 # API仕様書
-│   └── setup/               # セットアップガイド
+│   ├── setup/               # セットアップガイド
+│   ├── deployment/          # デプロイマニュアル
+│   ├── testing/             # テスト計画書
+│   └── user_manual/         # ユーザーマニュアル
 └── scripts/                  # ユーティリティスクリプト
 ```
 

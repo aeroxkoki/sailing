@@ -1,5 +1,5 @@
 """
-¢×ê±ü·çó-šâ¸åüë
+ã‚»ãƒ¼ãƒªãƒ³ã‚°æˆ¦ç•¥åˆ†æã‚·ã‚¹ãƒ†ãƒ  - è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«
 """
 
 import os
@@ -9,33 +9,36 @@ from typing import List, Optional, Union
 
 
 class Settings(BaseSettings):
-    """¢×ê±ü·çó-š¯é¹"""
+    """ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³è¨­å®šã‚¯ãƒ©ã‚¹"""
     
-    # ¢×ê±ü·çóh,-š
+    # åŸºæœ¬è¨­å®š
     APP_ENV: str = Field(default="development")
     DEBUG: bool = Field(default=False)
-    PROJECT_NAME: str = Field(default="»üêó°&e·¹Æà")
+    PROJECT_NAME: str = Field(default="ã‚»ãƒ¼ãƒªãƒ³ã‚°æˆ¦ç•¥åˆ†æã‚·ã‚¹ãƒ†ãƒ ")
     API_V1_STR: str = Field(default="/api/v1")
     
-    # CORSn1ïÉá¤ó-š
+    # CORSè¨­å®š
     CORS_ORIGINS: List[str] = Field(default=["http://localhost:3000"])
     
-    # Çü¿Ùü¹-š
+    # ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹è¨­å®š
     DATABASE_URL: str = Field(default="postgresql://postgres:postgres@localhost:5432/sailing_analyzer")
     
-    # Supabase-š
+    # Supabaseè¨­å®š
     SUPABASE_URL: Optional[str] = Field(default=None)
     SUPABASE_KEY: Optional[str] = Field(default=None)
     SUPABASE_JWT_SECRET: Optional[str] = Field(default=None)
     
-    # »­åêÆ£-š
+    # èªè¨¼è¨­å®š
     SECRET_KEY: str = Field(default="secret_key_for_development_only")
     ALGORITHM: str = Field(default="HS256")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30)
     
-    # ¹Èìü¸-š
+    # ãƒ•ã‚¡ã‚¤ãƒ«è¨­å®š
     UPLOAD_DIR: str = Field(default="uploads")
     MAX_UPLOAD_SIZE: int = Field(default=10 * 1024 * 1024)  # 10MB
+    
+    # ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°è¨­å®š
+    ENCODING: str = Field(default="utf-8")
     
     class Config:
         env_file = ".env"
@@ -43,10 +46,10 @@ class Settings(BaseSettings):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # CORSn-š‡W’ê¹Èk	Û
+        # CORSè¨­å®šã®æ–‡å­—åˆ—ã‚’ãƒªã‚¹ãƒˆã«å¤‰æ›
         if isinstance(self.CORS_ORIGINS, str):
             self.CORS_ORIGINS = [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 
 
-# -š¤ó¹¿ó¹n\
+# è¨­å®šã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆ
 settings = Settings()
