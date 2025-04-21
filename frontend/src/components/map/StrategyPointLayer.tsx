@@ -162,7 +162,9 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
         ctx.fill();
         ctx.stroke();
         
-        map.addImage(iconId, canvas);
+        // キャンバスからイメージデータを取得して、それをaddImageに渡す
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        map.addImage(iconId, imageData);
       }
     });
   }, [map]);
