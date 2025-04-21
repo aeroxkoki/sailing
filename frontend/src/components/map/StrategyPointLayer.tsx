@@ -162,18 +162,17 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
         ctx.fill();
         ctx.stroke();
         
-        // canvas要素からImageDataを取得
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        // キャンバスからデータURLを取得して画像オブジェクトを作成する
+        const dataURL = canvas.toDataURL();
+        const img = new Image();
         
-        // ImageDataオブジェクトを使って、Mapbox GLが期待するフォーマットでオブジェクトを作成
-        const imageObject = {
-          width: canvas.width,
-          height: canvas.height,
-          data: new Uint8Array(imageData.data.buffer)
+        // 画像が読み込まれたときにmapに追加
+        img.onload = () => {
+          map.addImage(iconId, img);
         };
         
-        // 準備したオブジェクトを使ってアイコンを登録
-        map.addImage(iconId, imageObject);
+        // データURLをセットしてロード開始
+        img.src = dataURL;
       }
     });
   }, [map]);
