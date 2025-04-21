@@ -25,7 +25,11 @@ interface StrategyPointLayerProps {
   showLabels?: boolean;
 }
 
-const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
+/**
+ * StrategyPointLayerFixed - 修正版のStrategyPointLayer
+ * HTMLCanvasElement をそのまま map.addImage に渡していたエラーを修正
+ */
+const StrategyPointLayerFixed: React.FC<StrategyPointLayerProps> = ({
   map,
   strategyPoints,
   onPointClick,
@@ -361,4 +365,4 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
   return null; // This component doesn't render anything on its own
 };
 
-export default StrategyPointLayer;
+export default StrategyPointLayerFixed;
