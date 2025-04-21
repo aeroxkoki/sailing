@@ -162,7 +162,7 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
         ctx.fill();
         ctx.stroke();
         
-        // キャンバスからデータURLを取得して画像オブジェクトを作成する
+        // キャンバスからデータURLを取得してHTMLImageElementを作成（TypeScript型エラー修正用）
         const dataURL = canvas.toDataURL();
         const img = new Image();
         
