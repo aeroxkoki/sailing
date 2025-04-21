@@ -197,8 +197,22 @@ try:
     # 各モジュールが存在するかと必要な属性を持っているか確認
     if basic_project_management:
         try:
-            render_project_management = basic_project_management.render_page
-            logger.info("プロジェクト管理の render_page 関数が正常にロードされました。")
+            # render_page関数が存在するか確認
+            if hasattr(basic_project_management, 'render_page'):
+                render_project_management = basic_project_management.render_page
+                logger.info("プロジェクト管理の render_page 関数が正常にロードされました。")
+            else:
+                # 念のためページ内の関数を確認
+                logger.warning("render_page関数が見つかりません。モジュール内の関数を検索します：")
+                module_functions = [f for f in dir(basic_project_management) if callable(getattr(basic_project_management, f)) and not f.startswith('__')]
+                logger.info(f"モジュール内の関数: {module_functions}")
+                
+                # 代替の関数名を探す
+                if 'render' in module_functions:
+                    render_project_management = getattr(basic_project_management, 'render')
+                    logger.info("代替関数'render'が見つかりました。これを使用します。")
+                else:
+                    raise AttributeError(f"render_page関数が見つかりません。利用可能な関数: {module_functions}")
         except AttributeError as e:
             module_import_errors["basic_project_management"] = f"render_page属性がありません: {e}"
             logger.error(f"プロジェクト管理の render_page 属性エラー: {e}")

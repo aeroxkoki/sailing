@@ -21,6 +21,26 @@ try:
 except ImportError:
     logger.warning("plotly モジュールをインポートできませんでした。視覚化機能は利用できません。")
     PLOTLY_AVAILABLE = False
+    # モックオブジェクトを作成して他のコードが動作できるようにする
+    class MockGo:
+        def __init__(self):
+            self.Figure = MockFigure
+        def __getattr__(self, name):
+            return MockClass()
+    
+    class MockFigure:
+        def __init__(self, *args, **kwargs):
+            pass
+        def __getattr__(self, name):
+            return lambda *args, **kwargs: None
+    
+    class MockClass:
+        def __init__(self, *args, **kwargs):
+            pass
+        def __call__(self, *args, **kwargs):
+            return MockFigure()
+    
+    go = MockGo()
 
 # データモデルインポートエラーのリスクを回避するため、直接インポートは行わない
 # 代わりに動的インポートまたはタイプヒントのみの参照を使用

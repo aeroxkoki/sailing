@@ -58,13 +58,25 @@ app = FastAPI(
 app.add_middleware(EncodingMiddleware)
 app.add_middleware(JapaneseProcessingMiddleware)
 
-# CORS設定
+# CORS設定 - より堅牢な設定
+default_origins = ["http://localhost:3000", "https://localhost:3000"]
+# 環境変数からオリジンを取得、ない場合はデフォルト値を使用
+origins_from_env = os.getenv("CORS_ORIGINS", ",".join(default_origins))
+# カンマで区切られた文字列を配列に変換
+cors_origins = origins_from_env.split(",") if origins_from_env else default_origins
+
+# デバッグログ出力
+print(f"CORS origins: {cors_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000").split(","),
+    allow_origins=cors_origins,
+    allow_origin_regex=r"https://(.*\.)?vercel\.app$",  # Vercelデプロイメントのサブドメインを許可
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["X-Process-Time", "X-API-Version"],
+    max_age=600,  # 10分間のプリフライトリクエストキャッシュ
 )
 
 # ルートパス
