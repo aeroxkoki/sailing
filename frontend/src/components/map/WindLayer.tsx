@@ -127,7 +127,9 @@ const WindLayer: React.FC<WindLayerProps> = ({
       ctx.lineTo(20, 30);
       ctx.stroke();
 
-      map.addImage('wind-arrow', canvas, { sdf: true });
+      // キャンバスからイメージデータを取得して、それをaddImageに渡す
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      map.addImage('wind-arrow', imageData, { sdf: true });
     }
   }, [map, vectorColor]);
 
