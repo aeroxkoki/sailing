@@ -2,7 +2,7 @@
  * APIデータフェッチングフック
  */
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
-import apiClient, { ApiResponse, ApiError } from '@/lib/api';
+import apiClient, { ApiResponse, ApiError } from '../lib/api';
 
 /**
  * フック戻り値の型
