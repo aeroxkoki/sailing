@@ -3,7 +3,8 @@
  * 注: このモジュールはAPIとの通信を管理します
  */
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
-import apiClient, { ApiResponse, ApiError } from '@/lib/api';
+// 両方のインポート方法に対応
+import apiClient, { ApiResponse, ApiError } from '../lib';
 
 /**
  * フック戻り値の型
