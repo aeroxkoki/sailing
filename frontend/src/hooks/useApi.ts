@@ -1,5 +1,6 @@
 /**
  * APIデータフェッチングフック
+ * 注: このモジュールはAPIとの通信を管理します
  */
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 import apiClient, { ApiResponse, ApiError } from '@/lib/api';
