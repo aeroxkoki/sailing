@@ -3,6 +3,7 @@
 """
 
 import os
+from datetime import datetime
 from typing import Any, Dict, Optional, List
 from supabase import create_client, Client
 from sqlalchemy import create_engine, MetaData
@@ -115,6 +116,84 @@ def normalize_db_strings(data: Dict[str, Any]) -> Dict[str, Any]:
             result[key] = value
     return result
 
+
+# データベース接続チェック関数
+async def check_db_connection() -> Dict[str, Any]:
+    """
+    データベースとSupabase接続の状態をチェック
+    
+    Returns:
+        接続状態を含む辞書
+    """
+    result = {
+        "status": "error",
+        "message": "接続チェックできませんでした",
+        "timestamp": datetime.now().isoformat(),
+        "environment": os.getenv("APP_ENV", "development"),
+        "database_url": SQLALCHEMY_DATABASE_URL.replace(
+            # 機密情報を隠す
+            SQLALCHEMY_DATABASE_URL.split("@")[0] if "@" in SQLALCHEMY_DATABASE_URL else "",
+            "***"
+        ) if SQLALCHEMY_DATABASE_URL else "未設定"
+    }
+    
+    # SQLAlchemy接続チェック
+    try:
+        async with AsyncSessionLocal() as session:
+            await session.execute("SELECT 1")
+            result["status"] = "connected"
+            result["message"] = "データベース接続成功"
+            
+            # テーブル情報の取得を試みる
+            try:
+                tables_result = await session.execute("SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname = 'public'")
+                tables = [row[0] for row in tables_result.fetchall()]
+                result["tables_count"] = len(tables)
+            except Exception:
+                # テーブル情報取得失敗は重大ではない
+                pass
+    except Exception as e:
+        result["status"] = "error"
+        result["message"] = f"データベース接続エラー: {str(e)}"
+        return result
+    
+    # Supabase接続チェック
+    try:
+        sb_client = get_supabase()
+        if sb_client:
+            # 単純なクエリでSupabase接続をテスト
+            try:
+                health_check = sb_client.table('health_check').select('*').limit(1).execute()
+                result["supabase"] = {
+                    "status": "connected",
+                    "message": "Supabase接続成功"
+                }
+            except Exception as e:
+                # テーブルが存在しなくてもエラーになるので、別のアプローチを試みる
+                try:
+                    # 認証状態をチェック
+                    auth_check = sb_client.auth.get_user()
+                    result["supabase"] = {
+                        "status": "connected",
+                        "message": "Supabase認証接続成功"
+                    }
+                except Exception as inner_e:
+                    result["supabase"] = {
+                        "status": "partial",
+                        "message": f"Supabase部分接続: {str(inner_e)}"
+                    }
+        else:
+            result["supabase"] = {
+                "status": "not_configured",
+                "message": "Supabase未設定"
+            }
+    except Exception as e:
+        result["supabase"] = {
+            "status": "error",
+            "message": f"Supabase接続エラー: {str(e)}"
+        }
+    
+    return result
 
 # Supabaseクライアントの初期化
 init_supabase()

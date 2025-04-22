@@ -5,6 +5,7 @@
 import os
 import re
 import json
+from datetime import datetime
 from fastapi import FastAPI, Depends, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -65,6 +66,11 @@ origins_from_env = os.getenv("CORS_ORIGINS", ",".join(default_origins))
 # カンマで区切られた文字列を配列に変換
 cors_origins = origins_from_env.split(",") if origins_from_env else default_origins
 
+# Vercelドメインを確認し、存在する場合はCORS許可リストに追加
+vercel_domain = os.getenv("FRONTEND_URL")
+if vercel_domain and vercel_domain not in cors_origins:
+    cors_origins.append(vercel_domain)
+
 # デバッグログ出力
 print(f"CORS origins: {cors_origins}")
 
@@ -75,7 +81,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
-    expose_headers=["X-Process-Time", "X-API-Version"],
+    expose_headers=["X-Process-Time", "X-API-Version", "Content-Type"],
     max_age=600,  # 10分間のプリフライトリクエストキャッシュ
 )
 
@@ -87,7 +93,22 @@ async def root():
 # ヘルスチェック
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    health_data = {
+        "status": "healthy",
+        "version": "0.1.0",
+        "timestamp": datetime.now().isoformat(),
+        "environment": os.getenv("APP_ENV", "development"),
+    }
+    
+    # データベース接続チェックを試みる
+    try:
+        from app.db.database import check_db_connection
+        db_status = await check_db_connection()
+        health_data["database"] = db_status
+    except Exception as e:
+        health_data["database"] = {"status": "error", "message": str(e)}
+    
+    return health_data
 
 # APIルーターのインポートと登録
 from app.api.router import api_router

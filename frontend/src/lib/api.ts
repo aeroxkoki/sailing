@@ -6,9 +6,21 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 
 // API設定
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+// 環境に応じたAPIのベースURL設定
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
+  (process.env.NODE_ENV === 'production'
+    ? 'https://sailing-analyzer-backend.onrender.com'
+    : 'http://localhost:8000');
+
+// デバッグ出力
+console.log(`Using API URL: ${API_BASE_URL} (NODE_ENV: ${process.env.NODE_ENV})`);
 const API_VERSION = '/api/v1';
 const API_TIMEOUT = 15000; // 15秒
+
+// デバッグモードではAPIのベースURLを表示
+if (process.env.NODE_ENV !== 'production') {
+  console.log(`API_BASE_URL: ${API_BASE_URL}`);
+}
 
 // レスポンス型定義
 export interface ApiResponse<T> {
