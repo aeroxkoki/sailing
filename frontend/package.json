@@ -1,1 +1,40 @@
-{\n  \"name\": \"sailing-strategy-analyzer-frontend\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"next dev\",\n    \"build\": \"next build\",\n    \"start\": \"next start\",\n    \"lint\": \"next lint\",\n    \"vercel-build\": \"next build\"\n  },\n  \"dependencies\": {\n    \"axios\": \"^1.6.2\",\n    \"mapbox-gl\": \"^3.0.1\",\n    \"next\": \"14.0.4\",\n    \"react\": \"^18\",\n    \"react-dom\": \"^18\",\n    \"react-hook-form\": \"^7.49.2\",\n    \"react-map-gl\": \"^7.1.6\",\n    \"recharts\": \"^2.10.3\",\n    \"swr\": \"^2.2.4\",\n    \"typescript\": \"^5\",\n    \"@types/node\": \"^20\",\n    \"@types/react\": \"^18\",\n    \"@types/react-dom\": \"^18\"\n  },\n  \"devDependencies\": {\n    \"@tailwindcss/aspect-ratio\": \"^0.4.2\",\n    \"@tailwindcss/forms\": \"^0.5.7\",\n    \"@tailwindcss/typography\": \"^0.5.10\",\n    \"@types/mapbox-gl\": \"^2.7.19\",\n    \"autoprefixer\": \"^10.0.1\",\n    \"eslint\": \"8.50.0\",\n    \"eslint-config-next\": \"14.0.4\",\n    \"postcss\": \"^8\",\n    \"tailwindcss\": \"^3.3.0\"\n  },\n  \"engines\": {\n    \"node\": \">=18.0.0\"\n  }\n}
+{
+  "name": "sailing-strategy-analyzer-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "axios": "^1.6.2",
+    "mapbox-gl": "^3.0.1",
+    "next": "14.0.4",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-hook-form": "^7.49.2",
+    "react-map-gl": "^7.1.6",
+    "recharts": "^2.10.3",
+    "swr": "^2.2.4",
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18"
+  },
+  "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.7",
+    "@tailwindcss/typography": "^0.5.10",
+    "@types/mapbox-gl": "^2.7.19",
+    "autoprefixer": "^10.0.1",
+    "eslint": "8.50.0",
+    "eslint-config-next": "14.0.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.3.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
