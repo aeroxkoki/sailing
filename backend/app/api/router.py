@@ -1,5 +1,5 @@
 """
-APIëü¿üâ¸åüë
+APIãƒ«ãƒ¼ã‚¿ãƒ¼
 """
 
 from fastapi import APIRouter
@@ -15,10 +15,10 @@ from app.api.endpoints import (
 )
 
 
-# APIëü¿ün\
+# APIãƒ«ãƒ¼ã‚¿ãƒ¼
 api_router = APIRouter()
 
-# ¨óÉİ¤óÈnëü¿ü’á¤óëü¿ük{2
+# ã‚¨ãƒ³ãƒ‰ãƒã‚¤ãƒ³ãƒˆãƒ«ãƒ¼ã‚¿ãƒ¼ã®ç™»éŒ²
 api_router.include_router(
     wind_estimation.router,
     prefix="/wind-estimation",

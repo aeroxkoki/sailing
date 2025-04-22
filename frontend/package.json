@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "prebuild": "npm cache clean --force && npm install --force || yarn cache clean && yarn install",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

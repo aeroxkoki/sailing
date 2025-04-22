@@ -7,7 +7,7 @@ import apiClient, { ApiResponse, ApiError } from '../lib/api';
 /**
  * フック戻り値の型
  */
-export interface UseApiResponse<T> extends Omit<SWRResponse<ApiResponse<T>, ApiError>, 'data'> {
+export interface UseApiResponse<T> extends Omit<SWRResponse<ApiResponse<T>, ApiError>, 'data' | 'isLoading'> {
   data: T | undefined;
   isLoading: boolean;
   isError: boolean;
@@ -33,7 +33,7 @@ export function useApi<T>(url: string | null, config?: SWRConfiguration): UseApi
     }
   };
 
-  const { data, error, mutate, isValidating, ...rest } = useSWR<ApiResponse<T>, ApiError>(
+  const { data, error, mutate, isValidating, isLoading: swrIsLoading, ...rest } = useSWR<ApiResponse<T>, ApiError>(
     shouldFetch ? url : null,
     fetcher,
     {
@@ -44,10 +44,13 @@ export function useApi<T>(url: string | null, config?: SWRConfiguration): UseApi
     }
   );
 
+  // カスタムのisLoading状態
+  const loading = shouldFetch && !error && !data;
+  
   return {
     data: data?.data,
     response: data,
-    isLoading: shouldFetch && !error && !data,
+    isLoading: loading,
     isError: !!error,
     error,
     mutate,

@@ -3,13 +3,11 @@ const path = require('path');
 
 const nextConfig = {
   reactStrictMode: true,
-  // パスエイリアスの設定（コメントアウト）
-  /*
+  // パスエイリアスの設定
   webpack: (config) => {
     config.resolve.alias['@'] = path.join(__dirname, 'src');
     return config;
   },
-  */
   // APIのプロキシ設定
   async rewrites() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
