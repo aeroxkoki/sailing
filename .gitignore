@@ -87,3 +87,6 @@ yarn.lock
 .pnp.*
 .next/
 out/
+# Backup files
+*.bak
+*.utf8
