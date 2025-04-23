@@ -138,7 +138,7 @@ def delete_project_by_id(
     project_id: UUID,
     db: Session = Depends(get_db),
     user_id: UUID = Depends(get_current_user),
-) -> Any:
+) -> None:
     """
     プロジェクトを削除します。
     
@@ -156,4 +156,3 @@ def delete_project_by_id(
         )
     
     delete_project(db=db, project_id=project_id)
-    return None
