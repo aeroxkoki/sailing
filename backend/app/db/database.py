@@ -61,9 +61,26 @@ def init_supabase() -> Client:
     global supabase
     
     if supabase is None and settings.SUPABASE_URL and settings.SUPABASE_KEY:
-        # 基本的なパラメータのみで初期化する
-        # 注: Supabaseのバージョンによってはoptionsパラメータでproxyが問題になる場合がある
-        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        try:
+            # 最新バージョンのSupabaseライブラリに対応した初期化
+            # optionsパラメータを明示的に設定して、proxyパラメータの問題を回避
+            from supabase.lib.client_options import SyncClientOptions
+            options = SyncClientOptions()
+            
+            # proxyパラメータがエラーの原因なので、これを使わない構成で初期化
+            supabase = create_client(
+                supabase_url=settings.SUPABASE_URL,
+                supabase_key=settings.SUPABASE_KEY,
+                options=options
+            )
+        except Exception as e:
+            # エラーログを出力するが、サービスは継続させる
+            print(f"Supabase初期化エラー: {e}")
+            # フォールバック: 最小限のパラメータで試行
+            try:
+                supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+            except Exception as fallback_error:
+                print(f"Supabaseフォールバック初期化エラー: {fallback_error}")
     
     return supabase
 
