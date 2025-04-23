@@ -1,7 +1,7 @@
 services:
   # FastAPIバックエンドサービス
   - type: web
-    name: sailing-analyzer-backend
+    name: sailing-strategy-api
     runtime: python
     region: singapore  # お客様の主な利用地域に近いリージョンを選択
     buildCommand: |

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 セーリング戦略分析システム - FastAPI バックエンド
 """
