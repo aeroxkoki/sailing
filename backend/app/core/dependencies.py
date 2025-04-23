@@ -1,5 +1,5 @@
 """
-X¢Â’¡Y‹â¸åüë
+ä¾å­˜æ€§é–¢é€£ã®æ©Ÿèƒ½
 """
 
 from typing import Generator, Optional
@@ -19,10 +19,11 @@ def get_current_user(
     db: Session = Depends(get_db)
 ) -> dict:
     """
-    ş(næü¶üÅ1’Ö—Y‹X¢Â
+    ç¾åœ¨ã®ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±ã‚’å–å¾—
     
-    e„koæü¶üâÇëLŸÅUŒ_›k
-    æü¶üªÖ¸§¯È’ÔYˆFk	ôW~Y
+    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿:
+    - token: JWTèªè¨¼ãƒˆãƒ¼ã‚¯ãƒ³
+    - db: ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚»ãƒƒã‚·ãƒ§ãƒ³
     """
     try:
         payload = decode_access_token(token)
@@ -33,8 +34,8 @@ def get_current_user(
                 detail="Could not validate credentials",
             )
         
-        # SSgæü¶üÅ1’DBK‰Ö—Y‹æ’ı 
-        # ş(oâÃ¯Çü¿’ÔY
+        # æœ¬æ¥ã¯ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚’DBã‹ã‚‰å–å¾—ã™ã‚‹
+        # é–‹ç™ºç”¨ã®ä»®ãƒ‡ãƒ¼ã‚¿
         user_data = {
             "id": user_id,
             "email": f"user_{user_id}@example.com",
@@ -53,10 +54,10 @@ def get_supabase_user(
     token: str = Depends(oauth2_scheme)
 ) -> dict:
     """
-    Supabasen<’(Wfş(næü¶üÅ1’Ö—Y‹X¢Â
+    Supabaseã‹ã‚‰ãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±ã‚’å–å¾—
     """
     try:
-        # SupabaseÈü¯ón<
+        # Supabaseãƒˆãƒ¼ã‚¯ãƒ³æ¤œè¨¼
         payload = verify_supabase_token(token)
         user_id: str = payload.get("sub")
         if user_id is None:
@@ -65,7 +66,7 @@ def get_supabase_user(
                 detail="Could not validate Supabase credentials",
             )
         
-        # SupabaseK‰æü¶üÅ1’Ö—
+        # Supabaseã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå–å¾—
         supabase = get_supabase()
         if supabase is None:
             raise HTTPException(
@@ -73,7 +74,7 @@ def get_supabase_user(
                 detail="Supabase client not initialized",
             )
             
-        # SnèoŸ›nSupabasen<¹Õk[f¿tLÅ
+        # ãƒˆãƒ¼ã‚¯ãƒ³ã‹ã‚‰Supabaseãƒ¦ãƒ¼ã‚¶ãƒ¼æƒ…å ±ã‚’å–å¾—
         user_response = supabase.auth.get_user(token)
         if user_response.error:
             raise HTTPException(
