@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user, get_db
 from app.crud.project import create_project, get_project, get_projects, update_project, delete_project
-from app.schemas.project import Project, ProjectCreate, ProjectUpdate
+from app.models.schemas.project import Project, ProjectCreate, ProjectUpdate
 
 router = APIRouter()
 
