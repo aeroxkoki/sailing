@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Map, { NavigationControl, Source, Layer, Popup } from 'react-map-gl';
+import Map, { NavigationControl, Source, Layer, Popup } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 // コンポーネントのプロップスの型定義
@@ -185,7 +185,6 @@ const MapView: React.FC<MapViewProps> = ({
     <div style={{ width, height, borderRadius: '4px', overflow: 'hidden' }}>
       <Map
         ref={mapRef}
-        mapLib={import('maplibre-gl')}
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         mapStyle="https://demotiles.maplibre.org/style.json"
