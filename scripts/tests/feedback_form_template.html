@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>セーリング戦略分析システム - フィードバックフォーム</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+    .feedback-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #2c3e50;
+      margin-top: 0;
+      font-size: 1.8rem;
+    }
+    .intro {
+      margin-bottom: 20px;
+      color: #555;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+    input[type="text"],
+    input[type="email"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    select {
+      background-color: white;
+    }
+    .rating-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 5px;
+    }
+    .rating-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+    .rating-item:hover .rating-circle {
+      background-color: #e0f7fa;
+    }
+    .rating-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #03a9f4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #03a9f4;
+    }
+    .rating-circle.selected {
+      background-color: #03a9f4;
+      color: white;
+    }
+    .rating-label {
+      font-size: 12px;
+      text-align: center;
+    }
+    .file-upload {
+      position: relative;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    .file-upload input[type="file"] {
+      position: absolute;
+      top: 0;
+      right: 0;
+      min-width: 100%;
+      min-height: 100%;
+      font-size: 100px;
+      text-align: right;
+      filter: alpha(opacity=0);
+      opacity: 0;
+      outline: none;
+      background: white;
+      cursor: pointer;
+      display: block;
+    }
+    .file-upload-btn {
+      display: inline-block;
+      padding: 8px 16px;
+      background-color: #e0f7fa;
+      border: 1px solid #03a9f4;
+      border-radius: 4px;
+      color: #03a9f4;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .file-name {
+      margin-left: 10px;
+      color: #666;
+    }
+    .submit-btn {
+      background-color: #03a9f4;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s;
+    }
+    .submit-btn:hover {
+      background-color: #0288d1;
+    }
+    .cancel-btn {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .cancel-btn a {
+      color: #666;
+      text-decoration: none;
+    }
+    .cancel-btn a:hover {
+      text-decoration: underline;
+    }
+    .required::after {
+      content: "*";
+      color: #f44336;
+      margin-left: 4px;
+    }
+    @media (max-width: 768px) {
+      .feedback-container {
+        margin: 10px;
+        padding: 15px;
+      }
+      .rating-circle {
+        width: 35px;
+        height: 35px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="feedback-container">
+    <h1>フィードバックをお聞かせください</h1>
+    <p class="intro">
+      セーリング戦略分析システムの改善にご協力ください。あなたのフィードバックは今後の開発に大変役立ちます。
+    </p>
+    
+    <form id="feedbackForm">
+      <div class="form-group">
+        <label for="feedbackType" class="required">フィードバックの種類</label>
+        <select id="feedbackType" name="feedbackType" required>
+          <option value="">選択してください</option>
+          <option value="bug">バグ報告</option>
+          <option value="feature">機能リクエスト</option>
+          <option value="usability">使いやすさの問題</option>
+          <option value="performance">パフォーマンスの問題</option>
+          <option value="praise">良い点の共有</option>
+          <option value="other">その他</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="subject" class="required">件名</label>
+        <input type="text" id="subject" name="subject" placeholder="フィードバックの概要を簡潔に" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="description" class="required">詳細説明</label>
+        <textarea id="description" name="description" placeholder="できるだけ詳しく説明してください。発生した状況、再現手順、期待される動作など" required></textarea>
+      </div>
+      
+      <div class="form-group">
+        <label>満足度</label>
+        <div class="rating-container">
+          <div class="rating-item" onclick="selectRating(1)">
+            <div class="rating-circle" id="rating-1">1</div>
+            <div class="rating-label">非常に不満</div>
+          </div>
+          <div class="rating-item" onclick="selectRating(2)">
+            <div class="rating-circle" id="rating-2">2</div>
+            <div class="rating-label">不満</div>
+          </div>
+          <div class="rating-item" onclick="selectRating(3)">
+            <div class="rating-circle" id="rating-3">3</div>
+            <div class="rating-label">普通</div>
+          </div>
+          <div class="rating-item" onclick="selectRating(4)">
+            <div class="rating-circle" id="rating-4">4</div>
+            <div class="rating-label">満足</div>
+          </div>
+          <div class="rating-item" onclick="selectRating(5)">
+            <div class="rating-circle" id="rating-5">5</div>
+            <div class="rating-label">非常に満足</div>
+          </div>
+        </div>
+        <input type="hidden" id="satisfactionRating" name="satisfactionRating" value="">
+      </div>
+      
+      <div class="form-group">
+        <label for="screenshot">スクリーンショット（任意）</label>
+        <div class="file-upload">
+          <label for="screenshot" class="file-upload-btn">ファイルを選択</label>
+          <input type="file" id="screenshot" name="screenshot" accept="image/*" onchange="updateFileName(this)">
+          <span class="file-name" id="file-name-display">ファイルは選択されていません</span>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">メールアドレス（任意）</label>
+        <input type="email" id="email" name="email" placeholder="ご回答が必要な場合はメールアドレスをご記入ください">
+      </div>
+      
+      <div class="form-group">
+        <label for="browser">ブラウザ情報（自動検出）</label>
+        <input type="text" id="browser" name="browser" readonly>
+      </div>
+      
+      <button type="submit" class="submit-btn">送信する</button>
+      
+      <div class="cancel-btn">
+        <a href="#" onclick="cancelFeedback()">キャンセル</a>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // ブラウザ情報を検出して設定
+    document.addEventListener('DOMContentLoaded', function() {
+      const browserInfo = `${navigator.userAgent} - ${window.innerWidth}x${window.innerHeight}`;
+      document.getElementById('browser').value = browserInfo;
+    });
+    
+    // 評価選択の処理
+    function selectRating(rating) {
+      // 選択済みクラスをリセット
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`rating-${i}`).classList.remove('selected');
+      }
+      
+      // 選択された評価に選択済みクラスを追加
+      document.getElementById(`rating-${rating}`).classList.add('selected');
+      
+      // hidden inputに値を設定
+      document.getElementById('satisfactionRating').value = rating;
+    }
+    
+    // ファイル名表示の更新
+    function updateFileName(input) {
+      const fileName = input.files.length > 0 ? input.files[0].name : 'ファイルは選択されていません';
+      document.getElementById('file-name-display').textContent = fileName;
+    }
+    
+    // フォーム送信処理
+    document.getElementById('feedbackForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // 必須項目のチェック
+      const requiredFields = ['feedbackType', 'subject', 'description'];
+      let isValid = true;
+      
+      requiredFields.forEach(field => {
+        const element = document.getElementById(field);
+        if (!element.value.trim()) {
+          element.style.borderColor = '#f44336';
+          isValid = false;
+        } else {
+          element.style.borderColor = '#ddd';
+        }
+      });
+      
+      if (!isValid) {
+        alert('必須項目をすべて入力してください');
+        return;
+      }
+      
+      // ここにAPIへの送信処理を追加
+      // 実際の実装では、FormDataオブジェクトを作成してAPIエンドポイントに送信します
+      console.log('フィードバック送信:', {
+        type: document.getElementById('feedbackType').value,
+        subject: document.getElementById('subject').value,
+        description: document.getElementById('description').value,
+        rating: document.getElementById('satisfactionRating').value,
+        email: document.getElementById('email').value,
+        browser: document.getElementById('browser').value,
+        hasScreenshot: document.getElementById('screenshot').files.length > 0
+      });
+      
+      // 成功メッセージ表示（実際の実装ではAPI応答後に処理）
+      alert('フィードバックを送信しました。ご協力ありがとうございます！');
+      
+      // フォームリセット
+      this.reset();
+      document.getElementById('file-name-display').textContent = 'ファイルは選択されていません';
+      for (let i = 1; i <= 5; i++) {
+        document.getElementById(`rating-${i}`).classList.remove('selected');
+      }
+    });
+    
+    // キャンセル処理
+    function cancelFeedback() {
+      if (confirm('フィードバック入力をキャンセルしますか？入力内容は失われます。')) {
+        // 親ウィンドウでフィードバックモーダルを閉じる処理（実際の実装環境に合わせて調整）
+        if (window.parent && window.parent.closeFeedbackModal) {
+          window.parent.closeFeedbackModal();
+        } else {
+          // フォールバック：ウィンドウを閉じるか前のページに戻る
+          window.close() || window.history.back();
+        }
+      }
+    }
+  </script>
+</body>
+</html>
