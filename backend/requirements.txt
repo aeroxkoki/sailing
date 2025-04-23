@@ -9,18 +9,22 @@ python-jose==3.3.0
 passlib==1.7.4
 python-dotenv==1.0.0
 email-validator==2.0.0.post2
-# Supabase 2.4+ は pydantic>=1.9,<3.0 に対応
+# pydantic 1.x系を使用（Supabase 2.15.0と互換性あり）
 pydantic==1.10.7
 requests==2.31.0
 pytest==7.3.1
 geopy==2.3.0
 scipy==1.10.1
-# pydantic-settings removed due to incompatibility with pydantic 1.x
 psycopg2-binary==2.9.6
 alembic==1.12.0
 asyncpg==0.28.0
 pytest-asyncio==0.21.0
 httpx==0.24.1
 bcrypt==4.0.1
-supabase>=2.4.3
+# Supabaseとその依存ライブラリのバージョンを固定
+supabase==2.15.0
+gotrue==2.12.0
+postgrest==1.0.1
+realtime==2.4.2
+storage3==0.11.3
 aiofiles==23.1.0

@@ -3,6 +3,7 @@
 """
 
 import os
+import logging
 from datetime import datetime
 from typing import Any, Dict, Optional, List
 from supabase import create_client, Client
@@ -14,7 +15,10 @@ from sqlalchemy.orm import sessionmaker
 
 from app.core.config import settings
 from app.utils.encoding_utils import normalize_japanese_text
+from app.utils.error_handling import safe_external_call, SupabaseError
 
+# ロガーの設定
+logger = logging.getLogger(__name__)
 
 # SQLAlchemy接続設定
 SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
@@ -56,37 +60,91 @@ metadata = MetaData()
 supabase: Optional[Client] = None
 
 
-def init_supabase() -> Client:
-    """Supabaseクライアントの初期化"""
-    global supabase
+@safe_external_call(
+    error_message="Supabaseクライアントの初期化に失敗しました",
+    service_name="supabase",
+    raise_error=False
+)
+def _create_supabase_client(
+    url: str, 
+    key: str, 
+    use_options: bool = True
+) -> Optional[Client]:
+    """
+    Supabaseクライアントを作成する内部関数
     
-    if supabase is None and settings.SUPABASE_URL and settings.SUPABASE_KEY:
+    Args:
+        url: SupabaseのURL
+        key: Supabaseのアクセスキー
+        use_options: オプションオブジェクトを使用するかどうか
+        
+    Returns:
+        Client: Supabaseクライアントインスタンス
+    """
+    if use_options:
         try:
-            # 最新バージョンのSupabaseライブラリに対応した初期化
-            # optionsパラメータを明示的に設定して、proxyパラメータの問題を回避
             from supabase.lib.client_options import SyncClientOptions
             options = SyncClientOptions()
-            
-            # proxyパラメータがエラーの原因なので、これを使わない構成で初期化
-            supabase = create_client(
-                supabase_url=settings.SUPABASE_URL,
-                supabase_key=settings.SUPABASE_KEY,
+            return create_client(
+                supabase_url=url,
+                supabase_key=key,
                 options=options
             )
-        except Exception as e:
-            # エラーログを出力するが、サービスは継続させる
-            print(f"Supabase初期化エラー: {e}")
-            # フォールバック: 最小限のパラメータで試行
-            try:
-                supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
-            except Exception as fallback_error:
-                print(f"Supabaseフォールバック初期化エラー: {fallback_error}")
+        except ImportError:
+            # ライブラリのバージョンが古い場合は通常の方法で作成を試みる
+            logger.warning("SyncClientOptions not found, trying without options")
+            return create_client(url, key)
+    else:
+        # 基本的なパラメータのみで初期化
+        return create_client(url, key)
+
+
+def init_supabase() -> Optional[Client]:
+    """
+    Supabaseクライアントの初期化を行い、失敗した場合は代替方法を試みる
     
-    return supabase
+    Returns:
+        Optional[Client]: 初期化されたSupabaseクライアントまたはNone
+    """
+    global supabase
+    
+    if supabase is not None:
+        return supabase
+    
+    if not settings.SUPABASE_URL or not settings.SUPABASE_KEY:
+        logger.warning("Supabase settings are not configured")
+        return None
+    
+    # 初期化戦略のリスト（優先順位順）
+    strategies = [
+        # 戦略1: オプションオブジェクトを使用した初期化
+        lambda: _create_supabase_client(settings.SUPABASE_URL, settings.SUPABASE_KEY, use_options=True),
+        # 戦略2: 基本的なパラメータのみで初期化
+        lambda: _create_supabase_client(settings.SUPABASE_URL, settings.SUPABASE_KEY, use_options=False),
+    ]
+    
+    # 各戦略を順番に試す
+    for strategy_index, strategy in enumerate(strategies):
+        try:
+            client = strategy()
+            if client:
+                logger.info(f"Supabase client initialized using strategy {strategy_index + 1}")
+                supabase = client
+                return supabase
+        except Exception as e:
+            logger.warning(f"Supabase initialization strategy {strategy_index + 1} failed: {str(e)}")
+    
+    logger.error("All Supabase initialization strategies failed")
+    return None
 
 
-def get_supabase() -> Client:
-    """Supabaseクライアントの取得"""
+def get_supabase() -> Optional[Client]:
+    """
+    Supabaseクライアントの取得。未初期化の場合は初期化を試みる
+    
+    Returns:
+        Optional[Client]: Supabaseクライアントまたはnone
+    """
     if supabase is None:
         return init_supabase()
     return supabase
