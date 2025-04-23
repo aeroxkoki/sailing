@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     API_V1_STR: str = Field(default="/api/v1")
     
     # CORS設定
-    CORS_ORIGINS: List[str] = Field(default=["http://localhost:3000"])
+    CORS_ORIGINS: Union[List[str], str] = Field(default=["http://localhost:3000"])
     
     # データベース設定
     DATABASE_URL: str = Field(default="postgresql://postgres:postgres@localhost:5432/sailing_analyzer")
@@ -45,8 +45,15 @@ class Settings(BaseSettings):
         case_sensitive = True
     
     def __init__(self, **kwargs):
+        # 環境変数からCORS_ORIGINSを直接取得して処理する
+        if "CORS_ORIGINS" in os.environ:
+            cors_env = os.environ.get("CORS_ORIGINS")
+            if cors_env:
+                kwargs["CORS_ORIGINS"] = [origin.strip() for origin in cors_env.split(",")]
+        
         super().__init__(**kwargs)
-        # CORS設定の文字列をリストに変換
+        
+        # 初期化後も文字列の場合はリストに変換
         if isinstance(self.CORS_ORIGINS, str):
             self.CORS_ORIGINS = [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
 

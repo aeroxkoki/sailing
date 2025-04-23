@@ -59,24 +59,17 @@ app = FastAPI(
 app.add_middleware(EncodingMiddleware)
 app.add_middleware(JapaneseProcessingMiddleware)
 
-# CORS設定 - より堅牢な設定
-default_origins = ["http://localhost:3000", "https://localhost:3000"]
-# 環境変数からオリジンを取得、ない場合はデフォルト値を使用
-origins_from_env = os.getenv("CORS_ORIGINS", ",".join(default_origins))
-# カンマで区切られた文字列を配列に変換
-cors_origins = origins_from_env.split(",") if origins_from_env else default_origins
-
-# Vercelドメインを確認し、存在する場合はCORS許可リストに追加
-vercel_domain = os.getenv("FRONTEND_URL")
-if vercel_domain and vercel_domain not in cors_origins:
-    cors_origins.append(vercel_domain)
+# APIルーターのインポートと設定のインポート
+from app.api.router import api_router
+from app.core.config import settings
 
 # デバッグログ出力
-print(f"CORS origins: {cors_origins}")
+print(f"CORS origins: {settings.CORS_ORIGINS}")
 
+# CORS設定 - config.pyから設定を使用
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=cors_origins,
+    allow_origins=settings.CORS_ORIGINS,
     allow_origin_regex=r"https://(.*\.)?vercel\.app$",  # Vercelデプロイメントのサブドメインを許可
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
@@ -110,10 +103,7 @@ async def health_check():
     
     return health_data
 
-# APIルーターのインポートと登録
-from app.api.router import api_router
-from app.core.config import settings
-
+# APIルーターの登録
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 # アプリケーション起動時の処理
