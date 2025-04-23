@@ -1,0 +1,37 @@
+{
+  "framework": "nextjs",
+  "regions": ["sin1"],
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_API_URL": "https://sailing-strategy-api.onrender.com",
+    "NEXT_PUBLIC_APP_NAME": "セーリング戦略分析システム",
+    "NEXT_PUBLIC_APP_VERSION": "0.1.0",
+    "NEXT_PUBLIC_APP_DESCRIPTION": "GPSデータを活用して風向風速を推定し、セーリング競技者の意思決定を客観的に評価するためのツール"
+  },
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' https://*.sailing-strategy-api.onrender.com; frame-src 'self';"
+        }
+      ]
+    }
+  ]
+}

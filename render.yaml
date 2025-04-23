@@ -6,6 +6,7 @@ services:
     region: singapore  # お客様の主な利用地域に近いリージョンを選択
     buildCommand: |
       cd backend
+      python3 fix_encoding.py
       pip install -r requirements.txt
     startCommand: |
       cd backend
@@ -15,9 +16,25 @@ services:
         value: production
       - key: DEBUG
         value: false
+      - key: API_VERSION
+        value: "0.1.0"
+      - key: PROJECT_NAME
+        value: "セーリング戦略分析システム"
+      - key: API_V1_STR
+        value: "/api/v1"
       - key: CORS_ORIGINS
         # VercelデプロイのURLとローカル開発用のURLを指定
         value: https://sailing-strategy-analyzer.vercel.app,http://localhost:3000
+      - key: FRONTEND_URL
+        value: https://sailing-strategy-analyzer.vercel.app
+      - key: ENCODING
+        value: utf-8
+      - key: LOG_LEVEL
+        value: INFO
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: ALGORITHM
+        value: HS256
       - key: DATABASE_URL
         # この変数はRenderダッシュボードで直接設定します
         sync: false

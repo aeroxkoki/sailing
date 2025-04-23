@@ -9,7 +9,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } f
 // 環境に応じたAPIのベースURL設定
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
   (process.env.NODE_ENV === 'production'
-    ? 'https://sailing-analyzer-backend.onrender.com'
+    ? 'https://sailing-strategy-api.onrender.com'
     : 'http://localhost:8000');
 
 // デバッグ出力
