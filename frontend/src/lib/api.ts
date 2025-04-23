@@ -197,9 +197,13 @@ class ApiClient {
   /**
    * DELETEリクエスト
    */
-  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
+  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T> | void> {
     try {
       const response = await this.client.delete<T>(url, config);
+      // 204 No Contentの場合は何も返さない
+      if (response.status === 204) {
+        return;
+      }
       return this.handleSuccess(response);
     } catch (error) {
       return Promise.reject(this.handleError(error as AxiosError));
