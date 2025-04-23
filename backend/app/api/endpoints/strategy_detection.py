@@ -2,83 +2,50 @@
 Strategy Detection API Endpoints
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, List
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, File, UploadFile, Form, status
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.core.dependencies import get_current_user
-from app.db.database import get_db
+from app.core.dependencies import get_current_user, get_db
+from app.schemas.strategy_detection import StrategyDetectionResult, StrategyDetectionInput
+from app.services.strategy_detection_service import detect_strategies
 
 router = APIRouter()
 
-@router.post("/analyze", status_code=status.HTTP_202_ACCEPTED)
-async def analyze_strategy(
-    session_id: UUID = Form(...),
-    settings: Optional[Dict[str, Any]] = Form(None),
-    current_user: dict = Depends(get_current_user),
+@router.post(
+    "/detect",
+    response_model=StrategyDetectionResult,
+    status_code=status.HTTP_200_OK,
+    summary="戦略検出を実行",
+    description="航跡データから戦略を検出します",
+)
+async def perform_strategy_detection(
+    params: StrategyDetectionInput,
     db: Session = Depends(get_db),
+    user_id: UUID = Depends(get_current_user),
 ) -> Any:
     """
-    Analyze sailing strategy based on GPS and wind data
+    航跡データと風向風速データから戦略を検出します。
     
-    Args:
-        session_id: The session ID
-        settings: Strategy detection settings
+    パラメータ:
+    - params: 戦略検出パラメータ
+    
+    戻り値:
+    - 戦略検出結果
     """
-    # Mock implementation
-    job_id = "223e4567-e89b-12d3-a456-426614174001"
-    
-    return {
-        "job_id": job_id,
-        "status": "queued",
-        "message": "Strategy analysis job has been queued and will be processed shortly."
-    }
-
-@router.get("/session/{session_id}")
-async def get_strategy_data(
-    session_id: UUID,
-    current_user: dict = Depends(get_current_user),
-    db: Session = Depends(get_db),
-) -> Any:
-    """
-    Get strategy analysis results for a session
-    
-    Args:
-        session_id: The session ID
-    """
-    # Mock implementation
-    strategy_data = {
-        "overall_score": 85,
-        "key_decisions": [
-            {
-                "id": "decision-1",
-                "timestamp": "2025-04-18T10:05:30",
-                "latitude": 35.124,
-                "longitude": 139.458,
-                "type": "tack",
-                "score": 90,
-                "comment": "Good timing for this tack, utilizing wind shift effectively."
-            },
-            {
-                "id": "decision-2",
-                "timestamp": "2025-04-18T10:12:45",
-                "latitude": 35.127,
-                "longitude": 139.455,
-                "type": "layline",
-                "score": 75,
-                "comment": "Slightly early layline approach, resulting in extra distance sailed."
-            }
-        ],
-        "recommendations": [
-            "Consider delaying layline approaches in unstable wind conditions",
-            "Good tack execution, maintain this technique"
-        ]
-    }
-    
-    return {
-        "session_id": str(session_id),
-        "strategy_data": strategy_data
-    }
+    try:
+        # 戦略検出サービスを呼び出す
+        result = detect_strategies(
+            params=params,
+            user_id=user_id,
+            db=db
+        )
+        
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"戦略検出処理でエラーが発生しました: {str(e)}"
+        )

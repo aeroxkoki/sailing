@@ -1,49 +1,58 @@
 """
-ヘルスチェックエンドポイント
+ヘルスチェックAPI
 """
 
-from fastapi import APIRouter, Depends, Request
-from datetime import datetime
-import os
-import sys
+from fastapi import APIRouter, Depends
+from fastapi.responses import JSONResponse
 
-from app.db.database import check_db_connection
+from app.core.config import settings
+from app.services.health_service import check_database, check_api_services
 
 router = APIRouter()
 
-@router.get("/", summary="APIヘルスチェック")
-async def api_health_check():
+@router.get(
+    "/",
+    response_class=JSONResponse,
+    summary="システム状態を確認",
+    description="APIサーバーの状態を確認します",
+)
+async def health_check():
     """
-    APIの健全性チェックエンドポイント。
-    システムの状態、バージョン、DBの接続状態などを返します。
-    """
-    health_data = {
-        "status": "healthy",
-        "api_version": "v1",
-        "timestamp": datetime.now().isoformat(),
-        "environment": os.getenv("APP_ENV", "development"),
-        "python_version": sys.version,
-    }
+    システムの健全性をチェックします
     
+    戻り値:
+    - status: システム状態
+    - version: APIバージョン
+    - services: 各サービスのステータス
+    """
     # データベース接続チェック
-    try:
-        db_status = await check_db_connection()
-        health_data["database"] = db_status
-    except Exception as e:
-        health_data["database"] = {
-            "status": "error", 
-            "message": str(e)
-        }
+    db_status = await check_database()
     
-    return health_data
-
-@router.get("/check", summary="簡易ヘルスチェック")
-async def simple_health_check():
-    """
-    単純なヘルスチェックエンドポイント。
-    監視システムからの呼び出し用に最小限の情報のみを返します。
-    """
+    # 外部APIサービスチェック
+    api_status = await check_api_services()
+    
     return {
         "status": "ok",
-        "timestamp": datetime.now().isoformat()
+        "version": settings.API_VERSION,
+        "services": {
+            "database": db_status,
+            "api_services": api_status
+        }
+    }
+
+@router.get(
+    "/ping",
+    response_class=JSONResponse,
+    summary="簡易接続チェック",
+    description="APIサーバーへの簡易接続チェック",
+)
+async def ping():
+    """
+    シンプルな接続チェック
+    
+    戻り値:
+    - ping: "pong"
+    """
+    return {
+        "ping": "pong"
     }
