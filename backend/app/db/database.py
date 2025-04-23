@@ -5,7 +5,7 @@
 import os
 from datetime import datetime
 from typing import Any, Dict, Optional, List
-from supabase import create_client, Client, ClientOptions
+from supabase import create_client, Client
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -61,19 +61,9 @@ def init_supabase() -> Client:
     global supabase
     
     if supabase is None and settings.SUPABASE_URL and settings.SUPABASE_KEY:
-        try:
-            # 基本的なパラメータのみで初期化を試みる
-            supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
-        except TypeError as e:
-            # proxyパラメータエラーを検出した場合
-            if 'proxy' in str(e):
-                # カスタムオプションの作成
-                options = ClientOptions()
-                # proxyパラメータを使用しないようにする
-                supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY, options=options)
-            else:
-                # その他のTypeErrorは再発生させる
-                raise
+        # 基本的なパラメータのみで初期化する
+        # 注: Supabaseのバージョンによってはoptionsパラメータでproxyが問題になる場合がある
+        supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
     
     return supabase
 
