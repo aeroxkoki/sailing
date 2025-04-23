@@ -56,7 +56,7 @@ export default function WindEstimationPage() {
     file_format: 'csv'
   });
 
-  // パラメータの更新ハンドラ
+  // パラメータの更新ハンドラ（イベントオブジェクト用）
   const handleParamChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setParams({
@@ -66,6 +66,14 @@ export default function WindEstimationPage() {
         : type === 'number' 
           ? parseFloat(value) 
           : value
+    });
+  };
+  
+  // Selectコンポーネント用のパラメータ更新ハンドラ
+  const handleSelectChange = (name: string) => (value: string) => {
+    setParams({
+      ...params,
+      [name]: value
     });
   };
 
@@ -169,7 +177,7 @@ export default function WindEstimationPage() {
                   id="boat_type"
                   name="boat_type"
                   value={params.boat_type}
-                  onChange={handleParamChange}
+                  onChange={handleSelectChange("boat_type")}
                   options={[
                     { value: 'default', label: 'デフォルト' },
                     { value: 'laser', label: 'レーザー' },
@@ -223,7 +231,7 @@ export default function WindEstimationPage() {
                   id="file_format"
                   name="file_format"
                   value={params.file_format}
-                  onChange={handleParamChange}
+                  onChange={handleSelectChange("file_format")}
                   options={[
                     { value: 'csv', label: 'CSV' },
                     { value: 'gpx', label: 'GPX' }
