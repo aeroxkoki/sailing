@@ -1,5 +1,5 @@
 """
-»­åêÆ£¢#næüÆ£êÆ£â¸åüë
+èªè¨¼ã¨ã‚»ã‚­ãƒ¥ãƒªãƒ†ã‚£é–¢é€£ã®æ©Ÿèƒ½
 """
 
 from datetime import datetime, timedelta
@@ -14,29 +14,29 @@ from pydantic import ValidationError
 from app.core.config import settings
 
 
-# Ñ¹ïüÉÏÃ·å³óÆ­¹È
+# ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ãƒãƒƒã‚·ãƒ¥ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# OAuth¹­üà
+# OAuthè¨­å®š
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl=f"{settings.API_V1_STR}/auth/login"
 )
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """s‡Ñ¹ïüÉhÏÃ·åÑ¹ïüÉ’Ô<Y‹"""
+    """ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã¨ãƒãƒƒã‚·ãƒ¥ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®æ¤œè¨¼"""
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
-    """Ñ¹ïüÉ’ÏÃ·åY‹"""
+    """ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ã®ãƒãƒƒã‚·ãƒ¥åŒ–"""
     return pwd_context.hash(password)
 
 
 def create_access_token(
     subject: Union[str, Any], expires_delta: Optional[timedelta] = None
 ) -> str:
-    """¢¯»¹Èü¯ó’Y‹"""
+    """ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³ç”Ÿæˆ"""
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
@@ -52,7 +52,7 @@ def create_access_token(
 
 
 def decode_access_token(token: str) -> dict:
-    """¢¯»¹Èü¯ó’Ç³üÉY‹"""
+    """ã‚¢ã‚¯ã‚»ã‚¹ãƒˆãƒ¼ã‚¯ãƒ³ã®ãƒ‡ã‚³ãƒ¼ãƒ‰"""
     try:
         payload = jwt.decode(
             token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
@@ -65,11 +65,11 @@ def decode_access_token(token: str) -> dict:
         )
 
 
-# SupabasenJWTÈü¯ó’<Y‹¢p
+# Supabaseã®JWTãƒˆãƒ¼ã‚¯ãƒ³æ¤œè¨¼æ©Ÿèƒ½
 def verify_supabase_token(token: str) -> dict:
-    """SupabasenJWTÈü¯ó’<Y‹"""
+    """Supabaseã®JWTãƒˆãƒ¼ã‚¯ãƒ³æ¤œè¨¼"""
     try:
-        # Supabasen4oJWT_SECRET’(
+        # Supabaseã®JWT_SECRETã§æ¤œè¨¼
         payload = jwt.decode(
             token, settings.SUPABASE_JWT_SECRET, algorithms=[settings.ALGORITHM]
         )
