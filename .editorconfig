@@ -1,0 +1,26 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# トップレベル（親ディレクトリを検索しない）
+root = true
+
+# すべてのファイル共通の設定
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+
+# Pythonファイル固有の設定
+[*.py]
+indent_size = 4
+max_line_length = 88
+
+# JSONやYAMLファイルの設定
+[*.{json,yml,yaml}]
+indent_size = 2
+
+# Markdownの設定
+[*.md]
+trim_trailing_whitespace = false
