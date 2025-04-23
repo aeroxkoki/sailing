@@ -1,216 +1,132 @@
 """
-GPSÇü¿æ(æüÆ£êÆ£
+GPSé–¢é€£ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£
 """
 
+from typing import List, Tuple, Dict, Any, Optional
 import math
-from datetime import datetime
-from typing import List, Tuple, Dict, Any, Optional, Union
-
+import gpxpy
 import numpy as np
 from geopy.distance import geodesic
 
-
-def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
-    ÏĞüµ¤ól’(Wf2¹“nİâáüÈë	’—
-    
-    Args:
-        lat1: 0¹1nï¦
-        lon1: 0¹1nL¦
-        lat2: 0¹2nï¦
-        lon2: 0¹2nL¦
-        
-    Returns:
-        2¹“nİâáüÈë	
+    2ç‚¹é–“ã®è·é›¢ã‚’è¨ˆç®—ï¼ˆãƒ¡ãƒ¼ãƒˆãƒ«å˜ä½ï¼‰
     """
     return geodesic((lat1, lon1), (lat2, lon2)).meters
 
-
 def calculate_bearing(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
-    2¹“n¹MÒ¦	’—
-    
-    Args:
-        lat1: 0¹1nï¦¦	
-        lon1: 0¹1nL¦¦	
-        lat2: 0¹2nï¦¦	
-        lon2: 0¹2nL¦¦	
-        
-    Returns:
-        K‰BŞŠn¹MÒ¦0-360	
+    2ç‚¹é–“ã®æ–¹ä½è§’ã‚’è¨ˆç®—ï¼ˆåº¦å˜ä½ï¼‰
     """
-    # é¸¢óx	Û
+    # ãƒ©ã‚¸ã‚¢ãƒ³ã¸å¤‰æ›
     lat1_rad = math.radians(lat1)
     lon1_rad = math.radians(lon1)
     lat2_rad = math.radians(lat2)
     lon2_rad = math.radians(lon2)
     
-    # ¹MÒ—
+    # æ–¹ä½è§’è¨ˆç®—
     y = math.sin(lon2_rad - lon1_rad) * math.cos(lat2_rad)
     x = math.cos(lat1_rad) * math.sin(lat2_rad) - math.sin(lat1_rad) * math.cos(lat2_rad) * math.cos(lon2_rad - lon1_rad)
     bearing = math.atan2(y, x)
     
-    # é¸¢óK‰¦x	ÛW0-360nÄòk¿t
-    bearing = math.degrees(bearing)
-    bearing = (bearing + 360) % 360
-    
-    return bearing
+    # åº¦ã«å¤‰æ›ã—ã€0-360åº¦ã«æ­£è¦åŒ–
+    bearing_deg = math.degrees(bearing)
+    return (bearing_deg + 360) % 360
 
-
-def calculate_speed(
-    lat1: float, lon1: float, timestamp1: datetime,
-    lat2: float, lon2: float, timestamp2: datetime
-) -> float:
+def calculate_speed(distance: float, time_diff: float) -> float:
     """
-    2¹“nûÕ¦ÎÃÈ	’—
-    
-    Args:
-        lat1: 0¹1nï¦
-        lon1: 0¹1nL¦
-        timestamp1: 0¹1nB;
-        lat2: 0¹2nï¦
-        lon2: 0¹2nL¦
-        timestamp2: 0¹2nB;
-        
-    Returns:
-        ¦ÎÃÈ	
+    è·é›¢ã¨æ™‚é–“å·®ã‹ã‚‰é€Ÿåº¦ã‚’è¨ˆç®—ï¼ˆãƒãƒƒãƒˆå˜ä½ï¼‰
     """
-    # İâ—áüÈë	
-    distance = haversine_distance(lat1, lon1, lat2, lon2)
-    
-    # B“îÒ	
-    time_diff = (timestamp2 - timestamp1).total_seconds()
-    
     if time_diff <= 0:
         return 0.0
     
-    # ¦—m/s	
+    # ãƒ¡ãƒ¼ãƒˆãƒ«/ç§’ ã‹ã‚‰ãƒãƒƒãƒˆã¸å¤‰æ›
     speed_ms = distance / time_diff
-    
-    # ÎÃÈx	Û1ÎÃÈ = 0.514444 m/s	
-    speed_knots = speed_ms / 0.514444
+    speed_knots = speed_ms * 1.94384
     
     return speed_knots
 
+def parse_gpx(gpx_content: str) -> List[Dict[str, Any]]:
+    """
+    GPXãƒ•ã‚¡ã‚¤ãƒ«ã®å†…å®¹ã‚’è§£æã—ãƒã‚¤ãƒ³ãƒˆã®ãƒªã‚¹ãƒˆã‚’è¿”ã™
+    """
+    try:
+        gpx = gpxpy.parse(gpx_content)
+        points = []
+        
+        for track in gpx.tracks:
+            for segment in track.segments:
+                for point in segment.points:
+                    points.append({
+                        'latitude': point.latitude,
+                        'longitude': point.longitude,
+                        'elevation': point.elevation,
+                        'time': point.time,
+                        'speed': getattr(point, 'speed', None),
+                        'course': getattr(point, 'course', None)
+                    })
+        
+        return points
+    except Exception as e:
+        raise ValueError(f"GPXãƒ‡ãƒ¼ã‚¿ã®è§£æã‚¨ãƒ©ãƒ¼: {str(e)}")
 
-def smooth_gps_data(
-    latitudes: List[float],
-    longitudes: List[float],
-    timestamps: List[datetime],
-    window_size: int = 5
-) -> Tuple[List[float], List[float]]:
+def interpolate_points(points: List[Dict[str, Any]], interval_seconds: int = 1) -> List[Dict[str, Any]]:
     """
-    ûÕsGkˆ‹GPSÇü¿nsÑ
-    
-    Args:
-        latitudes: ï¦nê¹È
-        longitudes: L¦nê¹È
-        timestamps: ¿¤à¹¿ó×nê¹È
-        window_size: sÑ¦£óÉ¦µ¤º
-        
-    Returns:
-        sÑUŒ_ï¦hL¦n¿×ë
+    GPSãƒã‚¤ãƒ³ãƒˆã‚’æŒ‡å®šé–“éš”ã§è£œé–“ã™ã‚‹
     """
-    if len(latitudes) != len(longitudes) or len(latitudes) != len(timestamps):
-        raise ValueError("Input lists must have the same length")
+    if not points or len(points) < 2:
+        return points
     
-    if len(latitudes) < window_size:
-        return latitudes, longitudes
+    # æ™‚é–“æƒ…å ±ãŒãªã„å ´åˆã¯è£œé–“ã§ããªã„
+    if 'time' not in points[0] or points[0]['time'] is None:
+        return points
     
-    smooth_lat = []
-    smooth_lon = []
-    
-    half_window = window_size // 2
-    
-    for i in range(len(latitudes)):
-        # ¦£óÉ¦nÄò’zš
-        start_idx = max(0, i - half_window)
-        end_idx = min(len(latitudes), i + half_window + 1)
+    interpolated = []
+    for i in range(len(points) - 1):
+        current = points[i]
+        next_point = points[i + 1]
         
-        # ¦£óÉ¦…n$nsG’—
-        lat_avg = sum(latitudes[start_idx:end_idx]) / (end_idx - start_idx)
-        lon_avg = sum(longitudes[start_idx:end_idx]) / (end_idx - start_idx)
+        # ç¾åœ¨ã®ãƒã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
+        interpolated.append(current)
         
-        smooth_lat.append(lat_avg)
-        smooth_lon.append(lon_avg)
-    
-    return smooth_lat, smooth_lon
-
-
-def detect_tacks_and_gybes(
-    headings: List[float],
-    timestamps: List[datetime],
-    threshold_angle: float = 80.0,
-    min_time_diff: float = 5.0
-) -> List[Dict[str, Any]]:
-    """
-    ¿Ã¯h¸ã¤Önú
-    
-    Args:
-        headings: Gn¹MÒnê¹È¦	
-        timestamps: ¿¤à¹¿ó×nê¹È
-        threshold_angle: ¹M	n¾$¦	
-        min_time_diff: B““”Ò	
+        # æ™‚é–“å·®ï¼ˆç§’ï¼‰ã‚’è¨ˆç®—
+        time_diff = (next_point['time'] - current['time']).total_seconds()
         
-    Returns:
-        úUŒ_¿Ã¯/¸ã¤Önê¹Èøb	
-    """
-    if len(headings) != len(timestamps):
-        raise ValueError("Input lists must have the same length")
-    
-    if len(headings) < 2:
-        return []
-    
-    maneuvers = []
-    last_maneuver_time = timestamps[0]
-    
-    for i in range(1, len(headings)):
-        # ¹MÒn	’—
-        heading_diff = abs((headings[i] - headings[i-1] + 180) % 360 - 180)
-        
-        # B“î’—
-        time_diff = (timestamps[i] - last_maneuver_time).total_seconds()
-        
-        # ¾$’…H‹¹M	KdB““”’€_Y4
-        if heading_diff > threshold_angle and time_diff > min_time_diff:
-            # ¿Ã¯K¸ã¤ÖK’$š¨’nWfŸ›kozš	
-            maneuver_type = "tack" if 70 <= abs(headings[i] - headings[i-1]) <= 110 else "gybe"
+        # è£œé–“ãŒå¿…è¦ãªå ´åˆã®ã¿å‡¦ç†
+        if time_diff > interval_seconds:
+            # è£œé–“ã™ã‚‹ãƒã‚¤ãƒ³ãƒˆæ•°
+            num_points = int(time_diff / interval_seconds)
             
-            maneuvers.append({
-                "timestamp": timestamps[i],
-                "type": maneuver_type,
-                "heading_before": headings[i-1],
-                "heading_after": headings[i],
-                "heading_change": heading_diff
-            })
-            
-            last_maneuver_time = timestamps[i]
+            for j in range(1, num_points):
+                # è£œé–“ä¿‚æ•°
+                ratio = j / num_points
+                
+                # ä½ç½®ã®ç·šå½¢è£œé–“
+                lat = current['latitude'] + ratio * (next_point['latitude'] - current['latitude'])
+                lon = current['longitude'] + ratio * (next_point['longitude'] - current['longitude'])
+                
+                # æ™‚é–“ã®è£œé–“
+                time = current['time'] + (next_point['time'] - current['time']) * ratio
+                
+                # é€Ÿåº¦ã¨æ–¹ä½ã‚‚è£œé–“
+                speed = None
+                course = None
+                if current.get('speed') is not None and next_point.get('speed') is not None:
+                    speed = current['speed'] + ratio * (next_point['speed'] - current['speed'])
+                if current.get('course') is not None and next_point.get('course') is not None:
+                    course = current['course'] + ratio * (next_point['course'] - current['course'])
+                
+                interpolated.append({
+                    'latitude': lat,
+                    'longitude': lon,
+                    'elevation': current['elevation'] + ratio * (next_point['elevation'] - current['elevation']) if (current['elevation'] is not None and next_point['elevation'] is not None) else None,
+                    'time': time,
+                    'speed': speed,
+                    'course': course,
+                    'interpolated': True
+                })
     
-    return maneuvers
-
-
-def calculate_vmg(
-    boat_speed: float,
-    boat_heading: float,
-    wind_direction: float
-) -> float:
-    """
-    VMGVelocity Made Good¨
-/¨¹xn	¹¦	’—
+    # æœ€å¾Œã®ãƒã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
+    interpolated.append(points[-1])
     
-    Args:
-        boat_speed: GÎÃÈ	
-        boat_heading: Gn¹MÒ¦0-360	
-        wind_direction: ¨¦0-360¨L9DfO‹¹	
-        
-    Returns:
-        VMGÎÃÈcn$o¨
-xn2L n$o¨xn2L	
-    """
-    # GnMh¨nÒ¦î’—
-    angle_diff = abs((boat_heading - wind_direction + 180) % 360 - 180)
-    
-    # VMG—cos(angle_diff)g¨øxn•q’B‹	
-    vmg = boat_speed * math.cos(math.radians(angle_diff))
-    
-    return vmg
+    return interpolated

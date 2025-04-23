@@ -1,61 +1,35 @@
 """
-×í¸§¯È¹­üŞâ¸åüë
+ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚¹ã‚­ãƒ¼ãƒå®šç¾©
 """
 
 from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
-
 from pydantic import BaseModel, Field
 
 
-# qn^'’dú•âÇë
 class ProjectBase(BaseModel):
-    """×í¸§¯Ènú,^'"""
-    name: str = Field(..., min_length=1, max_length=100, description="×í¸§¯È")
-    description: Optional[str] = Field(None, max_length=500, description="×í¸§¯Èn¬")
-    is_public: bool = Field(False, description="l‹-štruegl‹	")
+    """ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ™ãƒ¼ã‚¹ãƒ¢ãƒ‡ãƒ«"""
+    name: str = Field(..., description="ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆå")
+    description: Optional[str] = Field(None, description="ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆèª¬æ˜")
 
 
-# ×í¸§¯È\ê¯¨¹È(
 class ProjectCreate(ProjectBase):
-    """×í¸§¯È\âÇë"""
+    """ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆä½œæˆãƒ¢ãƒ‡ãƒ«"""
     pass
 
 
-# ×í¸§¯Èô°ê¯¨¹È(
-class ProjectUpdate(BaseModel):
-    """×í¸§¯Èô°âÇë"""
-    name: Optional[str] = Field(None, min_length=1, max_length=100, description="×í¸§¯È")
-    description: Optional[str] = Field(None, max_length=500, description="×í¸§¯Èn¬")
-    is_public: Optional[bool] = Field(None, description="l‹-štruegl‹	")
+class ProjectUpdate(ProjectBase):
+    """ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆæ›´æ–°ãƒ¢ãƒ‡ãƒ«"""
+    name: Optional[str] = Field(None, description="ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆå")
 
 
-# Çü¿Ùü¹K‰Ö—W_×í¸§¯ÈÅ1ì¹İó¹(
-class ProjectInDB(ProjectBase):
-    """Çü¿Ùü¹…n×í¸§¯ÈâÇë"""
-    id: UUID
-    user_id: UUID
-    created_at: datetime
-    updated_at: datetime
-
-    class Config:
-        orm_mode = True
-
-
-# APIì¹İó¹(»­åêÆ£
-n1gèÅ1’d	
-class Project(ProjectInDB):
-    """APIì¹İó¹(×í¸§¯ÈâÇë"""
+class Project(ProjectBase):
+    """ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãƒ¢ãƒ‡ãƒ«"""
+    id: UUID = Field(..., description="ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆID")
+    created_at: datetime = Field(..., description="ä½œæˆæ—¥æ™‚")
+    updated_at: datetime = Field(..., description="æ›´æ–°æ—¥æ™‚")
+    user_id: UUID = Field(..., description="ãƒ¦ãƒ¼ã‚¶ãƒ¼ID")
     
     class Config:
-        orm_mode = True
-
-
-# ×í¸§¯È§ì¹İó¹(
-class ProjectList(BaseModel):
-    """×í¸§¯È§âÇë"""
-    items: List[Project]
-    total: int
-    skip: int
-    limit: int
+        from_attributes = True

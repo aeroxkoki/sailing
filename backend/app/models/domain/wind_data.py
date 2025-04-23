@@ -1,92 +1,37 @@
 """
-¨Çü¿âÇë
+é¢¨ãƒ‡ãƒ¼ã‚¿ãƒ¢ãƒ‡ãƒ«
 """
 
-import uuid
 from datetime import datetime
 from typing import List, Optional
-
-from sqlalchemy import Column, Float, DateTime, ForeignKey, Integer, Boolean, String
-from sqlalchemy.dialects.postgresql import UUID, JSONB
-from sqlalchemy.orm import relationship
-
-from app.db.database import Base
+from pydantic import BaseModel, Field
 
 
-class WindData(Base):
-    """¨Çü¿âÇë"""
-    
-    __tablename__ = "wind_data"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    session_id = Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False)
-    
-    # B“Å1
-    timestamp = Column(DateTime, nullable=False, index=True)
-    
-    # MnÅ1
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
-    
-    # ¨¨
-    wind_direction = Column(Float, nullable=False)  # ¦XM0-360	
-    wind_speed = Column(Float, nullable=False)  # ÎÃÈXM
-    
-    # á<'û¾¦Å1
-    confidence = Column(Float, nullable=True)  # 0-1n$
-    source = Column(String, nullable=True)  # 'estimated', 'measured', 'combined'
-    estimation_method = Column(String, nullable=True)  # (W_¨š¢ë´êºà
-    
-    # ı á¿Çü¿
-    metadata = Column(JSONB, nullable=True)
-    
-    # ¿¤à¹¿ó×
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # êìü·çó·Ã×
-    # session = relationship("Session", back_populates="wind_data")
-    
-    def __repr__(self):
-        return f"<WindData {self.timestamp}: {self.wind_speed}kts @ {self.wind_direction}°>"
+class WindDataPoint(BaseModel):
+    """é¢¨ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒˆ"""
+    timestamp: datetime = Field(..., description="ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—")
+    latitude: float = Field(..., description="ç·¯åº¦")
+    longitude: float = Field(..., description="çµŒåº¦")
+    speed: float = Field(..., description="é¢¨é€Ÿï¼ˆãƒãƒƒãƒˆï¼‰")
+    direction: float = Field(..., description="é¢¨å‘ï¼ˆåº¦ï¼‰")
+    confidence: float = Field(1.0, description="ä¿¡é ¼åº¦ï¼ˆ0-1ï¼‰")
 
 
-class WindField(Base):
-    """¨n4âÇë¨ê¢hSn¨Å1	"""
-    
-    __tablename__ = "wind_fields"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    session_id = Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False)
-    
-    # B“Å1
-    timestamp = Column(DateTime, nullable=False, index=True)
-    
-    # ƒLÅ1
-    min_latitude = Column(Float, nullable=False)
-    max_latitude = Column(Float, nullable=False)
-    min_longitude = Column(Float, nullable=False)
-    max_longitude = Column(Float, nullable=False)
-    
-    # °êÃÉ-š
-    grid_size = Column(Float, nullable=False)  # °êÃÉµ¤º¦XM	
-    resolution = Column(Integer, nullable=False)  # ãÏ¦
-    
-    # ¨n4Çü¿Ğ¤Êê‚WOoJSONg<	
-    field_data = Column(JSONB, nullable=False)
-    
-    # á½ÃÉ
-    generation_method = Column(String, nullable=True)  # 'interpolation', 'model', 'combined'
-    
-    # Õé°
-    is_validated = Column(Boolean, default=False)
-    
-    # ¿¤à¹¿ó×
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # êìü·çó·Ã×
-    # session = relationship("Session", back_populates="wind_fields")
-    
-    def __repr__(self):
-        return f"<WindField {self.timestamp} ({self.resolution}x{self.resolution})>"
+class WindEstimationResult(BaseModel):
+    """é¢¨æ¨å®šçµæœ"""
+    wind_data: List[WindDataPoint] = Field(..., description="é¢¨ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒˆ")
+    average_speed: float = Field(..., description="å¹³å‡é¢¨é€Ÿï¼ˆãƒãƒƒãƒˆï¼‰")
+    average_direction: float = Field(..., description="å¹³å‡é¢¨å‘ï¼ˆåº¦ï¼‰")
+    created_at: datetime = Field(..., description="ä½œæˆæ—¥æ™‚")
+    session_id: Optional[str] = Field(None, description="ã‚»ãƒƒã‚·ãƒ§ãƒ³ID")
+
+
+class WindPattern(BaseModel):
+    """é¢¨ã®ãƒ‘ã‚¿ãƒ¼ãƒ³"""
+    pattern_type: str = Field(..., description="ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚¿ã‚¤ãƒ—")
+    start_time: datetime = Field(..., description="é–‹å§‹æ™‚é–“")
+    end_time: datetime = Field(..., description="çµ‚äº†æ™‚é–“")
+    average_speed: float = Field(..., description="å¹³å‡é¢¨é€Ÿï¼ˆãƒãƒƒãƒˆï¼‰")
+    average_direction: float = Field(..., description="å¹³å‡é¢¨å‘ï¼ˆåº¦ï¼‰")
+    variation: float = Field(..., description="å¤‰å‹•å¹…ï¼ˆåº¦ï¼‰")
+    description: Optional[str] = Field(None, description="èª¬æ˜")

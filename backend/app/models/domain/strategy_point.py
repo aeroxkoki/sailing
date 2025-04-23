@@ -1,105 +1,42 @@
 """
-&eİ¤óÈÉá¤óâÇë
+æˆ¦ç•¥ãƒã‚¤ãƒ³ãƒˆãƒ¢ãƒ‡ãƒ«
 """
 
-import uuid
 from datetime import datetime
-from typing import List, Optional
-
-from sqlalchemy import Column, Float, DateTime, ForeignKey, Integer, Boolean, String, Text
-from sqlalchemy.dialects.postgresql import UUID, JSONB
-from sqlalchemy.orm import relationship
-
-from app.db.database import Base
+from typing import List, Optional, Dict, Any
+from uuid import UUID
+from pydantic import BaseModel, Field
 
 
-class StrategyPoint(Base):
-    """&eİ¤óÈâÇëzšnÍj@b	"""
-    
-    __tablename__ = "strategy_points"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    session_id = Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False)
-    
-    # B“Å1
-    timestamp = Column(DateTime, nullable=False, index=True)
-    
-    # MnÅ1
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
-    
-    # &eÅ1
-    type = Column(String, nullable=False)  # 'tack', 'gybe', 'mark_rounding', 'layline', 'start', 'finish'
-    subtype = Column(String, nullable=True)  # ˆŠs0j^
-    
-    # U¡Å1
-    score = Column(Float, nullable=True)  # U¡¹³¢0-100	
-    is_optimal = Column(Boolean, default=False)  # ijx`c_K
-    optimal_timestamp = Column(DateTime, nullable=True)  # ij¿¤ßó°
-    optimal_latitude = Column(Float, nullable=True)  # ijMnï¦	
-    optimal_longitude = Column(Float, nullable=True)  # ijMnL¦	
-    time_loss = Column(Float, nullable=True)  # B“1Ò	
-    distance_loss = Column(Float, nullable=True)  # İâ1áüÈë	
-    
-    # ³óÆ­¹ÈÅ1
-    boat_speed = Column(Float, nullable=True)  # GÎÃÈ	
-    boat_heading = Column(Float, nullable=True)  # GM¦	
-    wind_speed = Column(Float, nullable=True)  # ¨ÎÃÈ	
-    wind_direction = Column(Float, nullable=True)  # ¨¦	
-    
-    # áâûèÈ
-    notes = Column(Text, nullable=True)
-    
-    # s0Çü¿
-    details = Column(JSONB, nullable=True)
-    
-    # ¿¤à¹¿ó×
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # êìü·çó·Ã×
-    # session = relationship("Session", back_populates="strategy_points")
-    
-    def __repr__(self):
-        return f"<StrategyPoint {self.type} @ {self.timestamp}>"
+class StrategyPoint(BaseModel):
+    """æˆ¦ç•¥ãƒã‚¤ãƒ³ãƒˆ"""
+    timestamp: datetime = Field(..., description="ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—")
+    latitude: float = Field(..., description="ç·¯åº¦")
+    longitude: float = Field(..., description="çµŒåº¦")
+    strategy_type: str = Field(..., description="æˆ¦ç•¥ã‚¿ã‚¤ãƒ—")
+    confidence: float = Field(1.0, description="ä¿¡é ¼åº¦ï¼ˆ0-1ï¼‰")
+    metadata: Optional[Dict[str, Any]] = Field(None, description="ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿")
 
 
-class StrategyAnalysis(Base):
-    """&ePœâÇë»Ã·çóhSn	"""
-    
-    __tablename__ = "strategy_analyses"
-    
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    session_id = Column(UUID(as_uuid=True), ForeignKey("sessions.id"), nullable=False, unique=True)
-    
-    # ú,Å1
-    analysis_version = Column(String, nullable=False)  # ¢ë´êºànĞü¸çó
-    
-    # ¹³¢Å1
-    overall_score = Column(Float, nullable=True)  # Ï¹³¢0-100	
-    tacking_score = Column(Float, nullable=True)  # ¿Ã¯U¡
-    sailing_line_score = Column(Float, nullable=True)  # »üêó°é¤óU¡
-    mark_rounding_score = Column(Float, nullable=True)  # Şü¯é¦óÇ£ó°U¡
-    start_score = Column(Float, nullable=True)  # ¹¿üÈU¡
-    
-    # qÅ1
-    total_strategy_points = Column(Integer, nullable=True)  # &eİ¤óÈÏp
-    optimal_strategy_points = Column(Integer, nullable=True)  # i`c_&eİ¤óÈp
-    total_time_loss = Column(Float, nullable=True)  # ÏB“1Ò	
-    
-    # s0Çü¿
-    analysis_data = Column(JSONB, nullable=True)
-    
-    # ìİüÈÅ1
-    report_summary = Column(Text, nullable=True)
-    improvement_suggestions = Column(JSONB, nullable=True)
-    
-    # ¿¤à¹¿ó×
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    
-    # êìü·çó·Ã×
-    # session = relationship("Session", back_populates="strategy_analysis")
-    
-    def __repr__(self):
-        return f"<StrategyAnalysis {self.session_id}: {self.overall_score}>"
+class StrategyDetectionResult(BaseModel):
+    """æˆ¦ç•¥æ¤œå‡ºçµæœ"""
+    strategy_points: List[StrategyPoint] = Field(..., description="æˆ¦ç•¥ãƒã‚¤ãƒ³ãƒˆ")
+    created_at: datetime = Field(..., description="ä½œæˆæ—¥æ™‚")
+    session_id: Optional[str] = Field(None, description="ã‚»ãƒƒã‚·ãƒ§ãƒ³ID")
+    track_length: Optional[float] = Field(None, description="èˆªè·¡ã®é•·ã•ï¼ˆãƒ¡ãƒ¼ãƒˆãƒ«ï¼‰")
+    total_tacks: Optional[int] = Field(None, description="ã‚¿ãƒƒã‚¯ã®ç·æ•°")
+    total_jibes: Optional[int] = Field(None, description="ã‚¸ãƒ£ã‚¤ãƒ–ã®ç·æ•°")
+    upwind_percentage: Optional[float] = Field(None, description="ã‚¢ãƒƒãƒ—ã‚¦ã‚£ãƒ³ãƒ‰å‰²åˆï¼ˆ%ï¼‰")
+    downwind_percentage: Optional[float] = Field(None, description="ãƒ€ã‚¦ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰å‰²åˆï¼ˆ%ï¼‰")
+    reaching_percentage: Optional[float] = Field(None, description="ãƒªãƒ¼ãƒãƒ³ã‚°å‰²åˆï¼ˆ%ï¼‰")
+    performance_score: Optional[float] = Field(None, description="ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹ã‚¹ã‚³ã‚¢ï¼ˆ0-100ï¼‰")
+    recommendations: Optional[List[str]] = Field(None, description="æ¨å¥¨äº‹é …")
+
+
+class StrategyDetectionInput(BaseModel):
+    """æˆ¦ç•¥æ¤œå‡ºå…¥åŠ›"""
+    session_id: UUID = Field(..., description="ã‚»ãƒƒã‚·ãƒ§ãƒ³ID")
+    wind_estimation_id: Optional[UUID] = Field(None, description="é¢¨æ¨å®šID")
+    detection_sensitivity: Optional[float] = Field(0.5, description="æ¤œå‡ºæ„Ÿåº¦ï¼ˆ0-1ï¼‰")
+    min_tack_angle: Optional[float] = Field(45.0, description="æœ€å°ã‚¿ãƒƒã‚¯è§’åº¦ï¼ˆåº¦ï¼‰")
+    min_jibe_angle: Optional[float] = Field(45.0, description="æœ€å°ã‚¸ãƒ£ã‚¤ãƒ–è§’åº¦ï¼ˆåº¦ï¼‰")
