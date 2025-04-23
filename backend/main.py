@@ -68,16 +68,13 @@ from app.core.config import settings
 # デバッグログ出力
 print(f"CORS origins: {settings.CORS_ORIGINS}")
 
-# CORS設定 - config.pyから設定を使用
+# CORS設定
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_origin_regex=r"https://(.*\.)?vercel\.app$",  # Vercelデプロイメントのサブドメインを許可
+    allow_origins=[origin.strip() for origin in settings.CORS_ORIGINS.split(',')],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["X-Process-Time", "X-API-Version", "Content-Type"],
-    max_age=600,  # 10分間のプリフライトリクエストキャッシュ
 )
 
 # ルートパス
@@ -85,25 +82,14 @@ app.add_middleware(
 async def root():
     return {"message": "セーリング戦略分析システムAPIへようこそ"}
 
-# ヘルスチェック
-@app.get("/health")
+# ヘルスチェックエンドポイント
+@app.get("/health", tags=["Health"])
 async def health_check():
-    health_data = {
-        "status": "healthy",
-        "version": "0.1.0",
-        "timestamp": datetime.now().isoformat(),
-        "environment": os.getenv("APP_ENV", "development"),
+    return {
+        "status": "ok",
+        "version": settings.API_VERSION,
+        "environment": settings.APP_ENV
     }
-    
-    # データベース接続チェックを試みる
-    try:
-        from app.db.database import check_db_connection
-        db_status = await check_db_connection()
-        health_data["database"] = db_status
-    except Exception as e:
-        health_data["database"] = {"status": "error", "message": str(e)}
-    
-    return health_data
 
 # APIルーターの登録
 app.include_router(api_router, prefix=settings.API_V1_STR)

@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     DEBUG: bool = Field(default=False)
     PROJECT_NAME: str = Field(default="セーリング戦略分析システム")
     API_V1_STR: str = Field(default="/api/v1")
+    API_VERSION: str = Field(default="0.1.0")
     
     # CORS設定
     CORS_ORIGINS: Union[List[str], str] = Field(default=["http://localhost:3000"])

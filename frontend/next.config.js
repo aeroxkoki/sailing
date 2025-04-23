@@ -1,51 +1,33 @@
 /** @type {import('next').NextConfig} */
-const path = require('path');
-
 const nextConfig = {
   reactStrictMode: true,
-  // パスエイリアスの設定
-  webpack: (config) => {
-    config.resolve.alias['@'] = path.join(__dirname, 'src');
-    return config;
+  swcMinify: true,
+  
+  // 環境変数
+  env: {
+    NEXT_PUBLIC_APP_VERSION: process.env.NEXT_PUBLIC_APP_VERSION || '0.1.0',
+    NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME || 'セーリング戦略分析システム',
   },
-  // APIのプロキシ設定
+  
+  // 画像最適化設定
+  images: {
+    domains: ['sailing-strategy-api.onrender.com'],
+  },
+  
+  // API リクエストのリライト設定（開発環境用）
   async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    console.log(`API URL configured as: ${apiUrl}`);
-    
-    return [
-      // 通常のAPIパス
-      {
-        source: '/api/:path*',
-        destination: `${apiUrl}/api/:path*`,
-      },
-      // ルートパス（ヘルスチェック用）
-      {
-        source: '/health',
-        destination: `${apiUrl}/health`,
-      },
-      // APIバージョン明示的なパス
-      {
-        source: '/api/v1/:path*',
-        destination: `${apiUrl}/api/v1/:path*`,
-      }
-    ]
+    return process.env.NODE_ENV === 'development'
+      ? [
+          {
+            source: '/api/:path*',
+            destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/api/:path*`,
+          },
+        ]
+      : [];
   },
-  // CORS設定
-  async headers() {
-    return [
-      {
-        // すべてのパスに適用
-        source: '/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Credentials', value: 'true' },
-          { key: 'Access-Control-Allow-Origin', value: '*' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,OPTIONS,PATCH,DELETE,POST,PUT' },
-          { key: 'Access-Control-Allow-Headers', value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization' },
-        ],
-      },
-    ]
-  },
+  
+  // 出力設定
+  output: 'standalone',
 }
 
 module.exports = nextConfig

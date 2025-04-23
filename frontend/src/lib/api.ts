@@ -247,4 +247,54 @@ if (typeof window !== 'undefined') {
   apiClient.loadToken();
 }
 
+// 風向風速推定関連API
+export const windEstimationApi = {
+  // 風向風速推定実行
+  estimateWind: async (file: File, params: any): Promise<ApiResponse<any>> => {
+    const formData = new FormData();
+    formData.append('gps_data', file);
+    
+    // パラメータの追加
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null) {
+        formData.append(key, String(value));
+      }
+    });
+    
+    const config: AxiosRequestConfig = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    
+    return apiClient.post<any>('/wind-estimation/estimate', formData, config);
+  },
+};
+
+// 戦略検出関連API
+export const strategyDetectionApi = {
+  // 戦略検出実行
+  detectStrategies: async (params: any): Promise<ApiResponse<any>> => {
+    return apiClient.post<any>('/strategy-detection/detect', params);
+  },
+};
+
+// プロジェクト関連API
+export const projectApi = {
+  // プロジェクト一覧取得
+  getProjects: async (): Promise<ApiResponse<any>> => {
+    return apiClient.get<any>('/projects');
+  },
+  
+  // プロジェクト詳細取得
+  getProject: async (id: string): Promise<ApiResponse<any>> => {
+    return apiClient.get<any>(`/projects/${id}`);
+  },
+  
+  // プロジェクト作成
+  createProject: async (data: any): Promise<ApiResponse<any>> => {
+    return apiClient.post<any>('/projects', data);
+  },
+};
+
 export default apiClient;
