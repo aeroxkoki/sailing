@@ -1,7 +1,7 @@
 """
-Çü¿¤óİüÈAPI
+ãƒ‡ãƒ¼ã‚¿ã‚¤ãƒ³ãƒãƒ¼ãƒˆAPI
 
-GPSÇü¿n¤óİüÈ_ı’Ğ›
+GPSãƒ‡ãƒ¼ã‚¿ã®ã‚¤ãƒ³ãƒãƒ¼ãƒˆå‡¦ç†
 """
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
@@ -18,8 +18,8 @@ router = APIRouter()
     "/",
     response_class=JSONResponse,
     status_code=status.HTTP_201_CREATED,
-    summary="GPSÇü¿n¤óİüÈ",
-    description="GPSÇü¿Õ¡¤ë’¢Ã×íüÉWf¤óİüÈW~Y",
+    summary="GPSãƒ‡ãƒ¼ã‚¿ã‚’ã‚¤ãƒ³ãƒãƒ¼ãƒˆ",
+    description="GPSãƒ‡ãƒ¼ã‚¿ã‚’å—ã‘å–ã‚Šã‚·ã‚¹ãƒ†ãƒ ã«å–ã‚Šè¾¼ã¿ã¾ã™",
 )
 async def import_gps_data(
     file: UploadFile = File(...),
@@ -27,19 +27,19 @@ async def import_gps_data(
     user_id: UUID = Depends(get_current_user),
 ) -> Any:
     """
-    GPSÇü¿’¤óİüÈW~Y
+    GPSãƒ‡ãƒ¼ã‚¿ã‚’ã‚·ã‚¹ãƒ†ãƒ ã«å–ã‚Šè¾¼ã¿
     
-    Ñéáü¿:
-    - file: ¢Ã×íüÉY‹GPSÇü¿Õ¡¤ë
+    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿:
+    - file: ã‚¤ãƒ³ãƒãƒ¼ãƒˆã™ã‚‹GPSãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«
     
-    ;Š$:
-    - import_id: ¤óİüÈX%P
-    - status: ¤óİüÈ¶K
-    - file_name: ¤óİüÈUŒ_Õ¡¤ë
-    - records_count: ¤óİüÈUŒ_ì³üÉp
+    æˆ»ã‚Šå€¤:
+    - import_id: ã‚¤ãƒ³ãƒãƒ¼ãƒˆID
+    - status: ã‚¤ãƒ³ãƒãƒ¼ãƒˆçŠ¶æ…‹
+    - file_name: ã‚¤ãƒ³ãƒãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«å
+    - records_count: ã‚¤ãƒ³ãƒãƒ¼ãƒˆãƒ¬ã‚³ãƒ¼ãƒ‰æ•°
     """
-    # è: SSkŸ›n¤óİüÈæ’ŸÅW~Y
-    # ş(oB„j¹¿ÖŸÅ
+    # æ³¨: ã“ã“ã«å®Ÿéš›ã®ã‚¤ãƒ³ãƒãƒ¼ãƒˆå‡¦ç†ã‚’å®Ÿè£…
+    # ç¾æ®µéšã§ã¯ä»®å®Ÿè£…
     
     return {
         "import_id": "temp-import-id",
@@ -52,8 +52,8 @@ async def import_gps_data(
     "/{import_id}",
     response_class=JSONResponse,
     status_code=status.HTTP_200_OK,
-    summary="¤óİüÈ¹Æü¿¹º",
-    description="Çü¿¤óİüÈn¶K’ºW~Y",
+    summary="ã‚¤ãƒ³ãƒãƒ¼ãƒˆçŠ¶æ³ã®ç¢ºèª",
+    description="ã‚¤ãƒ³ãƒãƒ¼ãƒˆå‡¦ç†ã®çŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™",
 )
 async def get_import_status(
     import_id: str,
@@ -61,23 +61,23 @@ async def get_import_status(
     user_id: UUID = Depends(get_current_user),
 ) -> Any:
     """
-    ¤óİüÈn¶K’ºW~Y
+    ã‚¤ãƒ³ãƒãƒ¼ãƒˆçŠ¶æ…‹ã‚’å–å¾—ã—ã¾ã™
     
-    Ñéáü¿:
-    - import_id: ¤óİüÈX%P
+    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿:
+    - import_id: ã‚¤ãƒ³ãƒãƒ¼ãƒˆID
     
-    ;Š$:
-    - import_id: ¤óİüÈX%P
-    - status: ¤óİüÈ¶K
-    - progress: 2W‡
-    - message: ¹Æü¿¹áÃ»ü¸
+    æˆ»ã‚Šå€¤:
+    - import_id: ã‚¤ãƒ³ãƒãƒ¼ãƒˆID
+    - status: ã‚¤ãƒ³ãƒãƒ¼ãƒˆçŠ¶æ…‹
+    - progress: é€²æ—ç‡
+    - message: ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
     """
-    # è: SSk¹Æü¿¹ºí¸Ã¯’ŸÅW~Y
-    # ş(oB„j¹¿ÖŸÅ
+    # æ³¨: ã“ã“ã«å®Ÿéš›ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å–å¾—å‡¦ç†ã‚’å®Ÿè£…
+    # ç¾æ®µéšã§ã¯ä»®å®Ÿè£…
     
     return {
         "import_id": import_id,
         "status": "completed",
         "progress": 100,
-        "message": "¤óİüÈŒ†"
+        "message": "ã‚¤ãƒ³ãƒãƒ¼ãƒˆå®Œäº†"
     }
