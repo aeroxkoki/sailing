@@ -1,8 +1,8 @@
 """
 sailing_data_processor.reporting.interaction
 
-ìİüÈ “n¤ó¿é¯·çó_ı’Ğ›Y‹ÑÃ±ü¸gY
-Óåü¡³óÆ­¹ÈÅ1Ğ›Õ£ë¿ü¡jin_ı’Ğ›W~Y
+ï¿½ï¿½ï¿½È ï¿½nï¿½ï¿½é¯·ï¿½ï¿½_ï¿½ï¿½Ğ›Yï¿½ï¿½Ã±ï¿½ï¿½gY
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ­ï¿½ï¿½ï¿½1Ğ›Õ£ï¿½ï¿½ï¿½jin_ï¿½ï¿½Ğ›W~Y
 """
 
 from sailing_data_processor.reporting.interaction.view_synchronizer import ViewSynchronizer

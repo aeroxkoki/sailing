@@ -1,7 +1,7 @@
 """
 ui.components.reporting.timeline.playback_panel
 
-×ì¤ĞÃ¯6¡(nStreamlit UI³óİüÍóÈ’Ğ›Y‹â¸åüëgY
+ï¿½ï¿½ï¿½Ã¯6ï¿½(nStreamlit UIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È’Ğ›Yï¿½ï¿½ï¿½ï¿½ï¿½gY
 """
 
 import streamlit as st
@@ -10,52 +10,52 @@ import json
 
 def playback_panel(playback_control, on_change=None, key_prefix=""):
     """
-    ×ì¤ĞÃ¯6¡ÑÍë’h:
+    ï¿½ï¿½ï¿½Ã¯6ï¿½ï¿½ï¿½ï¿½h:
     
     Parameters
     ----------
     playback_control : PlaybackControl
-        ×ì¤ĞÃ¯6¡ªÖ¸§¯È
+        ï¿½ï¿½ï¿½Ã¯6ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
     on_change : Optional[Callable[[Dict[str, Any]], None]], optional
-        	ôBn³üëĞÃ¯, by default None
+        	ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯, by default None
     key_prefix : str, optional
-        ­ü¥-, by default ""
+        ï¿½ï¿½ï¿½-ï¿½, by default ""
         
     Returns
     -------
     Dict[str, Any]
-        	ôUŒ_×íÑÆ£Å1
+        	ï¿½Uï¿½_ï¿½ï¿½ï¿½Æ£ï¿½1
     """
-    st.markdown("### ×ì¤ĞÃ¯6¡")
+    st.markdown("### ï¿½ï¿½ï¿½Ã¯6ï¿½")
     
     changes = {}
     
-    # ³óÈíüë
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
-        if st.button("î", key=f"{key_prefix}_rewind"):
+        if st.button("ï¿½", key=f"{key_prefix}_rewind"):
             playback_control.stop()
             changes["action"] = "rewind"
     
     with col2:
         if playback_control._playing:
-            if st.button("ø", key=f"{key_prefix}_pause"):
+            if st.button("ï¿½", key=f"{key_prefix}_pause"):
                 playback_control.pause()
                 changes["action"] = "pause"
         else:
-            if st.button("¶", key=f"{key_prefix}_play"):
+            if st.button("ï¿½", key=f"{key_prefix}_play"):
                 playback_control.play()
                 changes["action"] = "play"
     
     with col3:
-        if st.button("ù", key=f"{key_prefix}_stop"):
+        if st.button("ï¿½", key=f"{key_prefix}_stop"):
             playback_control.stop()
             changes["action"] = "stop"
     
     with col4:
-        if st.button("í", key=f"{key_prefix}_forward"):
-            # !n­üÕìüàxûÕ
+        if st.button("ï¿½", key=f"{key_prefix}_forward"):
+            # !nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½
             changes["action"] = "forward"
     
     with col5:
@@ -64,9 +64,9 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
             playback_control._options["loop"] = loop
             changes["loop"] = loop
     
-    # ¿¤à¹é¤Àü
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     current_time = st.slider(
-        "Mn",
+        "ï¿½Mn",
         min_value=float(playback_control._start_time),
         max_value=float(playback_control._end_time),
         value=float(playback_control._current_time),
@@ -77,7 +77,7 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
         playback_control.set_current_time(current_time)
         changes["current_time"] = current_time
     
-    # ¦
+    # ï¿½ï¿½
     speed_options = {
         0.1: "0.1",
         0.25: "0.25",
@@ -91,7 +91,7 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
     col1, col2 = st.columns([1, 2])
     
     with col1:
-        st.write("¦:")
+        st.write("ï¿½ï¿½:")
     
     with col2:
         speed = st.selectbox(
@@ -106,33 +106,33 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
             playback_control._options["playback_speed"] = speed
             changes["playback_speed"] = speed
     
-    # ­üÕìüà
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if playback_control._keyframes:
-        st.markdown("#### ­üÕìüà")
+        st.markdown("#### ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")
         keyframe_labels = [kf["label"] for kf in playback_control._keyframes]
         selected_keyframe = st.selectbox(
-            "­üÕìüàûÕ",
+            "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
             options=range(len(keyframe_labels)),
             format_func=lambda i: keyframe_labels[i],
             key=f"{key_prefix}_keyframe"
         )
         
-        if st.button("ûÕ", key=f"{key_prefix}_goto_keyframe"):
+        if st.button("ï¿½ï¿½", key=f"{key_prefix}_goto_keyframe"):
             keyframe_time = playback_control._keyframes[selected_keyframe]["time"]
             playback_control.set_current_time(keyframe_time)
             changes["current_time"] = keyframe_time
             changes["action"] = "goto_keyframe"
     
-    # ­üÕìüàı _ı
-    st.markdown("#### ­üÕìüàı ")
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½_ï¿½
+    st.markdown("#### ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")
     
     col1, col2 = st.columns([2, 1])
     
     with col1:
-        keyframe_label = st.text_input("éÙë", key=f"{key_prefix}_add_keyframe_label")
+        keyframe_label = st.text_input("ï¿½ï¿½ï¿½", key=f"{key_prefix}_add_keyframe_label")
     
     with col2:
-        if st.button("ş(Mn’ı ", key=f"{key_prefix}_add_keyframe"):
+        if st.button("ï¿½(Mnï¿½ï¿½ï¿½", key=f"{key_prefix}_add_keyframe"):
             if keyframe_label:
                 new_keyframe = playback_control.add_keyframe(
                     time=playback_control._current_time,
@@ -141,21 +141,21 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
                 )
                 changes["added_keyframe"] = new_keyframe
     
-    # B“Äò-š
-    st.markdown("#### B“Äò-š")
+    # Bï¿½ï¿½ï¿½-ï¿½
+    st.markdown("#### Bï¿½ï¿½ï¿½-ï¿½")
     
     col1, col2 = st.columns(2)
     
     with col1:
         start_time = st.number_input(
-            "‹ËB“",
+            "ï¿½ï¿½Bï¿½",
             value=float(playback_control._start_time),
             key=f"{key_prefix}_start_time"
         )
     
     with col2:
         end_time = st.number_input(
-            "B†B“",
+            "Bï¿½Bï¿½",
             value=float(playback_control._end_time),
             key=f"{key_prefix}_end_time"
         )
@@ -166,19 +166,19 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
             playback_control.set_time_range(start_time, end_time)
             changes["time_range"] = (start_time, end_time)
         else:
-            st.error("‹ËB“oB†B“ˆŠMk-šWfO`UD")
+            st.error("ï¿½ï¿½Bï¿½oBï¿½Bï¿½ï¿½ï¿½Mk-ï¿½WfO`UD")
     
-    # -šŞÃ×„¿¤àé¤óhn#:	
-    st.markdown("#### -š")
+    # -ï¿½ï¿½ï¿½×„ï¿½ï¿½ï¿½ï¿½ï¿½hn#:	
+    st.markdown("#### -ï¿½")
     
     sync_options = {
-        "map": "ŞÃ×h:",
-        "timeline": "¿¤àé¤ó",
-        "parameter": "Ñéáü¿°éÕ"
+        "map": "ï¿½ï¿½ï¿½h:",
+        "timeline": "ï¿½ï¿½ï¿½ï¿½ï¿½",
+        "parameter": "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
     }
     
     selected_sync = st.multiselect(
-        "Y‹Óåü",
+        "Yï¿½ï¿½ï¿½ï¿½",
         options=list(sync_options.keys()),
         format_func=lambda x: sync_options[x],
         default=[],
@@ -192,7 +192,7 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
         changes["sync_targets"] = selected_sync
         st.session_state["selected_sync"] = selected_sync
     
-    # ³üëĞÃ¯|súW
+    # ï¿½ï¿½ï¿½ï¿½Ã¯|sï¿½W
     if changes and on_change:
         on_change(changes)
     
@@ -200,44 +200,44 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
 
 def playback_mini_panel(playback_control, on_change=None, key_prefix=""):
     """
-    ³óÑ¯Èj×ì¤ĞÃ¯6¡ÑÍë’h:
+    ï¿½ï¿½Ñ¯ï¿½jï¿½ï¿½ï¿½Ã¯6ï¿½ï¿½ï¿½ï¿½h:
     
     Parameters
     ----------
     playback_control : PlaybackControl
-        ×ì¤ĞÃ¯6¡ªÖ¸§¯È
+        ï¿½ï¿½ï¿½Ã¯6ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
     on_change : Optional[Callable[[Dict[str, Any]], None]], optional
-        	ôBn³üëĞÃ¯, by default None
+        	ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯, by default None
     key_prefix : str, optional
-        ­ü¥-, by default ""
+        ï¿½ï¿½ï¿½-ï¿½, by default ""
         
     Returns
     -------
     Dict[str, Any]
-        	ôUŒ_×íÑÆ£Å1
+        	ï¿½Uï¿½_ï¿½ï¿½ï¿½Æ£ï¿½1
     """
     changes = {}
     
-    # ³óÑ¯Èì¤¢¦È
+    # ï¿½ï¿½Ñ¯ï¿½ì¤¢ï¿½ï¿½
     col1, col2, col3, col4, col5, col6 = st.columns([1, 1, 1, 4, 1, 1])
     
     with col1:
-        if st.button("î", key=f"{key_prefix}_mini_rewind"):
+        if st.button("ï¿½", key=f"{key_prefix}_mini_rewind"):
             playback_control.stop()
             changes["action"] = "rewind"
     
     with col2:
         if playback_control._playing:
-            if st.button("ø", key=f"{key_prefix}_mini_pause"):
+            if st.button("ï¿½", key=f"{key_prefix}_mini_pause"):
                 playback_control.pause()
                 changes["action"] = "pause"
         else:
-            if st.button("¶", key=f"{key_prefix}_mini_play"):
+            if st.button("ï¿½", key=f"{key_prefix}_mini_play"):
                 playback_control.play()
                 changes["action"] = "play"
     
     with col3:
-        if st.button("ù", key=f"{key_prefix}_mini_stop"):
+        if st.button("ï¿½", key=f"{key_prefix}_mini_stop"):
             playback_control.stop()
             changes["action"] = "stop"
     
@@ -256,8 +256,8 @@ def playback_mini_panel(playback_control, on_change=None, key_prefix=""):
             changes["current_time"] = current_time
     
     with col5:
-        if st.button("í", key=f"{key_prefix}_mini_forward"):
-            # !n­üÕìüàxûÕ
+        if st.button("ï¿½", key=f"{key_prefix}_mini_forward"):
+            # !nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½ï¿½
             changes["action"] = "forward"
     
     with col6:
@@ -266,7 +266,7 @@ def playback_mini_panel(playback_control, on_change=None, key_prefix=""):
             playback_control._options["loop"] = loop
             changes["loop"] = loop
     
-    # ş(nB“’h:
+    # ï¿½(nBï¿½ï¿½h:
     current_time_sec = int(playback_control._current_time)
     hours = current_time_sec // 3600
     minutes = (current_time_sec % 3600) // 60
@@ -275,7 +275,7 @@ def playback_mini_panel(playback_control, on_change=None, key_prefix=""):
     time_display = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
     st.caption(f"Time: {time_display}")
     
-    # ³üëĞÃ¯|súW
+    # ï¿½ï¿½ï¿½ï¿½Ã¯|sï¿½W
     if changes and on_change:
         on_change(changes)
     
@@ -283,34 +283,34 @@ def playback_mini_panel(playback_control, on_change=None, key_prefix=""):
 
 def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
     """
-    ×ì¤ĞÃ¯s0-šÑÍë’h:
+    ï¿½ï¿½ï¿½Ã¯s0-ï¿½ï¿½ï¿½ï¿½h:
     
     Parameters
     ----------
     playback_control : PlaybackControl
-        ×ì¤ĞÃ¯6¡ªÖ¸§¯È
+        ï¿½ï¿½ï¿½Ã¯6ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
     on_change : Optional[Callable[[Dict[str, Any]], None]], optional
-        	ôBn³üëĞÃ¯, by default None
+        	ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯, by default None
     key_prefix : str, optional
-        ­ü¥-, by default ""
+        ï¿½ï¿½ï¿½-ï¿½, by default ""
         
     Returns
     -------
     Dict[str, Any]
-        	ôUŒ_×íÑÆ£Å1
+        	ï¿½Uï¿½_ï¿½ï¿½ï¿½Æ£ï¿½1
     """
-    st.markdown("### ×ì¤ĞÃ¯-š")
+    st.markdown("### ï¿½ï¿½ï¿½Ã¯-ï¿½")
     
     changes = {}
     
-    # h:ª×·çó
-    st.markdown("#### h:ª×·çó")
+    # h:ï¿½×·ï¿½ï¿½
+    st.markdown("#### h:ï¿½×·ï¿½ï¿½")
     
     col1, col2 = st.columns(2)
     
     with col1:
         show_timeline = st.checkbox(
-            "¿¤àé¤ó’h:",
+            "ï¿½ï¿½ï¿½ï¿½ï¿½h:",
             value=playback_control._options["show_timeline"],
             key=f"{key_prefix}_show_timeline"
         )
@@ -320,7 +320,7 @@ def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
             changes["show_timeline"] = show_timeline
         
         show_time_display = st.checkbox(
-            "B“h:",
+            "Bï¿½h:",
             value=playback_control._options["show_time_display"],
             key=f"{key_prefix}_show_time_display"
         )
@@ -331,7 +331,7 @@ def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
     
     with col2:
         show_controls = st.checkbox(
-            "³óÈíüë’h:",
+            "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½h:",
             value=playback_control._options["show_controls"],
             key=f"{key_prefix}_show_controls"
         )
@@ -341,7 +341,7 @@ def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
             changes["show_controls"] = show_controls
         
         auto_fit = st.checkbox(
-            "B“ÄònêÕ¿t",
+            "Bï¿½ï¿½ï¿½nï¿½Õ¿t",
             value=playback_control._options["auto_fit_time_range"],
             key=f"{key_prefix}_auto_fit"
         )
@@ -350,8 +350,8 @@ def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
             playback_control._options["auto_fit_time_range"] = auto_fit
             changes["auto_fit_time_range"] = auto_fit
     
-    # ³óÈíüëµ¤ºhMn
-    st.markdown("#### ³óÈíüë-š")
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ëµ¤ï¿½hMn
+    st.markdown("#### ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½")
     
     col1, col2 = st.columns(2)
     
@@ -363,7 +363,7 @@ def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
         }
         
         size = st.selectbox(
-            "³óÈíüëµ¤º",
+            "ï¿½ï¿½ï¿½ï¿½ï¿½ëµ¤ï¿½",
             options=list(size_options.keys()),
             format_func=lambda x: size_options[x],
             index=list(size_options.keys()).index(playback_control._options["control_size"]),
@@ -382,7 +382,7 @@ def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
         }
         
         position = st.selectbox(
-            "³óÈíüëMn",
+            "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Mn",
             options=list(position_options.keys()),
             format_func=lambda x: position_options[x],
             index=list(position_options.keys()).index(playback_control._options["position"]),
@@ -393,26 +393,26 @@ def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
             playback_control._options["position"] = position
             changes["position"] = position
     
-    # ­üÕìüà¡
+    # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     if playback_control._keyframes:
-        st.markdown("#### ­üÕìüà¡")
+        st.markdown("#### ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½")
         
         keyframe_table_data = []
         for i, kf in enumerate(playback_control._keyframes):
             keyframe_table_data.append({
                 "No": i + 1,
-                "éÙë": kf["label"],
-                "B“": kf["time"]
+                "ï¿½ï¿½ï¿½": kf["label"],
+                "Bï¿½": kf["time"]
             })
         
         st.dataframe(keyframe_table_data)
         
-        # ­üÕìüànJd
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nJd
         col1, col2 = st.columns(2)
         
         with col1:
             keyframe_to_delete = st.selectbox(
-                "JdY‹­üÕìüà",
+                "JdYï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
                 options=range(len(playback_control._keyframes)),
                 format_func=lambda i: playback_control._keyframes[i]["label"],
                 key=f"{key_prefix}_delete_keyframe_select"
@@ -423,9 +423,9 @@ def playback_settings_panel(playback_control, on_change=None, key_prefix=""):
                 kf_id = playback_control._keyframes[keyframe_to_delete].get("id")
                 if playback_control.remove_keyframe(kf_id):
                     changes["removed_keyframe"] = keyframe_to_delete
-                    st.success("­üÕìüà’JdW~W_")
+                    st.success("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½JdW~W_")
     
-    # ³üëĞÃ¯|súW
+    # ï¿½ï¿½ï¿½ï¿½Ã¯|sï¿½W
     if changes and on_change:
         on_change(changes)
     

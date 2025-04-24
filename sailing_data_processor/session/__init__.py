@@ -1,7 +1,7 @@
 """
 sailing_data_processor.session
 
-»Ã·çó¡k¢Y‹â¸åüë
+ï¿½Ã·ï¿½ï¿½kï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½
 """
 
 from sailing_data_processor.session.session_manager import SessionManager, SessionState, SessionAnnotation

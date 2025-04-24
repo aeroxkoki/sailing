@@ -1,8 +1,8 @@
 """
 sailing_data_processor.reporting.elements.timeline
 
-¤ó¿é¯Æ£Ö¿¤àé¤ó nÑÃ±ü¸gY
-¤ÙóÈ¿¤àé¤óÑéáü¿¿¤àé¤ó»°áóÈÔ×ì¤ĞÃ¯³óÈíüëjin_ı’Ğ›W~Y
+ï¿½ï¿½ï¿½Æ£Ö¿ï¿½ï¿½ï¿½ï¿½ nï¿½Ã±ï¿½ï¿½gY
+ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½jin_ï¿½ï¿½Ğ›W~Y
 """
 
 from sailing_data_processor.reporting.elements.timeline.event_timeline import EventTimelineElement

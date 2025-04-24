@@ -1,8 +1,8 @@
 """
 sailing_data_processor.reporting.elements.map.track_map
 
-GPSÈéÃ¯h:ŞÃ× ’Ğ›Y‹â¸åüëgY
-ÈéÃ¯nh:¹¿¤ë-šŞü«üı ¤ó¿é¯·çó_ıji’ŸÅW~Y
+GPSï¿½ï¿½Ã¯h:ï¿½ï¿½× ï¿½Ğ›Yï¿½ï¿½ï¿½ï¿½ï¿½gY
+ï¿½ï¿½Ã¯nh:ï¿½ï¿½ï¿½ï¿½-ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¯·ï¿½ï¿½_ï¿½jiï¿½ï¿½ï¿½W~Y
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -16,10 +16,10 @@ from sailing_data_processor.reporting.templates.template_model import ElementTyp
 
 class TrackMapElement(BaseTrackMapElement):
     """
-    á5GPSÈéÃ¯h:ŞÃ× 
+    ï¿½5GPSï¿½ï¿½Ã¯h:ï¿½ï¿½× 
     
-    âXnTrackMapElement’á5WˆŠØ¦j¤ó¿é¯·çó_ı„
-    «¹¿Ş¤ºª×·çó’Ğ›W~Y
+    ï¿½XnTrackMapElementï¿½ï¿½5Wï¿½ï¿½Ø¦jï¿½ï¿½é¯·ï¿½ï¿½_ï¿½ï¿½
+    ï¿½ï¿½ï¿½Ş¤ï¿½ï¿½×·ï¿½ï¿½Ğ›W~Y
     """
     
     def __init__(self, model: Optional[ElementModel] = None, **kwargs):
@@ -29,44 +29,44 @@ class TrackMapElement(BaseTrackMapElement):
         Parameters
         ----------
         model : Optional[ElementModel], optional
-             âÇë, by default None
+            ï¿½ ï¿½ï¿½ï¿½, by default None
         **kwargs : dict
-            âÇëLĞ›UŒjD4k(UŒ‹×íÑÆ£
+            ï¿½ï¿½ï¿½LĞ›Uï¿½jD4k(Uï¿½ï¿½ï¿½ï¿½ï¿½Æ£
         """
         super().__init__(model, **kwargs)
         
-        # ¤ó¿é¯·çó¢#n-š
+        # ï¿½ï¿½é¯·ï¿½ï¿½#n-ï¿½
         self.set_property("enable_interaction", self.get_property("enable_interaction", True))
         self.set_property("enable_selection", self.get_property("enable_selection", True))
         self.set_property("selection_color", self.get_property("selection_color", "rgba(255, 64, 0, 0.8)"))
         self.set_property("hover_color", self.get_property("hover_color", "rgba(255, 128, 0, 0.6)"))
         
-        # Şü«ü¢#n-š
+        # ï¿½ï¿½ï¿½ï¿½ï¿½#n-ï¿½
         self.set_property("show_markers", self.get_property("show_markers", True))
         self.set_property("custom_markers", self.get_property("custom_markers", []))
         
-        # ì¤äü¢#n-š
+        # ï¿½ï¿½ï¿½ï¿½#n-ï¿½
         self.set_property("layers", self.get_property("layers", ["track", "markers", "labels"]))
         self.set_property("base_layer", self.get_property("base_layer", "osm"))
         self.set_property("overlay_layers", self.get_property("overlay_layers", []))
         
-        # ³óÈíüë¢#n-š
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½#n-ï¿½
         self.set_property("show_layer_control", self.get_property("show_layer_control", True))
         self.set_property("show_scale_control", self.get_property("show_scale_control", True))
         self.set_property("show_fullscreen_control", self.get_property("show_fullscreen_control", True))
     
     def get_chart_libraries(self) -> List[str]:
         """
-        ŞÃ×nÏ;kÅjé¤Öéênê¹È’Ö—
+        ï¿½ï¿½ï¿½nï¿½;kÅjï¿½ï¿½ï¿½ï¿½nï¿½È’Ö—
         
         Returns
         -------
         List[str]
-            é¤ÖéênURLê¹È
+            ï¿½ï¿½ï¿½ï¿½nURLï¿½ï¿½
         """
         libraries = super().get_chart_libraries()
         
-        # ı né¤Öéê
+        # ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½
         additional_libraries = [
             "https://unpkg.com/leaflet.markercluster@1.5.1/dist/leaflet.markercluster.js",
             "https://unpkg.com/leaflet-fullscreen@1.0.2/dist/Leaflet.fullscreen.min.js",
@@ -77,16 +77,16 @@ class TrackMapElement(BaseTrackMapElement):
     
     def add_custom_marker(self, lat: float, lng: float, options: Dict[str, Any] = None) -> None:
         """
-        «¹¿àŞü«ü’ı 
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         lat : float
-            ï¦
+            ï¿½
         lng : float
-            L¦
+            Lï¿½
         options : Dict[str, Any], optional
-            Şü«üª×·çó, by default None
+            ï¿½ï¿½ï¿½ï¿½ï¿½×·ï¿½ï¿½, by default None
         """
         if options is None:
             options = {}
@@ -102,22 +102,22 @@ class TrackMapElement(BaseTrackMapElement):
     
     def clear_custom_markers(self) -> None:
         """
-        Yyfn«¹¿àŞü«ü’¯ê¢
+        Yyfnï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         """
         self.set_property("custom_markers", [])
     
     def add_overlay_layer(self, layer_id: str, layer_type: str, options: Dict[str, Any] = None) -> None:
         """
-        ªüĞüì¤ì¤äü’ı 
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         layer_id : str
-            ì¤äüID
+            ï¿½ï¿½ï¿½ID
         layer_type : str
-            ì¤äü¿¤× (heatmap, grid, vector, etc.)
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (heatmap, grid, vector, etc.)
         options : Dict[str, Any], optional
-            ì¤äüª×·çó, by default None
+            ï¿½ï¿½ï¿½ï¿½×·ï¿½ï¿½, by default None
         """
         if options is None:
             options = {}
@@ -134,73 +134,73 @@ class TrackMapElement(BaseTrackMapElement):
     
     def render(self, context: Dict[str, Any]) -> str:
         """
-         ’HTMLkìóÀêó°
+        ï¿½ ï¿½HTMLkï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         context : Dict[str, Any]
-            ìóÀêó°³óÆ­¹È
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ­ï¿½ï¿½
             
         Returns
         -------
         str
-            ìóÀêó°UŒ_HTML
+            ï¿½ï¿½ï¿½ï¿½ï¿½Uï¿½_HTML
         """
-        # aöÁ§Ã¯
+        # aï¿½ï¿½ï¿½Ã¯
         if not self.evaluate_conditions(context):
             return ""
         
-        # Çü¿½ü¹K‰Çü¿’Ö—
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½Ö—
         data = None
         if self.data_source and self.data_source in context:
             data = context[self.data_source]
         
-        # Çü¿LjD4
+        # ï¿½ï¿½ï¿½LjD4
         if not data:
-            return f'<div id="{self.element_id}" class="report-map-empty">GPSÈéÃ¯Çü¿LBŠ~[“</div>'
+            return f'<div id="{self.element_id}" class="report-map-empty">GPSï¿½ï¿½Ã¯ï¿½ï¿½ï¿½LBï¿½~[ï¿½</div>'
         
-        # CSS¹¿¤ënÖ—
+        # CSSï¿½ï¿½ï¿½ï¿½nÖ—
         css_style = self.get_css_styles()
         width, height = self.get_chart_dimensions()
         
-        # ŞÃ×nÇÕ©ëÈ-ÃMnhá'ìÙë
+        # ï¿½ï¿½ï¿½nï¿½Õ©ï¿½ï¿½-ï¿½Mnhï¿½'ï¿½ï¿½ï¿½
         center_auto = self.get_property("center_auto", True)
         center_lat = self.get_property("center_lat", 35.4498)
         center_lng = self.get_property("center_lng", 139.6649)
         zoom_level = self.get_property("zoom_level", 13)
         
-        # ŞÃ×n¿¤×h-š
+        # ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½h-ï¿½
         map_type = self.get_property("base_layer", "osm")  # osm, satellite, nautical, etc.
         track_color = self.get_property("track_color", "rgba(255, 87, 34, 0.8)")
         track_width = self.get_property("track_width", 3)
         
-        # ¤ó¿é¯·çó-š
+        # ï¿½ï¿½é¯·ï¿½ï¿½-ï¿½
         enable_interaction = self.get_property("enable_interaction", True)
         enable_selection = self.get_property("enable_selection", True)
         selection_color = self.get_property("selection_color", "rgba(255, 64, 0, 0.8)")
         hover_color = self.get_property("hover_color", "rgba(255, 128, 0, 0.6)")
         
-        # Şü«ün-š
+        # ï¿½ï¿½ï¿½ï¿½n-ï¿½
         show_markers = self.get_property("show_markers", True)
         custom_markers = self.get_property("custom_markers", [])
         
-        # ì¤äü-š
+        # ï¿½ï¿½ï¿½-ï¿½
         layers = self.get_property("layers", ["track", "markers", "labels"])
         overlay_layers = self.get_property("overlay_layers", [])
         
-        # ³óÈíüë-š
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½
         show_layer_control = self.get_property("show_layer_control", True)
         show_scale_control = self.get_property("show_scale_control", True)
         show_fullscreen_control = self.get_property("show_fullscreen_control", True)
         
-        # ¿¤à¹é¤Àün-š
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½n-ï¿½
         show_time_slider = self.get_property("show_time_slider", False)
         time_key = self.get_property("time_key", "timestamp")
         
-        # Çü¿’JSON‡Wk	Û
+        # ï¿½ï¿½ï¿½ï¿½JSONï¿½Wk	ï¿½
         data_json = json.dumps(data)
         
-        # ŞÃ×-š’JSON‡Wk	Û
+        # ï¿½ï¿½ï¿½-ï¿½ï¿½JSONï¿½Wk	ï¿½
         map_config = {
             "map_type": map_type,
             "center_auto": center_auto,
@@ -225,7 +225,7 @@ class TrackMapElement(BaseTrackMapElement):
         
         map_config_json = json.dumps(map_config)
         
-        # ı nCSSêó¯
+        # ï¿½ï¿½nCSSï¿½ï¿½
         additional_css = """
         <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.css" />
         <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.1/dist/MarkerCluster.Default.css" />
@@ -233,7 +233,7 @@ class TrackMapElement(BaseTrackMapElement):
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-measure@3.1.0/dist/leaflet-measure.css" />
         """
         
-        # ŞÃ× nìóÀêó°
+        # ï¿½ï¿½× nï¿½ï¿½ï¿½ï¿½ï¿½
         html_content = f'''
         <div id="{self.element_id}" class="report-map-container" style="{css_style}">
             <!-- Leaflet CSS -->
@@ -296,22 +296,22 @@ class TrackMapElement(BaseTrackMapElement):
             
             <script>
                 (function() {{
-                    // ŞÃ×Çü¿
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     var mapData = {data_json};
                     var mapConfig = {map_config_json};
                     
-                    // ŞÃ×
+                    // ï¿½ï¿½ï¿½
                     window.addEventListener('load', function() {{
-                        // ŞÃ×n\
+                        // ï¿½ï¿½ï¿½n\
                         var map = L.map('{self.map_id}', {{
                             fullscreenControl: mapConfig.show_fullscreen_control
                         }});
                         
-                        // ì¤äü°ëü×’\
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×’\
                         var baseLayers = {{}};
                         var overlayLayers = {{}};
                         
-                        // Ùü¹ì¤äün\
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½n\
                         var osmLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
                             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                         }});
@@ -328,13 +328,13 @@ class TrackMapElement(BaseTrackMapElement):
                             attribution: 'Map data: &copy; <a href="https://www.opentopomap.org">OpenTopoMap</a> contributors'
                         }});
                         
-                        // Ùü¹ì¤äü’økı 
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½
                         baseLayers["OpenStreetMap"] = osmLayer;
                         baseLayers["Satellite"] = satelliteLayer;
                         baseLayers["Nautical"] = nauticalLayer;
                         baseLayers["Topographic"] = topoLayer;
                         
-                        // ÇÕ©ëÈnÙü¹ì¤äü’x
+                        // ï¿½Õ©ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½
                         var defaultBaseLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
@@ -350,21 +350,21 @@ class TrackMapElement(BaseTrackMapElement):
                                 defaultBaseLayer = osmLayer;
                         }}
                         
-                        // ÇÕ©ëÈnÙü¹ì¤äü’ŞÃ×kı 
+                        // ï¿½Õ©ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½
                         defaultBaseLayer.addTo(map);
                         
-                        // GPSÈéÃ¯Çü¿’æ
+                        // GPSï¿½ï¿½Ã¯ï¿½ï¿½ï¿½ï¿½ï¿½
                         var trackPoints = [];
                         var timeValues = [];
                         var latKey = 'lat';
                         var lngKey = 'lng';
                         var timeKey = mapConfig.time_key || 'timestamp';
                         
-                        // Çü¿bkÜXfæ
+                        // ï¿½ï¿½ï¿½bkï¿½Xfï¿½
                         if (Array.isArray(mapData)) {{
                             // Mbn4
                             if (mapData.length > 0) {{
-                                // §­ü’yš
+                                // ï¿½ï¿½ï¿½ï¿½yï¿½
                                 if (typeof mapData[0] === 'object') {{
                                     if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {{
                                         latKey = 'latitude';
@@ -374,19 +374,19 @@ class TrackMapElement(BaseTrackMapElement):
                                     }}
                                 }}
                                 
-                                // ÈéÃ¯İ¤óÈ’½ú
+                                // ï¿½ï¿½Ã¯İ¤ï¿½È’ï¿½ï¿½
                                 for (var i = 0; i < mapData.length; i++) {{
                                     var point = mapData[i];
                                     if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
                                         trackPoints.push([point[latKey], point[lngKey]]);
                                         
-                                        // ¿¤à¹é¤Àü(nB“$’½ú
+                                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(nBï¿½$ï¿½ï¿½ï¿½
                                         if (mapConfig.show_time_slider && timeKey in point) {{
                                             var time = point[timeKey];
                                             if (typeof time === 'string') {{
                                                 timeValues.push(new Date(time));
                                             }} else if (typeof time === 'number') {{
-                                                // Unix¿¤à¹¿ó×n4ÒXM	
+                                                // Unixï¿½ï¿½à¹¿ï¿½ï¿½n4ï¿½XM	
                                                 timeValues.push(new Date(time * 1000));
                                             }}
                                         }}
@@ -394,20 +394,20 @@ class TrackMapElement(BaseTrackMapElement):
                                 }}
                             }}
                         }} else if (typeof mapData === 'object') {{
-                            // ªÖ¸§¯Èbn4
+                            // ï¿½Ö¸ï¿½ï¿½ï¿½bn4
                             if ('track' in mapData && Array.isArray(mapData.track)) {{
                                 for (var i = 0; i < mapData.track.length; i++) {{
                                     var point = mapData.track[i];
                                     if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
                                         trackPoints.push([point[latKey], point[lngKey]]);
                                         
-                                        // ¿¤à¹é¤Àü(nB“$’½ú
+                                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(nBï¿½$ï¿½ï¿½ï¿½
                                         if (mapConfig.show_time_slider && timeKey in point) {{
                                             var time = point[timeKey];
                                             if (typeof time === 'string') {{
                                                 timeValues.push(new Date(time));
                                             }} else if (typeof time === 'number') {{
-                                                // Unix¿¤à¹¿ó×n4ÒXM	
+                                                // Unixï¿½ï¿½à¹¿ï¿½ï¿½n4ï¿½XM	
                                                 timeValues.push(new Date(time * 1000));
                                             }}
                                         }}
@@ -416,16 +416,16 @@ class TrackMapElement(BaseTrackMapElement):
                             }}
                         }}
                         
-                        // ÈéÃ¯İ¤óÈLjD4o-Ã§’-š
+                        // ï¿½ï¿½Ã¯İ¤ï¿½ï¿½LjD4o-Ã§ï¿½-ï¿½
                         if (trackPoints.length === 0) {{
                             map.setView(mapConfig.center, mapConfig.zoom_level);
                             return;
                         }}
                         
-                        // ÈéÃ¯ì¤äü°ëü×’\
+                        // ï¿½ï¿½Ã¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×’\
                         var trackLayerGroup = L.layerGroup();
                         
-                        // ÈéÃ¯é¤ó’\
+                        // ï¿½ï¿½Ã¯ï¿½ï¿½\
                         var trackLine = L.polyline(trackPoints, {{
                             color: mapConfig.track_color,
                             weight: mapConfig.track_width,
@@ -433,9 +433,9 @@ class TrackMapElement(BaseTrackMapElement):
                             lineJoin: 'round'
                         }});
                         
-                        // ¤ó¿é¯·çóL	¹j4
+                        // ï¿½ï¿½é¯·ï¿½ï¿½L	ï¿½j4
                         if (mapConfig.enable_interaction) {{
-                            // ÛĞü¤ÙóÈ
+                            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                             trackLine.on('mouseover', function(e) {{
                                 if (!this._selected) {{
                                     this.setStyle({{ color: mapConfig.hover_color, weight: mapConfig.track_width + 1, opacity: 0.7 }});
@@ -448,21 +448,21 @@ class TrackMapElement(BaseTrackMapElement):
                                 }}
                             }});
                             
-                            // x¤ÙóÈ
+                            // xï¿½ï¿½ï¿½ï¿½ï¿½
                             if (mapConfig.enable_selection) {{
                                 trackLine.on('click', function(e) {{
                                     if (this._selected) {{
                                         this._selected = false;
                                         this.setStyle({{ color: mapConfig.track_color, weight: mapConfig.track_width, opacity: 0.8 }});
                                         
-                                        // «¹¿à¤ÙóÈ’Ç£¹ÑÃÁ
+                                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È’Ç£ï¿½ï¿½ï¿½ï¿½
                                         var event = new CustomEvent('track_deselected', {{ detail: {{ element_id: '{self.element_id}' }} }});
                                         document.dispatchEvent(event);
                                     }} else {{
                                         this._selected = true;
                                         this.setStyle({{ color: mapConfig.selection_color, weight: mapConfig.track_width + 2, opacity: 0.9 }});
                                         
-                                        // «¹¿à¤ÙóÈ’Ç£¹ÑÃÁ
+                                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È’Ç£ï¿½ï¿½ï¿½ï¿½
                                         var latLng = e.latlng;
                                         var event = new CustomEvent('track_selected', {{ 
                                             detail: {{ 
@@ -477,13 +477,13 @@ class TrackMapElement(BaseTrackMapElement):
                             }}
                         }}
                         
-                        // ŞÃ×kÈéÃ¯é¤ó’ı 
+                        // ï¿½ï¿½ï¿½kï¿½ï¿½Ã¯ï¿½ï¿½ï¿½ï¿½
                         trackLine.addTo(trackLayerGroup);
                         
-                        // Şü«ü°ëü×’\
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×’\
                         var markerLayerGroup = L.layerGroup();
                         
-                        // ¹¿üÈû´üëŞü«ü’ı Şü«üh:L	¹j4	
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½h:L	ï¿½j4	
                         if (mapConfig.show_markers) {{
                             var startPoint = trackPoints[0];
                             var endPoint = trackPoints[trackPoints.length - 1];
@@ -511,7 +511,7 @@ class TrackMapElement(BaseTrackMapElement):
                             startMarker.addTo(markerLayerGroup);
                             endMarker.addTo(markerLayerGroup);
                             
-                            // «¹¿àŞü«ünı 
+                            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                             if (mapConfig.custom_markers && mapConfig.custom_markers.length > 0) {{
                                 for (var i = 0; i < mapConfig.custom_markers.length; i++) {{
                                     var markerData = mapConfig.custom_markers[i];
@@ -541,10 +541,10 @@ class TrackMapElement(BaseTrackMapElement):
                             }}
                         }}
                         
-                        // ¿¤à¹é¤Àünı 
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                         var timeLayerGroup = L.layerGroup();
                         if (mapConfig.show_time_slider && timeValues.length > 0) {{
-                            // ¿¤àÇ£áó·çón-š
+                            // ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½n-ï¿½
                             var timeDimension = new L.TimeDimension({{
                                 times: timeValues,
                                 currentTime: timeValues[0].getTime()
@@ -552,7 +552,7 @@ class TrackMapElement(BaseTrackMapElement):
                             
                             map.timeDimension = timeDimension;
                             
-                            // ¿¤àÇ£áó·çó³óÈíüë’ı 
+                            // ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                             var tdControl = new L.Control.TimeDimension({{
                                 player: {{
                                     buffer: 1,
@@ -564,7 +564,7 @@ class TrackMapElement(BaseTrackMapElement):
                             
                             map.addControl(tdControl);
                             
-                            // ¿¤àÇ£áó·çóşÜnÈéÃ¯é¤ó’\
+                            // ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½Ã¯ï¿½ï¿½\
                             var geoJsonData = {{
                                 "type": "FeatureCollection",
                                 "features": [
@@ -599,7 +599,7 @@ class TrackMapElement(BaseTrackMapElement):
                             tdGeoJsonLayer.addTo(timeLayerGroup);
                         }}
                         
-                        // ,Äüë’ı 
+                        // ,ï¿½ï¿½ï¿½ï¿½ï¿½
                         var measureControl = new L.Control.Measure({{
                             position: 'topleft',
                             primaryLengthUnit: 'meters',
@@ -614,7 +614,7 @@ class TrackMapElement(BaseTrackMapElement):
                             map.addControl(measureControl);
                         }}
                         
-                        // ¹±üë³óÈíüë’ı 
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         if (mapConfig.show_scale_control) {{
                             L.control.scale({{
                                 imperial: false,
@@ -622,7 +622,7 @@ class TrackMapElement(BaseTrackMapElement):
                             }}).addTo(map);
                         }}
                         
-                        // ªüĞüì¤ì¤äü’ı 
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         var availableLayers = {{
                             "Track": trackLayerGroup,
                             "Markers": markerLayerGroup
@@ -632,20 +632,20 @@ class TrackMapElement(BaseTrackMapElement):
                             availableLayers["Time Animation"] = timeLayerGroup;
                         }}
                         
-                        // ı nªüĞüì¤ì¤äü
+                        // ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         if (mapConfig.overlay_layers && mapConfig.overlay_layers.length > 0) {{
                             for (var i = 0; i < mapConfig.overlay_layers.length; i++) {{
                                 var layerData = mapConfig.overlay_layers[i];
                                 
-                                // TODO: ı nì¤äü¿¤×kşÜ
-                                // ş(o_`n‹:hWf×ìü¹ÛëÀü’ı 
+                                // TODO: ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½
+                                // ï¿½(o_`nï¿½:hWfï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                                 if (layerData.visible) {{
                                     availableLayers[layerData.id] = L.layerGroup();
                                 }}
                             }}
                         }}
                         
-                        // ÇÕ©ëÈnì¤äü’ı 
+                        // ï¿½Õ©ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         if (mapConfig.layers.includes('track')) {{
                             trackLayerGroup.addTo(map);
                             overlayLayers["Track"] = trackLayerGroup;
@@ -661,19 +661,19 @@ class TrackMapElement(BaseTrackMapElement):
                             overlayLayers["Time Animation"] = timeLayerGroup;
                         }}
                         
-                        // ì¤äü³óÈíüë’ı 
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         if (mapConfig.show_layer_control) {{
                             L.control.layers(baseLayers, overlayLayers).addTo(map);
                         }}
                         
-                        // êÕ„kÈéÃ¯hSLh:UŒ‹ˆFkºüà
+                        // ï¿½Õ„kï¿½ï¿½Ã¯hSLh:Uï¿½ï¿½ï¿½Fkï¿½ï¿½ï¿½
                         if (mapConfig.center_auto) {{
                             map.fitBounds(trackLine.getBounds());
                         }} else {{
                             map.setView(mapConfig.center, mapConfig.zoom_level);
                         }}
                         
-                        // ŞÃ×ªÖ¸§¯È’°íüĞëkl‹
+                        // ï¿½ï¿½×ªÖ¸ï¿½ï¿½È’ï¿½ï¿½ï¿½ï¿½ï¿½klï¿½
                         window['{self.map_id}_map'] = map;
                         window['{self.map_id}_track'] = trackLine;
                         window['{self.map_id}_data'] = mapData;

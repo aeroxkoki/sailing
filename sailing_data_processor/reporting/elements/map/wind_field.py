@@ -1,8 +1,8 @@
 """
 sailing_data_processor.reporting.elements.map.wind_field
 
-¨4ï– ’Ğ›Y‹â¸åüëgY
-¨¨nÙ¯Èë4h:·ÕÈnï–ˆ,hŸ,nÔjin_ı’ŸÅW~Y
+ï¿½4ï¿½ï¿½ ï¿½Ğ›Yï¿½ï¿½ï¿½ï¿½ï¿½gY
+ï¿½ï¿½nÙ¯ï¿½ï¿½4h:ï¿½ï¿½ï¿½nï¿½ï¿½,hï¿½,nï¿½jin_ï¿½ï¿½ï¿½ï¿½W~Y
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -15,10 +15,10 @@ from sailing_data_processor.reporting.templates.template_model import ElementTyp
 
 class WindFieldElement(BaseWindFieldElement):
     """
-    á5¨4ï– 
+    ï¿½5ï¿½4ï¿½ï¿½ 
     
-    âXnWindFieldElement’á5WˆŠØ¦j¨4nï–h
-    ¤ó¿é¯·çó_ı’Ğ›W~Y
+    ï¿½XnWindFieldElementï¿½ï¿½5Wï¿½ï¿½Ø¦jï¿½4nï¿½h
+    ï¿½ï¿½é¯·ï¿½ï¿½_ï¿½ï¿½Ğ›W~Y
     """
     
     def __init__(self, model: Optional[ElementModel] = None, **kwargs):
@@ -28,39 +28,39 @@ class WindFieldElement(BaseWindFieldElement):
         Parameters
         ----------
         model : Optional[ElementModel], optional
-             âÇë, by default None
+            ï¿½ ï¿½ï¿½ï¿½, by default None
         **kwargs : dict
-            âÇëLĞ›UŒjD4k(UŒ‹×íÑÆ£
+            ï¿½ï¿½ï¿½LĞ›Uï¿½jD4k(Uï¿½ï¿½ï¿½ï¿½ï¿½Æ£
         """
         super().__init__(model, **kwargs)
         
-        # ı n–š¢#n-š
+        # ï¿½ï¿½nï¿½ï¿½ï¿½#n-ï¿½
         self.set_property("show_wind_shifts", self.get_property("show_wind_shifts", False))
         self.set_property("show_wind_trends", self.get_property("show_wind_trends", False))
         self.set_property("compare_forecast", self.get_property("compare_forecast", False))
         self.set_property("forecast_source", self.get_property("forecast_source", ""))
         
-        # ¨4ns0-š
+        # ï¿½4ns0-ï¿½
         self.set_property("vector_density", self.get_property("vector_density", 50))
         self.set_property("arrow_scale", self.get_property("arrow_scale", 1.0))
         self.set_property("interpolation_method", self.get_property("interpolation_method", "bilinear"))
         
-        # 0b¹œn-š
+        # 0bï¿½ï¿½n-ï¿½
         self.set_property("show_terrain_effects", self.get_property("show_terrain_effects", False))
         self.set_property("terrain_source", self.get_property("terrain_source", ""))
     
     def get_chart_libraries(self) -> List[str]:
         """
-        ¨4nÏ;kÅjé¤Öéênê¹È’Ö—
+        ï¿½4nï¿½;kÅjï¿½ï¿½ï¿½ï¿½nï¿½È’Ö—
         
         Returns
         -------
         List[str]
-            é¤ÖéênURLê¹È
+            ï¿½ï¿½ï¿½ï¿½nURLï¿½ï¿½
         """
         libraries = super().get_chart_libraries()
         
-        # ı né¤Öéê
+        # ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½
         additional_libraries = [
             "https://cdn.jsdelivr.net/npm/leaflet-rotatedmarker@0.2.0/leaflet.rotatedMarker.js",
             "https://cdn.jsdelivr.net/npm/d3@7.8.2/dist/d3.min.js"
@@ -70,26 +70,26 @@ class WindFieldElement(BaseWindFieldElement):
     
     def set_forecast_data(self, forecast_source: str) -> None:
         """
-        ˆ,¨4Çü¿n½ü¹’-š
+        ï¿½,ï¿½4ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½-ï¿½
         
         Parameters
         ----------
         forecast_source : str
-            ˆ,¨4Çü¿n½ü¹Çü¿­ü	
+            ï¿½,ï¿½4ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
         """
         self.set_property("compare_forecast", True)
         self.set_property("forecast_source", forecast_source)
     
     def set_terrain_effects(self, show: bool, terrain_source: str = "") -> None:
         """
-        0b¹œnh:-š
+        0bï¿½ï¿½nh:-ï¿½
         
         Parameters
         ----------
         show : bool
-            0b¹œ’h:Y‹KiFK
+            0bï¿½ï¿½ï¿½h:Yï¿½KiFK
         terrain_source : str, optional
-            0bÇü¿n½ü¹, by default ""
+            0bï¿½ï¿½ï¿½nï¿½ï¿½ï¿½, by default ""
         """
         self.set_property("show_terrain_effects", show)
         if terrain_source:
@@ -97,56 +97,56 @@ class WindFieldElement(BaseWindFieldElement):
     
     def render(self, context: Dict[str, Any]) -> str:
         """
-         ’HTMLkìóÀêó°
+        ï¿½ ï¿½HTMLkï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         context : Dict[str, Any]
-            ìóÀêó°³óÆ­¹È
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ­ï¿½ï¿½
             
         Returns
         -------
         str
-            ìóÀêó°UŒ_HTML
+            ï¿½ï¿½ï¿½ï¿½ï¿½Uï¿½_HTML
         """
-        # aöÁ§Ã¯
+        # aï¿½ï¿½ï¿½Ã¯
         if not self.evaluate_conditions(context):
             return ""
         
-        # Çü¿½ü¹K‰Çü¿’Ö—
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½Ö—
         data = None
         if self.data_source and self.data_source in context:
             data = context[self.data_source]
         
-        # Çü¿LjD4
+        # ï¿½ï¿½ï¿½LjD4
         if not data:
-            return f'<div id="{self.element_id}" class="report-map-empty">¨4Çü¿LBŠ~[“</div>'
+            return f'<div id="{self.element_id}" class="report-map-empty">ï¿½4ï¿½ï¿½ï¿½LBï¿½~[ï¿½</div>'
         
-        # ˆ,Çü¿nÖ—ÔL	¹j4	
+        # ï¿½,ï¿½ï¿½ï¿½nÖ—ï¿½L	ï¿½j4	
         forecast_data = None
         if self.get_property("compare_forecast"):
             forecast_source = self.get_property("forecast_source")
             if forecast_source and forecast_source in context:
                 forecast_data = context[forecast_source]
         
-        # 0bÇü¿nÖ—0b¹œL	¹j4	
+        # 0bï¿½ï¿½ï¿½nÖ—0bï¿½ï¿½L	ï¿½j4	
         terrain_data = None
         if self.get_property("show_terrain_effects"):
             terrain_source = self.get_property("terrain_source")
             if terrain_source and terrain_source in context:
                 terrain_data = context[terrain_source]
         
-        # CSS¹¿¤ënÖ—
+        # CSSï¿½ï¿½ï¿½ï¿½nÖ—
         css_style = self.get_css_styles()
         width, height = self.get_chart_dimensions()
         
-        # ŞÃ×n-š
+        # ï¿½ï¿½ï¿½n-ï¿½
         center_auto = self.get_property("center_auto", True)
         center_lat = self.get_property("center_lat", 35.4498)
         center_lng = self.get_property("center_lng", 139.6649)
         zoom_level = self.get_property("zoom_level", 13)
         
-        # ¨4n-š
+        # ï¿½4n-ï¿½
         wind_speed_scale = self.get_property("wind_speed_scale", 0.01)
         vector_density = self.get_property("vector_density", 50)
         arrow_scale = self.get_property("arrow_scale", 1.0)
@@ -155,30 +155,30 @@ class WindFieldElement(BaseWindFieldElement):
         velocity_units = self.get_property("velocity_units", "kt")
         interpolation_method = self.get_property("interpolation_method", "bilinear")
         
-        # h:ª×·çó
+        # h:ï¿½×·ï¿½ï¿½
         show_wind_shifts = self.get_property("show_wind_shifts", False)
         show_wind_trends = self.get_property("show_wind_trends", False)
         compare_forecast = self.get_property("compare_forecast", False) and forecast_data is not None
         show_terrain_effects = self.get_property("show_terrain_effects", False) and terrain_data is not None
         
-        # ¿¤àÇ£áó·çóB“		n-š
+        # ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½Bï¿½		n-ï¿½
         show_time_dimension = self.get_property("show_time_dimension", False)
         time_key = self.get_property("time_key", "timestamp")
         animation_duration = self.get_property("animation_duration", 1000)
         animation_loop = self.get_property("animation_loop", True)
         
-        # ŞÃ×n¿¤×h-š
+        # ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½h-ï¿½
         map_type = self.get_property("map_type", "osm")  # osm, satellite, nautical
         show_track = self.get_property("show_track", True)
         track_color = self.get_property("track_color", "rgba(54, 162, 235, 0.8)")
         track_width = self.get_property("track_width", 3)
         
-        # Çü¿’JSON‡Wk	Û
+        # ï¿½ï¿½ï¿½ï¿½JSONï¿½Wk	ï¿½
         data_json = json.dumps(data)
         forecast_json = json.dumps(forecast_data) if forecast_data else "null"
         terrain_json = json.dumps(terrain_data) if terrain_data else "null"
         
-        # ŞÃ×-š’JSON‡Wk	Û
+        # ï¿½ï¿½ï¿½-ï¿½ï¿½JSONï¿½Wk	ï¿½
         map_config = {
             "map_type": map_type,
             "center_auto": center_auto,
@@ -206,7 +206,7 @@ class WindFieldElement(BaseWindFieldElement):
         
         map_config_json = json.dumps(map_config)
         
-        # ı nCSSêó¯
+        # ï¿½ï¿½nCSSï¿½ï¿½
         additional_css = """
         <style>
             .wind-field-legend {
@@ -270,7 +270,7 @@ class WindFieldElement(BaseWindFieldElement):
         </style>
         """
         
-        # ŞÃ× nìóÀêó°
+        # ï¿½ï¿½× nï¿½ï¿½ï¿½ï¿½ï¿½
         html_content = f'''
         <div id="{self.element_id}" class="report-map-container" style="{css_style}">
             <!-- Leaflet CSS -->
@@ -283,18 +283,18 @@ class WindFieldElement(BaseWindFieldElement):
             
             <script>
                 (function() {{
-                    // ŞÃ×Çü¿
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                     var windData = {data_json};
                     var forecastData = {forecast_json};
                     var terrainData = {terrain_json};
                     var mapConfig = {map_config_json};
                     
-                    // ŞÃ×
+                    // ï¿½ï¿½ï¿½
                     window.addEventListener('load', function() {{
-                        // ŞÃ×n\
+                        // ï¿½ï¿½ï¿½n\
                         var map = L.map('{self.map_id}');
                         
-                        // ¿¤ëì¤äünx
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nxï¿½
                         var tileLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
@@ -313,10 +313,10 @@ class WindFieldElement(BaseWindFieldElement):
                                 }});
                         }}
                         
-                        // ¿¤ëì¤äü’ŞÃ×kı 
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½
                         tileLayer.addTo(map);
                         
-                        // ÈéÃ¯İ¤óÈh¨4Çü¿’½ú
+                        // ï¿½ï¿½Ã¯İ¤ï¿½ï¿½hï¿½4ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                         var trackPoints = [];
                         var uGrid = null;
                         var vGrid = null;
@@ -329,7 +329,7 @@ class WindFieldElement(BaseWindFieldElement):
                         var lngKey = 'lng';
                         var timeKey = mapConfig.time_key || 'timestamp';
                         
-                        // Çü¿bkÜXfæ
+                        // ï¿½ï¿½ï¿½bkï¿½Xfï¿½
                         function processWindData(source) {{
                             var result = {{
                                 uGrid: null,
@@ -340,7 +340,7 @@ class WindFieldElement(BaseWindFieldElement):
                             
                             if (!source) return result;
                             
-                            // Uq¹	hVW¹	nÇü¿
+                            // Uqï¿½	hVWï¿½	nï¿½ï¿½ï¿½
                             var uComponentKey = 'u-wind';
                             var vComponentKey = 'v-wind';
                             
@@ -349,10 +349,10 @@ class WindFieldElement(BaseWindFieldElement):
                                 vComponentKey = 'v_component';
                             }}
                             
-                            // ¨¹±üë’i(
+                            // ï¿½ï¿½ï¿½ï¿½ï¿½i(
                             var scale = mapConfig.wind_speed_scale || 0.01;
                             
-                            // <Pn-š
+                            // <Pn-ï¿½
                             var latMin, latMax, lonMin, lonMax;
                             var nx, ny;
                             
@@ -362,7 +362,7 @@ class WindFieldElement(BaseWindFieldElement):
                                 lonMin = source.lon_min;
                                 lonMax = source.lon_max;
                             }} else {{
-                                // ÇÕ©ëÈ$~_o¨š$
+                                // ï¿½Õ©ï¿½ï¿½$~_oï¿½ï¿½$
                                 latMin = mapConfig.center[0] - 0.1;
                                 latMax = mapConfig.center[0] + 0.1;
                                 lonMin = mapConfig.center[1] - 0.1;
@@ -380,12 +380,12 @@ class WindFieldElement(BaseWindFieldElement):
                                 ny = 10;
                             }}
                             
-                            // <PÄò’ÔY
+                            // <Pï¿½ï¿½ï¿½Y
                             result.gridBounds = [[latMin, lonMin], [latMax, lonMax]];
                             
-                            // ¨4Çü¿L)(ïıj4
+                            // ï¿½4ï¿½ï¿½ï¿½L)(ï¿½ï¿½j4
                             if (uComponentKey in source && vComponentKey in source) {{
-                                // ¹±üë’i(W_°êÃÉ$’<
+                                // ï¿½ï¿½ï¿½ï¿½i(W_ï¿½ï¿½ï¿½ï¿½$ï¿½<
                                 result.uGrid = [];
                                 result.vGrid = [];
                                 
@@ -402,7 +402,7 @@ class WindFieldElement(BaseWindFieldElement):
                                     result.vGrid.push(vRow);
                                 }}
                                 
-                                // B“Çü¿LB‹4
+                                // Bï¿½ï¿½ï¿½ï¿½LBï¿½4
                                 if ('times' in source && Array.isArray(source.times)) {{
                                     result.times = source.times;
                                 }}
@@ -411,7 +411,7 @@ class WindFieldElement(BaseWindFieldElement):
                             return result;
                         }}
                         
-                        // ¨·ÕÈn½ú
+                        // ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                         function extractWindShifts(source) {{
                             var shifts = [];
                             
@@ -435,7 +435,7 @@ class WindFieldElement(BaseWindFieldElement):
                             return shifts;
                         }}
                         
-                        // ¨ÈìóÉn½ú
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                         function extractWindTrends(source) {{
                             var trends = [];
                             
@@ -468,7 +468,7 @@ class WindFieldElement(BaseWindFieldElement):
                             return trends;
                         }}
                         
-                        // 0b¹œn½ú
+                        // 0bï¿½ï¿½nï¿½ï¿½
                         function extractTerrainEffects(source) {{
                             var effects = [];
                             
@@ -499,11 +499,11 @@ class WindFieldElement(BaseWindFieldElement):
                             return effects;
                         }}
                         
-                        // ÈéÃ¯İ¤óÈn½ú
+                        // ï¿½ï¿½Ã¯İ¤ï¿½ï¿½nï¿½ï¿½
                         if (Array.isArray(windData)) {{
-                            // Mbn4ÈéÃ¯İ¤óÈnïı'	
+                            // Mbn4ï¿½ï¿½Ã¯İ¤ï¿½ï¿½nï¿½ï¿½'	
                             if (windData.length > 0 && typeof windData[0] === 'object') {{
-                                // §­ü’yš
+                                // ï¿½ï¿½ï¿½ï¿½yï¿½
                                 if ('latitude' in windData[0] && 'longitude' in windData[0]) {{
                                     latKey = 'latitude';
                                     lngKey = 'longitude';
@@ -511,19 +511,19 @@ class WindFieldElement(BaseWindFieldElement):
                                     lngKey = 'lon';
                                 }}
                                 
-                                // ÈéÃ¯İ¤óÈ’½ú
+                                // ï¿½ï¿½Ã¯İ¤ï¿½È’ï¿½ï¿½
                                 for (var i = 0; i < windData.length; i++) {{
                                     var point = windData[i];
                                     if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
                                         trackPoints.push([point[latKey], point[lngKey]]);
                                         
-                                        // ¿¤à¹é¤Àü(nB“$’½ú
+                                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(nBï¿½$ï¿½ï¿½ï¿½
                                         if (mapConfig.show_time_dimension && timeKey in point) {{
                                             var time = point[timeKey];
                                             if (typeof time === 'string') {{
                                                 timeValues.push(new Date(time));
                                             }} else if (typeof time === 'number') {{
-                                                // Unix¿¤à¹¿ó×n4ÒXM	
+                                                // Unixï¿½ï¿½à¹¿ï¿½ï¿½n4ï¿½XM	
                                                 timeValues.push(new Date(time * 1000));
                                             }}
                                         }}
@@ -531,20 +531,20 @@ class WindFieldElement(BaseWindFieldElement):
                                 }}
                             }}
                         }} else if (typeof windData === 'object') {{
-                            // ªÖ¸§¯Èbn4
+                            // ï¿½Ö¸ï¿½ï¿½ï¿½bn4
                             if ('track' in windData && Array.isArray(windData.track)) {{
                                 for (var i = 0; i < windData.track.length; i++) {{
                                     var point = windData.track[i];
                                     if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
                                         trackPoints.push([point[latKey], point[lngKey]]);
                                         
-                                        // ¿¤à¹é¤Àü(nB“$’½ú
+                                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(nBï¿½$ï¿½ï¿½ï¿½
                                         if (mapConfig.show_time_dimension && timeKey in point) {{
                                             var time = point[timeKey];
                                             if (typeof time === 'string') {{
                                                 timeValues.push(new Date(time));
                                             }} else if (typeof time === 'number') {{
-                                                // Unix¿¤à¹¿ó×n4ÒXM	
+                                                // Unixï¿½ï¿½à¹¿ï¿½ï¿½n4ï¿½XM	
                                                 timeValues.push(new Date(time * 1000));
                                             }}
                                         }}
@@ -552,29 +552,29 @@ class WindFieldElement(BaseWindFieldElement):
                                 }}
                             }}
                             
-                            // ¨4Çü¿næ
+                            // ï¿½4ï¿½ï¿½ï¿½nï¿½
                             var windGridData = processWindData(windData);
                             uGrid = windGridData.uGrid;
                             vGrid = windGridData.vGrid;
                             gridBounds = windGridData.gridBounds;
                             
-                            // ¨·ÕÈn½ú
+                            // ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                             if (mapConfig.show_wind_shifts) {{
                                 windShifts = extractWindShifts(windData);
                             }}
                             
-                            // ¨ÈìóÉn½ú
+                            // ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                             if (mapConfig.show_wind_trends) {{
                                 windTrends = extractWindTrends(windData);
                             }}
                         }}
                         
-                        // 0b¹œnæ
+                        // 0bï¿½ï¿½nï¿½
                         if (mapConfig.show_terrain_effects && terrainData) {{
                             terrainEffects = extractTerrainEffects(terrainData);
                         }}
                         
-                        // ŞÃ× ’°ëü×Y‹_nì¤äü’\
+                        // ï¿½ï¿½× ï¿½ï¿½ï¿½ï¿½ï¿½Yï¿½_ï¿½nï¿½ï¿½ï¿½ï¿½\
                         var baseLayer = L.layerGroup().addTo(map);
                         var trackLayer = L.layerGroup();
                         var windLayer = L.layerGroup();
@@ -583,10 +583,10 @@ class WindFieldElement(BaseWindFieldElement):
                         var trendsLayer = L.layerGroup();
                         var terrainLayer = L.layerGroup();
                         
-                        // ì¤äü6¡n_nªÖ¸§¯È
+                        // ï¿½ï¿½ï¿½6ï¿½n_ï¿½nï¿½Ö¸ï¿½ï¿½ï¿½
                         var overlays = {{}};
                         
-                        // ÈéÃ¯é¤ó’\h:-šLªón4	
+                        // ï¿½ï¿½Ã¯ï¿½ï¿½\h:-ï¿½Lï¿½ï¿½n4	
                         if (mapConfig.show_track && trackPoints.length > 0) {{
                             var trackLine = L.polyline(trackPoints, {{
                                 color: mapConfig.track_color,
@@ -595,13 +595,13 @@ class WindFieldElement(BaseWindFieldElement):
                                 lineJoin: 'round'
                             }}).addTo(trackLayer);
                             
-                            overlays["GPSÈéÃ¯"] = trackLayer;
+                            overlays["GPSï¿½ï¿½Ã¯"] = trackLayer;
                             trackLayer.addTo(map);
                         }}
                         
-                        // ¨4Çü¿’æ
+                        // ï¿½4ï¿½ï¿½ï¿½ï¿½ï¿½
                         if (uGrid && vGrid && gridBounds) {{
-                            // D3.js’(Wf¨nÙ¯Èë’Ï;
+                            // D3.jsï¿½(Wfï¿½nÙ¯ï¿½ï¿½ï¿½;
                             function drawWindVectors(uGrid, vGrid, bounds, targetLayer, options) {{
                                 var defaultOptions = {{
                                     density: mapConfig.vector_density || 50,
@@ -610,28 +610,28 @@ class WindFieldElement(BaseWindFieldElement):
                                     width: 1.5
                                 }};
                                 
-                                // ª×·çónŞü¸
+                                // ï¿½×·ï¿½ï¿½nï¿½ï¿½ï¿½
                                 var opts = Object.assign({{}}, defaultOptions, options || {{}});
                                 
-                                // °êÃÉnÄò
+                                // ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                                 var latMin = bounds[0][0];
                                 var lonMin = bounds[0][1];
                                 var latMax = bounds[1][0];
                                 var lonMax = bounds[1][1];
                                 
-                                // °êÃÉn!C
+                                // ï¿½ï¿½ï¿½ï¿½n!C
                                 var nx = uGrid.length;
                                 var ny = uGrid[0].length;
                                 
-                                // Æ¦kúeDf“M’LF
+                                // Æ¦kï¿½eDfï¿½Mï¿½LF
                                 var xStep = Math.max(1, Math.floor(nx / Math.sqrt(opts.density)));
                                 var yStep = Math.max(1, Math.floor(ny / Math.sqrt(opts.density)));
                                 
-                                // ï¦L¦n“”
+                                // ï¿½Lï¿½nï¿½ï¿½
                                 var latStep = (latMax - latMin) / (nx - 1);
                                 var lonStep = (lonMax - lonMin) / (ny - 1);
                                 
-                                // ¨¨Şü«ü’\
+                                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\
                                 for (var i = 0; i < nx; i += xStep) {{
                                     for (var j = 0; j < ny; j += yStep) {{
                                         var lat = latMin + i * latStep;
@@ -639,21 +639,21 @@ class WindFieldElement(BaseWindFieldElement):
                                         var u = uGrid[i][j];
                                         var v = vGrid[i][j];
                                         
-                                        // ¨L0kÑD4o¹­Ã×
+                                        // ï¿½L0kï¿½D4oï¿½ï¿½ï¿½ï¿½
                                         if (Math.abs(u) < 1e-6 && Math.abs(v) < 1e-6) continue;
                                         
-                                        // ¨h¨’—
+                                        // ï¿½hï¿½ï¿½ï¿½
                                         var speed = Math.sqrt(u * u + v * v);
                                         var direction = Math.atan2(v, u) * 180 / Math.PI;
                                         
-                                        // ¨kşWfôÒ¹k	ÛÙ¢êó°	
+                                        // ï¿½kï¿½Wfï¿½Ò¹k	ï¿½Ù¢ï¿½ï¿½	
                                         direction = 90 - direction;
                                         if (direction < 0) direction += 360;
                                         
-                                        // ¨kúeDf¹±üêó°
+                                        // ï¿½kï¿½eDfï¿½ï¿½ï¿½ï¿½ï¿½
                                         var arrowSize = 20 * opts.scale * Math.min(1, speed / (mapConfig.max_velocity * 0.1 || 1));
                                         
-                                        // Şü«ün\
+                                        // ï¿½ï¿½ï¿½ï¿½n\
                                         var arrowIcon = L.divIcon({{
                                             html: '<svg width="' + (arrowSize * 2) + '" height="' + (arrowSize * 2) + '" ' +
                                                  'viewBox="-10 -10 20 20" class="wind-arrow">' +
@@ -671,24 +671,24 @@ class WindFieldElement(BaseWindFieldElement):
                                             rotationOrigin: 'center center'
                                         }}).addTo(targetLayer);
                                         
-                                        // İÃ×¢Ã×nı 
+                                        // ï¿½ï¿½×¢ï¿½ï¿½nï¿½ï¿½
                                         marker.bindPopup(
-                                            '<div><strong>¨:</strong> ' + Math.round(direction) + '°</div>' +
-                                            '<div><strong>¨:</strong> ' + speed.toFixed(1) + ' ' + mapConfig.velocity_units + '</div>'
+                                            '<div><strong>ï¿½:</strong> ' + Math.round(direction) + 'ï¿½</div>' +
+                                            '<div><strong>ï¿½:</strong> ' + speed.toFixed(1) + ' ' + mapConfig.velocity_units + '</div>'
                                         );
                                     }}
                                 }}
                             }}
                             
-                            // ,š¨4nÏ;
+                            // ,ï¿½ï¿½4nï¿½;
                             drawWindVectors(uGrid, vGrid, gridBounds, windLayer, {{ 
                                 color: 'rgba(0, 0, 128, 0.8)'
                             }});
                             
-                            overlays["¨4"] = windLayer;
+                            overlays["ï¿½4"] = windLayer;
                             windLayer.addTo(map);
                             
-                            // ˆ,¨4nÔ	¹j4	
+                            // ï¿½,ï¿½4nï¿½	ï¿½j4	
                             if (mapConfig.compare_forecast && forecastData) {{
                                 var forecastGridData = processWindData(forecastData);
                                 
@@ -697,14 +697,14 @@ class WindFieldElement(BaseWindFieldElement):
                                         color: 'rgba(0, 128, 0, 0.8)'
                                     }});
                                     
-                                    overlays["ˆ,¨4"] = forecastLayer;
+                                    overlays["ï¿½,ï¿½4"] = forecastLayer;
                                 }}
                             }}
                             
-                            // ¨·ÕÈnh:
+                            // ï¿½ï¿½ï¿½ï¿½nh:
                             if (mapConfig.show_wind_shifts && windShifts.length > 0) {{
                                 windShifts.forEach(function(shift) {{
-                                    // ·ÕÈŞü«ün\
+                                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½n\
                                     var shiftMarker = L.circleMarker(shift.position, {{
                                         radius: 8,
                                         color: 'purple',
@@ -714,23 +714,23 @@ class WindFieldElement(BaseWindFieldElement):
                                         className: 'wind-shift-marker'
                                     }}).addTo(shiftsLayer);
                                     
-                                    // İÃ×¢Ã×nı 
-                                    var popupContent = '<div><strong>¨·ÕÈ</strong></div>';
-                                    if (shift.time) popupContent += '<div><strong>B“:</strong> ' + new Date(shift.time).toLocaleString() + '</div>';
-                                    popupContent += '<div><strong>·ÕÈM:</strong> ' + Math.round(shift.before_direction) + '°</div>';
-                                    popupContent += '<div><strong>·ÕÈŒ:</strong> ' + Math.round(shift.after_direction) + '°</div>';
-                                    popupContent += '<div><strong>	Ï:</strong> ' + Math.round(shift.magnitude) + '°</div>';
+                                    // ï¿½ï¿½×¢ï¿½ï¿½nï¿½ï¿½
+                                    var popupContent = '<div><strong>ï¿½ï¿½ï¿½ï¿½</strong></div>';
+                                    if (shift.time) popupContent += '<div><strong>Bï¿½:</strong> ' + new Date(shift.time).toLocaleString() + '</div>';
+                                    popupContent += '<div><strong>ï¿½ï¿½ï¿½M:</strong> ' + Math.round(shift.before_direction) + 'ï¿½</div>';
+                                    popupContent += '<div><strong>ï¿½ï¿½ÈŒ:</strong> ' + Math.round(shift.after_direction) + 'ï¿½</div>';
+                                    popupContent += '<div><strong>	ï¿½:</strong> ' + Math.round(shift.magnitude) + 'ï¿½</div>';
                                     
                                     shiftMarker.bindPopup(popupContent);
                                 }});
                                 
-                                overlays["¨·ÕÈ"] = shiftsLayer;
+                                overlays["ï¿½ï¿½ï¿½ï¿½"] = shiftsLayer;
                             }}
                             
-                            // ¨ÈìóÉnh:
+                            // ï¿½ï¿½ï¿½ï¿½ï¿½nh:
                             if (mapConfig.show_wind_trends && windTrends.length > 0) {{
                                 windTrends.forEach(function(trend) {{
-                                    // ÈìóÉé¤ón\
+                                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½n\
                                     var trendLine = L.polyline(trend.points, {{
                                         color: 'rgba(255, 165, 0, 0.8)',
                                         weight: 2,
@@ -738,25 +738,25 @@ class WindFieldElement(BaseWindFieldElement):
                                         className: 'wind-trend-line'
                                     }}).addTo(trendsLayer);
                                     
-                                    // İÃ×¢Ã×nı 
-                                    var trendType = trend.type === 'increasing' ? '¨— ' : 
-                                                  trend.type === 'decreasing' ? '¨' : 
-                                                  trend.type === 'shift_left' ? 'æ·ÕÈÈìóÉ' : 
-                                                  trend.type === 'shift_right' ? 'ó·ÕÈÈìóÉ' : 'ÈìóÉ';
+                                    // ï¿½ï¿½×¢ï¿½ï¿½nï¿½ï¿½
+                                    var trendType = trend.type === 'increasing' ? 'ï¿½ï¿½ï¿½' : 
+                                                  trend.type === 'decreasing' ? 'ï¿½' : 
+                                                  trend.type === 'shift_left' ? 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½' : 
+                                                  trend.type === 'shift_right' ? 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½' : 'ï¿½ï¿½ï¿½ï¿½';
                                     
                                     var popupContent = '<div><strong>' + trendType + '</strong></div>';
-                                    popupContent += '<div><strong>	Ï:</strong> ' + trend.value + '</div>';
+                                    popupContent += '<div><strong>	ï¿½:</strong> ' + trend.value + '</div>';
                                     
                                     trendLine.bindPopup(popupContent);
                                 }});
                                 
-                                overlays["¨ÈìóÉ"] = trendsLayer;
+                                overlays["ï¿½ï¿½ï¿½ï¿½ï¿½"] = trendsLayer;
                             }}
                             
-                            // 0b¹œnh:
+                            // 0bï¿½ï¿½nh:
                             if (mapConfig.show_terrain_effects && terrainEffects.length > 0) {{
                                 terrainEffects.forEach(function(effect) {{
-                                    // ¨Õ§¯Èİê´ón\
+                                    // ï¿½Õ§ï¿½ï¿½ï¿½ï¿½ï¿½n\
                                     var effectPolygon = L.polygon(effect.polygon, {{
                                         color: 'rgba(255, 0, 0, 0.5)',
                                         weight: 1,
@@ -765,24 +765,24 @@ class WindFieldElement(BaseWindFieldElement):
                                         className: 'terrain-effect-area'
                                     }}).addTo(terrainLayer);
                                     
-                                    // İÃ×¢Ã×nı 
-                                    var effectType = effect.type === 'acceleration' ? '¨ ' : 
-                                                  effect.type === 'deceleration' ? '¨' : 
-                                                  effect.type === 'turbulence' ? 'qA' : '0b¹œ';
+                                    // ï¿½ï¿½×¢ï¿½ï¿½nï¿½ï¿½
+                                    var effectType = effect.type === 'acceleration' ? 'ï¿½ï¿½' : 
+                                                  effect.type === 'deceleration' ? 'ï¿½' : 
+                                                  effect.type === 'turbulence' ? 'qA' : '0bï¿½ï¿½';
                                     
                                     var popupContent = '<div><strong>' + effectType + '</strong></div>';
-                                    popupContent += '<div><strong>7¦:</strong> ' + effect.intensity.toFixed(1) + '</div>';
+                                    popupContent += '<div><strong>7ï¿½:</strong> ' + effect.intensity.toFixed(1) + '</div>';
                                     
                                     effectPolygon.bindPopup(popupContent);
                                 }});
                                 
-                                overlays["0b¹œ"] = terrainLayer;
+                                overlays["0bï¿½ï¿½"] = terrainLayer;
                             }}
                             
-                            // ì¤äü³óÈíüë’ı 
+                            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                             L.control.layers(null, overlays).addTo(map);
                             
-                            // ¨ná‹’ı 
+                            // ï¿½ná‹’ï¿½ï¿½
                             var legend = L.control({{ position: 'bottomright' }});
                             
                             legend.onAdd = function(map) {{
@@ -792,7 +792,7 @@ class WindFieldElement(BaseWindFieldElement):
                                 var maxVel = mapConfig.max_velocity;
                                 var unit = mapConfig.velocity_units;
                                 
-                                div.innerHTML = '<div class="legend-title">¨ (' + unit + ')</div>' +
+                                div.innerHTML = '<div class="legend-title">ï¿½ (' + unit + ')</div>' +
                                                '<div class="legend-scale">' +
                                                '<div class="legend-scale-segment" style="background: rgb(0, 0, 255);"></div>' +
                                                '<div class="legend-scale-segment" style="background: rgb(0, 255, 255);"></div>' +
@@ -811,7 +811,7 @@ class WindFieldElement(BaseWindFieldElement):
                             
                             legend.addTo(map);
                             
-                            // h:ß’-š
+                            // h:ß’-ï¿½
                             var bounds;
                             if (trackPoints.length > 0) {{
                                 bounds = L.latLngBounds(trackPoints);
@@ -822,9 +822,9 @@ class WindFieldElement(BaseWindFieldElement):
                                 ]);
                             }}
                             
-                            // ¿¤àÇ£áó·çó’ı 	¹j4	
+                            // ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	ï¿½j4	
                             if (mapConfig.show_time_dimension && timeValues.length > 0) {{
-                                // ¿¤àÇ£áó·çón-š
+                                // ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½n-ï¿½
                                 var timeDimension = new L.TimeDimension({{
                                     times: timeValues,
                                     currentTime: timeValues[0].getTime()
@@ -832,7 +832,7 @@ class WindFieldElement(BaseWindFieldElement):
                                 
                                 map.timeDimension = timeDimension;
                                 
-                                // ¿¤àÇ£áó·çó³óÈíüë’ı 
+                                // ï¿½ï¿½ï¿½Ç£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                                 var tdControl = new L.Control.TimeDimension({{
                                     player: {{
                                         buffer: 1,
@@ -845,26 +845,26 @@ class WindFieldElement(BaseWindFieldElement):
                                 map.addControl(tdControl);
                             }}
                             
-                            // êÕ„khSLh:UŒ‹ˆFkºüà
+                            // ï¿½Õ„khSLh:Uï¿½ï¿½ï¿½Fkï¿½ï¿½ï¿½
                             if (mapConfig.center_auto && bounds) {{
                                 map.fitBounds(bounds);
                             }} else {{
                                 map.setView(mapConfig.center, mapConfig.zoom_level);
                             }}
                         }} else {{
-                            // ¨4Çü¿L)(gMjD4
+                            // ï¿½4ï¿½ï¿½ï¿½L)(gMjD4
                             var message = document.createElement('div');
                             message.className = 'report-map-message';
-                            message.innerHTML = '<p>¨4Çü¿nbLcWOBŠ~[“</p>';
+                            message.innerHTML = '<p>ï¿½4ï¿½ï¿½ï¿½nbLcWOBï¿½~[ï¿½</p>';
                             
                             var mapContainer = document.getElementById('{self.map_id}');
                             mapContainer.appendChild(message);
                             
-                            // ŞÃ×-Ã’-š
+                            // ï¿½ï¿½ï¿½-Ã’-ï¿½
                             map.setView(mapConfig.center, mapConfig.zoom_level);
                         }}
                         
-                        // ŞÃ×ªÖ¸§¯È’°íüĞëkl‹
+                        // ï¿½ï¿½×ªÖ¸ï¿½ï¿½È’ï¿½ï¿½ï¿½ï¿½ï¿½klï¿½
                         window['{self.map_id}_map'] = map;
                     }});
                 }})();

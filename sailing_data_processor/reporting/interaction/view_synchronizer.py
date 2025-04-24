@@ -1,8 +1,8 @@
 """
 sailing_data_processor.reporting.interaction.view_synchronizer
 
-ÓåüÞÍü¸ãü¯é¹’Ð›Y‹â¸åüëgY
-ÞÃ×Óåü¿¤àé¤óÓåü]nÖnÓåü³óÝüÍóÈ“n’¡W~Y
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é¹’Ð›Yï¿½ï¿½ï¿½ï¿½ï¿½gY
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]nï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È“nï¿½ï¿½W~Y
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple, Set, Callable
@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 
 class ViewSynchronizer:
     """
-    ÓåüÞÍü¸ãü¯é¹
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    ÞÃ×Óåü¿¤àé¤óÓåü]nÖnÓåü³óÝüÍóÈ“n
-    ’¡W~Y
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]nï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È“n
+    ï¿½ï¿½W~Y
     """
     
     def __init__(self):
@@ -24,21 +24,21 @@ class ViewSynchronizer:
         self._contexts = {}  # id -> context
         self._connections = {}  # (source_id, target_id) -> connection_info
         
-        # ¤ÙóÈÏóÉé
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         self._event_handlers = {}
     
     def register_view(self, view_id: str, view_object: Any, view_type: Optional[str] = None) -> None:
         """
-        Óåü’{2
+        ï¿½ï¿½ï¿½ï¿½{2
         
         Parameters
         ----------
         view_id : str
-            ÓåünID
+            ï¿½ï¿½ï¿½nID
         view_object : Any
-            ÓåüªÖ¸§¯È
+            ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         view_type : Optional[str], optional
-            Óåün.^, by default None
+            ï¿½ï¿½ï¿½n.^, by default None
         """
         self._views[view_id] = {
             "object": view_object,
@@ -48,17 +48,17 @@ class ViewSynchronizer:
     
     def unregister_view(self, view_id: str) -> bool:
         """
-        Óåün{2’ãd
+        ï¿½ï¿½ï¿½n{2ï¿½ï¿½d
         
         Parameters
         ----------
         view_id : str
-            ÓåünID
+            ï¿½ï¿½ï¿½nID
             
         Returns
         -------
         bool
-            ãdkŸW_4oTrue
+            ï¿½dkï¿½W_4oTrue
         """
         if view_id in self._views:
             del self._views[view_id]
@@ -68,7 +68,7 @@ class ViewSynchronizer:
         if view_id in self._contexts:
             del self._contexts[view_id]
         
-        # ¢#Y‹¥š’Jd
+        # ï¿½#Yï¿½ï¿½ï¿½ï¿½Jd
         self._connections = {k: v for k, v in self._connections.items() 
                             if k[0] != view_id and k[1] != view_id}
         
@@ -76,35 +76,35 @@ class ViewSynchronizer:
     
     def get_registered_views(self) -> List[str]:
         """
-        {2UŒfD‹ÓåünIDê¹È’Ö—
+        {2Uï¿½fDï¿½ï¿½ï¿½ï¿½nIDï¿½È’Ö—
         
         Returns
         -------
         List[str]
-            ÓåüIDnê¹È
+            ï¿½ï¿½ï¿½IDnï¿½ï¿½
         """
         return list(self._views.keys())
     
     def connect_views(self, source_id: str, target_id: str, sync_props: Optional[List[str]] = None,
                      bidirectional: bool = False) -> bool:
         """
-        Óåü“n¥š’-š
+        ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½-ï¿½
         
         Parameters
         ----------
         source_id : str
-            ½ü¹ÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         target_id : str
-            ¿ü²ÃÈÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         sync_props : Optional[List[str]], optional
-            Y‹×íÑÆ£ê¹È, by default None
+            Yï¿½ï¿½ï¿½ï¿½Æ£ï¿½ï¿½, by default None
         bidirectional : bool, optional
-            Ì¹Y‹KiFK, by default False
+            Ì¹Yï¿½KiFK, by default False
             
         Returns
         -------
         bool
-            ¥škŸW_4oTrue
+            ï¿½ï¿½kï¿½W_4oTrue
         """
         if source_id not in self._views or target_id not in self._views:
             return False
@@ -117,7 +117,7 @@ class ViewSynchronizer:
             "active": True
         }
         
-        # Ì¹n4o¹n¥š‚ý 
+        # Ì¹n4oï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         if bidirectional:
             self._connections[(target_id, source_id)] = {
                 "sync_properties": sync_properties,
@@ -128,19 +128,19 @@ class ViewSynchronizer:
     
     def disconnect_views(self, source_id: str, target_id: str) -> bool:
         """
-        Óåü“n¥š’ãd
+        ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½d
         
         Parameters
         ----------
         source_id : str
-            ½ü¹ÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         target_id : str
-            ¿ü²ÃÈÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
             
         Returns
         -------
         bool
-            ãdkŸW_4oTrue
+            ï¿½dkï¿½W_4oTrue
         """
         if (source_id, target_id) in self._connections:
             del self._connections[(source_id, target_id)]
@@ -150,32 +150,32 @@ class ViewSynchronizer:
     
     def get_connections(self) -> Dict[Tuple[str, str], Dict[str, Any]]:
         """
-        Yyfn¥šÅ1’Ö—
+        Yyfnï¿½ï¿½ï¿½1ï¿½Ö—
         
         Returns
         -------
         Dict[Tuple[str, str], Dict[str, Any]]
-            ¥šÅ1nžø
+            ï¿½ï¿½ï¿½1nï¿½ï¿½
         """
         return self._connections.copy()
     
     def set_connection_active(self, source_id: str, target_id: str, active: bool) -> bool:
         """
-        ¥šn¢¯Æ£Ö¶K’-š
+        ï¿½ï¿½nï¿½ï¿½Æ£Ö¶Kï¿½-ï¿½
         
         Parameters
         ----------
         source_id : str
-            ½ü¹ÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         target_id : str
-            ¿ü²ÃÈÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         active : bool
-            ¢¯Æ£ÖkY‹KiFK
+            ï¿½ï¿½Æ£ï¿½kYï¿½KiFK
             
         Returns
         -------
         bool
-            -škŸW_4oTrue
+            -ï¿½kï¿½W_4oTrue
         """
         if (source_id, target_id) in self._connections:
             self._connections[(source_id, target_id)]["active"] = active
@@ -185,57 +185,57 @@ class ViewSynchronizer:
     
     def update_view_context(self, view_id: str, context_update: Dict[str, Any]) -> bool:
         """
-        Óåü³óÆ­¹È’ô°
+        ï¿½ï¿½ï¿½ï¿½ï¿½Æ­ï¿½È’ï¿½ï¿½
         
         Parameters
         ----------
         view_id : str
-            ÓåüID
+            ï¿½ï¿½ï¿½ID
         context_update : Dict[str, Any]
-            ô°Y‹³óÆ­¹ÈÅ1
+            ï¿½ï¿½Yï¿½ï¿½ï¿½Æ­ï¿½ï¿½ï¿½1
             
         Returns
         -------
         bool
-            ô°kŸW_4oTrue
+            ï¿½ï¿½kï¿½W_4oTrue
         """
         if view_id not in self._contexts:
             return False
         
-        # ³óÆ­¹Èô°
+        # ï¿½ï¿½Æ­ï¿½ï¿½ï¿½ï¿½
         self._contexts[view_id].update(context_update)
         
-        # ¥šHk	ô’­
+        # ï¿½ï¿½Hk	ï¿½ï¿½ï¿½
         self._propagate_context_changes(view_id, context_update)
         
         return True
     
     def get_view_context(self, view_id: str) -> Optional[Dict[str, Any]]:
         """
-        Óåü³óÆ­¹È’Ö—
+        ï¿½ï¿½ï¿½ï¿½ï¿½Æ­ï¿½È’Ö—
         
         Parameters
         ----------
         view_id : str
-            ÓåüID
+            ï¿½ï¿½ï¿½ID
             
         Returns
         -------
         Optional[Dict[str, Any]]
-            ³óÆ­¹ÈÅ1
+            ï¿½ï¿½Æ­ï¿½ï¿½ï¿½1
         """
         return self._contexts.get(view_id, {}).copy() if view_id in self._contexts else None
     
     def add_event_handler(self, event_type: str, handler: Callable[[str, Any], None]) -> None:
         """
-        ¤ÙóÈÏóÉé’ý 
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         event_type : str
-            ¤ÙóÈ¿¤× ("time_change", "selection_change", etc.)
+            ï¿½ï¿½ï¿½È¿ï¿½ï¿½ ("time_change", "selection_change", etc.)
         handler : Callable[[str, Any], None]
-            ÏóÉé¢p (view_id, value) ’pkÖ‹
+            ï¿½ï¿½ï¿½ï¿½p (view_id, value) ï¿½pkÖ‹
         """
         if event_type not in self._event_handlers:
             self._event_handlers[event_type] = []
@@ -244,19 +244,19 @@ class ViewSynchronizer:
     
     def remove_event_handler(self, event_type: str, handler: Callable[[str, Any], None]) -> bool:
         """
-        ¤ÙóÈÏóÉé’Jd
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jd
         
         Parameters
         ----------
         event_type : str
-            ¤ÙóÈ¿¤×
+            ï¿½ï¿½ï¿½È¿ï¿½ï¿½
         handler : Callable[[str, Any], None]
-            JdY‹ÏóÉé¢p
+            JdYï¿½ï¿½ï¿½ï¿½ï¿½p
             
         Returns
         -------
         bool
-            JdkŸW_4oTrue
+            Jdkï¿½W_4oTrue
         """
         if event_type in self._event_handlers and handler in self._event_handlers[event_type]:
             self._event_handlers[event_type].remove(handler)
@@ -266,70 +266,70 @@ class ViewSynchronizer:
     
     def _propagate_context_changes(self, source_id: str, changes: Dict[str, Any]) -> None:
         """
-        ³óÆ­¹È	ô’¥šHk­
+        ï¿½ï¿½Æ­ï¿½ï¿½	ï¿½ï¿½ï¿½ï¿½Hkï¿½
         
         Parameters
         ----------
         source_id : str
-            ½ü¹ÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         changes : Dict[str, Any]
-            	ô…¹
+            	ï¿½
         """
-        # 	ônýáª°Âg2b	
+        # 	ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½g2b	
         propagated = set()
         self._propagate_to_targets(source_id, changes, propagated)
     
     def _propagate_to_targets(self, source_id: str, changes: Dict[str, Any], 
                              propagated: Set[Tuple[str, str]]) -> None:
         """
-        	ô’¥šHk0„k­
+        	ï¿½ï¿½ï¿½ï¿½Hkï¿½0ï¿½kï¿½
         
         Parameters
         ----------
         source_id : str
-            ½ü¹ÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         changes : Dict[str, Any]
-            	ô…¹
+            	ï¿½
         propagated : Set[Tuple[str, str]]
-            âk­n¥šn»ÃÈ
+            ï¿½kï¿½nï¿½ï¿½nï¿½ï¿½ï¿½
         """
         for (src, tgt), conn_info in self._connections.items():
-            # âkæn¥šo¹­Ã×
+            # ï¿½kï¿½nï¿½ï¿½oï¿½ï¿½ï¿½ï¿½
             if (src, tgt) in propagated:
                 continue
                 
-            # ^¢¯Æ£Ö~_oþan¥šo¹­Ã×
+            # ^ï¿½ï¿½Æ£ï¿½~_oï¿½anï¿½ï¿½oï¿½ï¿½ï¿½ï¿½
             if not conn_info["active"] or src != source_id:
                 continue
                 
-            # Y‹×íÑÆ£’Õ£ë¿êó°
+            # Yï¿½ï¿½ï¿½ï¿½Æ£ï¿½Õ£ï¿½ï¿½ï¿½
             sync_props = conn_info["sync_properties"]
             filtered_changes = {k: v for k, v in changes.items() if k in sync_props}
             
             if filtered_changes:
-                # ¥š’æký 
+                # ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½
                 propagated.add((src, tgt))
                 
-                # ¿ü²ÃÈÓåün³óÆ­¹È’ô°
+                # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½Æ­ï¿½È’ï¿½ï¿½
                 if tgt in self._contexts:
                     self._contexts[tgt].update(filtered_changes)
                 
-                # ¿ü²ÃÈÓåü’ô°
+                # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 self._update_target_view(tgt, filtered_changes)
                 
-                # 	ô’0„k­
+                # 	ï¿½ï¿½ï¿½0ï¿½kï¿½
                 self._propagate_to_targets(tgt, filtered_changes, propagated)
     
     def _update_target_view(self, target_id: str, changes: Dict[str, Any]) -> None:
         """
-        ¿ü²ÃÈÓåü’ô°
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         target_id : str
-            ¿ü²ÃÈÓåüID
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
         changes : Dict[str, Any]
-            	ô…¹
+            	ï¿½
         """
         target_view_info = self._views.get(target_id)
         if not target_view_info:
@@ -337,31 +337,31 @@ class ViewSynchronizer:
             
         target_view = target_view_info["object"]
         
-        # Óåü¿¤×kÜX_ô°æ
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½X_ï¿½ï¿½ï¿½
         try:
             for prop, value in changes.items():
-                # time ×íÑÆ£n
+                # time ï¿½ï¿½ï¿½Æ£n
                 if prop == "time" and hasattr(target_view, "set_current_time"):
                     target_view.set_current_time(value)
                 
-                # selection ×íÑÆ£n
+                # selection ï¿½ï¿½ï¿½Æ£n
                 elif prop == "selection" and hasattr(target_view, "set_selection"):
                     target_view.set_selection(value)
                 
-                # zoom ×íÑÆ£n
+                # zoom ï¿½ï¿½ï¿½Æ£n
                 elif prop == "zoom" and hasattr(target_view, "set_zoom"):
                     target_view.set_zoom(value)
                 
-                # center ×íÑÆ£n
+                # center ï¿½ï¿½ï¿½Æ£n
                 elif prop == "center" and hasattr(target_view, "set_center"):
                     if isinstance(value, (list, tuple)) and len(value) >= 2:
                         target_view.set_center(value[0], value[1])
                 
-                # ]nÖn×íÑÆ£n
+                # ]nï¿½nï¿½ï¿½ï¿½Æ£n
                 elif hasattr(target_view, f"set_{prop}"):
                     getattr(target_view, f"set_{prop}")(value)
                 
-                # ¤ÙóÈÏóÉén|súW
+                # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½n|sï¿½W
                 if prop in self._event_handlers:
                     for handler in self._event_handlers[prop]:
                         try:
@@ -372,7 +372,7 @@ class ViewSynchronizer:
             logger.error(f"Error updating target view {target_id}: {e}")
     
     def reset(self) -> None:
-        """ÞÍü¸ãü’ê»ÃÈ"""
+        """ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"""
         self._views = {}
         self._contexts = {}
         self._connections = {}
@@ -380,21 +380,21 @@ class ViewSynchronizer:
     
     def to_dict(self) -> Dict[str, Any]:
         """
-        ·ê¢é¤ºïýjžøk	Û
+        ï¿½ï¿½é¤ºï¿½ï¿½jï¿½ï¿½k	ï¿½
         
         Returns
         -------
         Dict[str, Any]
-            ·ê¢é¤º(nÇü¿
+            ï¿½ï¿½é¤º(nï¿½ï¿½ï¿½
         """
-        # ÓåüÅ1ªÖ¸§¯ÈÂgdO	
+        # ï¿½ï¿½ï¿½ï¿½1ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½gdO	
         views_info = {}
         for view_id, view_info in self._views.items():
             views_info[view_id] = {
                 "type": view_info["type"]
             }
         
-        # ¥šÅ1
+        # ï¿½ï¿½ï¿½1
         connections = {}
         for (src, tgt), conn_info in self._connections.items():
             connections[f"{src}->{tgt}"] = {
@@ -413,23 +413,23 @@ class ViewSynchronizer:
     @classmethod
     def from_dict(cls, data: Dict[str, Any], view_objects: Dict[str, Any]) -> 'ViewSynchronizer':
         """
-        žøK‰¤ó¹¿ó¹’©C
+        ï¿½ï¿½Kï¿½ï¿½ï¿½ó¹’©C
         
         Parameters
         ----------
         data : Dict[str, Any]
-            ·ê¢é¤ºUŒ_Çü¿
+            ï¿½ï¿½é¤ºUï¿½_ï¿½ï¿½ï¿½
         view_objects : Dict[str, Any]
-            ÓåüIDhªÖ¸§¯ÈnÞÃÔó°
+            ï¿½ï¿½ï¿½IDhï¿½Ö¸ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½
             
         Returns
         -------
         ViewSynchronizer
-            ©CUŒ_¤ó¹¿ó¹
+            ï¿½CUï¿½_ï¿½ï¿½ï¿½
         """
         instance = cls()
         
-        # Óåü’{2
+        # ï¿½ï¿½ï¿½ï¿½{2
         for view_id, view_info in data.get("views", {}).items():
             if view_id in view_objects:
                 instance.register_view(
@@ -438,12 +438,12 @@ class ViewSynchronizer:
                     view_type=view_info.get("type")
                 )
         
-        # ³óÆ­¹È’©C
+        # ï¿½ï¿½Æ­ï¿½È’ï¿½C
         for view_id, context in data.get("contexts", {}).items():
             if view_id in instance._contexts:
                 instance._contexts[view_id] = context.copy()
         
-        # ¥š’©C
+        # ï¿½ï¿½ï¿½ï¿½C
         for _, conn_info in data.get("connections", {}).items():
             source_id = conn_info.get("source")
             target_id = conn_info.get("target")

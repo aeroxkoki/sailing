@@ -1,7 +1,7 @@
 """
 ui.components.session.session_detail
 
-»Ã·çós0h:nUI³óÝüÍóÈ
+ï¿½Ã·ï¿½ï¿½s0h:nUIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 """
 
 import streamlit as st
@@ -14,7 +14,7 @@ from sailing_data_processor.project.session_model import SessionModel, SessionRe
 
 
 def format_datetime(iso_datetime: str) -> str:
-    """ISObnåB’­„YDbk	Û"""
+    """ISObnï¿½Bï¿½ï¿½ï¿½YDbk	ï¿½"""
     try:
         dt = datetime.fromisoformat(iso_datetime)
         return dt.strftime("%Y/%m/%d %H:%M")
@@ -24,24 +24,24 @@ def format_datetime(iso_datetime: str) -> str:
 
 class SessionDetailComponent:
     """
-    á5UŒ_»Ã·çós0³óÝüÍóÈ
+    ï¿½5Uï¿½_ï¿½Ã·ï¿½ï¿½s0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
     Parameters
     ----------
     key : str, optional
-        ³óÝüÍóÈ­ü, by default "session_detail"
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È­ï¿½, by default "session_detail"
     session_manager : SessionManager, optional
-        »Ã·çó¡¯é¹n¤ó¹¿ó¹, by default None
+        ï¿½Ã·ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½, by default None
     project_manager : ProjectManager, optional
-        ×í¸§¯È¡¯é¹n¤ó¹¿ó¹, by default None
+        ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½nï¿½ï¿½ï¿½, by default None
     on_edit : Callable[[str], None], optional
-        èÆÜ¿ó¼Bn³üëÐÃ¯¢p, by default None
+        ï¿½ï¿½Ü¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
     on_delete : Callable[[str], None], optional
-        JdÜ¿ó¼Bn³üëÐÃ¯¢p, by default None
+        JdÜ¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
     on_close : Callable[[], None], optional
-        ‰X‹Ü¿ó¼Bn³üëÐÃ¯¢p, by default None
+        ï¿½Xï¿½Ü¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
     on_result_select : Callable[[str], None], optional
-        PœxžBn³üëÐÃ¯¢p, by default None
+        Pï¿½xï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
     """
     
     def __init__(
@@ -55,24 +55,24 @@ class SessionDetailComponent:
         on_result_select: Optional[Callable[[str], None]] = None
     ):
         """
-        ¤Ë·ãé¤¶
+        ï¿½Ë·ï¿½é¤¶
         
         Parameters
         ----------
         key : str, optional
-            ³óÝüÍóÈ­ü, by default "session_detail"
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È­ï¿½, by default "session_detail"
         session_manager : SessionManager, optional
-            »Ã·çó¡¯é¹n¤ó¹¿ó¹, by default None
+            ï¿½Ã·ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½, by default None
         project_manager : ProjectManager, optional
-            ×í¸§¯È¡¯é¹n¤ó¹¿ó¹, by default None
+            ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½nï¿½ï¿½ï¿½, by default None
         on_edit : Callable[[str], None], optional
-            èÆÜ¿ó¼Bn³üëÐÃ¯¢p, by default None
+            ï¿½ï¿½Ü¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
         on_delete : Callable[[str], None], optional
-            JdÜ¿ó¼Bn³üëÐÃ¯¢p, by default None
+            JdÜ¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
         on_close : Callable[[], None], optional
-            ‰X‹Ü¿ó¼Bn³üëÐÃ¯¢p, by default None
+            ï¿½Xï¿½Ü¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
         on_result_select : Callable[[str], None], optional
-            PœxžBn³üëÐÃ¯¢p, by default None
+            Pï¿½xï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
         """
         self.key = key
         self.session_manager = session_manager
@@ -82,7 +82,7 @@ class SessionDetailComponent:
         self.on_close = on_close
         self.on_result_select = on_result_select
         
-        # »Ã·çó¶Kn
+        # ï¿½Ã·ï¿½ï¿½Kn
         if f"{key}_confirm_delete" not in st.session_state:
             st.session_state[f"{key}_confirm_delete"] = False
         
@@ -100,17 +100,17 @@ class SessionDetailComponent:
     
     def get_associated_projects(self, session_id: str) -> List[Dict[str, Any]]:
         """
-        »Ã·çóL¢#ØQ‰ŒfD‹×í¸§¯Ènê¹È’Ö—
+        ï¿½Ã·ï¿½ï¿½Lï¿½#ï¿½Qï¿½ï¿½fDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½È’Ö—
         
         Parameters
         ----------
         session_id : str
-            »Ã·çóID
+            ï¿½Ã·ï¿½ï¿½ID
             
         Returns
         -------
         List[Dict[str, Any]]
-            ¢#×í¸§¯ÈÅ1nê¹È
+            ï¿½#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½1nï¿½ï¿½
         """
         if not self.project_manager:
             return []
@@ -131,27 +131,27 @@ class SessionDetailComponent:
     
     def render_metadata_editor(self, session: Session) -> None:
         """
-        á¿Çü¿¨Ç£¿nìóÀêó°
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ç£ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session : Session
-            »Ã·çóªÖ¸§¯È
+            ï¿½Ã·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         """
-        with st.expander("»Ã·çóÅ1", expanded=True):
+        with st.expander("ï¿½Ã·ï¿½ï¿½ï¿½1", expanded=True):
             col1, col2 = st.columns(2)
             with col1:
                 st.markdown(f"**M:** {session.name}")
-                st.markdown(f"**¬:** {session.description}" if session.description else "**¬:** *jW*")
-                st.markdown(f"**«Æ´ê:** {session.category}" if hasattr(session, 'category') and session.category else "**«Æ´ê:** **-š*")
-                st.markdown(f"**¹Æü¿¹:** {session.status}" if hasattr(session, 'status') and session.status else "**¹Æü¿¹:** **-š*")
+                st.markdown(f"**ï¿½:** {session.description}" if session.description else "**ï¿½:** *jW*")
+                st.markdown(f"**ï¿½Æ´ï¿½:** {session.category}" if hasattr(session, 'category') and session.category else "**ï¿½Æ´ï¿½:** **-ï¿½*")
+                st.markdown(f"**ï¿½ï¿½ï¿½ï¿½ï¿½:** {session.status}" if hasattr(session, 'status') and session.status else "**ï¿½ï¿½ï¿½ï¿½ï¿½:** **-ï¿½*")
                 
-                # U¡nh:
+                # Uï¿½nh:
                 rating = getattr(session, 'rating', 0)
                 stars = "" * rating + "" * (5 - rating)
-                st.markdown(f"**U¡:** {stars} ({rating}/5)")
+                st.markdown(f"**Uï¿½:** {stars} ({rating}/5)")
                 
-                # ¤ÙóÈåBnh:
+                # ï¿½ï¿½ï¿½ï¿½ï¿½Bnh:
                 event_date = None
                 if hasattr(session, 'event_date') and session.event_date:
                     event_date = format_datetime(session.event_date)
@@ -159,11 +159,11 @@ class SessionDetailComponent:
                     event_date = format_datetime(session.metadata['event_date'])
                 
                 if event_date:
-                    st.markdown(f"**¤ÙóÈåB:** {event_date}")
+                    st.markdown(f"**ï¿½ï¿½ï¿½ï¿½ï¿½B:** {event_date}")
                 else:
-                    st.markdown("**¤ÙóÈåB:** **-š*")
+                    st.markdown("**ï¿½ï¿½ï¿½ï¿½ï¿½B:** **-ï¿½*")
                 
-                # MnÅ1nh:
+                # Mnï¿½1nh:
                 location = None
                 if hasattr(session, 'location') and session.location:
                     location = session.location
@@ -171,98 +171,98 @@ class SessionDetailComponent:
                     location = session.metadata['location']
                 
                 if location:
-                    st.markdown(f"**MnÅ1:** {location}")
+                    st.markdown(f"**Mnï¿½1:** {location}")
                 else:
-                    st.markdown("**MnÅ1:** **-š*")
+                    st.markdown("**Mnï¿½1:** **-ï¿½*")
                 
-                # »Ã·çóIDh\å
-                st.markdown(f"**»Ã·çóID:** `{session.session_id}`")
-                st.markdown(f"**\å:** {format_datetime(session.created_at)}")
-                st.markdown(f"**ô°å:** {format_datetime(session.updated_at)}")
+                # ï¿½Ã·ï¿½ï¿½IDh\ï¿½
+                st.markdown(f"**ï¿½Ã·ï¿½ï¿½ID:** `{session.session_id}`")
+                st.markdown(f"**\ï¿½:** {format_datetime(session.created_at)}")
+                st.markdown(f"**ï¿½ï¿½ï¿½:** {format_datetime(session.updated_at)}")
                 
                 if session.source_file:
-                    st.markdown(f"**½ü¹Õ¡¤ë:** {session.source_file}")
+                    st.markdown(f"**ï¿½ï¿½ï¿½Õ¡ï¿½ï¿½:** {session.source_file}")
                 if session.source_type:
-                    st.markdown(f"**½ü¹¿¤×:** {session.source_type}")
+                    st.markdown(f"**ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:** {session.source_type}")
             
             with col2:
-                # ¿°
+                # ï¿½ï¿½
                 tags_str = ", ".join(session.tags) if session.tags else "jW"
-                st.markdown(f"**¿°:** {tags_str}")
+                st.markdown(f"**ï¿½ï¿½:** {tags_str}")
                 
-                # á¿Çü¿h:event_datehlocationo%h:Y‹_d	
+                # ï¿½ï¿½ï¿½ï¿½h:event_datehlocationo%h:Yï¿½_ï¿½d	
                 for key, value in session.metadata.items():
                     if key not in ["created_by", "related_sessions", "event_date", "location"] and value:
                         st.markdown(f"**{key}:** {value}")
     
     def render_tags_editor(self, session_id: str, current_tags: List[str]) -> None:
         """
-        ¿°¨Ç£¿nìóÀêó°
+        ï¿½ï¿½ï¿½Ç£ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session_id : str
-            »Ã·çóID
+            ï¿½Ã·ï¿½ï¿½ID
         current_tags : List[str]
-            þ(n¿°ê¹È
+            ï¿½(nï¿½ï¿½ï¿½ï¿½
         """
         if not self.session_manager:
             return
         
-        with st.expander("¿°¡", expanded=False):
-            # )(ïýj¿°nÖ—
+        with st.expander("ï¿½ï¿½ï¿½", expanded=False):
+            # )(ï¿½ï¿½jï¿½ï¿½nÖ—
             all_tags = self.session_manager.get_available_tags()
             
-            # ¿°xž
+            # ï¿½ï¿½xï¿½
             selected_tags = st.multiselect(
-                "¿°",
+                "ï¿½ï¿½",
                 options=all_tags,
                 default=current_tags,
                 key=f"{self.key}_edit_tags"
             )
             
-            # °WD¿°ný 
+            # ï¿½WDï¿½ï¿½nï¿½ï¿½
             new_tag = st.text_input(
-                "°WD¿°’ý «óÞ:Šgpšïý	",
+                "ï¿½WDï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:ï¿½gpï¿½ï¿½ï¿½	",
                 key=f"{self.key}_new_tag"
             )
             
-            # ô°Ü¿ó
-            if st.button("¿°’ô°", key=f"{self.key}_update_tags", use_container_width=True):
+            # ï¿½ï¿½Ü¿ï¿½
+            if st.button("ï¿½ï¿½ï¿½ï¿½ï¿½", key=f"{self.key}_update_tags", use_container_width=True):
                 final_tags = selected_tags.copy()
                 
-                # °WD¿°næ
+                # ï¿½WDï¿½ï¿½nï¿½
                 if new_tag:
                     additional_tags = [tag.strip() for tag in new_tag.split(",") if tag.strip()]
                     final_tags.extend(additional_tags)
-                    # Í’Jd
+                    # ï¿½ï¿½Jd
                     final_tags = list(set(final_tags))
                 
-                # ¿°ô°
+                # ï¿½ï¿½ï¿½ï¿½
                 if self.session_manager.update_session_tags(session_id, final_tags):
-                    st.success("¿°’ô°W~W_")
+                    st.success("ï¿½ï¿½ï¿½ï¿½ï¿½W~W_")
                     st.rerun()
                 else:
-                    st.error("¿°nô°k1WW~W_")
+                    st.error("ï¿½ï¿½nï¿½ï¿½k1WW~W_")
     
     def render_rating_editor(self, session_id: str, current_rating: int) -> None:
         """
-        U¡¨Ç£¿nìóÀêó°
+        Uï¿½ï¿½Ç£ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session_id : str
-            »Ã·çóID
+            ï¿½Ã·ï¿½ï¿½ID
         current_rating : int
-            þ(nU¡$
+            ï¿½(nUï¿½$
         """
         if not self.session_manager:
             return
         
-        with st.expander("U¡", expanded=False):
-            # U¡nèÆ
+        with st.expander("Uï¿½", expanded=False):
+            # Uï¿½nï¿½ï¿½
             new_rating = st.slider(
-                "»Ã·çóU¡",
+                "ï¿½Ã·ï¿½ï¿½Uï¿½",
                 min_value=0,
                 max_value=5,
                 value=current_rating,
@@ -270,117 +270,117 @@ class SessionDetailComponent:
                 key=f"{self.key}_edit_rating"
             )
             
-            # ô°Ü¿ó
-            if st.button("U¡’ô°", key=f"{self.key}_update_rating", use_container_width=True):
+            # ï¿½ï¿½Ü¿ï¿½
+            if st.button("Uï¿½ï¿½ï¿½ï¿½", key=f"{self.key}_update_rating", use_container_width=True):
                 if self.session_manager.update_session_rating(session_id, new_rating):
-                    st.success("U¡’ô°W~W_")
+                    st.success("Uï¿½ï¿½ï¿½ï¿½W~W_")
                     st.rerun()
                 else:
-                    st.error("U¡nô°k1WW~W_")
+                    st.error("Uï¿½nï¿½ï¿½k1WW~W_")
     
     def render_related_sessions(self, session_id: str) -> None:
         """
-        ¢#»Ã·çónìóÀêó°
+        ï¿½#ï¿½Ã·ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session_id : str
-            »Ã·çóID
+            ï¿½Ã·ï¿½ï¿½ID
         """
         if not self.session_manager:
             return
         
-        # ¢#»Ã·çónÖ—
+        # ï¿½#ï¿½Ã·ï¿½ï¿½nÖ—
         parent_sessions = self.session_manager.get_related_sessions(session_id, "parent")
         child_sessions = self.session_manager.get_related_sessions(session_id, "child")
         related_sessions = self.session_manager.get_related_sessions(session_id, "related")
         
-        # ¢#»Ã·çón	!Á§Ã¯
+        # ï¿½#ï¿½Ã·ï¿½ï¿½n	!ï¿½ï¿½Ã¯
         has_related = bool(parent_sessions or child_sessions or related_sessions)
         
-        # ¢#»Ã·çóLjD4
+        # ï¿½#ï¿½Ã·ï¿½ï¿½LjD4
         if not has_related:
-            st.info("Sn»Ã·çóko~`¢#»Ã·çóLBŠ~[“")
+            st.info("Snï¿½Ã·ï¿½ï¿½ko~`ï¿½#ï¿½Ã·ï¿½ï¿½LBï¿½~[ï¿½")
         
-        # ª»Ã·çónh:
+        # ï¿½ï¿½Ã·ï¿½ï¿½nh:
         if parent_sessions:
-            st.markdown("#### ª»Ã·çó")
+            st.markdown("#### ï¿½ï¿½Ã·ï¿½ï¿½")
             for session in parent_sessions:
                 self._render_related_session_card(session, session_id, "parent")
         
-        # P»Ã·çónh:
+        # Pï¿½Ã·ï¿½ï¿½nh:
         if child_sessions:
-            st.markdown("#### P»Ã·çó")
+            st.markdown("#### Pï¿½Ã·ï¿½ï¿½")
             for session in child_sessions:
                 self._render_related_session_card(session, session_id, "child")
         
-        # ¢#»Ã·çónh:
+        # ï¿½#ï¿½Ã·ï¿½ï¿½nh:
         if related_sessions:
-            st.markdown("#### ]nÖn¢#»Ã·çó")
+            st.markdown("#### ]nï¿½nï¿½#ï¿½Ã·ï¿½ï¿½")
             for session in related_sessions:
                 self._render_related_session_card(session, session_id, "related")
         
-        # ¢#»Ã·çóý Ü¿ó
-        if st.button("¢#»Ã·çó’ý ", key=f"{self.key}_add_relation_btn"):
+        # ï¿½#ï¿½Ã·ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½
+        if st.button("ï¿½#ï¿½Ã·ï¿½ï¿½ï¿½ï¿½", key=f"{self.key}_add_relation_btn"):
             st.session_state[f"{self.key}_add_relation"] = True
         
-        # ¢#»Ã·çóý Õ©üà
+        # ï¿½#ï¿½Ã·ï¿½ï¿½ï¿½ï¿½Õ©ï¿½ï¿½
         if st.session_state[f"{self.key}_add_relation"]:
-            st.markdown("#### ¢#»Ã·çóný ")
+            st.markdown("#### ï¿½#ï¿½Ã·ï¿½ï¿½nï¿½ï¿½")
             
-            # ¢#¿¤×xž
+            # ï¿½#ï¿½ï¿½ï¿½xï¿½
             relation_type = st.selectbox(
-                "¢#¿¤×",
+                "ï¿½#ï¿½ï¿½ï¿½",
                 options=["parent", "child", "related"],
-                format_func=lambda x: {"parent": "ª»Ã·çó", "child": "P»Ã·çó", "related": "]nÖn¢#"}.get(x, x),
+                format_func=lambda x: {"parent": "ï¿½ï¿½Ã·ï¿½ï¿½", "child": "Pï¿½Ã·ï¿½ï¿½", "related": "]nï¿½nï¿½#"}.get(x, x),
                 key=f"{self.key}_relation_type"
             )
             
-            # ¢#ØQ‹»Ã·çónxž
+            # ï¿½#ï¿½Qï¿½ï¿½Ã·ï¿½ï¿½nxï¿½
             all_sessions = self.session_manager.get_all_sessions()
-            # êê«’d
+            # ï¿½ê«’d
             all_sessions = [s for s in all_sessions if s.session_id != session_id]
             
             if not all_sessions:
-                st.warning("¢#ØQ‹»Ã·çóLBŠ~[“")
+                st.warning("ï¿½#ï¿½Qï¿½ï¿½Ã·ï¿½ï¿½LBï¿½~[ï¿½")
             else:
                 related_session_id = st.selectbox(
-                    "¢#ØQ‹»Ã·çó",
+                    "ï¿½#ï¿½Qï¿½ï¿½Ã·ï¿½ï¿½",
                     options=[s.session_id for s in all_sessions],
                     format_func=lambda x: next((s.name for s in all_sessions if s.session_id == x), x),
                     key=f"{self.key}_related_session_id"
                 )
                 
-                # ý Ü¿ó
+                # ï¿½ï¿½Ü¿ï¿½
                 col1, col2 = st.columns(2)
                 with col1:
-                    if st.button("ý ", key=f"{self.key}_add_relation_submit", use_container_width=True):
+                    if st.button("ï¿½ï¿½", key=f"{self.key}_add_relation_submit", use_container_width=True):
                         if self.session_manager.add_related_session(session_id, related_session_id, relation_type):
-                            st.success("¢#»Ã·çó’ý W~W_")
+                            st.success("ï¿½#ï¿½Ã·ï¿½ï¿½ï¿½ï¿½W~W_")
                             st.session_state[f"{self.key}_add_relation"] = False
                             st.rerun()
                         else:
-                            st.error("¢#»Ã·çóný k1WW~W_")
+                            st.error("ï¿½#ï¿½Ã·ï¿½ï¿½nï¿½ï¿½k1WW~W_")
                 
                 with col2:
-                    if st.button("­ãó»ë", key=f"{self.key}_add_relation_cancel", use_container_width=True):
+                    if st.button("ï¿½ï¿½ï¿½ï¿½", key=f"{self.key}_add_relation_cancel", use_container_width=True):
                         st.session_state[f"{self.key}_add_relation"] = False
                         st.rerun()
     
     def _render_related_session_card(self, session: Session, current_session_id: str, relation_type: str) -> None:
         """
-        ¢#»Ã·çó«üÉnìóÀêó°
+        ï¿½#ï¿½Ã·ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session : Session
-            »Ã·çóªÖ¸§¯È
+            ï¿½Ã·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         current_session_id : str
-            þ(n»Ã·çóID
+            ï¿½(nï¿½Ã·ï¿½ï¿½ID
         relation_type : str
-            ¢#¿¤×
+            ï¿½#ï¿½ï¿½ï¿½
         """
-        # «üÉ¹¿¤ën³óÆÊ
+        # ï¿½ï¿½É¹ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½
         with st.container(border=True):
             col1, col2 = st.columns([3, 1])
             
@@ -389,55 +389,55 @@ class SessionDetailComponent:
                 if session.description:
                     st.markdown(f"{session.description[:50]}..." if len(session.description) > 50 else session.description)
                 
-                # ¿°h«Æ´ênh:
+                # ï¿½ï¿½hï¿½Æ´ï¿½nh:
                 tags_str = ", ".join(session.tags) if session.tags else "jW"
-                st.markdown(f"¿°: {tags_str}")
+                st.markdown(f"ï¿½ï¿½: {tags_str}")
                 
                 if hasattr(session, 'category') and session.category:
-                    st.markdown(f"«Æ´ê: {session.category}")
+                    st.markdown(f"ï¿½Æ´ï¿½: {session.category}")
             
             with col2:
-                # h:Ü¿ó
+                # h:Ü¿ï¿½
                 if st.button("h:", key=f"{self.key}_view_related_{session.session_id}", use_container_width=True):
-                    # »Ã·çó¶KkxžUŒ_»Ã·çóID’»ÃÈ
+                    # ï¿½Ã·ï¿½ï¿½Kkxï¿½Uï¿½_ï¿½Ã·ï¿½ï¿½IDï¿½ï¿½ï¿½ï¿½
                     st.session_state.selected_session_id = session.session_id
                     st.rerun()
                 
-                # JdÜ¿ó
-                if st.button("¢#Jd", key=f"{self.key}_remove_related_{session.session_id}", use_container_width=True):
+                # JdÜ¿ï¿½
+                if st.button("ï¿½#Jd", key=f"{self.key}_remove_related_{session.session_id}", use_container_width=True):
                     if self.session_manager.remove_related_session(current_session_id, session.session_id, relation_type):
-                        st.success("¢#’JdW~W_")
+                        st.success("ï¿½#ï¿½JdW~W_")
                         st.rerun()
                     else:
-                        st.error("¢#nJdk1WW~W_")
+                        st.error("ï¿½#nJdk1WW~W_")
     
     def render_results_section(self, session_id: str) -> None:
         """
-        Pœ»¯·çónìóÀêó°
+        Pï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session_id : str
-            »Ã·çóID
+            ï¿½Ã·ï¿½ï¿½ID
         """
         if not self.session_manager:
             return
         
-        # »Ã·çónPœ’Ö—
+        # ï¿½Ã·ï¿½ï¿½nPï¿½ï¿½Ö—
         results = self.session_manager.get_session_results(session_id)
         
         if not results:
-            st.info("Sn»Ã·çóko~`PœLBŠ~[“")
+            st.info("Snï¿½Ã·ï¿½ï¿½ko~`ï¿½Pï¿½LBï¿½~[ï¿½")
             return
         
-        # Pœ¿¤×g°ëü×
+        # Pï¿½ï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½
         result_types = {}
         for result in results:
             if result.result_type not in result_types:
                 result_types[result.result_type] = []
             result_types[result.result_type].append(result)
         
-        # Pœ¿¤×Thkh:
+        # Pï¿½ï¿½ï¿½ï¿½Thkh:
         for result_type, type_results in result_types.items():
             st.markdown(f"#### {self._format_result_type(result_type)}")
             
@@ -446,206 +446,206 @@ class SessionDetailComponent:
     
     def _format_result_type(self, result_type: str) -> str:
         """
-        Pœ¿¤×nh:’Ö—
+        Pï¿½ï¿½ï¿½ï¿½nh:ï¿½Ö—
         
         Parameters
         ----------
         result_type : str
-            Pœ¿¤×
+            Pï¿½ï¿½ï¿½ï¿½
             
         Returns
         -------
         str
-            h:(nPœ¿¤×
+            h:(nPï¿½ï¿½ï¿½ï¿½
         """
-        # Pœ¿¤×nh:ÞÃÔó°
+        # Pï¿½ï¿½ï¿½ï¿½nh:ï¿½ï¿½ï¿½ï¿½
         type_names = {
-            "wind_estimation": "¨¨¨š",
-            "strategy_points": "&eÝ¤óÈ",
-            "performance": "ÑÕ©üÞó¹",
-            "data_cleaning": "Çü¿¯êüËó°",
-            "general": " ,",
-            "simulation": "·ßåìü·çó",
-            "optimization": " i"
+            "wind_estimation": "ï¿½ï¿½ï¿½ï¿½",
+            "strategy_points": "&eÝ¤ï¿½ï¿½",
+            "performance": "ï¿½Õ©ï¿½ï¿½ï¿½ï¿½",
+            "data_cleaning": "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+            "general": ",ï¿½",
+            "simulation": "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+            "optimization": "i"
         }
         
         return type_names.get(result_type, result_type)
     
     def _render_result_card(self, result: SessionResult) -> None:
         """
-        Pœ«üÉnìóÀêó°
+        Pï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         result : SessionResult
-            PœªÖ¸§¯È
+            Pï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         """
-        # «üÉ¹¿¤ën³óÆÊ
+        # ï¿½ï¿½É¹ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½
         with st.container(border=True):
-            # ØÃÀüè
+            # ï¿½ï¿½ï¿½ï¿½ï¿½
             col1, col2, col3 = st.columns([2, 2, 1])
             
             with col1:
-                # Pœ~_o¬
-                result_name = result.metadata.get("name", f"Pœ v{result.version}")
+                # Pï¿½~_oï¿½
+                result_name = result.metadata.get("name", f"ï¿½Pï¿½ v{result.version}")
                 st.markdown(f"**{result_name}**")
                 
-                # \åB
-                st.markdown(f"\åB: {format_datetime(result.created_at)}")
+                # \ï¿½B
+                st.markdown(f"\ï¿½B: {format_datetime(result.created_at)}")
             
             with col2:
-                # ý ná¿Çü¿h:
+                # ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½h:
                 if "description" in result.metadata:
-                    st.markdown(f"¬: {result.metadata['description']}")
+                    st.markdown(f"ï¿½: {result.metadata['description']}")
                 
-                # ¿°LBŒph:
+                # ï¿½ï¿½LBï¿½ph:
                 if "tags" in result.metadata and result.metadata["tags"]:
                     tags_str = ", ".join(result.metadata["tags"])
-                    st.markdown(f"¿°: {tags_str}")
+                    st.markdown(f"ï¿½ï¿½: {tags_str}")
             
             with col3:
-                # Ðü¸çóh:
-                st.markdown(f"Ðü¸çó: {result.version}")
+                # ï¿½ï¿½ï¿½ï¿½ï¿½h:
+                st.markdown(f"ï¿½ï¿½ï¿½ï¿½ï¿½: {result.version}")
                 
-                # þ(nÐü¸çóKiFK
+                # ï¿½(nï¿½ï¿½ï¿½ï¿½ï¿½KiFK
                 if result.is_current:
-                    st.markdown("**[ °]**")
+                    st.markdown("**[ï¿½]**")
                 
-                # ÖnÐü¸çóh:Ü¿ó
+                # ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½h:Ü¿ï¿½
                 if st.button("s0h:", key=f"{self.key}_view_result_{result.result_id}", use_container_width=True):
                     if self.on_result_select:
                         self.on_result_select(result.result_id)
                 
-                # Ðü¸çóeth:Ü¿ó
-                if st.button("Ðü¸çóet", key=f"{self.key}_versions_{result.result_id}", use_container_width=True):
-                    # È°ë¶K’Íâ
+                # ï¿½ï¿½ï¿½ï¿½ï¿½eth:Ü¿ï¿½
+                if st.button("ï¿½ï¿½ï¿½ï¿½ï¿½et", key=f"{self.key}_versions_{result.result_id}", use_container_width=True):
+                    # È°ï¿½Kï¿½ï¿½ï¿½
                     current = st.session_state[f"{self.key}_show_versions"].get(result.result_id, False)
                     st.session_state[f"{self.key}_show_versions"][result.result_id] = not current
             
-            # Ðü¸çóeth:ß
+            # ï¿½ï¿½ï¿½ï¿½ï¿½eth:ï¿½
             if st.session_state[f"{self.key}_show_versions"].get(result.result_id, False):
-                # PœnÐü¸çóê¹È’Ö—
+                # Pï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È’Ö—
                 versions = self.session_manager.get_result_versions(result.session_id, result.result_id)
                 
                 if versions:
-                    st.markdown("#### Ðü¸çóet")
+                    st.markdown("#### ï¿½ï¿½ï¿½ï¿½ï¿½et")
                     
                     for version in versions:
                         with st.container(border=True):
                             vcol1, vcol2 = st.columns([3, 1])
                             
                             with vcol1:
-                                st.markdown(f"**Ðü¸çó {version.version}**")
-                                st.markdown(f"\åB: {format_datetime(version.created_at)}")
+                                st.markdown(f"**ï¿½ï¿½ï¿½ï¿½ï¿½ {version.version}**")
+                                st.markdown(f"\ï¿½B: {format_datetime(version.created_at)}")
                                 
-                                # á¿Çü¿nh:
+                                # ï¿½ï¿½ï¿½ï¿½nh:
                                 if "description" in version.metadata:
-                                    st.markdown(f"¬: {version.metadata['description']}")
+                                    st.markdown(f"ï¿½: {version.metadata['description']}")
                             
                             with vcol2:
                                 if version.is_current:
-                                    st.markdown("**[þ(nH]**")
+                                    st.markdown("**[ï¿½(nH]**")
                                 else:
-                                    # SnÐü¸çó’þ(nÐü¸çóhWf-šY‹Ü¿ó
-                                    if st.button("SnH’(", key=f"{self.key}_use_version_{result.result_id}_{version.version}", use_container_width=True):
-                                        # ÖnÐü¸çó’Yyf^¢¯Æ£Ök-š
+                                    # Snï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(nï¿½ï¿½ï¿½ï¿½ï¿½hWf-ï¿½Yï¿½Ü¿ï¿½
+                                    if st.button("SnHï¿½(", key=f"{self.key}_use_version_{result.result_id}_{version.version}", use_container_width=True):
+                                        # ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½Yyf^ï¿½ï¿½Æ£ï¿½k-ï¿½
                                         for v in versions:
                                             v.mark_as_current(False)
                                         
-                                        # SnÐü¸çó’¢¯Æ£Ök-š
+                                        # Snï¿½ï¿½ï¿½ï¿½ó’¢¯Æ£ï¿½k-ï¿½
                                         version.mark_as_current(True)
                                         
-                                        # ô°
-                                        st.success(f"Ðü¸çó {version.version} ’þ(nHk-šW~W_")
+                                        # ï¿½ï¿½
+                                        st.success(f"ï¿½ï¿½ï¿½ï¿½ï¿½ {version.version} ï¿½ï¿½(nHk-ï¿½W~W_")
                                         st.rerun()
     
     def render_actions(self, session_id: str) -> None:
         """
-        ¢¯·çóÜ¿ónìóÀêó°
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session_id : str
-            »Ã·çóID
+            ï¿½Ã·ï¿½ï¿½ID
         """
         col1, col2, col3 = st.columns(3)
         
         with col1:
-            if st.button("èÆ", key=f"{self.key}_edit_btn", use_container_width=True):
+            if st.button("ï¿½ï¿½", key=f"{self.key}_edit_btn", use_container_width=True):
                 if self.on_edit:
                     self.on_edit(session_id)
         
         with col2:
             if st.button("Jd", key=f"{self.key}_delete_btn", use_container_width=True):
-                # JdºÀ¤¢í°
+                # Jdï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 st.session_state[f"{self.key}_confirm_delete"] = True
         
         with col3:
-            if st.button("‰X‹", key=f"{self.key}_close_btn", use_container_width=True):
+            if st.button("ï¿½Xï¿½", key=f"{self.key}_close_btn", use_container_width=True):
                 if self.on_close:
                     self.on_close()
         
-        # JdºÀ¤¢í°
+        # Jdï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         if st.session_state[f"{self.key}_confirm_delete"]:
-            st.warning("Sn»Ã·çó’JdW~YKSnÍ\oCk;[~[“")
+            st.warning("Snï¿½Ã·ï¿½ï¿½JdW~YKSnï¿½\oCk;[~[ï¿½")
             
             conf_col1, conf_col2 = st.columns(2)
             
             with conf_col1:
-                if st.button("Jd’ºš", key=f"{self.key}_confirm_delete_yes", use_container_width=True):
+                if st.button("Jdï¿½ï¿½ï¿½", key=f"{self.key}_confirm_delete_yes", use_container_width=True):
                     if self.on_delete:
                         self.on_delete(session_id)
                     st.session_state[f"{self.key}_confirm_delete"] = False
             
             with conf_col2:
-                if st.button("­ãó»ë", key=f"{self.key}_confirm_delete_no", use_container_width=True):
+                if st.button("ï¿½ï¿½ï¿½ï¿½", key=f"{self.key}_confirm_delete_no", use_container_width=True):
                     st.session_state[f"{self.key}_confirm_delete"] = False
                     st.rerun()
     
     def render(self, session_id: str) -> None:
         """
-        ³óÝüÍóÈnìóÀêó°
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session_id : str
-            h:Y‹»Ã·çónID
+            h:Yï¿½ï¿½Ã·ï¿½ï¿½nID
         """
         if not self.project_manager:
-            st.error("×í¸§¯È¡¯é¹L-šUŒfD~[“")
+            st.error("ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½L-ï¿½Uï¿½fD~[ï¿½")
             return
         
-        # »Ã·çónÖ—
+        # ï¿½Ã·ï¿½ï¿½nÖ—
         session = self.project_manager.get_session(session_id)
         if not session:
-            st.error(f"»Ã·çóL‹dKŠ~[“: {session_id}")
+            st.error(f"ï¿½Ã·ï¿½ï¿½Lï¿½dKï¿½~[ï¿½: {session_id}")
             return
         
-        # »Ã·çóØÃÀü
+        # ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         self._render_header(session)
         
-        # ¢¯·çóÜ¿ó
+        # ï¿½ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½
         self.render_actions(session_id)
         
-        # ¿Öh:
-        tabs = ["á¿Çü¿", "Pœ", "¢#»Ã·çó"]
+        # ï¿½ï¿½h:
+        tabs = ["ï¿½ï¿½ï¿½ï¿½", "Pï¿½", "ï¿½#ï¿½Ã·ï¿½ï¿½"]
         active_tab = st.radio(
-            "»¯·çó",
+            "ï¿½ï¿½ï¿½ï¿½ï¿½",
             options=tabs,
             index=tabs.index(self._get_active_tab_name()),
             horizontal=True,
             key=f"{self.key}_tab_select"
         )
         
-        # ¢¯Æ£Ö¿Ön¶K’ô°
-        if active_tab == "á¿Çü¿":
+        # ï¿½ï¿½Æ£Ö¿ï¿½nï¿½Kï¿½ï¿½ï¿½
+        if active_tab == "ï¿½ï¿½ï¿½ï¿½":
             st.session_state[f"{self.key}_active_tab"] = "metadata"
-        elif active_tab == "Pœ":
+        elif active_tab == "Pï¿½":
             st.session_state[f"{self.key}_active_tab"] = "results"
-        elif active_tab == "¢#»Ã·çó":
+        elif active_tab == "ï¿½#ï¿½Ã·ï¿½ï¿½":
             st.session_state[f"{self.key}_active_tab"] = "related"
             
-        # ¿Ön…¹’h:
+        # ï¿½ï¿½nï¿½ï¿½ï¿½h:
         if st.session_state[f"{self.key}_active_tab"] == "metadata":
             self._render_metadata_tab(session)
         elif st.session_state[f"{self.key}_active_tab"] == "results":
@@ -655,21 +655,21 @@ class SessionDetailComponent:
     
     def _render_header(self, session: SessionModel) -> None:
         """
-        »Ã·çóØÃÀünìóÀêó°
+        ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session : SessionModel
-            »Ã·çóªÖ¸§¯È
+            ï¿½Ã·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         """
-        # ØÃÀü
-        st.subheader(f"»Ã·çó: {session.name}")
+        # ï¿½ï¿½ï¿½ï¿½
+        st.subheader(f"ï¿½Ã·ï¿½ï¿½: {session.name}")
         
-        # »Ã·çóú,Å1nµÞêü
+        # ï¿½Ã·ï¿½ï¿½ï¿½,ï¿½1nï¿½ï¿½ï¿½ï¿½
         header_col1, header_col2, header_col3 = st.columns([1, 1, 1])
         
         with header_col1:
-            # ¹Æü¿¹h:
+            # ï¿½ï¿½ï¿½ï¿½ï¿½h:
             status = getattr(session, 'status', 'active')
             
             status_colors = {
@@ -680,39 +680,39 @@ class SessionDetailComponent:
             }
             
             status_display = {
-                "active": "¢¯Æ£Ö",
+                "active": "ï¿½ï¿½Æ£ï¿½",
                 "in_progress": "2L-",
-                "completed": "Œ†",
-                "archived": "¢ü«¤Ö"
+                "completed": "ï¿½ï¿½",
+                "archived": "ï¿½ï¿½ï¿½ï¿½ï¿½"
             }
             
             status_color = status_colors.get(status, "blue")
             status_text = status_display.get(status, status)
             
-            st.markdown(f"**¹Æü¿¹:** :{status_color}[{status_text}]")
+            st.markdown(f"**ï¿½ï¿½ï¿½ï¿½ï¿½:** :{status_color}[{status_text}]")
         
         with header_col2:
-            # «Æ´êh:
+            # ï¿½Æ´ï¿½h:
             category = getattr(session, 'category', 'analysis')
             category_display = {
-                "analysis": "",
-                "training": "ÈìüËó°",
-                "race": "ìü¹",
-                "simulation": "·ßåìü·çó",
-                "other": "]nÖ"
+                "analysis": "ï¿½",
+                "training": "ï¿½ï¿½ï¿½ï¿½ï¿½",
+                "race": "ï¿½ï¿½ï¿½",
+                "simulation": "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+                "other": "]nï¿½"
             }
             category_text = category_display.get(category, category)
             
-            st.markdown(f"**«Æ´ê:** {category_text}")
+            st.markdown(f"**ï¿½Æ´ï¿½:** {category_text}")
         
         with header_col3:
-            # U¡h:
+            # Uï¿½h:
             rating = getattr(session, 'rating', 0)
             stars = "" * rating + "" * (5 - rating)
             
-            st.markdown(f"**U¡:** {stars}")
+            st.markdown(f"**Uï¿½:** {stars}")
         
-        # ¿°h:Yyfn¿Ögh:	
+        # ï¿½ï¿½h:Yyfnï¿½ï¿½gh:	
         if session.tags and len(session.tags) > 0:
             tag_html = ""
             for tag in session.tags:
@@ -721,15 +721,15 @@ class SessionDetailComponent:
     
     def _render_metadata_tab(self, session: SessionModel) -> None:
         """
-        á¿Çü¿¿ÖnìóÀêó°
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session : SessionModel
-            »Ã·çóªÖ¸§¯È
+            ï¿½Ã·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         """
-        # èÆâüÉnŠÿH
-        edit_mode = st.toggle("èÆâüÉ", value=st.session_state.get(f"{self.key}_edit_mode", False))
+        # ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½H
+        edit_mode = st.toggle("ï¿½ï¿½ï¿½ï¿½ï¿½", value=st.session_state.get(f"{self.key}_edit_mode", False))
         st.session_state[f"{self.key}_edit_mode"] = edit_mode
         
         if edit_mode:
@@ -737,24 +737,24 @@ class SessionDetailComponent:
         else:
             self._render_metadata_view(session)
         
-        # ¿°hU¡o8kh:/èÆïý
+        # ï¿½ï¿½hUï¿½o8kh:/ï¿½ï¿½ï¿½ï¿½
         st.markdown("---")
         
-        # ¿°¡
+        # ï¿½ï¿½ï¿½
         self.render_tags_editor(session.session_id, session.tags or [])
         
-        # U¡èÆ
+        # Uï¿½ï¿½ï¿½
         rating = getattr(session, 'rating', 0)
         self.render_rating_editor(session.session_id, rating)
         
-        # ¢#×í¸§¯È
+        # ï¿½#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         associated_projects = self.get_associated_projects(session.session_id)
-        with st.expander("¢#×í¸§¯È", expanded=False):
+        with st.expander("ï¿½#ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", expanded=False):
             if not associated_projects:
-                st.info("Sn»Ã·çóoin×í¸§¯Èk‚¢#ØQ‰ŒfD~[“")
+                st.info("Snï¿½Ã·ï¿½ï¿½oinï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½ï¿½#ï¿½Qï¿½ï¿½fD~[ï¿½")
             else:
-                # ×í¸§¯È §nh:
-                st.markdown("Sn»Ã·çóoån×í¸§¯Èk¢#ØQ‰ŒfD~Y:")
+                # ï¿½ï¿½ï¿½ï¿½ï¿½È§nh:
+                st.markdown("Snï¿½Ã·ï¿½ï¿½oï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½#ï¿½Qï¿½ï¿½fD~Y:")
                 
                 for project in associated_projects:
                     with st.container(border=True):
@@ -764,42 +764,42 @@ class SessionDetailComponent:
                             st.markdown(f"{project['description'][:50]}..." if len(project['description']) > 50 else project['description'])
                         
                         with col2:
-                            if st.button("ûÕ", key=f"goto_project_{project['id']}", use_container_width=True):
-                                # ×í¸§¯È;bxnwû
+                            if st.button("ï¿½ï¿½", key=f"goto_project_{project['id']}", use_container_width=True):
+                                # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½;bxnwï¿½
                                 st.session_state.selected_project_id = project['id']
                                 st.rerun()
     
     def _render_metadata_editor(self, session: SessionModel) -> None:
         """
-        á¿Çü¿¨Ç£¿nìóÀêó°
+        ï¿½ï¿½ï¿½ï¿½ï¿½Ç£ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session : SessionModel
-            »Ã·çóªÖ¸§¯È
+            ï¿½Ã·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         """
         with st.form(key=f"{self.key}_metadata_form"):
             col1, col2 = st.columns(2)
             
             with col1:
-                # ú,Å1
+                # ï¿½,ï¿½1
                 name = st.text_input("M", value=session.name)
-                description = st.text_area("¬", value=session.description)
-                purpose = st.text_input("î„", value=getattr(session, 'purpose', session.metadata.get('purpose', '')))
+                description = st.text_area("ï¿½", value=session.description)
+                purpose = st.text_input("ï¿½", value=getattr(session, 'purpose', session.metadata.get('purpose', '')))
                 
-                # «Æ´êh¹Æü¿¹
+                # ï¿½Æ´ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½
                 categories = ["analysis", "training", "race", "simulation", "other"]
                 category_display = {
-                    "analysis": "",
-                    "training": "ÈìüËó°",
-                    "race": "ìü¹", 
-                    "simulation": "·ßåìü·çó",
-                    "other": "]nÖ"
+                    "analysis": "ï¿½",
+                    "training": "ï¿½ï¿½ï¿½ï¿½ï¿½",
+                    "race": "ï¿½ï¿½ï¿½", 
+                    "simulation": "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+                    "other": "]nï¿½"
                 }
                 
                 current_category = getattr(session, 'category', 'analysis')
                 category = st.selectbox(
-                    "«Æ´ê",
+                    "ï¿½Æ´ï¿½",
                     options=categories,
                     format_func=lambda x: category_display.get(x, x),
                     index=categories.index(current_category) if current_category in categories else 0
@@ -807,59 +807,59 @@ class SessionDetailComponent:
                 
                 statuses = ["active", "in_progress", "completed", "archived"]
                 status_display = {
-                    "active": "¢¯Æ£Ö",
+                    "active": "ï¿½ï¿½Æ£ï¿½",
                     "in_progress": "2L-",
-                    "completed": "Œ†",
-                    "archived": "¢ü«¤Ö"
+                    "completed": "ï¿½ï¿½",
+                    "archived": "ï¿½ï¿½ï¿½ï¿½ï¿½"
                 }
                 
                 current_status = getattr(session, 'status', 'active')
                 status = st.selectbox(
-                    "¹Æü¿¹",
+                    "ï¿½ï¿½ï¿½ï¿½ï¿½",
                     options=statuses,
                     format_func=lambda x: status_display.get(x, x),
                     index=statuses.index(current_status) if current_status in statuses else 0
                 )
             
             with col2:
-                # MnÅ1
-                location = st.text_input("MnÅ1", 
+                # Mnï¿½1
+                location = st.text_input("Mnï¿½1", 
                                          value=getattr(session, 'location', '') or session.metadata.get('location', ''))
                 
                 # G.
                 boat_type = st.text_input("G.", value=session.metadata.get('boat_type', ''))
                 
-                # ¯ëüÅ1
-                crew_info = st.text_input("¯ëüÅ1", value=session.metadata.get('crew_info', ''))
+                # ï¿½ï¿½ï¿½ï¿½1
+                crew_info = st.text_input("ï¿½ï¿½ï¿½ï¿½1", value=session.metadata.get('crew_info', ''))
                 
-                # Í¦
+                # Íï¿½
                 importance_options = ["low", "normal", "high", "critical"]
                 importance_display = {
                     "low": "N",
                     "normal": "n",
-                    "high": "Ø",
-                    "critical": " Í"
+                    "high": "ï¿½",
+                    "critical": "Í"
                 }
                 
                 current_importance = getattr(session, 'importance', 'normal')
                 importance = st.selectbox(
-                    "Í¦",
+                    "Íï¿½",
                     options=importance_options,
                     format_func=lambda x: importance_display.get(x, x),
                     index=importance_options.index(current_importance) if current_importance in importance_options else 1
                 )
                 
-                # Œ†‡
+                # ï¿½ï¿½ï¿½
                 completion = st.slider(
-                    "Œ†‡", 
+                    "ï¿½ï¿½ï¿½", 
                     min_value=0, 
                     max_value=100, 
                     value=getattr(session, 'completion_percentage', 0),
                     step=5
                 )
             
-            # ¤ÙóÈåB
-            # þ(nåB’Ö—BŒp	
+            # ï¿½ï¿½ï¿½ï¿½ï¿½B
+            # ï¿½(nï¿½Bï¿½Ö—Bï¿½p	
             event_date_str = getattr(session, 'event_date', None) or session.metadata.get('event_date', None)
             event_date = None
             
@@ -873,21 +873,21 @@ class SessionDetailComponent:
             
             with col_date1:
                 event_date_input = st.date_input(
-                    "¤ÙóÈå",
+                    "ï¿½ï¿½ï¿½ï¿½ï¿½",
                     value=event_date.date() if event_date else None
                 )
             
             with col_date2:
                 event_time_input = st.time_input(
-                    "¤ÙóÈB;",
+                    "ï¿½ï¿½ï¿½ï¿½B;",
                     value=event_date.time() if event_date else datetime.now().time()
                 )
             
-            # ô°Ü¿ó
-            submit = st.form_submit_button("á¿Çü¿’ô°", use_container_width=True)
+            # ï¿½ï¿½Ü¿ï¿½
+            submit = st.form_submit_button("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½", use_container_width=True)
             
             if submit:
-                # ô°…¹n–™
+                # ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                 combined_event_date = None
                 if event_date_input:
                     combined_event_date = datetime.combine(
@@ -895,7 +895,7 @@ class SessionDetailComponent:
                         event_time_input
                     )
                 
-                # á¿Çü¿nô°
+                # ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                 metadata_updates = {
                     "location": location,
                     "boat_type": boat_type,
@@ -908,91 +908,91 @@ class SessionDetailComponent:
                 if combined_event_date:
                     metadata_updates["event_date"] = combined_event_date.isoformat()
                 
-                # »Ã·çóÅ1nô°
+                # ï¿½Ã·ï¿½ï¿½ï¿½1nï¿½ï¿½
                 try:
-                    # ú,Å1nô°
+                    # ï¿½,ï¿½1nï¿½ï¿½
                     success = True
                     
-                    # Mh¬nô°
+                    # Mhï¿½nï¿½ï¿½
                     if session.name != name or session.description != description:
                         session.name = name
                         session.description = description
                         self.project_manager.save_session(session)
                     
-                    # «Æ´êh¹Æü¿¹nô°
+                    # ï¿½Æ´ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                     if hasattr(session, 'category') and session.category != category:
                         self.session_manager.update_session_category(session.session_id, category)
                     
                     if hasattr(session, 'status') and session.status != status:
                         self.session_manager.update_session_status(session.session_id, status)
                     
-                    # á¿Çü¿nô°
+                    # ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
                     if self.session_manager.update_session_metadata(session.session_id, metadata_updates):
-                        st.success("»Ã·çóÅ1’ô°W~W_")
+                        st.success("ï¿½Ã·ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½W~W_")
                         st.rerun()
                     else:
-                        st.error("á¿Çü¿nô°k1WW~W_")
+                        st.error("ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½k1WW~W_")
                 
                 except Exception as e:
-                    st.error(f"ô°¨éü: {str(e)}")
+                    st.error(f"ï¿½ï¿½ï¿½ï¿½ï¿½: {str(e)}")
     
     def _render_metadata_view(self, session: SessionModel) -> None:
         """
-        á¿Çü¿h:
+        ï¿½ï¿½ï¿½ï¿½h:
         
         Parameters
         ----------
         session : SessionModel
-            »Ã·çóªÖ¸§¯È
+            ï¿½Ã·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         """
-        # ú,Å1há5Å1nh:
+        # ï¿½,ï¿½1hï¿½5ï¿½1nh:
         col1, col2 = st.columns(2)
         
         with col1:
             st.markdown(f"**M:** {session.name}")
-            st.markdown(f"**¬:** {session.description}" if session.description else "**¬:** *jW*")
-            st.markdown(f"**î„:** {getattr(session, 'purpose', session.metadata.get('purpose', ''))}" 
-                       if getattr(session, 'purpose', session.metadata.get('purpose', '')) else "**î„:** **-š*")
+            st.markdown(f"**ï¿½:** {session.description}" if session.description else "**ï¿½:** *jW*")
+            st.markdown(f"**ï¿½:** {getattr(session, 'purpose', session.metadata.get('purpose', ''))}" 
+                       if getattr(session, 'purpose', session.metadata.get('purpose', '')) else "**ï¿½:** **-ï¿½*")
             
-            # «Æ´êh¹Æü¿¹
+            # ï¿½Æ´ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½
             category = getattr(session, 'category', 'analysis')
             category_display = {
-                "analysis": "",
-                "training": "ÈìüËó°",
-                "race": "ìü¹",
-                "simulation": "·ßåìü·çó",
-                "other": "]nÖ"
+                "analysis": "ï¿½",
+                "training": "ï¿½ï¿½ï¿½ï¿½ï¿½",
+                "race": "ï¿½ï¿½ï¿½",
+                "simulation": "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½",
+                "other": "]nï¿½"
             }
-            st.markdown(f"**«Æ´ê:** {category_display.get(category, category)}")
+            st.markdown(f"**ï¿½Æ´ï¿½:** {category_display.get(category, category)}")
             
             status = getattr(session, 'status', 'active')
             status_display = {
-                "active": "¢¯Æ£Ö",
+                "active": "ï¿½ï¿½Æ£ï¿½",
                 "in_progress": "2L-",
-                "completed": "Œ†",
-                "archived": "¢ü«¤Ö"
+                "completed": "ï¿½ï¿½",
+                "archived": "ï¿½ï¿½ï¿½ï¿½ï¿½"
             }
-            st.markdown(f"**¹Æü¿¹:** {status_display.get(status, status)}")
+            st.markdown(f"**ï¿½ï¿½ï¿½ï¿½ï¿½:** {status_display.get(status, status)}")
             
-            # Í¦
+            # Íï¿½
             importance = getattr(session, 'importance', 'normal')
             importance_display = {
                 "low": "N",
                 "normal": "n",
-                "high": "Ø",
-                "critical": " Í"
+                "high": "ï¿½",
+                "critical": "Í"
             }
-            st.markdown(f"**Í¦:** {importance_display.get(importance, importance)}")
+            st.markdown(f"**Íï¿½:** {importance_display.get(importance, importance)}")
             
-            # Œ†‡
+            # ï¿½ï¿½ï¿½
             completion = getattr(session, 'completion_percentage', 0)
-            st.markdown(f"**Œ†‡:** {completion}%")
+            st.markdown(f"**ï¿½ï¿½ï¿½:** {completion}%")
             
-            #  Bô°
-            st.markdown(f"** Bô°:** {format_datetime(session.updated_at)}")
+            # Bï¿½ï¿½
+            st.markdown(f"**Bï¿½ï¿½:** {format_datetime(session.updated_at)}")
         
         with col2:
-            # ¤ÙóÈåBnh:
+            # ï¿½ï¿½ï¿½ï¿½ï¿½Bnh:
             event_date = None
             if hasattr(session, 'event_date') and session.event_date:
                 event_date = format_datetime(session.event_date)
@@ -1000,11 +1000,11 @@ class SessionDetailComponent:
                 event_date = format_datetime(session.metadata['event_date'])
             
             if event_date:
-                st.markdown(f"**¤ÙóÈåB:** {event_date}")
+                st.markdown(f"**ï¿½ï¿½ï¿½ï¿½ï¿½B:** {event_date}")
             else:
-                st.markdown("**¤ÙóÈåB:** **-š*")
+                st.markdown("**ï¿½ï¿½ï¿½ï¿½ï¿½B:** **-ï¿½*")
             
-            # MnÅ1nh:
+            # Mnï¿½1nh:
             location = ""
             if hasattr(session, 'location') and session.location:
                 location = session.location
@@ -1012,35 +1012,35 @@ class SessionDetailComponent:
                 location = session.metadata['location']
             
             if location:
-                st.markdown(f"**MnÅ1:** {location}")
+                st.markdown(f"**Mnï¿½1:** {location}")
             else:
-                st.markdown("**MnÅ1:** **-š*")
+                st.markdown("**Mnï¿½1:** **-ï¿½*")
             
             # G.
             boat_type = session.metadata.get('boat_type', '')
             if boat_type:
                 st.markdown(f"**G.:** {boat_type}")
             else:
-                st.markdown("**G.:** **-š*")
+                st.markdown("**G.:** **-ï¿½*")
             
-            # ¯ëüÅ1
+            # ï¿½ï¿½ï¿½ï¿½1
             crew_info = session.metadata.get('crew_info', '')
             if crew_info:
-                st.markdown(f"**¯ëüÅ1:** {crew_info}")
+                st.markdown(f"**ï¿½ï¿½ï¿½ï¿½1:** {crew_info}")
             else:
-                st.markdown("**¯ëüÅ1:** **-š*")
+                st.markdown("**ï¿½ï¿½ï¿½ï¿½1:** **-ï¿½*")
             
-            # »Ã·çóID
-            st.markdown(f"**»Ã·çóID:** `{session.session_id}`")
-            st.markdown(f"**\å:** {format_datetime(session.created_at)}")
+            # ï¿½Ã·ï¿½ï¿½ID
+            st.markdown(f"**ï¿½Ã·ï¿½ï¿½ID:** `{session.session_id}`")
+            st.markdown(f"**\ï¿½:** {format_datetime(session.created_at)}")
             
-            # ½ü¹Õ¡¤ëÅ1BŒp	
+            # ï¿½ï¿½ï¿½Õ¡ï¿½ï¿½ï¿½1Bï¿½p	
             if hasattr(session, 'source_file') and session.source_file:
-                st.markdown(f"**½ü¹Õ¡¤ë:** {session.source_file}")
+                st.markdown(f"**ï¿½ï¿½ï¿½Õ¡ï¿½ï¿½:** {session.source_file}")
             if hasattr(session, 'source_type') and session.source_type:
-                st.markdown(f"**½ü¹¿¤×:** {session.source_type}")
+                st.markdown(f"**ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½:** {session.source_type}")
         
-        # ]nÖná¿Çü¿h:
+        # ]nï¿½nï¿½ï¿½ï¿½ï¿½h:
         other_metadata = {}
         for key, value in session.metadata.items():
             if key not in ["created_by", "related_sessions", "event_date", "location", 
@@ -1049,68 +1049,68 @@ class SessionDetailComponent:
                 other_metadata[key] = value
         
         if other_metadata:
-            st.markdown("### ]nÖná¿Çü¿")
+            st.markdown("### ]nï¿½nï¿½ï¿½ï¿½ï¿½")
             for key, value in other_metadata.items():
                 st.markdown(f"**{key}:** {value}")
     
     def _render_results_tab(self, session: SessionModel) -> None:
         """
-        Pœ¿ÖnìóÀêó°
+        Pï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session : SessionModel
-            »Ã·çóªÖ¸§¯È
+            ï¿½Ã·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         """
         self.render_results_section(session.session_id)
     
     def _render_related_tab(self, session: SessionModel) -> None:
         """
-        ¢#»Ã·çó¿ÖnìóÀêó°
+        ï¿½#ï¿½Ã·ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session : SessionModel
-            »Ã·çóªÖ¸§¯È
+            ï¿½Ã·ï¿½ï¿½Ö¸ï¿½ï¿½ï¿½
         """
         self.render_related_sessions(session.session_id)
     
     def _get_active_tab_name(self) -> str:
         """
-        ¢¯Æ£Ö¿ÖnM’Ö—
+        ï¿½ï¿½Æ£Ö¿ï¿½nMï¿½Ö—
         
         Returns
         -------
         str
-            ¿Önh:
+            ï¿½ï¿½nh:
         """
         tab_mapping = {
-            "metadata": "á¿Çü¿",
-            "results": "Pœ",
-            "related": "¢#»Ã·çó"
+            "metadata": "ï¿½ï¿½ï¿½ï¿½",
+            "results": "Pï¿½",
+            "related": "ï¿½#ï¿½Ã·ï¿½ï¿½"
         }
-        return tab_mapping.get(st.session_state.get(f"{self.key}_active_tab", "metadata"), "á¿Çü¿")
+        return tab_mapping.get(st.session_state.get(f"{self.key}_active_tab", "metadata"), "ï¿½ï¿½ï¿½ï¿½")
 
 
 class SessionDetailView:
     """
-    »Ã·çós0h:³óÝüÍóÈì¬·üAPI’Û	
+    ï¿½Ã·ï¿½ï¿½s0h:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì¬·ï¿½APIï¿½ï¿½	
     
-    xžUŒ_»Ã·çóns0Å1’h:W
-    èÆJd×í¸§¯È¡jin_ý’Ð›W~Y
+    xï¿½Uï¿½_ï¿½Ã·ï¿½ï¿½ns0ï¿½1ï¿½h:W
+    ï¿½ï¿½Jdï¿½ï¿½ï¿½ï¿½ï¿½È¡jin_ï¿½ï¿½Ð›W~Y
     
     Parameters
     ----------
     project_manager : ProjectManager
-        ×í¸§¯È¡¯é¹n¤ó¹¿ó¹
+        ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½nï¿½ï¿½ï¿½
     session_manager : SessionManager
-        »Ã·çó¡¯é¹n¤ó¹¿ó¹
+        ï¿½Ã·ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½
     on_edit : Callable[[str], None], optional
-        èÆÜ¿ó¼Bn³üëÐÃ¯¢p, by default None
+        ï¿½ï¿½Ü¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
     on_delete : Callable[[str], None], optional
-        JdÜ¿ó¼Bn³üëÐÃ¯¢p, by default None
+        JdÜ¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
     on_close : Callable[[], None], optional
-        ‰X‹Ü¿ó¼Bn³üëÐÃ¯¢p, by default None
+        ï¿½Xï¿½Ü¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
     """
     
     def __init__(
@@ -1127,15 +1127,15 @@ class SessionDetailView:
         Parameters
         ----------
         project_manager : ProjectManager
-            ×í¸§¯È¡¯é¹n¤ó¹¿ó¹
+            ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½nï¿½ï¿½ï¿½
         session_manager : SessionManager
-            »Ã·çó¡¯é¹n¤ó¹¿ó¹
+            ï¿½Ã·ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½
         on_edit : Optional[Callable[[str], None]], optional
-            èÆÜ¿ó¼Bn³üëÐÃ¯¢p, by default None
+            ï¿½ï¿½Ü¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
         on_delete : Optional[Callable[[str], None]], optional
-            JdÜ¿ó¼Bn³üëÐÃ¯¢p, by default None
+            JdÜ¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
         on_close : Optional[Callable[[], None]], optional
-            ‰X‹Ü¿ó¼Bn³üëÐÃ¯¢p, by default None
+            ï¿½Xï¿½Ü¿ï¿½Bnï¿½ï¿½ï¿½ï¿½Ã¯ï¿½p, by default None
         """
         self.component = SessionDetailComponent(
             key="legacy_session_detail",
@@ -1148,12 +1148,12 @@ class SessionDetailView:
     
     def render(self, session_id: str) -> None:
         """
-        ³óÝüÍóÈnìóÀêó°
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         session_id : str
-            h:Y‹»Ã·çónID
+            h:Yï¿½ï¿½Ã·ï¿½ï¿½nID
         """
         self.component.render(session_id)
 
@@ -1162,120 +1162,120 @@ def edit_session_metadata(project_manager: ProjectManager,
                           session_manager: SessionManager,
                           session_id: str) -> bool:
     """
-    »Ã·çóá¿Çü¿nèÆÕ©üàì¬·üAPI’Û	
+    ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½Õ©ï¿½ï¿½ì¬·ï¿½APIï¿½ï¿½	
     
     Parameters
     ----------
     project_manager : ProjectManager
-        ×í¸§¯È¡¯é¹n¤ó¹¿ó¹
+        ï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½nï¿½ï¿½ï¿½
     session_manager : SessionManager
-        »Ã·çó¡¯é¹n¤ó¹¿ó¹
+        ï¿½Ã·ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½
     session_id : str
-        èÆY‹»Ã·çónID
+        ï¿½ï¿½Yï¿½ï¿½Ã·ï¿½ï¿½nID
         
     Returns
     -------
     bool
-        ô°kŸW_4True
+        ï¿½ï¿½kï¿½W_4True
     """
     session = project_manager.get_session(session_id)
     if not session:
-        st.error(f"»Ã·çóL‹dKŠ~[“: {session_id}")
+        st.error(f"ï¿½Ã·ï¿½ï¿½Lï¿½dKï¿½~[ï¿½: {session_id}")
         return False
     
-    st.subheader(f"»Ã·çó '{session.name}' nèÆ")
+    st.subheader(f"ï¿½Ã·ï¿½ï¿½ '{session.name}' nï¿½ï¿½")
     
-    # ú,Å1nèÆ
+    # ï¿½,ï¿½1nï¿½ï¿½
     with st.form("edit_session_form"):
-        name = st.text_input("»Ã·çó", value=session.name)
-        description = st.text_area("¬", value=session.description)
+        name = st.text_input("ï¿½Ã·ï¿½ï¿½", value=session.name)
+        description = st.text_area("ï¿½", value=session.description)
         
-        # þ(n¿°’Ö—
+        # ï¿½(nï¿½ï¿½ï¿½Ö—
         current_tags = session.tags if session.tags else []
         
-        # )(ïýj¿°nÖ—âXn¿°hþ(n¿°’Þü¸	
+        # )(ï¿½ï¿½jï¿½ï¿½nÖ—ï¿½Xnï¿½ï¿½hï¿½(nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½	
         available_tags = session_manager.get_available_tags()
         all_tags = list(set(available_tags + current_tags))
         
-        # ¿°nxž
+        # ï¿½ï¿½nxï¿½
         selected_tags = st.multiselect(
-            "¿°",
+            "ï¿½ï¿½",
             options=all_tags,
             default=current_tags
         )
         
-        # °WD¿°ný 
-        new_tag = st.text_input("°WD¿°’ý  («óÞ:Šgpšïý)")
+        # ï¿½WDï¿½ï¿½nï¿½ï¿½
+        new_tag = st.text_input("ï¿½WDï¿½ï¿½ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½:ï¿½gpï¿½ï¿½ï¿½)")
         
-        # «Æ´êxž
+        # ï¿½Æ´ï¿½xï¿½
         categories = ["general", "race", "training", "analysis", "other"]
         current_category = getattr(session, 'category', 'general')
         if current_category and current_category not in categories:
             categories.append(current_category)
         
         category = st.selectbox(
-            "«Æ´ê",
+            "ï¿½Æ´ï¿½",
             options=categories,
             index=categories.index(current_category) if current_category in categories else 0
         )
         
-        # ¹Æü¿¹xž
+        # ï¿½ï¿½ï¿½ï¿½ï¿½xï¿½
         statuses = ["active", "in_progress", "completed", "archived"]
         current_status = getattr(session, 'status', 'active')
         if current_status and current_status not in statuses:
             statuses.append(current_status)
         
         status = st.selectbox(
-            "¹Æü¿¹",
+            "ï¿½ï¿½ï¿½ï¿½ï¿½",
             options=statuses,
             index=statuses.index(current_status) if current_status in statuses else 0
         )
         
-        # U¡
+        # Uï¿½
         current_rating = getattr(session, 'rating', 0)
         rating = st.slider(
-            "U¡",
+            "Uï¿½",
             min_value=0,
             max_value=5,
             value=current_rating,
             step=1
         )
         
-        # á¿Çü¿nèÆ
-        st.subheader("á¿Çü¿")
+        # ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
+        st.subheader("ï¿½ï¿½ï¿½ï¿½")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            location = st.text_input("MnÅ1", value=session.metadata.get("location", ""))
+            location = st.text_input("Mnï¿½1", value=session.metadata.get("location", ""))
             boat_type = st.text_input("G.", value=session.metadata.get("boat_type", ""))
         
         with col2:
             event_date = st.date_input(
-                "¤ÙóÈå",
-                value=None  # ,eosession.metadata.get("event_date")’	ÛWf(
+                "ï¿½ï¿½ï¿½ï¿½ï¿½",
+                value=None  # ,eosession.metadata.get("event_date")ï¿½	ï¿½Wf(
             )
-            crew_info = st.text_input("¯ëüÅ1", value=session.metadata.get("crew_info", ""))
+            crew_info = st.text_input("ï¿½ï¿½ï¿½ï¿½1", value=session.metadata.get("crew_info", ""))
         
-        # ]nÖná¿Çü¿nh:hèÆ
+        # ]nï¿½nï¿½ï¿½ï¿½ï¿½nh:hï¿½ï¿½
         other_metadata = {}
         for key, value in session.metadata.items():
             if key not in ["location", "boat_type", "event_date", "crew_info", "created_by", "related_sessions"]:
                 other_metadata[key] = value
         
         if other_metadata:
-            st.subheader("]nÖná¿Çü¿")
+            st.subheader("]nï¿½nï¿½ï¿½ï¿½ï¿½")
             for key, value in other_metadata.items():
                 other_metadata[key] = st.text_input(key, value, key=f"metadata_{key}")
         
-        submitted = st.form_submit_button("ô°")
+        submitted = st.form_submit_button("ï¿½ï¿½")
         
         if submitted:
-            # ú,Å1nô°
+            # ï¿½,ï¿½1nï¿½ï¿½
             session.name = name
             session.description = description
             
-            # á5^'nô°
+            # ï¿½5^'nï¿½ï¿½
             if hasattr(session, 'category'):
                 session.category = category
             else:
@@ -1293,40 +1293,40 @@ def edit_session_metadata(project_manager: ProjectManager,
             else:
                 session.metadata['rating'] = rating
             
-            # ¿°næ
+            # ï¿½ï¿½nï¿½
             final_tags = selected_tags
             if new_tag:
-                # «óÞg:‰Œ_pn¿°’æ
+                # ï¿½ï¿½ï¿½g:ï¿½ï¿½_pnï¿½ï¿½ï¿½ï¿½
                 additional_tags = [tag.strip() for tag in new_tag.split(",") if tag.strip()]
                 final_tags.extend(additional_tags)
-                # Í’Jd
+                # ï¿½ï¿½Jd
                 final_tags = list(set(final_tags))
             
             session.tags = final_tags
             
-            # á¿Çü¿nô°
+            # ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
             updated_metadata = {}
             
-            # ú,á¿Çü¿
+            # ï¿½,ï¿½ï¿½ï¿½ï¿½
             updated_metadata["location"] = location
             updated_metadata["boat_type"] = boat_type
             updated_metadata["crew_info"] = crew_info
             
-            # ¤ÙóÈånæ
+            # ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½
             if event_date:
                 updated_metadata["event_date"] = event_date.isoformat()
             
-            # ]nÖná¿Çü¿næ
+            # ]nï¿½nï¿½ï¿½ï¿½ï¿½nï¿½
             for key, value in other_metadata.items():
                 updated_metadata[key] = value
             
-            # á¿Çü¿’ ìô°
+            # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             session_manager.update_session_metadata(session_id, updated_metadata)
             
-            # »Ã·çó’ÝX
+            # ï¿½Ã·ï¿½ï¿½ï¿½X
             project_manager.save_session(session)
             
-            st.success("»Ã·çóÅ1’ô°W~W_")
+            st.success("ï¿½Ã·ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½W~W_")
             return True
     
     return False
@@ -1334,57 +1334,57 @@ def edit_session_metadata(project_manager: ProjectManager,
 
 def create_session_annotation(session_manager: SessionManager, session_id: str) -> bool:
     """
-    »Ã·çóèÈn\Õ©üàì¬·üAPI’Û	
+    ï¿½Ã·ï¿½ï¿½ï¿½ï¿½n\Õ©ï¿½ï¿½ì¬·ï¿½APIï¿½ï¿½	
     
     Parameters
     ----------
     session_manager : SessionManager
-        »Ã·çó¡¯é¹n¤ó¹¿ó¹
+        ï¿½Ã·ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½
     session_id : str
-        èÈ’ý Y‹»Ã·çónID
+        ï¿½È’ï¿½ï¿½Yï¿½ï¿½Ã·ï¿½ï¿½nID
         
     Returns
     -------
     bool
-        \kŸW_4True
+        \kï¿½W_4True
     """
-    st.subheader("°WDèÈ’ý ")
+    st.subheader("ï¿½WDï¿½È’ï¿½ï¿½")
     
     with st.form("new_annotation_form"):
-        title = st.text_input("¿¤Èë", key="annotation_title")
-        content = st.text_area("…¹", key="annotation_content")
+        title = st.text_input("ï¿½ï¿½ï¿½ï¿½", key="annotation_title")
+        content = st.text_area("ï¿½ï¿½", key="annotation_content")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            latitude = st.number_input("ï¦ (ª×·çó)", min_value=-90.0, max_value=90.0, value=None, key="annotation_lat")
+            latitude = st.number_input("ï¿½ (ï¿½×·ï¿½ï¿½)", min_value=-90.0, max_value=90.0, value=None, key="annotation_lat")
         
         with col2:
-            longitude = st.number_input("L¦ (ª×·çó)", min_value=-180.0, max_value=180.0, value=None, key="annotation_lon")
+            longitude = st.number_input("Lï¿½ (ï¿½×·ï¿½ï¿½)", min_value=-180.0, max_value=180.0, value=None, key="annotation_lon")
         
         annotation_type = st.selectbox(
-            "¿¤×",
+            "ï¿½ï¿½ï¿½",
             options=["text", "waypoint", "mark", "tack", "gybe", "strategy", "other"],
             key="annotation_type"
         )
         
-        submitted = st.form_submit_button("ý ")
+        submitted = st.form_submit_button("ï¿½ï¿½")
         
         if submitted:
             if not title:
-                st.error("¿¤ÈëoÅgY")
+                st.error("ï¿½ï¿½ï¿½ï¿½oï¿½gY")
                 return False
             
             if not content:
-                st.error("…¹oÅgY")
+                st.error("ï¿½ï¿½oï¿½gY")
                 return False
             
-            # MnÅ1næ
+            # Mnï¿½1nï¿½
             position = None
             if latitude is not None and longitude is not None:
                 position = (latitude, longitude)
             
-            # èÈn\
+            # ï¿½ï¿½n\
             try:
                 annotation = session_manager.create_annotation(
                     session_id=session_id,
@@ -1394,11 +1394,11 @@ def create_session_annotation(session_manager: SessionManager, session_id: str) 
                     annotation_type=annotation_type
                 )
                 
-                st.success("èÈ’ý W~W_")
+                st.success("ï¿½È’ï¿½ï¿½W~W_")
                 return True
             
             except Exception as e:
-                st.error(f"èÈný k1WW~W_: {str(e)}")
+                st.error(f"ï¿½ï¿½nï¿½ï¿½k1WW~W_: {str(e)}")
                 return False
     
     return False

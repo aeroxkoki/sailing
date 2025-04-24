@@ -1,7 +1,7 @@
 """
-¨¨¨šµüÓ¹
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¹
 
-»üêó°nGPSÇü¿K‰¨¨’¨šY‹µüÓ¹_ı’Ğ›
+ï¿½ï¿½ï¿½ï¿½nGPSï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Yï¿½ï¿½ï¿½Ó¹_ï¿½ï¿½Ğ›
 """
 
 import io
@@ -24,35 +24,35 @@ def estimate_wind(
     db: Session
 ) -> Dict[str, Any]:
     """
-    GPSÇü¿K‰¨¨’¨š
+    GPSï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
     Parameters:
     -----------
     gps_data : bytes
-        GPSÇü¿nĞ¤È
+        GPSï¿½ï¿½ï¿½nĞ¤ï¿½
     params : WindEstimationInput
-        ¨¨šÑéáü¿
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     user_id : UUID
-        æü¶üID
+        ï¿½ï¿½ï¿½ï¿½ID
     db : Session
-        Çü¿Ùü¹»Ã·çó
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã·ï¿½ï¿½
         
     Returns:
     --------
     Dict[str, Any]
-        ¨¨¨šPœ
+        ï¿½ï¿½ï¿½ï¿½Pï¿½
     """
     try:
-        # GPSÇü¿’DataFramek	Û
+        # GPSï¿½ï¿½ï¿½ï¿½DataFramek	ï¿½
         df = _convert_bytes_to_dataframe(gps_data, params.file_format)
         
         if df is None or df.empty:
-            return {"error": "Çü¿LcWO­¼~[“gW_"}
+            return {"error": "ï¿½ï¿½ï¿½LcWOï¿½ï¿½ï¿½~[ï¿½gW_"}
         
-        # WindEstimator’
+        # WindEstimatorï¿½
         estimator = WindEstimator(boat_type=params.boat_type)
         
-        # ¨¨’¨š
+        # ï¿½ï¿½ï¿½ï¿½ï¿½
         wind_df = estimator.estimate_wind_from_single_boat(
             gps_data=df,
             min_tack_angle=params.min_tack_angle,
@@ -61,45 +61,45 @@ def estimate_wind(
         )
         
         if wind_df is None or wind_df.empty:
-            return {"error": "¨¨n¨šk1WW~W_"}
+            return {"error": "ï¿½ï¿½nï¿½ï¿½k1WW~W_"}
         
-        # ¨šPœ’ì¹İó¹bk	Û
+        # ï¿½ï¿½Pï¿½ï¿½ï¿½ï¿½ï¿½bk	ï¿½
         result = _create_wind_estimation_result(wind_df, str(user_id))
         
-        # TODO: Pœ’Çü¿Ùü¹kİXª×·çó	
+        # TODO: Pï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½kï¿½Xï¿½×·ï¿½ï¿½	
         
         return result
     
     except Exception as e:
-        return {"error": f"¨¨¨š¨éü: {str(e)}"}
+        return {"error": f"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: {str(e)}"}
 
 def _convert_bytes_to_dataframe(data: bytes, file_format: str) -> Optional[pd.DataFrame]:
     """
-    Ğ¤ÊêÇü¿’Pandas DataFramek	Û
+    Ğ¤ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Pandas DataFramek	ï¿½
     
     Parameters:
     -----------
     data : bytes
-        Ğ¤ÊêÇü¿
+        Ğ¤ï¿½ï¿½ï¿½ï¿½ï¿½
     file_format : str
-        Õ¡¤ëb'csv', 'gpx'	
+        Õ¡ï¿½ï¿½b'csv', 'gpx'	
         
     Returns:
     --------
     pd.DataFrame or None
-        	ÛUŒ_DataFrame
+        	ï¿½Uï¿½_DataFrame
     """
     try:
         if file_format.lower() == 'csv':
             return pd.read_csv(io.BytesIO(data))
         elif file_format.lower() == 'gpx':
-            # GPXÑüµü’)(
+            # GPXï¿½ï¿½ï¿½ï¿½ï¿½)(
             import gpxpy
             import gpxpy.gpx
             
             gpx = gpxpy.parse(io.BytesIO(data))
             
-            # Çü¿İ¤óÈ’½ú
+            # ï¿½ï¿½ï¿½İ¤ï¿½È’ï¿½ï¿½
             points = []
             for track in gpx.tracks:
                 for segment in track.segments:
@@ -115,36 +115,36 @@ def _convert_bytes_to_dataframe(data: bytes, file_format: str) -> Optional[pd.Da
             
             return pd.DataFrame(points)
         elif file_format.lower() == 'fit':
-            # TODO: FITÕ¡¤ë­¼ænŸÅ
-            # ş(o^şÜ
+            # TODO: FITÕ¡ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½
+            # ï¿½(o^ï¿½ï¿½
             return None
         else:
             return None
     except Exception as e:
-        print(f"Çü¿	Û¨éü: {str(e)}")
+        print(f"ï¿½ï¿½ï¿½	Û¨ï¿½ï¿½: {str(e)}")
         return None
 
 def _create_wind_estimation_result(wind_df: pd.DataFrame, session_id: str) -> Dict[str, Any]:
     """
-    ¨¨n¨šPœ’APIÜTbk	Û
+    ï¿½ï¿½nï¿½ï¿½Pï¿½ï¿½APIï¿½Tbk	ï¿½
     
     Parameters:
     -----------
     wind_df : pd.DataFrame
-        ¨¨n¨šPœ
+        ï¿½ï¿½nï¿½ï¿½Pï¿½
     session_id : str
-        »Ã·çóID
+        ï¿½Ã·ï¿½ï¿½ID
         
     Returns:
     --------
     Dict[str, Any]
-        APIÜTbn¨¨¨šPœ
+        APIï¿½Tbnï¿½ï¿½ï¿½ï¿½Pï¿½
     """
-    # DataFrameK‰ÅjÇü¿’½ú
+    # DataFrameKï¿½Åjï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     wind_data_points = []
     
     for _, row in wind_df.iterrows():
-        # ï¦L¦Å1LB‹4o]Œ’(jD4o0.0gã(
+        # ï¿½Lï¿½ï¿½1LBï¿½4o]ï¿½ï¿½(jD4o0.0gï¿½(
         lat = row.get('latitude', 0.0)
         lon = row.get('longitude', 0.0)
         
@@ -158,7 +158,7 @@ def _create_wind_estimation_result(wind_df: pd.DataFrame, session_id: str) -> Di
         }
         wind_data_points.append(point)
     
-    # sG$n—
+    # sG$nï¿½
     avg_speed = wind_df['wind_speed'].mean()
     avg_direction = _calculate_average_direction(wind_df['wind_direction'].values)
     
@@ -174,29 +174,29 @@ def _create_wind_estimation_result(wind_df: pd.DataFrame, session_id: str) -> Di
 
 def _calculate_average_direction(directions: np.ndarray) -> float:
     """
-    sG¨’—†°Çü¿n_XsGgojD	
+    sGï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½n_ï¿½XsGgojD	
     
     Parameters:
     -----------
     directions : np.array
-        ¨nM¦	
+        ï¿½nMï¿½	
         
     Returns:
     --------
     float
-        sG¨¦	
+        sGï¿½ï¿½	
     """
-    # Ò¦’é¸¢ók	Û
+    # Ò¦ï¿½é¸¢ï¿½k	ï¿½
     rad = np.radians(directions)
     
-    # sin, cosnsG’—
+    # sin, cosnsGï¿½ï¿½
     sin_mean = np.mean(np.sin(rad))
     cos_mean = np.mean(np.cos(rad))
     
-    # sGÒ¦’é¸¢óK‰¦k	Û
+    # sGÒ¦ï¿½é¸¢ï¿½Kï¿½ï¿½k	ï¿½
     avg_direction = np.degrees(np.arctan2(sin_mean, cos_mean))
     
-    # 0-360¦nÄòkc
+    # 0-360ï¿½nï¿½ï¿½kcï¿½
     avg_direction = (avg_direction + 360) % 360
     
     return avg_direction

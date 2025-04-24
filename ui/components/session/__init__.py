@@ -1,7 +1,7 @@
 """
 ui.components.session
 
-»Ã·çó¡(nUI³óİüÍóÈ
+ï¿½Ã·ï¿½ï¿½(nUIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 """
 
 from ui.components.session.session_list import (
