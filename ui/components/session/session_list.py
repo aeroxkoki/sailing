@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.session.session_list
 
@@ -201,7 +202,8 @@ class SessionListComponent:
                 sort_options = {
                     "updated_at": "���B",
                     "created_at": "\�B",
-                    "name": "M",
+                    "name": "
+M",
                     "rating": "U�"
                 }
                 
@@ -454,7 +456,8 @@ class SessionListComponent:
         # ���n����
         card_border = True
         with st.container(border=card_border):
-            # ��ï�ï�hM
+            # ��ï�ï�h
+M
             col1, col2 = st.columns([0.1, 0.9])
             
             with col1:
@@ -471,7 +474,8 @@ class SessionListComponent:
                     st.session_state[f"{self.key}_selected_sessions"].remove(session.session_id)
             
             with col2:
-                # �÷����ïgx���	
+                # �÷��
+��ïgx���	
                 if st.button(
                     session.name,
                     key=f"{self.key}_name_{session.session_id}",

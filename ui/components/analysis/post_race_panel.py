@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.analysis.post_race_panel モジュール
 

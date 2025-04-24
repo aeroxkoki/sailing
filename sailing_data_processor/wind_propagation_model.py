@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 sailing_data_processor.wind_propagation_model モジュール
 

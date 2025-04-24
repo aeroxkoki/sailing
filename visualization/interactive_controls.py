@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 visualization.interactive_controls
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.reporting.map.layer_data_connector_panel
 

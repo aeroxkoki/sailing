@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 _normalize_to_timestamp修正の検証テスト
 """

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.visualizations.performance_charts
 

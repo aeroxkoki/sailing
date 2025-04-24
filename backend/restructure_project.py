@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #\!/usr/bin/env python3
 """
 プロジェクト構造の再編成スクリプト

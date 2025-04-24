@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.reporting.timeline.playback_panel
 
@@ -79,13 +80,20 @@ def playback_panel(playback_control, on_change=None, key_prefix=""):
     
     # ��
     speed_options = {
-        0.1: "0.1",
-        0.25: "0.25",
-        0.5: "0.5", 
-        1.0: "1",
-        2.0: "2",
-        5.0: "5",
-        10.0: "10"
+        0.1: "0.1
+",
+        0.25: "0.25
+",
+        0.5: "0.5
+", 
+        1.0: "1
+",
+        2.0: "2
+",
+        5.0: "5
+",
+        10.0: "10
+"
     }
     
     col1, col2 = st.columns([1, 2])

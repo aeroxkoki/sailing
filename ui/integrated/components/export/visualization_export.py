@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.integrated.components.export.visualization_export
 

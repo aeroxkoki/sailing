@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.pages.basic_project_management
 

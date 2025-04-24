@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
     def _normalize_weights(self) -> None:
         """モデルの重みを正規化"""
         # 重みの合計

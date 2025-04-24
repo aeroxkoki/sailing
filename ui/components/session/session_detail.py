@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.session.session_detail
 
@@ -141,7 +142,8 @@ class SessionDetailComponent:
         with st.expander("�÷���1", expanded=True):
             col1, col2 = st.columns(2)
             with col1:
-                st.markdown(f"**M:** {session.name}")
+                st.markdown(f"**
+M:** {session.name}")
                 st.markdown(f"**�:** {session.description}" if session.description else "**�:** *jW*")
                 st.markdown(f"**�ƴ�:** {session.category}" if hasattr(session, 'category') and session.category else "**�ƴ�:** **-�*")
                 st.markdown(f"**�����:** {session.status}" if hasattr(session, 'status') and session.status else "**�����:** **-�*")
@@ -446,7 +448,8 @@ class SessionDetailComponent:
     
     def _format_result_type(self, result_type: str) -> str:
         """
-        P����nh:�֗
+        P����nh:
+�֗
         
         Parameters
         ----------
@@ -458,7 +461,8 @@ class SessionDetailComponent:
         str
             h:(nP����
         """
-        # P����nh:����
+        # P����nh:
+����
         type_names = {
             "wind_estimation": "����",
             "strategy_points": "&eݤ��",
@@ -486,7 +490,8 @@ class SessionDetailComponent:
             col1, col2, col3 = st.columns([2, 2, 1])
             
             with col1:
-                # P�~_o�
+                # P�
+~_o�
                 result_name = result.metadata.get("name", f"�P� v{result.version}")
                 st.markdown(f"**{result_name}**")
                 
@@ -783,7 +788,8 @@ class SessionDetailComponent:
             
             with col1:
                 # �,�1
-                name = st.text_input("M", value=session.name)
+                name = st.text_input("
+M", value=session.name)
                 description = st.text_area("�", value=session.description)
                 purpose = st.text_input("�", value=getattr(session, 'purpose', session.metadata.get('purpose', '')))
                 
@@ -913,7 +919,8 @@ class SessionDetailComponent:
                     # �,�1n��
                     success = True
                     
-                    # Mh�n��
+                    # 
+Mh�n��
                     if session.name != name or session.description != description:
                         session.name = name
                         session.description = description
@@ -949,7 +956,8 @@ class SessionDetailComponent:
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown(f"**M:** {session.name}")
+            st.markdown(f"**
+M:** {session.name}")
             st.markdown(f"**�:** {session.description}" if session.description else "**�:** *jW*")
             st.markdown(f"**�:** {getattr(session, 'purpose', session.metadata.get('purpose', ''))}" 
                        if getattr(session, 'purpose', session.metadata.get('purpose', '')) else "**�:** **-�*")
@@ -1077,7 +1085,8 @@ class SessionDetailComponent:
     
     def _get_active_tab_name(self) -> str:
         """
-        ��ƣֿ�nM�֗
+        ��ƣֿ�n
+M�֗
         
         Returns
         -------
@@ -1187,7 +1196,8 @@ def edit_session_metadata(project_manager: ProjectManager,
     
     # �,�1n��
     with st.form("edit_session_form"):
-        name = st.text_input("�÷��", value=session.name)
+        name = st.text_input("�÷��
+", value=session.name)
         description = st.text_area("�", value=session.description)
         
         # �(n���֗

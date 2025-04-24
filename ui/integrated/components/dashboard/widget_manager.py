@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.integrated.components.dashboard.widget_manager
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #\!/usr/bin/env python3
 """
 nullバイト（\0）を含むPythonファイルを修正するスクリプト。

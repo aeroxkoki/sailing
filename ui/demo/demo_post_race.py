@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.demo.demo_post_race モジュール
 

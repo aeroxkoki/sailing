@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.export.batch_export_panel
 

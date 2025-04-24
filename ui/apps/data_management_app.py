@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.apps.data_management_app
 

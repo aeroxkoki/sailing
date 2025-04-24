@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 wind_field_interpolator.py のパッチ
 

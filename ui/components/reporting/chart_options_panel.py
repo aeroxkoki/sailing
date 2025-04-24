@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.reporting.chart_options_panel
 

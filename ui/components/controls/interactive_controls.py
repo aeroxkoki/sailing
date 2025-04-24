@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.controls.interactive_controls
 

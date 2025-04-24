@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 """
 ui.demo_wind_shift モジュール

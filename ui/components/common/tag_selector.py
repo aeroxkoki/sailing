@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.common.tag_selector
 

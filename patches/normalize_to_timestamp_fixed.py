@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 修正済みの_normalize_to_timestamp関数。
 unhashable type: 'dict'エラーを修正するためのパッチです。

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 &e���ӹ
 
@@ -317,7 +318,8 @@ def _generate_recommendations(strategy_points: List[Dict[str, Any]]) -> List[str
     tack_points = [p for p in strategy_points if p["strategy_type"] == "tack"]
     if len(tack_points) > 5:
         recommendations.append(
-            "�ï�pLDgYŁj�ï��YShg��L
+            "�ï�pLDgY
+Łj�ï��YShg��L
 W~Y"
         )
     elif len(tack_points) < 2 and len(strategy_points) > 0:

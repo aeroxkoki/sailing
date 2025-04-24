@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.reporting.notification.notification_panel
 

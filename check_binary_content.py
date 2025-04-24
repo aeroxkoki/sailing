@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 バイナリコンテンツを確認するスクリプト
 NULL バイトや非 UTF-8 文字を検出します

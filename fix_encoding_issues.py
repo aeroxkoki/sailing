@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 エンコーディング問題を修正するスクリプト
 NULLバイトや不正なUnicode文字を含むファイルを修正します。

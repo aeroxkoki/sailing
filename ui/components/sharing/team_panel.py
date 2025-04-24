@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.sharing.team_panel
 
@@ -37,7 +38,8 @@ class TeamPanelComponent:
         user_id : Optional[str], optional
             �(n����ID, by default None
         user_name : Optional[str], optional
-            ����, by default None
+            ����
+, by default None
         on_team_created : Optional[Callable], optional
             ���\Bn����ï, by default None
         on_resource_shared : Optional[Callable], optional
@@ -75,7 +77,8 @@ class TeamPanelComponent:
         
         # ����鹄����IDLjD4o���h:
         if not self.team_manager or not self.user_id:
-            st.error("���L-�U�fDjDK����IDLgY")
+            st.error("���L-�U�fDjDK����IDL
+gY")
             return
         
         # ��nh:
@@ -205,7 +208,8 @@ class TeamPanelComponent:
         for user_id, member in team.members.items():
             member_data.append({
                 "����ID": member.user_id,
-                "M": member.name,
+                "
+M": member.name,
                 "���": member.email or "-",
                 "yr": self._format_role(member.role),
                 "���": datetime.datetime.fromisoformat(member.added_at).strftime("%Y/%m/%d")
@@ -276,8 +280,10 @@ class TeamPanelComponent:
             # �����e�
             email = st.text_input("�����", key=f"{self.key}_invite_email")
             
-            # h:e�
-            name = st.text_input("h:", key=f"{self.key}_invite_name")
+            # h:
+e�
+            name = st.text_input("h:
+", key=f"{self.key}_invite_name")
             
             # yrx�
             role_options = {
@@ -335,8 +341,10 @@ class TeamPanelComponent:
         st.write("### ���-�n��")
         
         with st.form(key=f"{self.key}_edit_team_form"):
-            # ���e�
-            name = st.text_input("���", value=team.name, key=f"{self.key}_edit_name")
+            # ���
+e�
+            name = st.text_input("���
+", value=team.name, key=f"{self.key}_edit_name")
             
             # �e�
             description = st.text_area("�", value=team.description, key=f"{self.key}_edit_description")
@@ -389,8 +397,10 @@ class TeamPanelComponent:
                 st.write("---")
                 
                 # ۅ�1
-                st.write(f"**���:** {invitation.get('team_name', 'j���')}")
-                st.write(f"**ۅ:** {invitation.get('creator_id', '')}")
+                st.write(f"**���:** {invitation.get('team_name', '
+j���')}")
+                st.write(f"**ۅ:** {invitation.get('creator_id', '
+')}")
                 
                 # yr
                 role = invitation.get('role', 'viewer')
@@ -438,8 +448,10 @@ class TeamPanelComponent:
         st.write("### �WD����\")
         
         with st.form(key=f"{self.key}_create_team_form"):
-            # ���e�
-            name = st.text_input("���", key=f"{self.key}_team_name")
+            # ���
+e�
+            name = st.text_input("���
+", key=f"{self.key}_team_name")
             
             # �e�
             description = st.text_area("��׷��	", key=f"{self.key}_team_description")
@@ -457,7 +469,8 @@ class TeamPanelComponent:
                     )
                     
                     if team:
-                        st.success(f"���{name}�\W~W_")
+                        st.success(f"���{name}
+�\W~W_")
                         
                         # ����ï�p�|s�W
                         if self.on_team_created:
@@ -534,7 +547,8 @@ n)P�d���nh:
                 already_shared = True
             
             if already_shared:
-                st.info(f"Sn���o�k���{selected_team.name}hq	U�fD~Y")
+                st.info(f"Sn���o�k���{selected_team.name}
+hq	U�fD~Y")
                 
                 # q	�dܿ�
                 if st.button("q	��d", key=f"{self.key}_unshare_btn"):
@@ -563,7 +577,8 @@ n)P�d���nh:
                             success = self.team_manager.add_session_to_team(selected_team_id, resource_id)
                         
                         if success:
-                            st.success(f"���{selected_team.name}hq	W~W_")
+                            st.success(f"���{selected_team.name}
+hq	W~W_")
                             
                             # ����ï�p�|s�W
                             if self.on_resource_shared:
@@ -580,7 +595,8 @@ n)P�d���nh:
     
     def _format_role(self, role: str) -> str:
         """
-        yrnh:�֗
+        yrnh:
+�֗
         
         Parameters
         ----------
@@ -602,7 +618,8 @@ n)P�d���nh:
     
     def _format_resource_type(self, resource_type: str) -> str:
         """
-        ������nh:�֗
+        ������nh:
+�֗
         
         Parameters
         ----------
@@ -637,7 +654,8 @@ def TeamPanel(team_manager=None, user_id=None, user_name=None,
     user_id : optional
         �(n����ID, by default None
     user_name : optional
-        ����, by default None
+        ����
+, by default None
     resource_id : optional
         q	�a���ID, by default None
     resource_type : optional

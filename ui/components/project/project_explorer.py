@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.project.project_explorer
 

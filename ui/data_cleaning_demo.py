@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.data_cleaning_demo
 

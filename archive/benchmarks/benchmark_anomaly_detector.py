@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 AnomalyDetector パフォーマンス検証用ベンチマーク
 

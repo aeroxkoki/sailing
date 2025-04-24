@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 strategy_detector_with_propagation.pyの_normalize_to_timestampメソッドを修正するパッチスクリプト
 """

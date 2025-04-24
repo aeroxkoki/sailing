@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Memory usage test script for the sailing strategy analyzer.
 This script profiles memory usage during data processing and wind estimation.

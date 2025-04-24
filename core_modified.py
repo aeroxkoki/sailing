@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # sailing_data_processor/core.py
 """
 セーリング戦略分析システム - コアモジュール

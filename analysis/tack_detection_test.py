@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 タック検出テストスクリプト
 WindEstimatorクラスのタック/ジャイブ検出機能を検証する

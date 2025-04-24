@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.sharing.share_panel
 

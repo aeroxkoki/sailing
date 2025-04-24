@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.components.forms.import_wizard.components.format_selector
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 sailing_data_processor.analysis.wind_pattern_analyzer モジュール
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 ����n�թ��������������
 
@@ -106,7 +107,8 @@ def benchmark_wind_estimation(df, boat_types=None, iterations=3):
     
     print(f"\n--- ��������n������ ({len(df)}ݤ��) ---")
     
-    # P��<Y���
+    # P��<
+Y���
     results = {
         'size': len(df),
         'iterations': iterations,
@@ -192,7 +194,8 @@ def benchmark_wind_field_fusion(df, grid_sizes=None, iterations=3):
     
     print(f"\n--- �n4����n������ ({len(df)}ݤ��) ---")
     
-    # P��<Y���
+    # P��<
+Y���
     results = {
         'size': len(df),
         'iterations': iterations,
@@ -244,7 +247,8 @@ def benchmark_wind_field_fusion(df, grid_sizes=None, iterations=3):
             if wind_field is not None:
                 print(f"  P�: ����b� {wind_field['lat_grid'].shape}")
             
-            # �j�ָ��Ȓ�>
+            # 
+�j�ָ��Ȓ�>
             del wind_field
             gc.collect()
         
@@ -356,7 +360,8 @@ def main():
     # ��ǣ���n��
     os.makedirs(os.path.dirname(args.output), exist_ok=True)
     
-    # P��<Y�ǣ�����
+    # P��<
+Y�ǣ�����
     final_results = {
         'timestamp': datetime.now().isoformat(),
         'data_points': args.points,

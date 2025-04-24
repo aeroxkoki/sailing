@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 風の移動モデル（WindPropagationModel）の基本機能検証スクリプト
 

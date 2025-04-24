@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Python構文エラーを修正する改良版スクリプト
 さまざまな構文エラーに対処します

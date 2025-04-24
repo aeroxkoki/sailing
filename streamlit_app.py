@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 セーリング戦略分析システム - Streamlit Cloudエントリーポイント (新UIデザイン版)
 

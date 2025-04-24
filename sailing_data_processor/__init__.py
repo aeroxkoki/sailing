@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # sailing_data_processor/__init__.py
 """
 セーリング戦略分析システム - データ処理モジュール

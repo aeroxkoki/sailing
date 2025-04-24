@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 ui.import_wizard_demo
 

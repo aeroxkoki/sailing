@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # 最適化されたwind_estimator.pyファイルに置き換え
 
 """
