@@ -169,83 +169,109 @@ def handle_service_error(error: Exception) -> HTTPException:
 
 
 def safe_external_call(
-    func: Callable[..., T],
+    func: Optional[Callable[..., T]] = None,
+    *,
     error_message: str = "外部サービスとの通信中にエラーが発生しました",
     service_name: str = "external_service",
     fallback_value: Optional[T] = None,
     raise_error: bool = True
-) -> Callable[..., T]:
+) -> Union[Callable[..., T], Callable[[Callable[..., T]], Callable[..., T]]]:
     """
     外部サービス呼び出しを安全に行うためのデコレータ
     
+    デコレータとして2つの使い方があります：
+    1. パラメータなし: @safe_external_call
+    2. パラメータあり: @safe_external_call(error_message="エラー", service_name="サービス名")
+    
     Args:
-        func: デコレートする関数
+        func: デコレートする関数（オプション）
         error_message: エラー発生時のメッセージ
         service_name: 外部サービス名
         fallback_value: エラー時の代替戻り値
         raise_error: エラーを発生させるかどうか
         
     Returns:
-        デコレートされた関数
+        デコレートされた関数またはデコレータ
     """
-    @functools.wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> T:
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            logger.error(f"{service_name} error in {func.__name__}: {str(e)}")
-            logger.error(traceback.format_exc())
-            
-            if raise_error:
-                raise ExternalServiceError(
-                    message=error_message,
-                    service_name=service_name,
-                    details={"original_error": str(e)}
-                )
-            else:
-                if fallback_value is not None:
-                    return fallback_value
-                # 型チェックを満たすためにcastを使用
-                return cast(T, None)
+    def decorator(func_to_decorate: Callable[..., T]) -> Callable[..., T]:
+        @functools.wraps(func_to_decorate)
+        def wrapper(*args: Any, **kwargs: Any) -> T:
+            try:
+                return func_to_decorate(*args, **kwargs)
+            except Exception as e:
+                logger.error(f"{service_name} error in {func_to_decorate.__name__}: {str(e)}")
+                logger.error(traceback.format_exc())
+                
+                if raise_error:
+                    raise ExternalServiceError(
+                        message=error_message,
+                        service_name=service_name,
+                        details={"original_error": str(e)}
+                    )
+                else:
+                    if fallback_value is not None:
+                        return fallback_value
+                    # 型チェックを満たすためにcastを使用
+                    return cast(T, None)
+        
+        return wrapper
     
-    return wrapper
+    # funcが指定されている場合は直接デコレータを適用
+    if func is not None:
+        return decorator(func)
+    
+    # funcが指定されていない場合はデコレータを返す
+    return decorator
 
 
 def safe_db_operation(
-    func: Callable[..., T],
+    func: Optional[Callable[..., T]] = None,
+    *,
     error_message: str = "データベース操作中にエラーが発生しました",
     fallback_value: Optional[T] = None,
     raise_error: bool = True
-) -> Callable[..., T]:
+) -> Union[Callable[..., T], Callable[[Callable[..., T]], Callable[..., T]]]:
     """
     データベース操作を安全に行うためのデコレータ
     
+    デコレータとして2つの使い方があります：
+    1. パラメータなし: @safe_db_operation
+    2. パラメータあり: @safe_db_operation(error_message="エラー")
+    
     Args:
-        func: デコレートする関数
+        func: デコレートする関数（オプション）
         error_message: エラー発生時のメッセージ
         fallback_value: エラー時の代替戻り値
         raise_error: エラーを発生させるかどうか
         
     Returns:
-        デコレートされた関数
+        デコレートされた関数またはデコレータ
     """
-    @functools.wraps(func)
-    def wrapper(*args: Any, **kwargs: Any) -> T:
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            logger.error(f"Database error in {func.__name__}: {str(e)}")
-            logger.error(traceback.format_exc())
-            
-            if raise_error:
-                raise DatabaseError(
-                    message=error_message,
-                    details={"original_error": str(e)}
-                )
-            else:
-                if fallback_value is not None:
-                    return fallback_value
-                # 型チェックを満たすためにcastを使用
-                return cast(T, None)
+    def decorator(func_to_decorate: Callable[..., T]) -> Callable[..., T]:
+        @functools.wraps(func_to_decorate)
+        def wrapper(*args: Any, **kwargs: Any) -> T:
+            try:
+                return func_to_decorate(*args, **kwargs)
+            except Exception as e:
+                logger.error(f"Database error in {func_to_decorate.__name__}: {str(e)}")
+                logger.error(traceback.format_exc())
+                
+                if raise_error:
+                    raise DatabaseError(
+                        message=error_message,
+                        details={"original_error": str(e)}
+                    )
+                else:
+                    if fallback_value is not None:
+                        return fallback_value
+                    # 型チェックを満たすためにcastを使用
+                    return cast(T, None)
+        
+        return wrapper
     
-    return wrapper
+    # funcが指定されている場合は直接デコレータを適用
+    if func is not None:
+        return decorator(func)
+    
+    # funcが指定されていない場合はデコレータを返す
+    return decorator
