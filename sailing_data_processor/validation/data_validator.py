@@ -101,6 +101,7 @@ class RequiredColumnsRule(ValidationRule):
             "missing_columns": missing_columns,
             "found_columns": [col for col in self.required_columns if col in data.columns],
             "all_columns": list(data.columns)
+        }
         
         return is_valid, details
 
@@ -186,6 +187,7 @@ class ValueRangeRule(ValidationRule):
             "out_of_range_indices": out_of_range_indices[:100],  # 最初の100個まで表示
             "actual_min": data[self.column].min() if len(data) > 0 else None,
             "actual_max": data[self.column].max() if len(data) > 0 else None
+        }
         
         return is_valid, details
 
@@ -254,6 +256,7 @@ class NoNullValuesRule(ValidationRule):
             "null_counts": null_counts,
             "null_indices": null_indices,
             "total_null_count": sum(null_counts.values())
+        }
         
         return is_valid, details
 
@@ -314,6 +317,7 @@ class DuplicateTimestampRule(ValidationRule):
             "duplicate_count": len(duplicate_timestamps),
             "duplicate_timestamps": [str(ts) for ts in duplicate_timestamps[:20]],
             "duplicate_indices": duplicate_indices
+        }
         
         return is_valid, details
 
@@ -454,6 +458,7 @@ class SpatialConsistencyRule(ValidationRule):
             "min_calculated_speed": min(speeds) if speeds else 0,
             "avg_calculated_speed": sum(speeds) / len(speeds) if speeds else 0,
             "anomaly_details": anomaly_details
+        }
         
         return is_valid, details
 
@@ -562,6 +567,7 @@ class TemporalConsistencyRule(ValidationRule):
             "max_actual_gap": max([diff.total_seconds() for diff in time_diffs]) if time_diffs else 0,
             "min_actual_gap": min([diff.total_seconds() for diff in time_diffs]) if time_diffs else 0,
             "avg_actual_gap": sum([diff.total_seconds() for diff in time_diffs]) / len(time_diffs) if time_diffs else 0
+        }
         
         return is_valid, details
 
@@ -621,6 +627,7 @@ class DataValidator:
                 "severity": rule.severity,
                 "is_valid": is_valid,
                 "details": details
+            }
             
             self.validation_results.append(result)
         
