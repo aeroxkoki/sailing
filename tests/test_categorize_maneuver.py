@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 WindEstimatorクラスのタック検出・分類機能のテスト
 """

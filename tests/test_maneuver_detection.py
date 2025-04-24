@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #\!/usr/bin/env python3
 """
 WindEstimatorのマニューバー検出機能の改良版テスト

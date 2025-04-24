@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # test_map_display.py
 
 import unittest

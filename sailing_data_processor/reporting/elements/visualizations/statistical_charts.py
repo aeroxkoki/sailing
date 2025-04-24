@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 sailing_data_processor.reporting.elements.visualizations.statistical_charts
 

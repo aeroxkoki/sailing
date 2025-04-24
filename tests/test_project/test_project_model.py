@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 テストモジュール: sailing_data_processor.project.project_model
 テスト対象: Projectクラス, Sessionクラス, AnalysisResultクラス

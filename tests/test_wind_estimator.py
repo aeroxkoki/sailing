@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
     def test_categorize_maneuver(self):
         """マニューバー分類機能のテスト"""

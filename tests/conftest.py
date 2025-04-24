@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 conftest.py - PyTestのグローバル設定とフィクスチャを定義
 

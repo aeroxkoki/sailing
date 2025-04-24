@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 session_manager.py の基本機能のテスト
 

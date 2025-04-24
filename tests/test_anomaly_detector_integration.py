@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 AnomalyDetector 階層クラス統合のテスト
 

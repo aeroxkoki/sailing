@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # test_sailing_visualizer.py
 
 import unittest

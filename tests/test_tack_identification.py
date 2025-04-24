@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 import numpy as np
 from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
