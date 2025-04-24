@@ -19,7 +19,8 @@ psycopg2-binary==2.9.6
 alembic==1.12.0
 asyncpg==0.28.0
 pytest-asyncio==0.21.0
-httpx>=0.26,<0.29
+# httpxの依存解決のため、バージョンを指定（Supabase 2.15.0の要件に合わせる）
+httpx>=0.26.0,<0.29.0
 bcrypt==4.0.1
 # Supabaseとその依存ライブラリのバージョンを固定
 supabase==2.15.0
