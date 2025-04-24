@@ -401,10 +401,12 @@ class EnhancedValidationVisualization:
         # Y軸の設定
         fig.update_yaxes(
 """            title_text="品質スコア","""
-# #             range=[0, 105],
+# # #             range=[0, 105],
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
-# #             tickvals=[0, 25, 50, 75, 90, 100],
+ # AUTO-COMMENTED: キーワード引数の後に位置引数があります
+# # #             tickvals=[0, 25, 50, 75, 90, 100],
+ # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
             gridcolor="lightgray",
@@ -586,7 +588,8 @@ class EnhancedValidationVisualization:
                 side="right",
                 overlaying="y",
                 tickformat=".1f",
-# #                 range=[0, max(problem_percentages) * 1.1] if problem_percentages else [0, 100]
+# # #                 range=[0, max(problem_percentages) * 1.1] if problem_percentages else [0, 100]
+ # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
             ),
@@ -816,7 +819,8 @@ class EnhancedValidationVisualization:
                 fig.add_trace(go.Bar(
                     x=labels,
                     y=problem_types_data[key],
-# #                     name=problem_type_names.get(key, key),
+# # #                     name=problem_type_names.get(key, key),
+ # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
                     marker_color=colors.get(key, "gray"),
@@ -883,7 +887,8 @@ class EnhancedValidationVisualization:
         # カテゴリ別のカード
         for category, score in quality_scores.items():
             if category != "total":
-# #                 cat_details = category_scores.get(category, {})
+# # #                 cat_details = category_scores.get(category, {})
+ # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
                 cards.append({
