@@ -150,7 +150,6 @@ class LineChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
-        }
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -174,7 +173,6 @@ class LineChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
-                    }
                 },
                 "y": {
                     "title": {
@@ -186,7 +184,6 @@ class LineChartElement(BaseChartElement):
                         "color": "rgba(0, 0, 0, 0.1)"
                     },
                     "beginAtZero": self.get_property("begin_at_zero", False)
-                }
             },
             "plugins": {
                 "legend": {
@@ -196,7 +193,6 @@ class LineChartElement(BaseChartElement):
                 "tooltip": {
                     "mode": self.get_property("tooltip_mode", "index"),
                     "intersect": False
-                }
             },
             "interaction": {
                 "mode": "nearest",
@@ -209,9 +205,6 @@ class LineChartElement(BaseChartElement):
             "elements": {
                 "line": {
                     "tension": self.get_property("tension", 0.1)
-                }
-            }
-        }
         
         # データラベル表示設定
         show_data_labels = self.get_property("show_data_labels", False)
@@ -225,7 +218,6 @@ class LineChartElement(BaseChartElement):
                     "weight": "bold"
                 },
                 "padding": 6
-            }
         
         # オプションを結合
         self._merge_options(options, line_options)
@@ -392,7 +384,6 @@ class ScatterChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
-        }
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -416,7 +407,6 @@ class ScatterChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
-                    }
                 },
                 "y": {
                     "title": {
@@ -428,7 +418,6 @@ class ScatterChartElement(BaseChartElement):
                         "color": "rgba(0, 0, 0, 0.1)"
                     },
                     "beginAtZero": self.get_property("begin_at_zero", False)
-                }
             },
             "plugins": {
                 "legend": {
@@ -438,13 +427,9 @@ class ScatterChartElement(BaseChartElement):
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) { return `(${context.parsed.x}, ${context.parsed.y})`; }"
-                    }
-                }
             },
             "animation": {
                 "duration": self.get_property("animation_duration", 1000)
-            }
-        }
         
         # ズーム有効化
         enable_zoom = self.get_property("enable_zoom", True)
@@ -462,8 +447,6 @@ class ScatterChartElement(BaseChartElement):
                         "enabled": True
                     },
                     "mode": "xy"
-                }
-            }
         
         # オプションを結合
         self._merge_options(options, scatter_options)
@@ -529,7 +512,6 @@ class ScatterChartElement(BaseChartElement):
                     "width": 2,
                     "lineStyle": "dotted",
                     "projection": self.get_property("regression_projection", False)
-                }
         
         # ディメンションを取得
         width, height = self.get_chart_dimensions()
@@ -542,8 +524,6 @@ class ScatterChartElement(BaseChartElement):
                 "plugins": {
                     "zoom": self.get_property("enable_zoom", True),
                     "regression": self.get_property("show_regression_line", False)
-                }
-            }
         )
         
         # チャートをレンダリング
@@ -694,7 +674,6 @@ class BarChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
-        }
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -718,7 +697,6 @@ class BarChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
-                    }
                 },
                 "y": {
                     "title": {
@@ -730,7 +708,6 @@ class BarChartElement(BaseChartElement):
                         "color": "rgba(0, 0, 0, 0.1)"
                     },
                     "beginAtZero": True
-                }
             },
             "plugins": {
                 "legend": {
@@ -740,12 +717,9 @@ class BarChartElement(BaseChartElement):
                 "tooltip": {
                     "mode": "index",
                     "intersect": False
-                }
             },
             "animation": {
                 "duration": self.get_property("animation_duration", 1000)
-            }
-        }
         
         # 横棒グラフの場合、x軸とy軸の設定を入れ替え
         horizontal = self.get_property("horizontal", False)
@@ -770,7 +744,6 @@ class BarChartElement(BaseChartElement):
                 bar_options["scales"][stacked_key]["max"] = 100
                 bar_options["scales"][stacked_key]["ticks"] = {
                     "callback": "function(value) { return value + '%'; }"
-                }
         
         # データラベル表示設定
         show_data_labels = self.get_property("show_data_labels", False)
@@ -784,7 +757,6 @@ class BarChartElement(BaseChartElement):
                     "weight": "bold"
                 },
                 "padding": 6
-            }
         
         # オプションを結合
         self._merge_options(options, bar_options)
@@ -965,7 +937,6 @@ class PieChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
-        }
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -998,8 +969,6 @@ class PieChartElement(BaseChartElement):
                                 "var percentage = Math.round((value / total) * 100); " +
                                 "return ' ' + context.label + ': ' + value + ' (' + percentage + '%)'; " +
                                 "}"
-                    }
-                }
             },
             "rotation": (start_angle * 3.14159) / 180,
             "circumference": -2 * 3.14159 if counter_clockwise else 2 * 3.14159,
@@ -1007,8 +976,6 @@ class PieChartElement(BaseChartElement):
                 "duration": self.get_property("animation_duration", 1000),
                 "animateRotate": True,
                 "animateScale": self.get_property("animate_scale", True)
-            }
-        }
         
         # ドーナツグラフの場合
         if self.get_property("pie_type", "pie") == "doughnut":
@@ -1040,7 +1007,6 @@ class PieChartElement(BaseChartElement):
                             "if (showPercentages) { if (result) result += ' '; result += '(' + percentage + '%)'; } " +
                             "return result; " +
                             "}"
-            }
         
         # オプションを結合
         self._merge_options(options, pie_options)
@@ -1107,4 +1073,4 @@ class PieChartElement(BaseChartElement):
                 self._merge_options(target[key], value)
             else:
                 target[key] = value
-}
+

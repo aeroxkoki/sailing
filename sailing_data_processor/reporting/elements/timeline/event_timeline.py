@@ -61,7 +61,6 @@ class EventTimeline(BaseElement):
             "handle_overflow": kwargs.get("handle_overflow", True),
             "tooltip_placement": kwargs.get("tooltip_placement", "top"),
             "time_format": kwargs.get("time_format", "HH:mm:ss"),
-        }
         
         # オプションをプロパティに設定
         for key, value in self._options.items():
@@ -75,7 +74,6 @@ class EventTimeline(BaseElement):
             "start": {"color": "#FFC107", "symbol": "▶", "label": "スタート"},
             "finish": {"color": "#9C27B0", "symbol": "■", "label": "フィニッシュ"},
             "custom": {"color": "#607D8B", "symbol": "★", "label": "カスタム"}
-        }
         
         # イベントタイプとフィールドの対応
         self.set_property("event_type_fields", {
@@ -142,7 +140,6 @@ class EventTimeline(BaseElement):
             "symbol": self._event_types[event_type]["symbol"],
             "color": self._event_types[event_type]["color"],
             "details": details or {}
-        }
         
         # その他の属性を追加
         for key, value in kwargs.items():
@@ -243,7 +240,6 @@ class EventTimeline(BaseElement):
                         "color": self._event_types[event_type]["color"],
                         "details": details,
                         "index": i  # データ内のインデックスを保存
-                    }
                     events.append(event)
         
         return events
@@ -771,4 +767,5 @@ class EventTimeline(BaseElement):
         '''
         
         return html
+"""
 """

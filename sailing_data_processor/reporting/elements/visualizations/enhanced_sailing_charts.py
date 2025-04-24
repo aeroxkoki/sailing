@@ -195,14 +195,12 @@ class EnhancedWindRoseElement(WindRoseElement):
                     "angularaxis": {"direction": "clockwise", "period": 360}
                 },
                 "margin": {"t": 100, "b": 100}
-            }
             
             # 3D風配図データを返す
             return {
                 "data": plotly_data,
                 "layout": layout,
                 "config": {"responsive": True}
-            }
         
         # それ以外の場合（標準の風配図）
         return chart_data
@@ -231,15 +229,10 @@ class EnhancedWindRoseElement(WindRoseElement):
                 "tooltip": {
                     "callbacks": {
                         "label": f"function(context) {{ return context.label + ': ' + context.raw.toFixed(1) + '{unit_suffix}'; }}"
-                    }
-                }
             },
             "scale": {
                 "ticks": {
                     "callback": f"function(value) {{ return value + '{unit_suffix}'; }}"
-                }
-            }
-        }
         
         # 詳細表示が有効な場合の追加設定
         if self.get_property("show_details", True):
@@ -250,7 +243,6 @@ class EnhancedWindRoseElement(WindRoseElement):
                          f"'値: ' + value.toFixed(1) + '{unit_suffix}'," +
                          f"'全体に対する割合: ' + (value / context.chart.data.datasets[0].data.reduce((a,b) => a + b, 0) * 100).toFixed(1) + '%'" +
                          f"]; }}"
-            }
         
         # オプションを結合
         self._merge_options(options, additional_options)
@@ -479,12 +471,10 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "angularaxis": {"direction": "clockwise", "period": 360}
                     },
                     "showlegend": True
-                }
                 
                 return {
                     "data": plotly_data,
                     "layout": layout
-                }
             else:
                 # ChartJS用のデータ構造
                 labels = []
@@ -546,8 +536,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                     "data": {
                         "labels": labels,
                         "datasets": datasets
-                    }
-                }
         
         # VMG最適化分析が有効な場合
         show_vmg_optimization = self.get_property("show_vmg_optimization", False)
@@ -587,7 +575,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "size": 10,
                             "symbol": "star",
                             "color": "green"
-                        }
                     })
                 
                 if downwind_optimal[0] is not None:
@@ -601,7 +588,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "size": 10,
                             "symbol": "star",
                             "color": "orange"
-                        }
                     })
                 
                 # レイアウト設定
@@ -614,7 +600,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 return {
                     "data": plotly_data,
                     "layout": layout
-                }
             else:
                 # ChartJS用のデータセット
                 datasets = chart_data["data"]["datasets"]
@@ -650,7 +635,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                     "backgroundColor": "rgba(75, 192, 192, 0.7)",
                     "content": f"最適風上角: {int(upwind_optimal[0])}°",
                     "font": {"style": "bold"}
-                }
                 
                 annotations["optimal_downwind"] = {
                     "type": "label",
@@ -659,7 +643,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                     "backgroundColor": "rgba(255, 159, 64, 0.7)",
                     "content": f"最適風下角: {int(downwind_optimal[0])}°",
                     "font": {"style": "bold"}
-                }
                 
                 # オプションにアノテーション設定を追加
                 if "options" not in chart_data:
@@ -670,7 +653,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 
                 chart_data["options"]["plugins"]["annotation"] = {
                     "annotations": annotations
-                }
         
         # 拡張機能をすべて処理した後のデータを返す
         return chart_data
@@ -699,7 +681,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         },
                         "sync": {
                             "enabled": True
-                        }
                     },
                     "zoom": {
                         "pan": {
@@ -714,10 +695,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                                 "enabled": True
                             },
                             "mode": "xy"
-                        }
-                    }
-                }
-            }
             
             # オプションを結合
             self._merge_options(options, interactive_options)
@@ -737,8 +714,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "font": {
                                 "size": 12,
                                 "style": "italic"
-                            }
-                        }
                     },
                     "tooltip": {
                         "callbacks": {
@@ -751,10 +726,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                                     "} " +
                                     "return label + ': ' + value.toFixed(1) + ' kt'; " +
                                     "}"
-                        }
-                    }
-                }
-            }
             
             # オプションを結合
             self._merge_options(options, vmg_options)
@@ -774,11 +745,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "font": {
                                 "size": 12,
                                 "style": "italic"
-                            }
-                        }
-                    }
-                }
-            }
             
             # 風速フィルタが設定されている場合はサブタイトルに表示
             wind_speed_filter = self.get_property("wind_speed_filter", None)
@@ -840,8 +806,6 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 "crosshair": enable_interactive_selection,
                 "zoom": enable_interactive_selection,
                 "annotation": show_vmg_optimization
-            }
-        }
         
         # レンダラーを作成
         renderer = RendererFactory.create_renderer(
@@ -1089,10 +1053,8 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "line": {
                                     "color": "rgba(54, 162, 235, 1)",
                                     "width": 1
-                                }
                             },
                             "name": "タッキング角度"
-                        }
                     ],
                     "layout": {
                         "xaxis": {
@@ -1114,8 +1076,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "line": {
                                     "color": "rgba(75, 192, 192, 1)",
                                     "width": 1
-                                }
-                            }
                         ],
                         "annotations": [
                             {
@@ -1126,11 +1086,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "showarrow": False,
                                 "font": {
                                     "size": 12
-                                }
-                            }
                         ]
-                    }
-                }
             else:
                 # ChartJS用のヒストグラムデータ
                 # ビンの数を取得
@@ -1176,8 +1132,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                     "data": {
                         "labels": bin_labels,
                         "datasets": datasets
-                    }
-                }
         
         elif display_mode == "scatter":
             # 散布図モード（タッキング効率の可視化に適している）
@@ -1197,10 +1151,8 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "line": {
                                         "color": "rgba(54, 162, 235, 1)",
                                         "width": 1
-                                    }
                                 },
                                 "name": "タッキング効率"
-                            }
                         ],
                         "layout": {
                             "xaxis": {
@@ -1221,11 +1173,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "line": {
                                         "color": "rgba(75, 192, 192, 1)",
                                         "width": 1
-                                    }
-                                }
                             ]
-                        }
-                    }
                 else:
                     # ChartJS用の散布図データ
                     datasets = [{
@@ -1259,10 +1207,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     },
                                     "min": 0,
                                     "max": 100
-                                }
-                            }
-                        }
-                    }
             else:
                 # 効率データがない場合は時系列散布図を表示
                 if renderer_type == "plotly":
@@ -1283,7 +1227,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "width": 1
                                 },
                                 "name": "タッキング角度"
-                            }
                         ],
                         "layout": {
                             "xaxis": {
@@ -1304,11 +1247,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "line": {
                                         "color": "rgba(75, 192, 192, 1)",
                                         "width": 1
-                                    }
-                                }
                             ]
-                        }
-                    }
                 else:
                     # ChartJS用の時系列散布図データ
                     datasets = [{
@@ -1327,8 +1266,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "type": "scatter",
                         "data": {
                             "datasets": datasets
-                        }
-                    }
         
         elif display_mode == "boxplot":
             # 箱ひげ図モード
@@ -1343,8 +1280,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "boxmean": True,
                             "marker": {
                                 "color": "rgba(54, 162, 235, 0.6)"
-                            }
-                        }
                     ],
                     "layout": {
                         "yaxis": {
@@ -1363,11 +1298,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "line": {
                                     "color": "rgba(75, 192, 192, 1)",
                                     "width": 1
-                                }
-                            }
                         ]
-                    }
-                }
             else:
                 # ChartJSは箱ひげ図に直接対応していないため、代わりにヒストグラムを返す
                 return self.get_chart_data(context)
@@ -1408,10 +1339,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "enabled": True
                             },
                             "mode": "xy"
-                        }
-                    }
-                }
-            }
             
             # オプションを結合
             self._merge_options(options, interactive_options)
@@ -1427,23 +1354,16 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "title": {
                             "display": True,
                             "text": "タッキング角度" if self.get_property("show_efficiency", False) else "タッキング順序"
-                        }
                     },
                     "y": {
                         "title": {
                             "display": True,
                             "text": "効率 (%)" if self.get_property("show_efficiency", False) else "タッキング角度"
-                        }
-                    }
                 },
                 "plugins": {
                     "tooltip": {
                         "callbacks": {
                             "label": "function(context) { return `${context.dataset.label}: (${context.parsed.x.toFixed(1)}, ${context.parsed.y.toFixed(1)})`; }"
-                        }
-                    }
-                }
-            }
             
             # オプションを結合
             self._merge_options(options, scatter_options)
@@ -1463,11 +1383,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "font": {
                                 "size": 12,
                                 "style": "italic"
-                            }
-                        }
-                    }
-                }
-            }
             
             # オプションを結合
             self._merge_options(options, stats_options)
@@ -1498,11 +1413,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "font": {
                                 "size": 12,
                                 "style": "italic"
-                            }
-                        }
-                    }
-                }
-            }
             
             # オプションを結合
             self._merge_options(options, filter_options)
@@ -1557,8 +1467,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
             "plugins": {
                 "annotation": True,
                 "zoom": enable_interactive_selection
-            }
-        }
         
         # レンダラーを作成
         renderer = RendererFactory.create_renderer(

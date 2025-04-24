@@ -120,7 +120,6 @@ class EventTimelineElement(BaseChartElement):
             "show_groups": show_groups,
             "show_tooltips": show_tooltips,
             "cluster_events": cluster_events
-        }
         
         timeline_config_json = json.dumps(timeline_config)
         
@@ -475,7 +474,6 @@ class ParameterTimelineElement(BaseChartElement):
             "show_points": show_points,
             "point_radius": point_radius,
             "brush_selection": brush_selection
-        }
         
         timeline_config_json = json.dumps(timeline_config)
         
@@ -789,7 +787,6 @@ class SegmentComparisonElement(BaseChartElement):
             "stack_data": stack_data,
             "show_average": show_average,
             "normalize_values": normalize_values
-        }
         
         chart_config_json = json.dumps(chart_config)
         
@@ -1097,7 +1094,6 @@ class DataViewerElement(BaseChartElement):
             "map_view": map_view,
             "chart_view": chart_view,
             "data_table": data_table
-        }
         
         viewer_config_json = json.dumps(viewer_config)
         

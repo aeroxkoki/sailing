@@ -402,7 +402,6 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "median_speed": 0,
             "speed_variance": 0,
             "bounding_box": {"min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}
-        }
     
     # データポイント数
     num_points = len(track_data)
@@ -500,8 +499,6 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "min_lng": min_lng if min_lng != float('inf') else 0,
             "max_lat": max_lat if max_lat != float('-inf') else 0,
             "max_lng": max_lng if max_lng != float('-inf') else 0
-        }
-    }
 
 
 def detect_significant_points(track_data: List[Dict[str, Any]], 

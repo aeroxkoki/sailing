@@ -202,7 +202,6 @@ class WindFieldElement(BaseWindFieldElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
-        }
         
         map_config_json = json.dumps(map_config)
         
@@ -218,55 +217,46 @@ class WindFieldElement(BaseWindFieldElement):
                 border-radius: 5px;
                 line-height: 18px;
                 color: #555;
-            }
             
             .wind-field-legend .legend-title {
                 font-weight: bold;
                 margin-bottom: 5px;
-            }
             
             .wind-field-legend .legend-scale {
                 display: flex;
                 height: 15px;
                 margin-bottom: 8px;
-            }
             
             .wind-field-legend .legend-scale-segment {
                 flex: 1;
                 height: 100%;
-            }
             
             .wind-field-legend .legend-labels {
                 display: flex;
                 justify-content: space-between;
                 font-size: 12px;
-            }
             
             .wind-arrow {
                 stroke: rgba(0, 0, 0, 0.7);
                 stroke-width: 1.5;
                 fill: none;
-            }
             
             .wind-shift-marker {
                 stroke: purple;
                 stroke-width: 2;
                 fill: white;
                 fill-opacity: 0.7;
-            }
             
             .wind-trend-line {
                 stroke: rgba(255, 165, 0, 0.8);
                 stroke-width: 2;
                 stroke-dasharray: 4;
                 fill: none;
-            }
             
             .terrain-effect-area {
                 fill: rgba(255, 0, 0, 0.2);
                 stroke: rgba(255, 0, 0, 0.5);
                 stroke-width: 1;
-            }
         </style>
         """
         

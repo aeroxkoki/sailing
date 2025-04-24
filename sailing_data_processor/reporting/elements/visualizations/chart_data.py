@@ -301,7 +301,6 @@ class ChartData:
                 "data": values,
                 "backgroundColor": self._generate_colors(len(values))
             }]
-        }
         
         return self
     
@@ -342,7 +341,6 @@ class ChartData:
                     "borderColor": self._generate_border_colors(1)[0],
                     "borderWidth": 1
                 }]
-            }
         else:
             # 複数系列の場合
             if not all(series_key in item for item in self.data):
@@ -375,7 +373,6 @@ class ChartData:
             self.data = {
                 "labels": labels,
                 "datasets": datasets
-            }
         
         return self
     
@@ -416,7 +413,6 @@ class ChartData:
                     "pointRadius": 4,
                     "pointHoverRadius": 6
                 }]
-            }
         else:
             # 複数系列の場合
             if not all(series_key in item for item in self.data):
@@ -446,7 +442,6 @@ class ChartData:
             
             self.data = {
                 "datasets": datasets
-            }
         
         return self
     
@@ -492,7 +487,6 @@ class ChartData:
                     "tension": 0.1,
                     "fill": True
                 }]
-            }
         else:
             # 複数系列の場合
             if not all(series_key in item for item in self.data):
@@ -529,7 +523,6 @@ class ChartData:
             self.data = {
                 "labels": all_x_values,
                 "datasets": datasets
-            }
         
         return self
     

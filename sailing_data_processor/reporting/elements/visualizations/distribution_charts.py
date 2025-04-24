@@ -201,8 +201,6 @@ class DistributionChartElement(BaseChartElement):
                 "data": {
                     "labels": labels,
                     "datasets": datasets
-                }
-            }
         
         else:
             # カテゴリなしの場合、単一のヒストグラムを計算
@@ -231,8 +229,6 @@ class DistributionChartElement(BaseChartElement):
                         "borderColor": "rgba(54, 162, 235, 1.0)",
                         "borderWidth": 1
                     }]
-                }
-            }
     
     def _prepare_violin_data(self, data: Any, value_key: str, category_key: Optional[str]) -> Dict[str, Any]:
         """
@@ -308,8 +304,6 @@ class DistributionChartElement(BaseChartElement):
                         "outlierColor": "rgba(255, 99, 132, 0.8)",
                         "outlierRadius": 5
                     }]
-                }
-            }
         
         else:
             # カテゴリなしの場合、単一のバイオリンプロット
@@ -326,8 +320,6 @@ class DistributionChartElement(BaseChartElement):
                         "outlierColor": "rgba(255, 99, 132, 0.8)",
                         "outlierRadius": 5
                     }]
-                }
-            }
     
     def _prepare_kde_data(self, data: Any, value_key: str, category_key: Optional[str]) -> Dict[str, Any]:
         """
@@ -430,8 +422,6 @@ class DistributionChartElement(BaseChartElement):
                 "data": {
                     "labels": x_vals.tolist(),
                     "datasets": datasets
-                }
-            }
         
         else:
             # カテゴリなしの場合、単一のKDEを計算
@@ -463,8 +453,6 @@ class DistributionChartElement(BaseChartElement):
                         "tension": 0.4,
                         "pointRadius": 0
                     }]
-                }
-            }
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -488,21 +476,15 @@ class DistributionChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "頻度" if chart_type == "histogram" else "密度")
-                    }
                 },
                 "x": {
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "値")
-                    }
-                }
             },
             "plugins": {
                 "tooltip": {
                     "mode": "index"
-                }
-            }
-        }
         
         # チャートタイプに応じたオプション
         if chart_type == "histogram":
@@ -511,17 +493,12 @@ class DistributionChartElement(BaseChartElement):
                 "plugins": {
                     "legend": {
                         "display": self.get_property("category_key") is not None
-                    }
                 },
                 "scales": {
                     "x": {
                         "offset": True,
                         "grid": {
                             "offset": True
-                        }
-                    }
-                }
-            }
             
             # カテゴリがある場合の表示設定
             if self.get_property("category_key"):
@@ -543,10 +520,6 @@ class DistributionChartElement(BaseChartElement):
                         "ticks": {
                             "min": self.get_property("y_min", None),
                             "max": self.get_property("y_max", None)
-                        }
-                    }
-                }
-            }
             
             # オプションを結合
             self._merge_options(distribution_options, violin_options)
@@ -559,10 +532,6 @@ class DistributionChartElement(BaseChartElement):
                         "beginAtZero": True,
                         "ticks": {
                             "min": 0
-                        }
-                    }
-                }
-            }
             
             # オプションを結合
             self._merge_options(distribution_options, kde_options)

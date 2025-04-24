@@ -231,7 +231,6 @@ class HeatMapLayer(BaseMapLayer):
             'max_value': max_value,
             'metric': metric,
             'custom_field': custom_field
-        }
         
         # データ形式に応じた処理
         if isinstance(data, list) and len(data) > 0:

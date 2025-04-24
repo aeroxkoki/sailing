@@ -150,8 +150,6 @@ class BaseChartElement(BaseElement):
                 },
                 "responsive": True,
                 "maintainAspectRatio": False
-            }
-        }
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -186,9 +184,6 @@ class BaseChartElement(BaseElement):
                     "enabled": True,
                     "mode": "index",
                     "intersect": False
-                }
-            }
-        }
         
         # ユーザー定義のオプションを追加
         user_options = self.get_property("options", {})

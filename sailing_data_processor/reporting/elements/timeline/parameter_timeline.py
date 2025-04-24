@@ -67,7 +67,6 @@ class ParameterTimeline(BaseElement):
             "point_radius": kwargs.get("point_radius", 2),
             "enable_zoom": kwargs.get("enable_zoom", True),
             "time_format": kwargs.get("time_format", "HH:mm:ss"),
-        }
         
         # オプションをプロパティに設定
         for key, value in self._options.items():
@@ -81,7 +80,6 @@ class ParameterTimeline(BaseElement):
             "heading": {"color": "#9C27B0", "label": "艇首方位", "unit": "°", "axis": "y-right"},
             "heel": {"color": "#FFC107", "label": "ヒール角", "unit": "°", "axis": "y-left"},
             "vmg": {"color": "#607D8B", "label": "VMG", "unit": "kt", "axis": "y-left"},
-        }
         
         # データソース
         self.set_property("data_source", kwargs.get("data_source", ""))
@@ -160,7 +158,6 @@ class ParameterTimeline(BaseElement):
             "label": label or name,
             "unit": unit,
             "axis": axis
-        }
         
         # カスタムパラメータリストを更新
         custom_parameters = self.get_property("custom_parameters", [])
@@ -442,7 +439,6 @@ class ParameterTimeline(BaseElement):
                     "borderWidth": 2,
                     "yAxisID": param_info['axis'],
                     "statistics": stats
-                }
                 
                 datasets.append(dataset)
         
@@ -479,12 +475,10 @@ class ParameterTimeline(BaseElement):
                                 "second": time_format,
                                 "minute": time_format,
                                 "hour": time_format
-                            }
                         },
                         "title": {
                             "display": True,
                             "text": "時間"
-                        }
                     },
                     "y-left": {
                         "type": "linear",
@@ -496,7 +490,6 @@ class ParameterTimeline(BaseElement):
                         "grid": {
                             "display": True,
                             "color": "rgba(0, 0, 0, 0.1)"
-                        }
                     },
                     "y-right": {
                         "type": "linear",
@@ -507,8 +500,6 @@ class ParameterTimeline(BaseElement):
                         "title": {
                             "display": True,
                             "text": "角度 (°)"
-                        }
-                    }
                 },
                 "plugins": {
                     "legend": {
@@ -518,10 +509,6 @@ class ParameterTimeline(BaseElement):
                     "tooltip": {
                         "mode": "index",
                         "intersect": False
-                    }
-                }
-            }
-        }
         
         # ズーム機能が有効な場合
         if enable_zoom:
@@ -538,8 +525,6 @@ class ParameterTimeline(BaseElement):
                 "pan": {
                     "enabled": True,
                     "mode": "xy"
-                }
-            }
         
         # 設定をJSON形式に変換
         chart_config_json = json.dumps(chart_config, ensure_ascii=False)
@@ -685,4 +670,5 @@ class ParameterTimeline(BaseElement):
         '''
         
         return html
+"""
 """

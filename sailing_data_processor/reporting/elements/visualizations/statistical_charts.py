@@ -99,7 +99,6 @@ class TimeSeriesElement(BaseChartElement):
                     "pointRadius": 3,
                     "pointBackgroundColor": colors[i],
                     "tension": 0.1
-                }
                 
                 datasets.append(dataset)
         
@@ -125,7 +124,6 @@ class TimeSeriesElement(BaseChartElement):
                         "borderDash": [5, 5],
                         "pointRadius": 0,
                         "tension": 0.4
-                    }
                     
                     datasets.append(avg_dataset)
         
@@ -152,7 +150,6 @@ class TimeSeriesElement(BaseChartElement):
                         "borderDash": [10, 5],
                         "pointRadius": 0,
                         "tension": 0
-                    }
                     
                     datasets.append(trend_dataset)
         
@@ -186,7 +183,6 @@ class TimeSeriesElement(BaseChartElement):
                             "pointRadius": 6,
                             "pointStyle": "circle",
                             "showLine": False
-                        }
                         
                         datasets.append(outlier_dataset)
         
@@ -196,8 +192,6 @@ class TimeSeriesElement(BaseChartElement):
             "data": {
                 "labels": labels,
                 "datasets": datasets
-            }
-        }
         
         return chart_data
     
@@ -226,20 +220,16 @@ class TimeSeriesElement(BaseChartElement):
                             "week": "MM/DD",
                             "month": "YYYY/MM",
                             "year": "YYYY"
-                        }
                     },
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "時間")
-                    }
                 },
                 "y": {
                     "beginAtZero": self.get_property("begin_at_zero", False),
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "値")
-                    }
-                }
             },
             "plugins": {
                 "tooltip": {
@@ -255,15 +245,11 @@ class TimeSeriesElement(BaseChartElement):
                         "enabled": True,
                         "mode": "x",
                         "speed": 0.1
-                    }
-                }
             },
             "interaction": {
                 "mode": "nearest",
                 "axis": "x",
                 "intersect": False
-            }
-        }
         
         # オプションを結合
         self._merge_options(options, timeseries_options)
@@ -649,8 +635,6 @@ class BoxPlotElement(BaseChartElement):
             "data": {
                 "labels": labels,
                 "datasets": datasets
-            }
-        }
         
         return chart_data
     
@@ -673,24 +657,17 @@ class BoxPlotElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "値")
-                    }
                 },
                 "x": {
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "グループ")
-                    }
-                }
             },
             "plugins": {
                 "tooltip": {
                     "callbacks": {
                         "title": "function(context) { return context[0].label; }",
                         "label": "function(context) { return ['最小値: ' + context.raw.min.toFixed(2), '第1四分位: ' + context.raw.q1.toFixed(2), '中央値: ' + context.raw.median.toFixed(2), '第3四分位: ' + context.raw.q3.toFixed(2), '最大値: ' + context.raw.max.toFixed(2)]; }"
-                    }
-                }
-            }
-        }
         
         # オプションを結合
         self._merge_options(options, boxplot_options)
@@ -960,8 +937,6 @@ class HeatMapElement(BaseChartElement):
                     "borderWidth": 1,
                     "borderColor": "rgba(0, 0, 0, 0.1)"
                 }]
-            }
-        }
         
         return chart_data
     
@@ -989,7 +964,6 @@ class HeatMapElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "X軸")
-                    }
                 },
                 "y": {
                     "type": "category",
@@ -997,8 +971,6 @@ class HeatMapElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "Y軸")
-                    }
-                }
             },
             "plugins": {
                 "legend": {
@@ -1008,10 +980,6 @@ class HeatMapElement(BaseChartElement):
                     "callbacks": {
                         "title": "function(context) { return ''; }",
                         "label": "function(context) { return [context.raw.x + ', ' + context.raw.y, '値: ' + context.raw.v.toFixed(2)]; }"
-                    }
-                }
-            }
-        }
         
         # オプションを結合
         self._merge_options(options, heatmap_options)
@@ -1208,7 +1176,6 @@ class CorrelationElement(BaseChartElement):
             regression_points = {
                 "type": regression_type,
                 "data": regression_data
-            }
         
         # データセットを作成
         datasets = [
@@ -1220,7 +1187,6 @@ class CorrelationElement(BaseChartElement):
                 "borderWidth": 1,
                 "pointRadius": 5,
                 "pointHoverRadius": 7
-            }
         ]
         
         # トレンドライン用のデータセットを追加
@@ -1243,7 +1209,6 @@ class CorrelationElement(BaseChartElement):
                 "datasets": datasets
             },
             "correlation": correlation
-        }
         
         return chart_data
     
@@ -1269,23 +1234,16 @@ class CorrelationElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", x_param)
-                    }
                 },
                 "y": {
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", y_param)
-                    }
-                }
             },
             "plugins": {
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) { return context.raw.x.toFixed(2) + ', ' + context.raw.y.toFixed(2); }"
-                    }
-                }
-            }
-        }
         
         # オプションを結合
         self._merge_options(options, correlation_options)

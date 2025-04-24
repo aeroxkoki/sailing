@@ -104,7 +104,6 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "pin": pin,
             "boat": boat,
             **options
-        }
         
         self.set_property("start_line", start_line)
     
@@ -181,7 +180,6 @@ class CourseElementsLayer(StrategyPointLayerElement):
         route = {
             "points": points,
             **options
-        }
         
         self.set_property("optimal_route", route)
     
@@ -292,7 +290,6 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "strategy_points": strategy_points,
             "optimal_route": optimal_route,
             "risk_areas": risk_areas
-        }
         
         course_config_json = json.dumps(course_config)
         
@@ -306,7 +303,6 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
-        }
         
         map_config_json = json.dumps(map_config)
         
@@ -322,64 +318,52 @@ class CourseElementsLayer(StrategyPointLayerElement):
                 border-radius: 50%;
                 color: white;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-            }
             
             .start-line {
                 stroke: green;
                 stroke-width: 3;
                 stroke-opacity: 0.8;
-            }
             
             .finish-line {
                 stroke: blue;
                 stroke-width: 3;
                 stroke-opacity: 0.8;
-            }
             
             .layline {
                 stroke-dasharray: 5, 5;
                 stroke-opacity: 0.6;
-            }
             
             .optimal-route {
                 stroke: rgba(0, 128, 0, 0.8);
                 stroke-width: 3;
                 stroke-opacity: 0.8;
-            }
             
             .risk-area {
                 fill-opacity: 0.3;
                 stroke-opacity: 0.6;
-            }
             
             .risk-area-caution {
                 fill: rgba(255, 165, 0, 0.3);
                 stroke: rgba(255, 165, 0, 0.8);
-            }
             
             .risk-area-danger {
                 fill: rgba(255, 0, 0, 0.3);
                 stroke: rgba(255, 0, 0, 0.8);
-            }
             
             .risk-area-information {
                 fill: rgba(0, 0, 255, 0.2);
                 stroke: rgba(0, 0, 255, 0.6);
-            }
             
             .course-popup {
                 min-width: 200px;
-            }
             
             .course-popup h4 {
                 margin: 0 0 8px 0;
                 padding-bottom: 5px;
                 border-bottom: 1px solid #eee;
-            }
             
             .course-popup p {
                 margin: 5px 0;
-            }
         </style>
         """
         

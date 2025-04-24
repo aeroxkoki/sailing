@@ -122,7 +122,6 @@ class CourseElementsLayer(BaseMapLayer):
             "color": color if color else self.get_property("mark_color" if not is_gate else "gate_color"),
             "size": size if size else self.get_property("mark_size"),
             "is_gate": is_gate
-        }
         
         # 追加プロパティ
         if properties:
@@ -175,7 +174,6 @@ class CourseElementsLayer(BaseMapLayer):
             "size": self.get_property("mark_size"),
             "is_gate": True,
             "gate_pair": index + 1
-        }
         
         # 右マーク
         right_mark = {
@@ -186,7 +184,6 @@ class CourseElementsLayer(BaseMapLayer):
             "size": self.get_property("mark_size"),
             "is_gate": True,
             "gate_pair": index
-        }
         
         # 追加プロパティ
         if properties:
@@ -241,7 +238,6 @@ class CourseElementsLayer(BaseMapLayer):
             "size": self.get_property("mark_size"),
             "is_start": True,
             "start_pair": index + 1
-        }
         
         # コミッティ側
         committee_mark = {
@@ -252,7 +248,6 @@ class CourseElementsLayer(BaseMapLayer):
             "size": self.get_property("mark_size"),
             "is_start": True,
             "start_pair": index
-        }
         
         # 追加プロパティ
         if properties:
@@ -307,7 +302,6 @@ class CourseElementsLayer(BaseMapLayer):
             "size": self.get_property("mark_size"),
             "is_finish": True,
             "finish_pair": index + 1
-        }
         
         # コミッティ側
         committee_mark = {
@@ -318,7 +312,6 @@ class CourseElementsLayer(BaseMapLayer):
             "size": self.get_property("mark_size"),
             "is_finish": True,
             "finish_pair": index
-        }
         
         # 追加プロパティ
         if properties:
@@ -360,7 +353,6 @@ class CourseElementsLayer(BaseMapLayer):
             "coordinates": coordinates,
             "name": name,
             "color": color if color else self.get_property("restricted_color")
-        }
         
         # 追加プロパティ
         if properties:

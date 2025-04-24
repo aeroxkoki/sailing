@@ -37,8 +37,8 @@ class DataConnector:
         self._transformers["to_str"] = lambda x: str(x) if x is not None else ""
         self._transformers["scale"] = lambda x, factor=1.0: x * factor if x is not None else None
         self._transformers["offset"] = lambda x, offset=0.0: x + offset if x is not None else None
-        self._transformers["min_max_normalize"] = lambda x, min_val=0.0, max_val=1.0: 
-                            (x - min_val) / (max_val - min_val) if x is not None and max_val > min_val else None
+        self._transformers["min_max_normalize"] = lambda x, min_val=0.0, max_val=1.0:
+                                        (x - min_val) / (max_val - min_val) if x is not None and max_val > min_val else None
     
     def register_transformer(self, name: str, transformer_fn: Callable) -> None:
         """
@@ -94,7 +94,6 @@ class DataConnector:
             "source_id": source_id,
             "field_mappings": field_mappings or {},
             "transform": transform
-        }
         
         # レイヤーのデータソースプロパティを更新
         layer.data_source = source_id
@@ -400,7 +399,6 @@ class DataConnector:
         
         return {
             "bindings": bindings_dict
-        }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DataConnector":
@@ -627,7 +625,6 @@ class DataSynchronizer:
         sync_config = {
             "field_mappings": field_mappings or {},
             "transform": transform
-        }
         
         # 同期ペアを追加
         self._sync_pairs.append((source_layer.layer_id, target_layer.layer_id, sync_config))

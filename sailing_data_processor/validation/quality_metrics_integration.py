@@ -73,7 +73,6 @@ try:
                         "completeness": ["Required Columns Check", "No Null Values Check"],
                         "accuracy": ["Value Range Check", "Spatial Consistency Check"],
                         "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
-                    }
                     
                     # 問題のあるレコードのインデックスを収集 - 簡略化
                     self.problematic_indices = {
@@ -83,7 +82,6 @@ try:
                         "spatial_anomalies": [],
                         "temporal_anomalies": [],
                         "all": []
-                    }
                     
                     # 品質スコアを簡略化
                     self.quality_scores = {
@@ -91,7 +89,6 @@ try:
                         "accuracy": 100.0,
                         "consistency": 100.0,
                         "total": 100.0
-                    }
                 
                 def _determine_impact_level(self, score: float) -> str:
                     if score >= 90:
@@ -114,18 +111,15 @@ try:
                         "spatial_anomalies": [],
                         "temporal_anomalies": [],
                         "all": []
-                    }
                     self.rule_categories = {
                         "completeness": ["Required Columns Check", "No Null Values Check"],
                         "accuracy": ["Value Range Check", "Spatial Consistency Check"],
                         "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
-                    }
                     self.quality_scores = {
                         "completeness": 100.0,
                         "accuracy": 100.0,
                         "consistency": 100.0,
                         "total": 100.0
-                    }
                 
                 def _determine_impact_level(self, score: float) -> str:
                     if score >= 90:
@@ -144,7 +138,6 @@ try:
                         "duplicates": 0,
                         "spatial_anomalies": 0,
                         "temporal_anomalies": 0
-                    }
                 
                 def calculate_quality_scores(self):
                     return {
@@ -152,14 +145,12 @@ try:
                         "completeness": 100.0,
                         "accuracy": 100.0,
                         "consistency": 100.0
-                    }
                 
                 def calculate_category_quality_scores(self):
                     return {
                         "completeness": 100.0,
                         "accuracy": 100.0,
                         "consistency": 100.0
-                    }
 except Exception as e:
     logger.critical(f"すべてのインポート方法に失敗: {e}")
     # 緊急時のフォールバック
@@ -173,7 +164,6 @@ except Exception as e:
                 "completeness": ["Required Columns Check", "No Null Values Check"],
                 "accuracy": ["Value Range Check", "Spatial Consistency Check"],
                 "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
-            }
         
         def _determine_impact_level(self, score):
             return "low"
@@ -187,7 +177,6 @@ except Exception as e:
                 "completeness": ["Required Columns Check", "No Null Values Check"],
                 "accuracy": ["Value Range Check", "Spatial Consistency Check"],
                 "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
-            }
 
 # QualityMetricsCalculatorの機能を拡張したEnhancedQualityMetricsCalculatorクラスを定義
 class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
@@ -251,7 +240,6 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
                 "completeness": ["Required Columns Check", "No Null Values Check"],
                 "accuracy": ["Value Range Check", "Spatial Consistency Check"],
                 "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
-            }
     
     def _calculate_problem_type_distribution_for_period(self, period_indices: List[int]) -> Dict[str, int]:
         """
@@ -273,7 +261,6 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
             "duplicates": 0,
             "spatial_anomalies": 0,
             "temporal_anomalies": 0
-        }
         
         # 期間内の各問題タイプのカウントを計算
         for problem_type, indices in self.problematic_indices.items():
@@ -316,4 +303,3 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
                 "temporal_anomalies": temporal_count
             },
             "impact_level": self._determine_impact_level(self.quality_scores.get("total", 100.0))
-        }

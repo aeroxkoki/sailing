@@ -83,7 +83,6 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
             "duplicates": 0,
             "spatial_anomalies": 0,
             "temporal_anomalies": 0
-        }
         
         # 期間内の各問題タイプのカウントを計算
         for problem_type, indices in self.problematic_indices.items():

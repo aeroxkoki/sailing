@@ -744,3 +744,35 @@ class Template:
         """
         self.sections.sort(key=lambda x: x.order)
         self.updated_at = datetime.now()
+
+
+
+class ElementModel:
+    """要素モデルクラス"""
+    
+    def __init__(self, element_type: ElementType = ElementType.GENERIC, properties: Dict[str, Any] = None):
+        """初期化"""
+        self.element_type = element_type
+        self.properties = properties or {}
+    
+    def get_property(self, key: str, default: Any = None) -> Any:
+        """プロパティを取得"""
+        return self.properties.get(key, default)
+    
+    def set_property(self, key: str, value: Any) -> None:
+        """プロパティを設定"""
+        self.properties[key] = value
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """辞書表現を取得"""
+        return {
+            "element_type": self.element_type.name,
+            "properties": self.properties.copy()
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ElementModel":
+        """辞書から生成"""
+        element_type = ElementType[data.get("element_type", "GENERIC")]
+        properties = data.get("properties", {})
+        return cls(element_type=element_type, properties=properties)

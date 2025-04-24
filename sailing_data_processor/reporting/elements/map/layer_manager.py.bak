@@ -1,8 +1,8 @@
 """
 sailing_data_processor.reporting.elements.map.layer_manager
 
-ŞÃ×ì¤äü¡’Ğ›Y‹â¸åüëgY
-pnì¤äü¡h:/^h:nŠÿH*HM-šjin_ı’ŸÅW~Y
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ›Yï¿½ï¿½ï¿½ï¿½ï¿½gY
+pnï¿½ï¿½ï¿½ï¿½h:/^h:nï¿½ï¿½H*HM-ï¿½jin_ï¿½ï¿½ï¿½ï¿½W~Y
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -15,34 +15,34 @@ from sailing_data_processor.reporting.templates.template_model import ElementTyp
 
 class MapLayerManager:
     """
-    ŞÃ×ì¤äüŞÍü¸ãü
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    ŞÃ×kı Y‹ì¤äü’¡Y‹æüÆ£êÆ£¯é¹gY
+    ï¿½ï¿½ï¿½kï¿½ï¿½Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Yï¿½ï¿½ï¿½Æ£ï¿½Æ£ï¿½ï¿½gY
     """
     
     def __init__(self):
         """
         
         """
-        self.base_layers = {}  # Ùü¹ì¤äü0ó¿¤×	
-        self.overlay_layers = {}  # ªüĞüì¤ì¤äü
-        self.active_base_layer = None  # ¢¯Æ£ÖjÙü¹ì¤äü
-        self.active_overlay_layers = []  # ¢¯Æ£ÖjªüĞüì¤ì¤äü
+        self.base_layers = {}  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½	
+        self.overlay_layers = {}  # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        self.active_base_layer = None  # ï¿½ï¿½Æ£ï¿½jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        self.active_overlay_layers = []  # ï¿½ï¿½Æ£ï¿½jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
     def add_base_layer(self, layer_id: str, layer_name: str, layer_type: str, options: Dict[str, Any] = None) -> None:
         """
-        Ùü¹ì¤äü’ı 
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         layer_id : str
-            ì¤äüID
+            ï¿½ï¿½ï¿½ID
         layer_name : str
-            ì¤äü
+            ï¿½ï¿½ï¿½
         layer_type : str
-            ì¤äü¿¤× (osm, satellite, etc.)
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (osm, satellite, etc.)
         options : Dict[str, Any], optional
-            ì¤äüª×·çó, by default None
+            ï¿½ï¿½ï¿½ï¿½×·ï¿½ï¿½, by default None
         """
         if options is None:
             options = {}
@@ -54,27 +54,27 @@ class MapLayerManager:
             "options": options
         }
         
-        # kı UŒ_ì¤äü’¢¯Æ£ÖkY‹
+        # kï¿½ï¿½Uï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½kYï¿½
         if self.active_base_layer is None:
             self.active_base_layer = layer_id
     
     def add_overlay_layer(self, layer_id: str, layer_name: str, layer_type: str, 
                          visible: bool = True, options: Dict[str, Any] = None) -> None:
         """
-        ªüĞüì¤ì¤äü’ı 
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         layer_id : str
-            ì¤äüID
+            ï¿½ï¿½ï¿½ID
         layer_name : str
-            ì¤äü
+            ï¿½ï¿½ï¿½
         layer_type : str
-            ì¤äü¿¤× (track, marker, heatmap, etc.)
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ (track, marker, heatmap, etc.)
         visible : bool, optional
-            h:¶K, by default True
+            h:ï¿½K, by default True
         options : Dict[str, Any], optional
-            ì¤äüª×·çó, by default None
+            ï¿½ï¿½ï¿½ï¿½×·ï¿½ï¿½, by default None
         """
         if options is None:
             options = {}
@@ -87,28 +87,28 @@ class MapLayerManager:
             "options": options
         }
         
-        # h:Y‹ì¤äükı 
+        # h:Yï¿½ï¿½ï¿½ï¿½kï¿½ï¿½
         if visible and layer_id not in self.active_overlay_layers:
             self.active_overlay_layers.append(layer_id)
     
     def remove_overlay_layer(self, layer_id: str) -> bool:
         """
-        ªüĞüì¤ì¤äü’Jd
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Jd
         
         Parameters
         ----------
         layer_id : str
-            ì¤äüID
+            ï¿½ï¿½ï¿½ID
             
         Returns
         -------
         bool
-            JdkŸW_4True
+            Jdkï¿½W_4True
         """
         if layer_id in self.overlay_layers:
             del self.overlay_layers[layer_id]
             
-            # ¢¯Æ£Öê¹ÈK‰‚Jd
+            # ï¿½ï¿½Æ£ï¿½ï¿½ï¿½Kï¿½ï¿½Jd
             if layer_id in self.active_overlay_layers:
                 self.active_overlay_layers.remove(layer_id)
             
@@ -118,17 +118,17 @@ class MapLayerManager:
     
     def set_active_base_layer(self, layer_id: str) -> bool:
         """
-        ¢¯Æ£ÖjÙü¹ì¤äü’-š
+        ï¿½ï¿½Æ£ï¿½jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½-ï¿½
         
         Parameters
         ----------
         layer_id : str
-            ì¤äüID
+            ï¿½ï¿½ï¿½ID
             
         Returns
         -------
         bool
-            -škŸW_4True
+            -ï¿½kï¿½W_4True
         """
         if layer_id in self.base_layers:
             self.active_base_layer = layer_id
@@ -138,17 +138,17 @@ class MapLayerManager:
     
     def toggle_overlay_layer(self, layer_id: str) -> Tuple[bool, bool]:
         """
-        ªüĞüì¤ì¤äünh:/^h:’ŠÿH
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nh:/^h:ï¿½ï¿½ï¿½H
         
         Parameters
         ----------
         layer_id : str
-            ì¤äüID
+            ï¿½ï¿½ï¿½ID
             
         Returns
         -------
         Tuple[bool, bool]
-            (ŸW_K, ŠÿHŒnh:¶K)
+            (ï¿½W_K, ï¿½ï¿½Hï¿½nh:ï¿½K)
         """
         if layer_id not in self.overlay_layers:
             return False, False
@@ -162,19 +162,19 @@ class MapLayerManager:
             self.active_overlay_layers.append(layer_id)
             new_state = True
         
-        # ì¤äüÅ1‚ô°
+        # ï¿½ï¿½ï¿½ï¿½1ï¿½ï¿½ï¿½
         self.overlay_layers[layer_id]["visible"] = new_state
         
         return True, new_state
     
     def get_layer_config(self) -> Dict[str, Any]:
         """
-        ì¤äü-š’Ö—
+        ï¿½ï¿½ï¿½-ï¿½ï¿½Ö—
         
         Returns
         -------
         Dict[str, Any]
-            ì¤äü-š
+            ï¿½ï¿½ï¿½-ï¿½
         """
         active_base = None
         if self.active_base_layer and self.active_base_layer in self.base_layers:
@@ -194,21 +194,21 @@ class MapLayerManager:
     
     def to_json(self) -> str:
         """
-        JSON‡Wk	Û
+        JSONï¿½Wk	ï¿½
         
         Returns
         -------
         str
-            JSON‡W
+            JSONï¿½W
         """
         return json.dumps(self.get_layer_config())
 
 
 class MapLayerElement(BaseElement):
     """
-    ŞÃ×ì¤äü 
+    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
     
-    pj‹.^nŞÃ×ì¤äü’q„k¡Y‹ gY
+    pjï¿½.^nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½qï¿½kï¿½Yï¿½ï¿½ gY
     """
     
     def __init__(self, model: Optional[ElementModel] = None, **kwargs):
@@ -218,27 +218,27 @@ class MapLayerElement(BaseElement):
         Parameters
         ----------
         model : Optional[ElementModel], optional
-             âÇë, by default None
+            ï¿½ ï¿½ï¿½ï¿½, by default None
         **kwargs : dict
-            âÇëLĞ›UŒjD4k(UŒ‹×íÑÆ£
+            ï¿½ï¿½ï¿½LĞ›Uï¿½jD4k(Uï¿½ï¿½ï¿½ï¿½ï¿½Æ£
         """
-        # ÇÕ©ëÈgŞÃ× ¿¤×’-š
+        # ï¿½Õ©ï¿½ï¿½gï¿½ï¿½× ï¿½ï¿½×’-ï¿½
         if model is None and 'element_type' not in kwargs:
             kwargs['element_type'] = ElementType.MAP
         
         super().__init__(model, **kwargs)
         
-        # ì¤äüŞÍü¸ãün\
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½n\
         self.layer_manager = MapLayerManager()
         
-        # ÇÕ©ëÈì¤äü’ı 
+        # ï¿½Õ©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         self._add_default_layers()
     
     def _add_default_layers(self) -> None:
         """
-        ÇÕ©ëÈnì¤äü’ı 
+        ï¿½Õ©ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         """
-        # Ùü¹ì¤äü0ó¿¤×	
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½0ï¿½ï¿½	
         self.layer_manager.add_base_layer("osm", "OpenStreetMap", "tile", {
             "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             "attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
@@ -254,7 +254,7 @@ class MapLayerElement(BaseElement):
             "attribution": "Map data: &copy; <a href='http://www.openseamap.org'>OpenSeaMap</a> contributors"
         })
         
-        # ÇÕ©ëÈnªüĞüì¤ì¤äü
+        # ï¿½Õ©ï¿½ï¿½nï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         self.layer_manager.add_overlay_layer("track", "GPS Track", "track", True, {
             "color": "rgba(255, 87, 34, 0.8)",
             "weight": 3
@@ -265,78 +265,78 @@ class MapLayerElement(BaseElement):
     
     def add_base_layer(self, layer_id: str, layer_name: str, layer_type: str, options: Dict[str, Any] = None) -> None:
         """
-        Ùü¹ì¤äü’ı 
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         layer_id : str
-            ì¤äüID
+            ï¿½ï¿½ï¿½ID
         layer_name : str
-            ì¤äü
+            ï¿½ï¿½ï¿½
         layer_type : str
-            ì¤äü¿¤×
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         options : Dict[str, Any], optional
-            ì¤äüª×·çó, by default None
+            ï¿½ï¿½ï¿½ï¿½×·ï¿½ï¿½, by default None
         """
         self.layer_manager.add_base_layer(layer_id, layer_name, layer_type, options)
     
     def add_overlay_layer(self, layer_id: str, layer_name: str, layer_type: str, 
                          visible: bool = True, options: Dict[str, Any] = None) -> None:
         """
-        ªüĞüì¤ì¤äü’ı 
+        ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         layer_id : str
-            ì¤äüID
+            ï¿½ï¿½ï¿½ID
         layer_name : str
-            ì¤äü
+            ï¿½ï¿½ï¿½
         layer_type : str
-            ì¤äü¿¤×
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         visible : bool, optional
-            h:¶K, by default True
+            h:ï¿½K, by default True
         options : Dict[str, Any], optional
-            ì¤äüª×·çó, by default None
+            ï¿½ï¿½ï¿½ï¿½×·ï¿½ï¿½, by default None
         """
         self.layer_manager.add_overlay_layer(layer_id, layer_name, layer_type, visible, options)
     
     def get_layer_config(self) -> Dict[str, Any]:
         """
-        ì¤äü-š’Ö—
+        ï¿½ï¿½ï¿½-ï¿½ï¿½Ö—
         
         Returns
         -------
         Dict[str, Any]
-            ì¤äü-š
+            ï¿½ï¿½ï¿½-ï¿½
         """
         return self.layer_manager.get_layer_config()
     
     def render(self, context: Dict[str, Any]) -> str:
         """
-         ’HTMLkìóÀêó°
+        ï¿½ ï¿½HTMLkï¿½ï¿½ï¿½ï¿½ï¿½
         
         Parameters
         ----------
         context : Dict[str, Any]
-            ìóÀêó°³óÆ­¹È
+            ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ­ï¿½ï¿½
             
         Returns
         -------
         str
-            ìóÀêó°UŒ_HTML
+            ï¿½ï¿½ï¿½ï¿½ï¿½Uï¿½_HTML
         """
-        # aöÁ§Ã¯
+        # aï¿½ï¿½ï¿½Ã¯
         if not self.evaluate_conditions(context):
             return ""
         
-        # CSS¹¿¤ënÖ—
+        # CSSï¿½ï¿½ï¿½ï¿½nÖ—
         css_style = self.get_css_styles()
         
-        # ì¤äü-š
+        # ï¿½ï¿½ï¿½-ï¿½
         layer_config = self.get_layer_config()
         layer_config_json = json.dumps(layer_config)
         
-        # !Xjì¤äü³óÈíüëUI
+        # !Xjï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UI
         html_content = f'''
         <div id="{self.element_id}" class="map-layer-control" style="{css_style}">
             <style>
@@ -390,15 +390,15 @@ class MapLayerElement(BaseElement):
             
             <script>
                 (function() {{
-                    // ì¤äü-š
+                    // ï¿½ï¿½ï¿½-ï¿½
                     var layerConfig = {layer_config_json};
                     
-                    // ì¤äü³óÈíüë’\
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\
                     function createLayerControls() {{
                         var baseLayersContainer = document.getElementById('{self.element_id}_base_layers');
                         var overlayLayersContainer = document.getElementById('{self.element_id}_overlay_layers');
                         
-                        // Ùü¹ì¤äüné¸ªÜ¿ó
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½né¸ªÜ¿ï¿½
                         if (baseLayersContainer) {{
                             baseLayersContainer.innerHTML = '';
                             
@@ -416,7 +416,7 @@ class MapLayerElement(BaseElement):
                                 input.checked = checked;
                                 
                                 input.addEventListener('change', function(e) {{
-                                    // «¹¿à¤ÙóÈ’Ç£¹ÑÃÁ
+                                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È’Ç£ï¿½ï¿½ï¿½ï¿½
                                     var event = new CustomEvent('base_layer_changed', {{ 
                                         detail: {{ element_id: '{self.element_id}', layer_id: layer.id }}
                                     }});
@@ -431,7 +431,7 @@ class MapLayerElement(BaseElement):
                             }});
                         }}
                         
-                        // ªüĞüì¤ì¤äünÁ§Ã¯ÜÃ¯¹
+                        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½Ã¯ï¿½Ã¯ï¿½
                         if (overlayLayersContainer) {{
                             overlayLayersContainer.innerHTML = '';
                             
@@ -449,7 +449,7 @@ class MapLayerElement(BaseElement):
                                 input.checked = checked;
                                 
                                 input.addEventListener('change', function(e) {{
-                                    // «¹¿à¤ÙóÈ’Ç£¹ÑÃÁ
+                                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È’Ç£ï¿½ï¿½ï¿½ï¿½
                                     var event = new CustomEvent('overlay_layer_toggled', {{ 
                                         detail: {{ 
                                             element_id: '{self.element_id}',
@@ -469,7 +469,7 @@ class MapLayerElement(BaseElement):
                         }}
                     }}
                     
-                    // ì¤äü³óÈíüë’\
+                    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\
                     window.addEventListener('load', createLayerControls);
                 }})();
             </script>

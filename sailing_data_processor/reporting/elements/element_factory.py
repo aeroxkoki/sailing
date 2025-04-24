@@ -43,7 +43,6 @@ _ELEMENT_CLASSES: Dict[ElementType, Type[BaseElement]] = {
     ElementType.DIVIDER: DividerElement,
     ElementType.BOX: BoxElement,
     ElementType.BACKGROUND: BackgroundElement,
-}
 
 
 def create_element(model_or_type: Union[ElementModel, ElementType, str], **kwargs) -> Optional[BaseElement]:

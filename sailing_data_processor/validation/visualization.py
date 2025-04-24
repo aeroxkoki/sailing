@@ -80,8 +80,6 @@ class ValidationVisualizer:
                     "line": {"color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": quality_scores["total"]
-                }
-            }
         ))
         
         # レイアウト設定
@@ -119,7 +117,6 @@ class ValidationVisualizer:
             "completeness": "完全性",
             "accuracy": "正確性",
             "consistency": "一貫性"
-        }
         
         # カテゴリ別の色設定
         bar_colors = [
@@ -595,13 +592,11 @@ class ValidationVisualizer:
                 "heatmap_data": heatmap_data,
                 "lat_range": (min_lat, max_lat),
                 "lon_range": (min_lon, max_lon)
-            }
         
         except Exception as e:
             return {
                 "has_data": False,
                 "error": str(e)
-            }
     
     def generate_distribution_charts(self) -> Dict[str, Any]:
         """
@@ -619,13 +614,11 @@ class ValidationVisualizer:
             "duplicates": "重複",
             "spatial_anomalies": "空間的異常",
             "temporal_anomalies": "時間的異常"
-        }
         
         # 問題タイプ別の件数
         problem_counts = {
             cat_name: len(self.quality_metrics.problematic_indices[cat_key])
             for cat_key, cat_name in categories.items()
-        }
         
         # 重要度別の件数
         severity_counts = self.quality_metrics.get_problem_severity_distribution()
@@ -639,8 +632,6 @@ class ValidationVisualizer:
             "severity": {
                 "labels": ["エラー", "警告", "情報"],
                 "values": [severity_counts["error"], severity_counts["warning"], severity_counts["info"]]
-            }
-        }
         
         # 問題の分布（時間的）
         temporal_distribution = self.quality_metrics.problem_distribution["temporal"]
@@ -652,7 +643,6 @@ class ValidationVisualizer:
             "pie_data": pie_data,
             "temporal_distribution": temporal_distribution,
             "spatial_distribution": spatial_distribution
-        }
     
     def generate_timeline_markers(self) -> Dict[str, Any]:
         """
@@ -683,7 +673,6 @@ class ValidationVisualizer:
                 "duplicates": {"color": "green", "symbol": "square", "name": "重複"},
                 "spatial_anomalies": {"color": "purple", "symbol": "diamond", "name": "空間的異常"},
                 "temporal_anomalies": {"color": "orange", "symbol": "star", "name": "時間的異常"}
-            }
             
             # 各問題タイプのマーカーを収集
             for problem_type, info in problem_types.items():
@@ -713,13 +702,11 @@ class ValidationVisualizer:
                 "has_data": True,
                 "markers": markers,
                 "problem_types": problem_types
-            }
         
         except Exception as e:
             return {
                 "has_data": False,
                 "error": str(e)
-            }
     
     def generate_detailed_report(self) -> Dict[str, Any]:
         """
@@ -747,7 +734,6 @@ class ValidationVisualizer:
                             "timestamp": row.get("timestamp", None),
                             "latitude": row.get("latitude", None),
                             "longitude": row.get("longitude", None)
-                        }
                         
                         problem_records.append(record)
         
@@ -767,7 +753,6 @@ class ValidationVisualizer:
             "problem_records": problem_records,
             "problematic_columns": problematic_columns,
             "generated_at": datetime.now().isoformat()
-        }
     
     def generate_quality_score_chart(self) -> go.Figure:
         """
@@ -796,8 +781,6 @@ class ValidationVisualizer:
                     "line": {"color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": self.quality_metrics.quality_scores["total"]
-                }
-            }
         ))
         
         fig.update_layout(
@@ -825,7 +808,6 @@ class ValidationVisualizer:
             "completeness": "完全性",
             "accuracy": "正確性",
             "consistency": "一貫性"
-        }
         
         display_categories = [category_names[cat] for cat in categories]
         
@@ -875,7 +857,6 @@ class ValidationVisualizer:
             "重複": len(self.quality_metrics.problematic_indices["duplicates"]),
             "空間的異常": len(self.quality_metrics.problematic_indices["spatial_anomalies"]),
             "時間的異常": len(self.quality_metrics.problematic_indices["temporal_anomalies"])
-        }
         
         # 値が0のカテゴリを除外
         problem_counts = {k: v for k, v in problem_counts.items() if v > 0}
@@ -1051,7 +1032,6 @@ class ValidationVisualizer:
             "spatial_quality_grid": self.generate_spatial_quality_grid(),
             "track_quality_chart": self.generate_track_quality_chart(),
             "speed_profile_chart": self.generate_speed_profile_chart()
-        }
         
         return visualizations
         
@@ -1115,8 +1095,6 @@ class ValidationVisualizer:
                     "line": {"color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": track_quality_score
-                }
-            }
         ))
         
         # 速度の一貫性スコアを追加
@@ -1139,8 +1117,6 @@ class ValidationVisualizer:
                         "line": {"color": "black", "width": 4},
                         "thickness": 0.75,
                         "value": track_stats["speed"]["consistency"]
-                    }
-                }
             ))
         
         # 進行方向の一貫性スコアを追加
@@ -1163,8 +1139,6 @@ class ValidationVisualizer:
                         "line": {"color": "black", "width": 4},
                         "thickness": 0.75,
                         "value": track_stats["turn_rate"]["consistency"]
-                    }
-                }
             ))
         
         # レイアウト設定
@@ -1613,7 +1587,6 @@ class ValidationVisualizer:
             "duplicates": "green",
             "spatial_anomalies": "purple",
             "temporal_anomalies": "orange"
-        }
         
         # 問題タイプ名のマッピング
         type_names = {
@@ -1622,7 +1595,6 @@ class ValidationVisualizer:
             "duplicates": "重複",
             "spatial_anomalies": "空間的異常",
             "temporal_anomalies": "時間的異常"
-        }
         
         # 各問題タイプの時間帯分布を追加
         for problem_type, distribution in problem_type_temporal.items():
@@ -1836,7 +1808,6 @@ class ValidationVisualizer:
             "statistical": "#2ca02c",     # 緑
             "structural": "#d62728",      # 赤
             "semantic": "#9467bd"         # 紫
-        }
         
         # カテゴリを追加
         for cat_key, category in categories.items():
@@ -1950,7 +1921,6 @@ class ValidationVisualizer:
             "error": "rgba(220, 20, 60, 0.2)",   # 赤 (薄い)
             "warning": "rgba(255, 165, 0, 0.2)",  # オレンジ (薄い)
             "info": "rgba(65, 105, 225, 0.2)"     # 青 (薄い)
-        }
         
         # セルの背景色を設定
         cell_colors = []
@@ -2010,7 +1980,6 @@ class ValidationVisualizer:
             "hierarchy_scores": self.generate_hierarchy_scores_chart(),
             "quality_patterns": self.generate_quality_patterns_chart(),
             "data_quality_map": self.generate_data_quality_map()
-        }
         
         return charts
     
@@ -2039,7 +2008,6 @@ class ValidationVisualizer:
                 "temporal_anomalies": len(self.quality_metrics.problematic_indices["temporal_anomalies"])
             },
             "severity_counts": self.quality_metrics.get_problem_severity_distribution()
-        }
         
         # チャート
         charts = self.generate_data_quality_summary_grid()
@@ -2048,7 +2016,6 @@ class ValidationVisualizer:
         problem_details = {
             "by_column": self.quality_metrics.get_problematic_columns(),
             "by_record": self.quality_metrics.get_record_issues()
-        }
         
         # 修正推奨
         fix_recommendations = self.quality_metrics.get_fix_recommendations()
@@ -2061,7 +2028,6 @@ class ValidationVisualizer:
             "temporal": self.quality_metrics.get_extended_temporal_metrics(),
             "spatial": self.quality_metrics.get_extended_spatial_metrics(),
             "hierarchy": self.quality_metrics.calculate_hierarchical_quality_scores()
-        }
         
         return {
             "quality_scores": quality_scores,
@@ -2072,7 +2038,6 @@ class ValidationVisualizer:
             "quality_patterns": quality_patterns,
             "extended_metrics": extended_metrics,
             "generated_at": datetime.now().isoformat()
-        }
         
     def generate_problem_type_detail_chart(self) -> go.Figure:
         """
@@ -2106,7 +2071,6 @@ class ValidationVisualizer:
             "duplicates": "重複",
             "spatial_anomalies": "空間的異常",
             "temporal_anomalies": "時間的異常"
-        }
         
         # 色の定義
         colors = {
@@ -2115,7 +2079,6 @@ class ValidationVisualizer:
             "duplicates": "green",
             "spatial_anomalies": "purple",
             "temporal_anomalies": "orange"
-        }
         
         # 表示するデータを準備
         data = []
@@ -2235,7 +2198,6 @@ class ValidationDashboard:
             "severity": ["error", "warning", "info"],
             "time_range": None,
             "position": None
-        }
     
     def render_overview_section(self) -> Dict[str, Any]:
         """
@@ -2258,8 +2220,6 @@ class ValidationDashboard:
             "charts": {
                 "quality_score": quality_score_chart,
                 "category_scores": category_scores_chart
-            }
-        }
     
     def render_details_section(self) -> Dict[str, Any]:
         """
@@ -2289,7 +2249,6 @@ class ValidationDashboard:
             },
             "detailed_report": detailed_report,
             "problem_records_df": problem_records_df if not problem_records_df.empty else None
-        }
     
     def render_action_section(self) -> Dict[str, Any]:
         """
@@ -2315,7 +2274,6 @@ class ValidationDashboard:
                     {"id": "value", "name": "定数で埋める", "description": "指定した値で欠損値を埋める"},
                     {"id": "drop", "name": "行を削除", "description": "欠損値を含む行を削除"}
                 ]
-            }
         
         # 範囲外の値の修正オプション
         if len(self.metrics_calculator.problematic_indices["out_of_range"]) > 0:
@@ -2327,7 +2285,6 @@ class ValidationDashboard:
                     {"id": "remove", "name": "値をNULLにする", "description": "範囲外の値をNULLに置き換え"},
                     {"id": "drop", "name": "行を削除", "description": "範囲外の値を含む行を削除"}
                 ]
-            }
         
         # 重複の修正オプション
         if len(self.metrics_calculator.problematic_indices["duplicates"]) > 0:
@@ -2338,7 +2295,6 @@ class ValidationDashboard:
                     {"id": "offset", "name": "時間をずらす", "description": "重複するタイムスタンプを少しずつずらす"},
                     {"id": "drop", "name": "重複を削除", "description": "重複する2番目以降の行を削除"}
                 ]
-            }
         
         # 空間的異常の修正オプション
         if len(self.metrics_calculator.problematic_indices["spatial_anomalies"]) > 0:
@@ -2349,7 +2305,6 @@ class ValidationDashboard:
                     {"id": "remove", "name": "異常を削除", "description": "異常なポイントを削除"},
                     {"id": "interpolate", "name": "位置を補間", "description": "前後のポイントから位置を補間"}
                 ]
-            }
         
         # 時間的異常の修正オプション
         if len(self.metrics_calculator.problematic_indices["temporal_anomalies"]) > 0:
@@ -2360,7 +2315,6 @@ class ValidationDashboard:
                     {"id": "remove_reverse", "name": "逆行を削除", "description": "時間が逆行している行を削除"},
                     {"id": "split", "name": "セッション分割", "description": "大きなギャップで別セッションに分割"}
                 ]
-            }
         
         # 自動修正可能な問題の抽出
         auto_fixable_issues = []
@@ -2389,7 +2343,6 @@ class ValidationDashboard:
         return {
             "fix_options": fix_options,
             "auto_fixable_issues": auto_fixable_issues
-        }
     
     def handle_filter_change(self, new_filters: Dict[str, Any]) -> None:
         """
@@ -2594,7 +2547,6 @@ class ValidationVisualization:
             "duplicates": "重複タイムスタンプ",
             "spatial_anomalies": "空間的異常",
             "temporal_anomalies": "時間的異常"
-        }
         
         # 各問題タイプで、問題のあるレコードに問題情報を追加
         for category, indices in self.problematic_indices.items():
@@ -2605,7 +2557,6 @@ class ValidationVisualization:
                             "issues": [],
                             "issue_count": 0,
                             "severity": "info"
-                        }
                     
                     # 問題がまだ追加されていなければ追加
                     if issue_categories[category] not in record_issues[idx]["issues"]:
@@ -2712,7 +2663,6 @@ class ValidationVisualization:
                 severity_counts["warning"],
                 severity_counts["info"]
             ]
-        }
         
         summary_df = pd.DataFrame(summary_data)
         
@@ -2890,7 +2840,6 @@ class ValidationVisualization:
                 "重要度": issue_data.get("severity", "info"),
                 "問題タイプ": ", ".join(issue_data.get("issues", [])),
                 "説明": issue_data.get("description", "")
-            }
             problem_records.append(record)
         
         # DataFrameに変換
@@ -3021,4 +2970,3 @@ class ValidationVisualization:
             "problematic_indices": self.problematic_indices,
             "quality_scores": self.quality_score,
             "quality_summary": self.quality_summary
-        }

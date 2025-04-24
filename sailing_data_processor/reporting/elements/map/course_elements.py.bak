@@ -1,8 +1,8 @@
 """
 sailing_data_processor.reporting.elements.map.course_elements
 
-³ü¹ ì¤äü’Ğ›Y‹â¸åüëgY
-Şü¯Mn³ü¹b¶ì¤é¤ó&eİ¤óÈjin_ı’ŸÅW~Y
+ã‚»ãƒ¼ãƒªãƒ³ã‚°ã‚³ãƒ¼ã‚¹ã®è¦ç´ ï¼ˆãƒãƒ¼ã‚¯ã€ã‚¹ã‚¿ãƒ¼ãƒˆãƒ©ã‚¤ãƒ³ã€ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³ç­‰ï¼‰ã‚’ç®¡ç†ã™ã‚‹ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã€‚
+ã“ã®ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã¯ã€ã‚³ãƒ¼ã‚¹ä¸Šã®æ§˜ã€…ãªè¦ç´ ã¨ãã®è¦–è¦šåŒ–æ©Ÿèƒ½ã‚’å®šç¾©ã—ã¾ã™ã€‚
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -15,33 +15,32 @@ from sailing_data_processor.reporting.templates.template_model import ElementTyp
 
 class CourseElementsLayer(StrategyPointLayerElement):
     """
-    ³ü¹ ì¤äü
+    ã‚³ãƒ¼ã‚¹è¦ç´ ãƒ¬ã‚¤ãƒ¤ãƒ¼
     
-    »üêó°³ü¹
-nŞü¯é¤ó&eİ¤óÈji’
-    h:Y‹_nì¤äü ’Ğ›W~Y
+    ã‚»ãƒ¼ãƒªãƒ³ã‚°ã‚³ãƒ¼ã‚¹ä¸Šã®ãƒãƒ¼ã‚¯ã€ãƒ©ã‚¤ãƒ³ã€ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³ã€æˆ¦ç•¥ãƒã‚¤ãƒ³ãƒˆã‚’ç®¡ç†ã—ã¾ã™ã€‚
+    ç¾åœ¨ã®ã‚³ãƒ¼ã‚¹çŠ¶æ…‹ã‚’è¦–è¦šåŒ–ã™ã‚‹ãŸã‚ã®ãƒ¬ã‚¤ãƒ¤ãƒ¼ã§ã™ã€‚
     """
     
     def __init__(self, model: Optional[ElementModel] = None, **kwargs):
         """
-        
+        åˆæœŸåŒ–
         
         Parameters
         ----------
         model : Optional[ElementModel], optional
-             âÇë, by default None
+            ãƒ¢ãƒ‡ãƒ«è¨­å®š, by default None
         **kwargs : dict
-            âÇëLĞ›UŒjD4k(UŒ‹×íÑÆ£
+            è¿½åŠ ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¨ã—ã¦ãƒ¬ã‚¤ãƒ¤ãƒ¼ã«æ¸¡ã™è¨­å®šã‚ªãƒ—ã‚·ãƒ§ãƒ³
         """
         super().__init__(model, **kwargs)
         
-        # ³ü¹¢#n-š
+        # ãƒãƒ¼ã‚¯è¨­å®šã®åˆæœŸåŒ–
         self.set_property("marks", self.get_property("marks", []))
         self.set_property("course_shape", self.get_property("course_shape", "windward_leeward"))
         self.set_property("start_line", self.get_property("start_line", {}))
         self.set_property("finish_line", self.get_property("finish_line", {}))
         
-        # ì¤é¤ó¢#n-š
+        # ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³è¨­å®šã®åˆæœŸåŒ–
         self.set_property("show_laylines", self.get_property("show_laylines", True))
         self.set_property("tacking_angle", self.get_property("tacking_angle", 90))
         self.set_property("layline_style", self.get_property("layline_style", {
@@ -50,7 +49,7 @@ nŞü¯é¤ó&eİ¤óÈji’
             "dashArray": "5,5"
         }))
         
-        # &e¢#n-š
+        # æˆ¦ç•¥è¨­å®šã®åˆæœŸåŒ–
         self.set_property("strategy_points", self.get_property("strategy_points", []))
         self.set_property("optimal_route", self.get_property("optimal_route", []))
         self.set_property("risk_areas", self.get_property("risk_areas", []))
@@ -58,18 +57,18 @@ nŞü¯é¤ó&eİ¤óÈji’
     def add_mark(self, lat: float, lng: float, mark_type: str = "rounding", 
                options: Dict[str, Any] = None) -> None:
         """
-        Şü¯’ı 
+        ãƒãƒ¼ã‚¯ã‚’è¿½åŠ 
         
         Parameters
         ----------
         lat : float
-            ï¦
+            ç·¯åº¦
         lng : float
-            L¦
+            çµŒåº¦
         mark_type : str, optional
-            Şü¯¿¤×, by default "rounding"
+            ãƒãƒ¼ã‚¯ã‚¿ã‚¤ãƒ—, by default "rounding"
         options : Dict[str, Any], optional
-            Şü¯ª×·çó, by default None
+            ãƒãƒ¼ã‚¯ã®è¿½åŠ è¨­å®š, by default None
         """
         if options is None:
             options = {}
@@ -87,16 +86,16 @@ nŞü¯é¤ó&eİ¤óÈji’
     def set_start_line(self, pin: Dict[str, float], boat: Dict[str, float], 
                       options: Dict[str, Any] = None) -> None:
         """
-        ¹¿üÈé¤ó’-š
+        ã‚¹ã‚¿ãƒ¼ãƒˆãƒ©ã‚¤ãƒ³ã‚’è¨­å®š
         
         Parameters
         ----------
         pin : Dict[str, float]
-            ÔóMn {lat, lng}
+            ãƒ”ãƒ³å´ {lat, lng}
         boat : Dict[str, float]
-            ÜüÈMn {lat, lng}
+            ã‚³ãƒŸãƒƒãƒ†ã‚£ãƒœãƒ¼ãƒˆå´ {lat, lng}
         options : Dict[str, Any], optional
-            é¤óª×·çó, by default None
+            ãƒ©ã‚¤ãƒ³ã®è¿½åŠ è¨­å®š, by default None
         """
         if options is None:
             options = {}
@@ -112,18 +111,18 @@ nŞü¯é¤ó&eİ¤óÈji’
     def add_strategy_point(self, lat: float, lng: float, point_type: str, 
                          options: Dict[str, Any] = None) -> None:
         """
-        &eİ¤óÈ’ı 
+        æˆ¦ç•¥ãƒã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
         
         Parameters
         ----------
         lat : float
-            ï¦
+            ç·¯åº¦
         lng : float
-            L¦
+            çµŒåº¦
         point_type : str
-            İ¤óÈ¿¤× (advantage, caution, information, etc.)
+            ãƒã‚¤ãƒ³ãƒˆã‚¿ã‚¤ãƒ— (advantage, caution, information, etc.)
         options : Dict[str, Any], optional
-            İ¤óÈª×·çó, by default None
+            ãƒã‚¤ãƒ³ãƒˆã®è¿½åŠ è¨­å®š, by default None
         """
         if options is None:
             options = {}
@@ -141,16 +140,16 @@ nŞü¯é¤ó&eİ¤óÈji’
     def add_risk_area(self, polygon: List[Dict[str, float]], risk_type: str = "caution", 
                     options: Dict[str, Any] = None) -> None:
         """
-        ê¹¯¨ê¢’ı 
+        ãƒªã‚¹ã‚¯ã‚¨ãƒªã‚¢ã‚’è¿½åŠ 
         
         Parameters
         ----------
         polygon : List[Dict[str, float]]
-            İê´ón¹ê¹È [{lat, lng}, ...]
+            ã‚¨ãƒªã‚¢ã®åº§æ¨™ç‚¹ãƒªã‚¹ãƒˆ [{lat, lng}, ...]
         risk_type : str, optional
-            ê¹¯¿¤×, by default "caution"
+            ãƒªã‚¹ã‚¯ã‚¿ã‚¤ãƒ—, by default "caution"
         options : Dict[str, Any], optional
-            ¨ê¢ª×·çó, by default None
+            ã‚¨ãƒªã‚¢ã®è¿½åŠ è¨­å®š, by default None
         """
         if options is None:
             options = {}
@@ -167,15 +166,14 @@ nŞü¯é¤ó&eİ¤óÈji’
     def set_optimal_route(self, points: List[Dict[str, float]], 
                         options: Dict[str, Any] = None) -> None:
         """
-        iëüÈ’-š
+        æœ€é©ãƒ«ãƒ¼ãƒˆã‚’è¨­å®š
         
         Parameters
         ----------
         points : List[Dict[str, float]]
-            ëüÈ
-nİ¤óÈê¹È [{lat, lng}, ...]
+            ãƒ«ãƒ¼ãƒˆä¸Šã®ãƒã‚¤ãƒ³ãƒˆãƒªã‚¹ãƒˆ [{lat, lng}, ...]
         options : Dict[str, Any], optional
-            ëüÈª×·çó, by default None
+            ãƒ«ãƒ¼ãƒˆã®è¿½åŠ è¨­å®š, by default None
         """
         if options is None:
             options = {}
@@ -189,16 +187,16 @@ nİ¤óÈê¹È [{lat, lng}, ...]
     
     def get_chart_libraries(self) -> List[str]:
         """
-        Ï;kÅjé¤Öéênê¹È’Ö—
+        å¿…è¦ãªJavaScriptãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ãƒªã‚¹ãƒˆã‚’å–å¾—
         
         Returns
         -------
         List[str]
-            é¤ÖéênURLê¹È
+            ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®URLãƒªã‚¹ãƒˆ
         """
         libraries = super().get_chart_libraries()
         
-        # ı né¤Öéê
+        # è¿½åŠ ã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒª
         additional_libraries = [
             "https://cdn.jsdelivr.net/npm/leaflet-geometryutil@0.9.3/src/leaflet.geometryutil.min.js"
         ]
@@ -207,48 +205,48 @@ nİ¤óÈê¹È [{lat, lng}, ...]
     
     def render(self, context: Dict[str, Any]) -> str:
         """
-         ’HTMLkìóÀêó°
+        HTMLã¨ã—ã¦ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°
         
         Parameters
         ----------
         context : Dict[str, Any]
-            ìóÀêó°³óÆ­¹È
+            ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ
             
         Returns
         -------
         str
-            ìóÀêó°UŒ_HTML
+            ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã•ã‚ŒãŸHTML
         """
-        # aöÁ§Ã¯
+        # æ¡ä»¶è©•ä¾¡
         if not self.evaluate_conditions(context):
             return ""
         
-        # Çü¿½ü¹K‰Çü¿’Ö—
+        # ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã‚½ãƒ¼ã‚¹ã‚’å–å¾—
         data = None
         if self.data_source and self.data_source in context:
             data = context[self.data_source]
         
-        # ÈéÃ¯Çü¿LjD4g‚³ü¹ oh:gM‹ˆFşÜ
+        # ãƒ‡ãƒ¼ã‚¿ãŒãªã„å ´åˆã¯ç©ºã®ãƒ‡ãƒ¼ã‚¿ã‚»ãƒƒãƒˆã‚’ç”¨æ„ï¼ˆã‚¨ãƒ©ãƒ¼å›é¿ï¼‰
         if not data:
             data = {"points": []}
         
-        # CSS¹¿¤ënÖ—
+        # CSSã‚¹ã‚¿ã‚¤ãƒ«ã®å–å¾—
         css_style = self.get_css_styles()
         width, height = self.get_chart_dimensions()
         
-        # ŞÃ×n-š
+        # ãƒãƒƒãƒ—ã®è¨­å®š
         center_auto = self.get_property("center_auto", True)
         center_lat = self.get_property("center_lat", 35.4498)
         center_lng = self.get_property("center_lng", 139.6649)
         zoom_level = self.get_property("zoom_level", 13)
         
-        # ³ü¹¢#n-š
+        # ãƒãƒ¼ã‚¯ã®è¨­å®š
         marks = self.get_property("marks", [])
         course_shape = self.get_property("course_shape", "windward_leeward")
         start_line = self.get_property("start_line", {})
         finish_line = self.get_property("finish_line", {})
         
-        # ì¤é¤ó¢#n-š
+        # ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³ã®è¨­å®š
         show_laylines = self.get_property("show_laylines", True)
         tacking_angle = self.get_property("tacking_angle", 90)
         layline_style = self.get_property("layline_style", {
@@ -257,18 +255,18 @@ nİ¤óÈê¹È [{lat, lng}, ...]
             "dashArray": "5,5"
         })
         
-        # &e¢#n-š
+        # æˆ¦ç•¥è¨­å®š
         strategy_points = self.get_property("strategy_points", [])
         optimal_route = self.get_property("optimal_route", [])
         risk_areas = self.get_property("risk_areas", [])
         
-        # ŞÃ×n¿¤×h-š
+        # ãƒãƒƒãƒ—ã®è¡¨ç¤ºè¨­å®š
         map_type = self.get_property("map_type", "osm")
         show_track = self.get_property("show_track", True)
         track_color = self.get_property("track_color", "rgba(54, 162, 235, 0.8)")
         track_width = self.get_property("track_width", 3)
         
-        # Şü«ü¢¤³ó-š
+        # ãƒã‚¤ãƒ³ãƒˆã‚¢ã‚¤ã‚³ãƒ³è¨­å®š
         point_icons = self.get_property("point_icons", {
             "mark": {"color": "red", "icon": "map-marker-alt"},
             "start": {"color": "green", "icon": "flag"},
@@ -279,10 +277,10 @@ nİ¤óÈê¹È [{lat, lng}, ...]
             "default": {"color": "gray", "icon": "map-marker-alt"}
         })
         
-        # Çü¿’JSON‡Wk	Û
+        # ãƒ‡ãƒ¼ã‚¿ã‚’JSONå½¢å¼ã«å¤‰æ›
         data_json = json.dumps(data)
         
-        # ³ü¹¢#-š’JSON‡Wk	Û
+        # ã‚³ãƒ¼ã‚¹è¨­å®šã‚’JSONå½¢å¼ã«å¤‰æ›
         course_config = {
             "marks": marks,
             "course_shape": course_shape,
@@ -298,7 +296,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
         
         course_config_json = json.dumps(course_config)
         
-        # ŞÃ×-š’JSON‡Wk	Û
+        # ãƒãƒƒãƒ—è¨­å®šã‚’JSONå½¢å¼ã«å¤‰æ›
         map_config = {
             "map_type": map_type,
             "center_auto": center_auto,
@@ -312,7 +310,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
         
         map_config_json = json.dumps(map_config)
         
-        # ı nCSS¹¿¤ë
+        # è¿½åŠ ã®CSSå®šç¾©
         additional_css = """
         <style>
             .course-mark-icon {
@@ -385,7 +383,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
         </style>
         """
         
-        # ŞÃ× nìóÀêó°
+        # å®Œå…¨ãªHTMLã‚³ãƒ³ãƒ†ãƒ³ãƒ„
         html_content = f'''
         <div id="{self.element_id}" class="report-map-container" style="{css_style}">
             <!-- Leaflet CSS -->
@@ -397,17 +395,17 @@ nİ¤óÈê¹È [{lat, lng}, ...]
             
             <script>
                 (function() {{
-                    // ŞÃ×Çü¿
+                    // åŸºæœ¬ãƒ‡ãƒ¼ã‚¿
                     var courseData = {data_json};
                     var courseConfig = {course_config_json};
                     var mapConfig = {map_config_json};
                     
-                    // ŞÃ×
+                    // åˆæœŸåŒ–é–¢æ•°
                     window.addEventListener('load', function() {{
-                        // ŞÃ×n\
+                        // ãƒãƒƒãƒ—ã®ä½œæˆ
                         var map = L.map('{self.map_id}');
                         
-                        // ¿¤ëì¤äünx
+                        // ãƒ™ãƒ¼ã‚¹ãƒãƒƒãƒ—ã®é¸æŠ
                         var tileLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
@@ -426,19 +424,19 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 }});
                         }}
                         
-                        // ¿¤ëì¤äü’ŞÃ×kı 
+                        // ãƒ™ãƒ¼ã‚¹ãƒãƒƒãƒ—ã‚’ãƒãƒƒãƒ—ã«è¿½åŠ 
                         tileLayer.addTo(map);
                         
-                        // ÈéÃ¯İ¤óÈh¨4Çü¿’½ú
+                        // åº§æ¨™ãƒ‡ãƒ¼ã‚¿ã®æƒ…å ±ã‚’å–å¾—
                         var trackPoints = [];
                         var latKey = 'lat';
                         var lngKey = 'lng';
                         
-                        // Çü¿bkÜXfæ
+                        // ãƒ‡ãƒ¼ã‚¿å½¢å¼ã‚’ãƒã‚§ãƒƒã‚¯
                         if (Array.isArray(courseData)) {{
-                            // Mbn4ÈéÃ¯İ¤óÈnïı'	
+                            // é…åˆ—å½¢å¼ã®å ´åˆã€åº§æ¨™ãƒ‡ãƒ¼ã‚¿ã®å–å¾—
                             if (courseData.length > 0 && typeof courseData[0] === 'object') {{
-                                // §­ü’yš
+                                // ã‚­ãƒ¼åã®ç¢ºèª
                                 if ('latitude' in courseData[0] && 'longitude' in courseData[0]) {{
                                     latKey = 'latitude';
                                     lngKey = 'longitude';
@@ -446,7 +444,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                     lngKey = 'lon';
                                 }}
                                 
-                                // ÈéÃ¯İ¤óÈ’½ú
+                                // åº§æ¨™ãƒã‚¤ãƒ³ãƒˆã‚’è¿½åŠ 
                                 for (var i = 0; i < courseData.length; i++) {{
                                     var point = courseData[i];
                                     if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
@@ -455,7 +453,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 }}
                             }}
                         }} else if (typeof courseData === 'object') {{
-                            // ªÖ¸§¯Èbn4
+                            // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå½¢å¼ã®å ´åˆ
                             if ('track' in courseData && Array.isArray(courseData.track)) {{
                                 for (var i = 0; i < courseData.track.length; i++) {{
                                     var point = courseData.track[i];
@@ -473,7 +471,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                             }}
                         }}
                         
-                        // ì¤äü°ëü×’\
+                        // ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚°ãƒ«ãƒ¼ãƒ—ã®ä½œæˆ
                         var trackLayer = L.layerGroup();
                         var markLayer = L.layerGroup();
                         var lineLayer = L.layerGroup();
@@ -482,10 +480,10 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                         var routeLayer = L.layerGroup();
                         var riskLayer = L.layerGroup();
                         
-                        // ì¤äü6¡n_nªÖ¸§¯È
+                        // ã‚ªãƒ¼ãƒãƒ¼ãƒ¬ã‚¤ã®ãƒªã‚¹ãƒˆä½œæˆ
                         var overlays = {{}};
                         
-                        // ÈéÃ¯é¤ó’\h:-šLªón4	
+                        // ãƒˆãƒ©ãƒƒã‚¯è¡¨ç¤ºï¼ˆGPSèˆªè·¡ã®å ´åˆï¼‰
                         if (mapConfig.show_track && trackPoints.length > 0) {{
                             var trackLine = L.polyline(trackPoints, {{
                                 color: mapConfig.track_color,
@@ -494,19 +492,19 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 lineJoin: 'round'
                             }}).addTo(trackLayer);
                             
-                            overlays["GPSÈéÃ¯"] = trackLayer;
+                            overlays["GPSèˆªè·¡"] = trackLayer;
                             trackLayer.addTo(map);
                         }}
                         
-                        // Şü¯Ö¤ji	’\
+                        // ãƒãƒ¼ã‚¯ã®è¡¨ç¤º
                         if (courseConfig.marks && courseConfig.marks.length > 0) {{
                             courseConfig.marks.forEach(function(mark) {{
-                                // Şü¯¿¤×’Ö—
+                                // ã‚¢ã‚¤ã‚³ãƒ³è¨­å®šã‚’å–å¾—
                                 var iconConfig = mapConfig.point_icons[mark.type] || mapConfig.point_icons.mark || mapConfig.point_icons.default;
                                 var iconColor = mark.color || iconConfig.color || 'red';
                                 var iconName = mark.icon || iconConfig.icon || 'map-marker-alt';
                                 
-                                // Şü¯¢¤³ó’\
+                                // ã‚¢ã‚¤ã‚³ãƒ³ã‚’ä½œæˆ
                                 var markIcon = L.divIcon({{
                                     html: '<div class="course-mark-icon" style="background-color: ' + iconColor + ';"><i class="fas fa-' + iconName + '"></i></div>',
                                     className: 'course-mark-icon-wrapper',
@@ -514,33 +512,33 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                     iconAnchor: [16, 16]
                                 }});
                                 
-                                // Şü«ün\
+                                // ãƒãƒ¼ã‚«ãƒ¼ã®ä½œæˆ
                                 var marker = L.marker([mark.lat, mark.lng], {{
                                     icon: markIcon,
                                     title: mark.name || 'Mark'
                                 }}).addTo(markLayer);
                                 
-                                // İÃ×¢Ã×nı 
+                                // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã®å†…å®¹
                                 var popupContent = '<div class="course-popup">';
                                 popupContent += '<h4>' + (mark.name || 'Mark') + '</h4>';
                                 if (mark.description) popupContent += '<p>' + mark.description + '</p>';
-                                popupContent += '<p><strong>¿¤×:</strong> ' + mark.type + '</p>';
-                                if (mark.rounding_direction) popupContent += '<p><strong>Ş*¹:</strong> ' + mark.rounding_direction + '</p>';
+                                popupContent += '<p><strong>ã‚¿ã‚¤ãƒ—:</strong> ' + mark.type + '</p>';
+                                if (mark.rounding_direction) popupContent += '<p><strong>å›èˆªæ–¹å‘:</strong> ' + mark.rounding_direction + '</p>';
                                 popupContent += '</div>';
                                 
                                 marker.bindPopup(popupContent);
                             }});
                             
-                            overlays["³ü¹Şü¯"] = markLayer;
+                            overlays["ã‚³ãƒ¼ã‚¹ãƒãƒ¼ã‚¯"] = markLayer;
                             markLayer.addTo(map);
                         }}
                         
-                        // ¹¿üÈé¤ó’\
+                        // ã‚¹ã‚¿ãƒ¼ãƒˆãƒ©ã‚¤ãƒ³ã®è¡¨ç¤º
                         if (courseConfig.start_line && courseConfig.start_line.pin && courseConfig.start_line.boat) {{
                             var pinPos = [courseConfig.start_line.pin.lat, courseConfig.start_line.pin.lng];
                             var boatPos = [courseConfig.start_line.boat.lat, courseConfig.start_line.boat.lng];
                             
-                            // ¹¿üÈé¤ó
+                            // ãƒ©ã‚¤ãƒ³ã‚’ä½œæˆ
                             var startLine = L.polyline([pinPos, boatPos], {{
                                 color: 'green',
                                 weight: 3,
@@ -548,7 +546,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 className: 'start-line'
                             }}).addTo(lineLayer);
                             
-                            // Ôó¨óÉŞü«ü
+                            // ãƒ”ãƒ³å´ã®ãƒãƒ¼ã‚«ãƒ¼
                             var pinIcon = L.divIcon({{
                                 html: '<div class="course-mark-icon" style="background-color: green;"><i class="fas fa-flag"></i></div>',
                                 className: 'course-mark-icon-wrapper',
@@ -561,7 +559,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 title: 'Start Line (Pin End)'
                             }}).addTo(lineLayer);
                             
-                            // ³ßÃÆ£ÜüÈŞü«ü
+                            // ã‚³ãƒŸãƒƒãƒ†ã‚£ãƒœãƒ¼ãƒˆå´ã®ãƒãƒ¼ã‚«ãƒ¼
                             var boatIcon = L.divIcon({{
                                 html: '<div class="course-mark-icon" style="background-color: green;"><i class="fas fa-ship"></i></div>',
                                 className: 'course-mark-icon-wrapper',
@@ -574,20 +572,20 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 title: 'Start Line (Boat End)'
                             }}).addTo(lineLayer);
                             
-                            // İÃ×¢Ã×
+                            // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—
                             var lineLength = L.GeometryUtil.length(startLine);
                             
-                            startLine.bindPopup('<div class="course-popup"><h4>¹¿üÈé¤ó</h4>' +
-                                              '<p><strong>wU:</strong> ' + lineLength.toFixed(1) + ' m</p>' +
+                            startLine.bindPopup('<div class="course-popup"><h4>ã‚¹ã‚¿ãƒ¼ãƒˆãƒ©ã‚¤ãƒ³</h4>' +
+                                              '<p><strong>é•·ã•:</strong> ' + lineLength.toFixed(1) + ' m</p>' +
                                               '</div>');
                         }}
                         
-                        // Õ£ËÃ·åé¤ó’\
+                        // ãƒ•ã‚£ãƒ‹ãƒƒã‚·ãƒ¥ãƒ©ã‚¤ãƒ³ã®è¡¨ç¤º
                         if (courseConfig.finish_line && courseConfig.finish_line.pin && courseConfig.finish_line.boat) {{
                             var pinPos = [courseConfig.finish_line.pin.lat, courseConfig.finish_line.pin.lng];
                             var boatPos = [courseConfig.finish_line.boat.lat, courseConfig.finish_line.boat.lng];
                             
-                            // Õ£ËÃ·åé¤ó
+                            // ãƒ•ã‚£ãƒ‹ãƒƒã‚·ãƒ¥ãƒ©ã‚¤ãƒ³
                             var finishLine = L.polyline([pinPos, boatPos], {{
                                 color: 'blue',
                                 weight: 3,
@@ -595,7 +593,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 className: 'finish-line'
                             }}).addTo(lineLayer);
                             
-                            // Ôó¨óÉŞü«ü
+                            // ãƒ”ãƒ³å´ã®ãƒãƒ¼ã‚«ãƒ¼
                             var pinIcon = L.divIcon({{
                                 html: '<div class="course-mark-icon" style="background-color: blue;"><i class="fas fa-flag"></i></div>',
                                 className: 'course-mark-icon-wrapper',
@@ -608,7 +606,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 title: 'Finish Line (Pin End)'
                             }}).addTo(lineLayer);
                             
-                            // ³ßÃÆ£ÜüÈŞü«ü
+                            // ã‚³ãƒŸãƒƒãƒ†ã‚£ãƒœãƒ¼ãƒˆå´ã®ãƒãƒ¼ã‚«ãƒ¼
                             var boatIcon = L.divIcon({{
                                 html: '<div class="course-mark-icon" style="background-color: blue;"><i class="fas fa-ship"></i></div>',
                                 className: 'course-mark-icon-wrapper',
@@ -621,37 +619,33 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 title: 'Finish Line (Boat End)'
                             }}).addTo(lineLayer);
                             
-                            // İÃ×¢Ã×
+                            // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—
                             var lineLength = L.GeometryUtil.length(finishLine);
                             
-                            finishLine.bindPopup('<div class="course-popup"><h4>Õ£ËÃ·åé¤ó</h4>' +
-                                               '<p><strong>wU:</strong> ' + lineLength.toFixed(1) + ' m</p>' +
+                            finishLine.bindPopup('<div class="course-popup"><h4>ãƒ•ã‚£ãƒ‹ãƒƒã‚·ãƒ¥ãƒ©ã‚¤ãƒ³</h4>' +
+                                               '<p><strong>é•·ã•:</strong> ' + lineLength.toFixed(1) + ' m</p>' +
                                                '</div>');
                         }}
                         
-                        // é¤óì¤äü’ŞÃ×kı 
-                        overlays["¹¿üÈ/Õ£ËÃ·åé¤ó"] = lineLayer;
+                        // ã‚¹ã‚¿ãƒ¼ãƒˆ/ãƒ•ã‚£ãƒ‹ãƒƒã‚·ãƒ¥ãƒ©ã‚¤ãƒ³ã‚’è¿½åŠ 
+                        overlays["ã‚¹ã‚¿ãƒ¼ãƒˆ/ãƒ•ã‚£ãƒ‹ãƒƒã‚·ãƒ¥ãƒ©ã‚¤ãƒ³"] = lineLayer;
                         lineLayer.addTo(map);
                         
-                        // ì¤é¤ó’\¨
-Şü¯xnôÚëüÈ	
+                        // ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³ã®è¡¨ç¤º
                         if (courseConfig.show_laylines && courseConfig.marks && courseConfig.marks.length > 0) {{
-                            // ¨
-Şü¯’¢Y
+                            // ãƒãƒ¼ã‚¯æƒ…å ±ã®å–å¾—
                             var windwardMark = null;
                             var leewardMark = null;
                             
-                            // ³ü¹b¶kúeDf¨
-û¨Şü¯’yš
+                            // ã‚³ãƒ¼ã‚¹å½¢çŠ¶ã‹ã‚‰ãƒãƒ¼ã‚¯ã‚’ç‰¹å®š
                             if (courseConfig.course_shape === 'windward_leeward') {{
-                                // ¨
-û¨³ü¹n4hŒnŞü¯’(
+                                // é¢¨ä¸Šé¢¨ä¸‹ã‚³ãƒ¼ã‚¹ã®å ´åˆã€é †ç•ªã§åˆ¤å®š
                                 if (courseConfig.marks.length >= 2) {{
                                     windwardMark = courseConfig.marks[0];
                                     leewardMark = courseConfig.marks[1];
                                 }}
                             }} else {{
-                                // ]Œån4:„kšUŒ_Şü¯’¢Y
+                                // ãã‚Œä»¥å¤–ã®å ´åˆã€ã‚¿ã‚¤ãƒ—ã§ç‰¹å®š
                                 for (var i = 0; i < courseConfig.marks.length; i++) {{
                                     var mark = courseConfig.marks[i];
                                     if (mark.type === 'windward' || mark.role === 'windward') {{
@@ -662,11 +656,11 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 }}
                             }}
                             
-                            // ¿Ã­ó°Ò¦ÇÕ©ëÈo90¦	
+                            // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ã‚¿ãƒƒã‚­ãƒ³ã‚°è§’åº¦ã¯90åº¦
                             var tackingAngle = courseConfig.tacking_angle || 90;
                             var halfAngle = tackingAngle / 2;
                             
-                            // ì¤é¤ó¹¿¤ë
+                            // ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³ã®ã‚¹ã‚¿ã‚¤ãƒ«
                             var laylineStyle = {{
                                 color: 'rgba(255, 0, 0, 0.6)',
                                 weight: 2,
@@ -674,83 +668,82 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 className: 'layline'
                             }};
                             
-                            // æü¶üš©n¹¿¤ë’Şü¸
+                            // ã‚¹ã‚¿ã‚¤ãƒ«ã®ã‚«ã‚¹ã‚¿ãƒã‚¤ã‚º
                             if (courseConfig.layline_style) {{
                                 laylineStyle = Object.assign({{}}, laylineStyle, courseConfig.layline_style);
                             }}
                             
-                            // ¨
-Şü¯K‰ì¤é¤ó’O
+                            // é¢¨ä¸Šãƒãƒ¼ã‚¯ã®ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³
                             if (windwardMark) {{
                                 var windwardPos = [windwardMark.lat, windwardMark.lng];
                                 
-                                // ì¤é¤ónwU1km{i	
-                                var laylineLength = 0.01;  // 1kmï¦L¦XM	
+                                // ãƒ©ã‚¤ãƒ³ã®é•·ã•ï¼ˆç´„1kmï¼‰
+                                var laylineLength = 0.01;  // ç´„1kmã®çµŒåº¦å·®
                                 
-                                // ætnì¤é¤ó
+                                // å·¦å´ã®ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³
                                 var leftAngle = 180 + halfAngle;
                                 var leftEndLat = windwardMark.lat + Math.sin(leftAngle * Math.PI / 180) * laylineLength;
                                 var leftEndLng = windwardMark.lng + Math.cos(leftAngle * Math.PI / 180) * laylineLength;
                                 
                                 var leftLayline = L.polyline([windwardPos, [leftEndLat, leftEndLng]], laylineStyle).addTo(laylinesLayer);
                                 
-                                // ótnì¤é¤ó
+                                // å³å´ã®ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³
                                 var rightAngle = 180 - halfAngle;
                                 var rightEndLat = windwardMark.lat + Math.sin(rightAngle * Math.PI / 180) * laylineLength;
                                 var rightEndLng = windwardMark.lng + Math.cos(rightAngle * Math.PI / 180) * laylineLength;
                                 
                                 var rightLayline = L.polyline([windwardPos, [rightEndLat, rightEndLng]], laylineStyle).addTo(laylinesLayer);
                                 
-                                // İÃ×¢Ã×
-                                leftLayline.bindPopup('<div class="course-popup"><h4>æì¤é¤ó</h4>' +
-                                                    '<p><strong>Ò¦:</strong> ' + leftAngle + '°</p></div>');
+                                // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—
+                                leftLayline.bindPopup('<div class="course-popup"><h4>ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³</h4>' +
+                                                    '<p><strong>è§’åº¦:</strong> ' + leftAngle + 'Â°</p></div>');
                                 
-                                rightLayline.bindPopup('<div class="course-popup"><h4>óì¤é¤ó</h4>' +
-                                                     '<p><strong>Ò¦:</strong> ' + rightAngle + '°</p></div>');
+                                rightLayline.bindPopup('<div class="course-popup"><h4>ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³</h4>' +
+                                                     '<p><strong>è§’åº¦:</strong> ' + rightAngle + 'Â°</p></div>');
                             }}
                             
-                            // ¨Şü¯K‰ì¤é¤ó’O
+                            // é¢¨ä¸‹ãƒãƒ¼ã‚¯ã®ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³
                             if (leewardMark) {{
                                 var leewardPos = [leewardMark.lat, leewardMark.lng];
                                 
-                                // ì¤é¤ónwU1km{i	
-                                var laylineLength = 0.01;  // 1kmï¦L¦XM	
+                                // ãƒ©ã‚¤ãƒ³ã®é•·ã•ï¼ˆç´„1kmï¼‰
+                                var laylineLength = 0.01;  // ç´„1kmã®çµŒåº¦å·®
                                 
-                                // ætnì¤é¤ó
+                                // å·¦å´ã®ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³
                                 var leftAngle = halfAngle;
                                 var leftEndLat = leewardMark.lat + Math.sin(leftAngle * Math.PI / 180) * laylineLength;
                                 var leftEndLng = leewardMark.lng + Math.cos(leftAngle * Math.PI / 180) * laylineLength;
                                 
                                 var leftLayline = L.polyline([leewardPos, [leftEndLat, leftEndLng]], laylineStyle).addTo(laylinesLayer);
                                 
-                                // ótnì¤é¤ó
+                                // å³å´ã®ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³
                                 var rightAngle = 360 - halfAngle;
                                 var rightEndLat = leewardMark.lat + Math.sin(rightAngle * Math.PI / 180) * laylineLength;
                                 var rightEndLng = leewardMark.lng + Math.cos(rightAngle * Math.PI / 180) * laylineLength;
                                 
                                 var rightLayline = L.polyline([leewardPos, [rightEndLat, rightEndLng]], laylineStyle).addTo(laylinesLayer);
                                 
-                                // İÃ×¢Ã×
-                                leftLayline.bindPopup('<div class="course-popup"><h4>æì¤é¤ó</h4>' +
-                                                    '<p><strong>Ò¦:</strong> ' + leftAngle + '°</p></div>');
+                                // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—
+                                leftLayline.bindPopup('<div class="course-popup"><h4>ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³</h4>' +
+                                                    '<p><strong>è§’åº¦:</strong> ' + leftAngle + 'Â°</p></div>');
                                 
-                                rightLayline.bindPopup('<div class="course-popup"><h4>óì¤é¤ó</h4>' +
-                                                     '<p><strong>Ò¦:</strong> ' + rightAngle + '°</p></div>');
+                                rightLayline.bindPopup('<div class="course-popup"><h4>ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³</h4>' +
+                                                     '<p><strong>è§’åº¦:</strong> ' + rightAngle + 'Â°</p></div>');
                             }}
                             
-                            overlays["ì¤é¤ó"] = laylinesLayer;
+                            overlays["ãƒ¬ã‚¤ãƒ©ã‚¤ãƒ³"] = laylinesLayer;
                             laylinesLayer.addTo(map);
                         }}
                         
-                        // &eİ¤óÈ’ı 
+                        // æˆ¦ç•¥ãƒã‚¤ãƒ³ãƒˆã®è¡¨ç¤º
                         if (courseConfig.strategy_points && courseConfig.strategy_points.length > 0) {{
                             courseConfig.strategy_points.forEach(function(point) {{
-                                // İ¤óÈ¿¤×’Ö—
+                                // ãƒã‚¤ãƒ³ãƒˆã‚¿ã‚¤ãƒ—ã®è¨­å®š
                                 var iconConfig = mapConfig.point_icons[point.type] || mapConfig.point_icons.default;
                                 var iconColor = point.color || iconConfig.color || 'blue';
                                 var iconName = point.icon || iconConfig.icon || 'info-circle';
                                 
-                                // İ¤óÈ¢¤³ó’\
+                                // ãƒã‚¤ãƒ³ãƒˆã‚¢ã‚¤ã‚³ãƒ³ã®ä½œæˆ
                                 var pointIcon = L.divIcon({{
                                     html: '<div class="course-mark-icon" style="background-color: ' + iconColor + ';"><i class="fas fa-' + iconName + '"></i></div>',
                                     className: 'course-mark-icon-wrapper',
@@ -758,32 +751,32 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                     iconAnchor: [16, 16]
                                 }});
                                 
-                                // Şü«ün\
+                                // ãƒãƒ¼ã‚«ãƒ¼ã®ä½œæˆ
                                 var marker = L.marker([point.lat, point.lng], {{
                                     icon: pointIcon,
                                     title: point.name || point.description || 'Strategy Point'
                                 }}).addTo(strategyLayer);
                                 
-                                // İÃ×¢Ã×nı 
-                                var pointType = point.type === 'advantage' ? '	)İ¤óÈ' : 
-                                              point.type === 'caution' ? 'èİ¤óÈ' : 
-                                              point.type === 'information' ? 'Å1İ¤óÈ' : 
-                                              '&eİ¤óÈ';
+                                // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã®å†…å®¹
+                                var pointType = point.type === 'advantage' ? 'æœ‰åˆ©ãƒã‚¤ãƒ³ãƒˆ' : 
+                                              point.type === 'caution' ? 'æ³¨æ„ãƒã‚¤ãƒ³ãƒˆ' : 
+                                              point.type === 'information' ? 'æƒ…å ±ãƒã‚¤ãƒ³ãƒˆ' : 
+                                              'æˆ¦ç•¥ãƒã‚¤ãƒ³ãƒˆ';
                                 
                                 var popupContent = '<div class="course-popup">';
                                 if (point.name) popupContent += '<h4>' + point.name + '</h4>';
-                                popupContent += '<p><strong>¿¤×:</strong> ' + pointType + '</p>';
+                                popupContent += '<p><strong>ã‚¿ã‚¤ãƒ—:</strong> ' + pointType + '</p>';
                                 if (point.description) popupContent += '<p>' + point.description + '</p>';
                                 popupContent += '</div>';
                                 
                                 marker.bindPopup(popupContent);
                             }});
                             
-                            overlays["&eİ¤óÈ"] = strategyLayer;
+                            overlays["æˆ¦ç•¥ãƒã‚¤ãƒ³ãƒˆ"] = strategyLayer;
                             strategyLayer.addTo(map);
                         }}
                         
-                        // iëüÈ’ı 
+                        // æœ€é©ãƒ«ãƒ¼ãƒˆã®è¡¨ç¤º
                         if (courseConfig.optimal_route && courseConfig.optimal_route.points && courseConfig.optimal_route.points.length > 0) {{
                             var routePoints = [];
                             
@@ -791,7 +784,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 routePoints.push([point.lat, point.lng]);
                             }});
                             
-                            // ëüÈé¤ó’\
+                            // ãƒ«ãƒ¼ãƒˆãƒ©ã‚¤ãƒ³
                             var routeLine = L.polyline(routePoints, {{
                                 color: 'rgba(0, 128, 0, 0.8)',
                                 weight: 3,
@@ -800,11 +793,11 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 className: 'optimal-route'
                             }}).addTo(routeLayer);
                             
-                            // ëüÈn¬
-                            var description = courseConfig.optimal_route.description || '¨hëüÈ';
+                            // ãƒ«ãƒ¼ãƒˆã®èª¬æ˜
+                            var description = courseConfig.optimal_route.description || 'æœ€é©ãƒ«ãƒ¼ãƒˆ';
                             var reason = courseConfig.optimal_route.reason || '';
                             
-                            // İÃ×¢Ã×nı 
+                            // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã®å†…å®¹
                             var popupContent = '<div class="course-popup">';
                             popupContent += '<h4>' + description + '</h4>';
                             if (reason) popupContent += '<p>' + reason + '</p>';
@@ -812,21 +805,21 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                             
                             routeLine.bindPopup(popupContent);
                             
-                            overlays["iëüÈ"] = routeLayer;
+                            overlays["æœ€é©ãƒ«ãƒ¼ãƒˆ"] = routeLayer;
                             routeLayer.addTo(map);
                         }}
                         
-                        // ê¹¯¨ê¢’ı 
+                        // ãƒªã‚¹ã‚¯ã‚¨ãƒªã‚¢ã®è¡¨ç¤º
                         if (courseConfig.risk_areas && courseConfig.risk_areas.length > 0) {{
                             courseConfig.risk_areas.forEach(function(area) {{
-                                // İê´ón¹’½ú
+                                // ãƒãƒªã‚´ãƒ³ã®åº§æ¨™ç‚¹
                                 var polygonPoints = [];
                                 
                                 area.polygon.forEach(function(point) {{
                                     polygonPoints.push([point.lat, point.lng]);
                                 }});
                                 
-                                // ê¹¯¿¤×kÜX_¹¿¤ë
+                                // ãƒªã‚¹ã‚¯ã‚¿ã‚¤ãƒ—ã«å¿œã˜ãŸã‚¹ã‚¿ã‚¤ãƒ«
                                 var areaStyle = {{
                                     color: 'rgba(255, 165, 0, 0.8)',
                                     weight: 1,
@@ -845,18 +838,18 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                     areaStyle.className = 'risk-area risk-area-information';
                                 }}
                                 
-                                // İê´ón\
+                                // ãƒãƒªã‚´ãƒ³ã®ä½œæˆ
                                 var polygon = L.polygon(polygonPoints, areaStyle).addTo(riskLayer);
                                 
-                                // ¨ê¢n¬
-                                var areaType = area.type === 'danger' ? 'qz¨ê¢' : 
-                                             area.type === 'caution' ? 'è¨ê¢' : 
-                                             area.type === 'information' ? 'Å1¨ê¢' : 
-                                             '¨ê¢';
+                                // ã‚¨ãƒªã‚¢ã®èª¬æ˜
+                                var areaType = area.type === 'danger' ? 'å±é™ºã‚¨ãƒªã‚¢' : 
+                                             area.type === 'caution' ? 'æ³¨æ„ã‚¨ãƒªã‚¢' : 
+                                             area.type === 'information' ? 'æƒ…å ±ã‚¨ãƒªã‚¢' : 
+                                             'ã‚¨ãƒªã‚¢';
                                 
                                 var description = area.description || '';
                                 
-                                // İÃ×¢Ã×nı 
+                                // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã®å†…å®¹
                                 var popupContent = '<div class="course-popup">';
                                 popupContent += '<h4>' + areaType + '</h4>';
                                 if (description) popupContent += '<p>' + description + '</p>';
@@ -865,17 +858,17 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 polygon.bindPopup(popupContent);
                             }});
                             
-                            overlays["ê¹¯¨ê¢"] = riskLayer;
+                            overlays["ãƒªã‚¹ã‚¯ã‚¨ãƒªã‚¢"] = riskLayer;
                             riskLayer.addTo(map);
                         }}
                         
-                        // ì¤äü³óÈíüë’ı 
+                        // ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’è¿½åŠ 
                         L.control.layers(null, overlays).addTo(map);
                         
-                        // h:Äò’-š
+                        // è¡¨ç¤ºç¯„å›²ã®æ±ºå®š
                         var bounds;
                         
-                        // Şü¯LBŒpŞü¯’+€Äò’—
+                        // ãƒãƒ¼ã‚¯ãŒã‚ã‚‹å ´åˆã¯ãƒãƒ¼ã‚¯ã‹ã‚‰ç¯„å›²ã‚’æ±ºå®š
                         if (courseConfig.marks && courseConfig.marks.length > 0) {{
                             var points = [];
                             
@@ -883,7 +876,7 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                                 points.push([mark.lat, mark.lng]);
                             }});
                             
-                            // ¹¿üÈ/Õ£ËÃ·åé¤ó’ı 
+                            // ã‚¹ã‚¿ãƒ¼ãƒˆ/ãƒ•ã‚£ãƒ‹ãƒƒã‚·ãƒ¥ãƒ©ã‚¤ãƒ³ã®åº§æ¨™ã‚‚è¿½åŠ 
                             if (courseConfig.start_line && courseConfig.start_line.pin && courseConfig.start_line.boat) {{
                                 points.push([courseConfig.start_line.pin.lat, courseConfig.start_line.pin.lng]);
                                 points.push([courseConfig.start_line.boat.lat, courseConfig.start_line.boat.lng]);
@@ -896,21 +889,21 @@ nİ¤óÈê¹È [{lat, lng}, ...]
                             
                             bounds = L.latLngBounds(points);
                         }}
-                        // Şü¯LjOÈéÃ¯LBŒpÈéÃ¯’+€Äò’—
+                        // ãƒãƒ¼ã‚¯ãŒãªãã€ãƒˆãƒ©ãƒƒã‚¯ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚‹å ´åˆã¯ãƒˆãƒ©ãƒƒã‚¯ã‹ã‚‰ç¯„å›²ã‚’æ±ºå®š
                         else if (trackPoints.length > 0) {{
                             bounds = L.latLngBounds(trackPoints);
                         }}
                         
-                        // êÕ„khSLh:UŒ‹ˆFkºüà
+                        // è‡ªå‹•çš„ã«è¡¨ç¤ºç¯„å›²ã‚’èª¿æ•´
                         if (mapConfig.center_auto && bounds) {{
                             map.fitBounds(bounds, {{
-                                padding: [50, 50]  // Y}’ı 
+                                padding: [50, 50]  // ä½™ç™½
                             }});
                         }} else {{
                             map.setView(mapConfig.center, mapConfig.zoom_level);
                         }}
                         
-                        // ŞÃ×ªÖ¸§¯È’°íüĞëkl‹
+                        // ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã«ãƒãƒƒãƒ—ã‚’ä¿å­˜
                         window['{self.map_id}_map'] = map;
                     }});
                 }})();

@@ -49,7 +49,6 @@ class QualityMetricsCalculator:
             "completeness": ["Required Columns Check", "No Null Values Check"],
             "accuracy": ["Value Range Check", "Spatial Consistency Check"],
             "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
-        }
         
         # 問題のあるレコードのインデックスを収集 - 簡略化
         self.problematic_indices = {
@@ -59,7 +58,6 @@ class QualityMetricsCalculator:
             "spatial_anomalies": [],
             "temporal_anomalies": [],
             "all": []
-        }
         
         # 品質スコアを簡略化
         self.quality_scores = {
@@ -67,7 +65,6 @@ class QualityMetricsCalculator:
             "accuracy": 100.0,
             "consistency": 100.0,
             "total": 100.0
-        }
         
         # カテゴリ別スコアを簡略化
         self.category_scores = {}
@@ -76,14 +73,12 @@ class QualityMetricsCalculator:
                 "score": 100.0,
                 "issues": 0,
                 "details": {}
-            }
         
         # 問題分布を簡略化
         self.problem_distribution = {
             "temporal": {"has_data": False},
             "spatial": {"has_data": False},
             "problem_type": {"has_data": False}
-        }
         
         # レコードごとの問題情報を簡略化
         self.record_issues = {}
@@ -147,4 +142,3 @@ class QualityMetricsCalculator:
                 "temporal_anomalies": temporal_count
             },
             "impact_level": self._determine_impact_level(self.quality_scores.get("total", 100.0))
-        }

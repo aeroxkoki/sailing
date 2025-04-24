@@ -78,14 +78,12 @@ class QualityMetricsCalculatorExtension:
             "spatial_anomalies": [],
             "temporal_anomalies": [],
             "all": []
-        }
         
         # ルールカテゴリーの定義
         self.rule_categories = {
             "completeness": ["Required Columns Check", "No Null Values Check"],
             "accuracy": ["Value Range Check", "Spatial Consistency Check"],
             "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
-        }
         
         # 品質スコアを簡略化
         self.quality_scores = {
@@ -93,7 +91,6 @@ class QualityMetricsCalculatorExtension:
             "accuracy": 100.0,
             "consistency": 100.0,
             "total": 100.0
-        }
     
     def calculate_quality_scores(self) -> Dict[str, float]:
         """
@@ -115,7 +112,6 @@ class QualityMetricsCalculatorExtension:
                 "completeness": 100.0,
                 "accuracy": 100.0,
                 "consistency": 100.0
-            }
         
         # 問題のあるレコード数とその重み付け
         error_count = len(self.problematic_indices.get("all", set()))
@@ -127,7 +123,6 @@ class QualityMetricsCalculatorExtension:
             "duplicates": 0.5,    # 警告
             "spatial_anomalies": 0.5,  # 警告
             "temporal_anomalies": 0.5  # 警告
-        }
         
         # 重み付けされた問題スコアの計算
         weighted_sum = 0
@@ -146,7 +141,6 @@ class QualityMetricsCalculatorExtension:
             "completeness": category_scores["completeness"],
             "accuracy": category_scores["accuracy"],
             "consistency": category_scores["consistency"]
-        }
     
     def calculate_category_quality_scores(self) -> Dict[str, float]:
         """
@@ -167,7 +161,6 @@ class QualityMetricsCalculatorExtension:
                 "completeness": 100.0,
                 "accuracy": 100.0,
                 "consistency": 100.0
-            }
         
         # カテゴリごとの問題数をカウント
         completeness_issues = len(self.problematic_indices.get("missing_data", []))
@@ -188,7 +181,6 @@ class QualityMetricsCalculatorExtension:
             "completeness": round(completeness_score, 1),
             "accuracy": round(accuracy_score, 1),
             "consistency": round(consistency_score, 1)
-        }
     
     # 注: このメソッドは次の重複定義と統合されました
     
@@ -412,7 +404,6 @@ class QualityMetricsCalculatorExtension:
                 "issues": 0,
                 "details": {},
                 "impact_level": self._determine_impact_level(quality_scores[category])
-            }
             
             # 各ルールの結果を集計
             for result in self.validation_results:
@@ -433,14 +424,12 @@ class QualityMetricsCalculatorExtension:
                                 "percentage": round(details["out_of_range_count"] / len(self.data) * 100, 2),
                                 "severity": result["severity"],
                                 "description": f"{details.get('column', '値')}の{details['out_of_range_count']}件が範囲外"
-                            }
                         elif "duplicate_count" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "count": details["duplicate_count"],
                                 "percentage": round(details["duplicate_count"] / len(self.data) * 100, 2),
                                 "severity": result["severity"],
                                 "description": f"{details['duplicate_count']}件の重複タイムスタンプ"
-                            }
                         elif "total_null_count" in details:
                             total_fields = len(self.data) * len(details.get("columns", []))
                             percentage = 0 if total_fields == 0 else round(details["total_null_count"] / total_fields * 100, 2)
@@ -451,7 +440,6 @@ class QualityMetricsCalculatorExtension:
                                 "severity": result["severity"],
                                 "affected_columns": list(details.get("null_counts", {}).keys()),
                                 "description": f"{details['total_null_count']}件の欠損値"
-                            }
                         elif "gap_count" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "gap_count": details["gap_count"],
@@ -460,14 +448,12 @@ class QualityMetricsCalculatorExtension:
                                 "percentage": round((details["gap_count"] + details.get("reverse_count", 0)) / len(self.data) * 100, 2),
                                 "severity": result["severity"],
                                 "description": f"{details['gap_count']}件のギャップ、{details.get('reverse_count', 0)}件の逆行"
-                            }
                         elif "missing_columns" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "missing_columns": details["missing_columns"],
                                 "count": len(details["missing_columns"]),
                                 "severity": result["severity"],
                                 "description": f"{len(details['missing_columns'])}個の必須カラムが欠落"
-                            }
                         elif "anomaly_count" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "count": details["anomaly_count"],
@@ -475,7 +461,6 @@ class QualityMetricsCalculatorExtension:
                                 "max_speed": details.get("max_calculated_speed", 0),
                                 "severity": result["severity"],
                                 "description": f"{details['anomaly_count']}件の空間的異常"
-                            }
         
         return category_scores
             
@@ -526,8 +511,6 @@ class QualityMetricsCalculatorExtension:
                     "line": {"color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": quality_scores["total"]
-                }
-            }
         ))
         
         # レイアウト設定
@@ -565,7 +548,6 @@ class QualityMetricsCalculatorExtension:
             "completeness": "完全性",
             "accuracy": "正確性",
             "consistency": "一貫性"
-        }
         
         # カテゴリ別の色設定
         bar_colors = [
@@ -705,7 +687,6 @@ class QualityMetricsCalculatorExtension:
                 "temporal_anomalies": temporal_count
             },
             "impact_level": self._determine_impact_level(self.quality_scores.get("total", 100.0))
-        }
             
     def generate_spatial_quality_map(self):
         """
@@ -1004,7 +985,6 @@ class QualityMetricsCalculatorExtension:
                 "duplicates": "green",
                 "spatial_anomalies": "purple",
                 "temporal_anomalies": "orange"
-            }
             
             # 問題タイプごとの表示名
             type_names = {
@@ -1013,7 +993,6 @@ class QualityMetricsCalculatorExtension:
                 "duplicates": "重複データ",
                 "spatial_anomalies": "空間的異常",
                 "temporal_anomalies": "時間的異常"
-            }
             
             # 積み上げバーチャートのデータ準備
             bar_data = []

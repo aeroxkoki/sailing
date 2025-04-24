@@ -558,7 +558,6 @@ class LayerManager:
             "layers": {layer_id: layer.to_dict() for layer_id, layer in self._layers.items()},
             "groups": {group_name: group_ids[:] for group_name, group_ids in self._groups.items()},
             "dependencies": {layer_id: list(deps) for layer_id, deps in self._dependencies.items()}
-        }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any], layer_classes: Dict[str, Type[BaseMapLayer]]) -> "LayerManager":

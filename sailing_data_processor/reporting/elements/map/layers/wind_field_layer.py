@@ -234,7 +234,6 @@ class WindFieldLayer(BaseMapLayer):
             'min_speed': float('inf'),
             'max_speed': float('-inf'),
             'timestamp': None
-        }
         
         # データ形式に応じた処理
         if isinstance(data, list) and len(data) > 0:
@@ -388,7 +387,6 @@ class WindFieldLayer(BaseMapLayer):
             "customColors": custom_colors_js,
             "minFilter": min_filter,
             "maxFilter": max_filter
-        }
         
         # JavaScript コード
         code = f"""

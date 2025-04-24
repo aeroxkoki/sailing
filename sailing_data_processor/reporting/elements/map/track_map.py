@@ -221,7 +221,6 @@ class TrackMapElement(BaseTrackMapElement):
             "show_layer_control": show_layer_control,
             "show_scale_control": show_scale_control,
             "show_fullscreen_control": show_fullscreen_control
-        }
         
         map_config_json = json.dumps(map_config)
         

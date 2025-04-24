@@ -46,7 +46,6 @@ class BaseMapLayer(ABC):
             "selectable": kwargs.get("selectable", True),
             "interactive": kwargs.get("interactive", True),
             "data_source": kwargs.get("data_source", None),
-        }
         
         # スタイル設定
         self._styles = {}
@@ -302,7 +301,6 @@ class BaseMapLayer(ABC):
             "type": self.__class__.__name__,
             "properties": self._properties.copy(),
             "styles": self._styles.copy()
-        }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "BaseMapLayer":

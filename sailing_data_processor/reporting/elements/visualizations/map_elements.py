@@ -118,7 +118,6 @@ class TrackMapElement(BaseChartElement):
             "track_width": track_width,
             "show_time_slider": show_time_slider,
             "time_key": time_key
-        }
         
         map_config_json = json.dumps(map_config)
         
@@ -451,7 +450,6 @@ class HeatMapLayerElement(BaseChartElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
-        }
         
         map_config_json = json.dumps(map_config)
         
@@ -718,7 +716,6 @@ class StrategyPointLayerElement(BaseChartElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
-        }
         
         map_config_json = json.dumps(map_config)
         
@@ -1035,7 +1032,6 @@ class WindFieldElement(BaseChartElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
-        }
         
         map_config_json = json.dumps(map_config)
         

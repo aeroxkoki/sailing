@@ -163,7 +163,6 @@ class FixProposal:
             'severity': self.severity,
             'auto_fixable': self.auto_fixable,
             'metadata': self.metadata
-        }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'FixProposal':
@@ -285,7 +284,6 @@ class DataCleaner:
                                     metadata={
                                         "adjustment": 0.001,  # 1ミリ秒
                                         "timestamp": ts
-                                    }
                                 )
                                 proposals.append(proposal)
                                 
@@ -299,7 +297,6 @@ class DataCleaner:
                                     auto_fixable=True,
                                     metadata={
                                         "timestamp": ts
-                                    }
                                 )
                                 proposals.append(proposal)
                 
@@ -318,7 +315,6 @@ class DataCleaner:
                                     auto_fixable=True,
                                     metadata={
                                         "method": "linear"
-                                    }
                                 )
                                 proposals.append(proposal)
                                 
@@ -376,7 +372,6 @@ class DataCleaner:
                                     metadata={
                                         "min_value": min_val,
                                         "max_value": max_val
-                                    }
                                 )
                                 proposals.append(proposal)
                             
@@ -418,7 +413,6 @@ class DataCleaner:
                                 auto_fixable=True,
                                 metadata={
                                     "method": "linear"
-                                }
                             )
                             proposals.append(proposal)
                 
@@ -462,7 +456,6 @@ class DataCleaner:
                                         auto_fixable=True,
                                         metadata={
                                             "replacement": new_ts
-                                        }
                                     )
                                     proposals.append(proposal)
                     
@@ -576,7 +569,6 @@ class DataCleaner:
             "duplicates": ["No Duplicate Timestamps"],
             "spatial_anomalies": ["Spatial Consistency Check"],
             "temporal_anomalies": ["Temporal Consistency Check"]
-        }
         
         if problem_type in type_mapping:
             rule_prefixes = type_mapping[problem_type]
@@ -695,4 +687,3 @@ class DataCleaner:
             'column_counts': column_counts,
             'first_fixed_at': history[0]['applied_at'] if history else None,
             'last_fixed_at': history[-1]['applied_at'] if history else None
-        }
