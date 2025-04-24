@@ -71,7 +71,7 @@ print(f"CORS origins: {settings.CORS_ORIGINS}")
 # CORS設定
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[origin.strip() for origin in settings.CORS_ORIGINS.split(',')],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
