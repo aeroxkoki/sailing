@@ -448,6 +448,8 @@ class ChartElement(BaseElement):
                 "title": chart_title,
                 "responsive": True,
                 "maintainAspectRatio": False
+            }
+        }
         
         # X軸とシリーズ設定を追加
         x_axis = self.get_property("x_axis", "")
@@ -558,6 +560,8 @@ class MapElement(BaseElement):
                 "center_auto": center_auto,
                 "zoom_level": zoom_level,
                 "track_color": track_color
+            }
+        }
         
         # 追加オプションの取得
         show_wind = self.get_property("show_wind", False)
@@ -665,6 +669,8 @@ class DiagramElement(BaseElement):
             "data": data,
             "options": {
                 "title": diagram_title
+            }
+        }
         
         # ダイアグラム設定をJSONにシリアライズ
         diagram_config_json = json.dumps(diagram_config)

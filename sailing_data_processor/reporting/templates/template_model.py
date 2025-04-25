@@ -751,10 +751,15 @@ class Template:
 class ElementModel:
     """要素モデルクラス"""
     
-    def __init__(self, element_type: ElementType = ElementType.GENERIC, properties: Dict[str, Any] = None):
+    def __init__(self, element_type: ElementType = ElementType.TEXT, properties: Dict[str, Any] = None):
         """初期化"""
         self.element_type = element_type
         self.properties = properties or {}
+        self.element_id = str(uuid.uuid4())
+        self.name = ""
+        self.styles = {}
+        self.conditions = []
+        self.children = []
     
     def get_property(self, key: str, default: Any = None) -> Any:
         """プロパティを取得"""
@@ -767,13 +772,24 @@ class ElementModel:
     def to_dict(self) -> Dict[str, Any]:
         """辞書表現を取得"""
         return {
+            "element_id": self.element_id,
             "element_type": self.element_type.name,
-            "properties": self.properties.copy()
+            "name": self.name,
+            "properties": self.properties.copy(),
+            "styles": self.styles.copy(),
+            "conditions": self.conditions,
+            "children": self.children
         }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ElementModel":
         """辞書から生成"""
-        element_type = ElementType[data.get("element_type", "GENERIC")]
+        element_type = ElementType[data.get("element_type", "TEXT")]
         properties = data.get("properties", {})
-        return cls(element_type=element_type, properties=properties)
+        model = cls(element_type=element_type, properties=properties)
+        model.element_id = data.get("element_id", str(uuid.uuid4()))
+        model.name = data.get("name", "")
+        model.styles = data.get("styles", {})
+        model.conditions = data.get("conditions", [])
+        model.children = data.get("children", [])
+        return model
