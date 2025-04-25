@@ -108,6 +108,7 @@ class CorrectionProcessor:
                     "description": "欠損値を含む行を削除します",
                     "fix_type": "remove",
                     "params": {}
+                }
             ],
             "out_of_range": [
                 {
@@ -130,6 +131,7 @@ class CorrectionProcessor:
                     "description": "範囲外の値を含む行を削除します",
                     "fix_type": "remove",
                     "params": {}
+                }
             ],
             "duplicates": [
                 {
@@ -152,6 +154,7 @@ class CorrectionProcessor:
                     "description": "重複するタイムスタンプを持つ行をすべて削除します",
                     "fix_type": "remove",
                     "params": {"method": "remove_all"}
+                }
             ],
             "spatial_anomalies": [
                 {
@@ -167,6 +170,7 @@ class CorrectionProcessor:
                     "description": "空間的に異常なポイントを削除します",
                     "fix_type": "remove",
                     "params": {}
+                }
             ],
             "temporal_anomalies": [
                 {
@@ -189,7 +193,9 @@ class CorrectionProcessor:
                     "description": "大きな時間ギャップをメタデータにマークします",
                     "fix_type": "metadata",
                     "params": {"method": "mark_gaps"}
+                }
             ]
+        }
         
         # 問題タイプに対応するオプションを返す
         return options_mapping.get(problem_type, [])
@@ -266,6 +272,7 @@ class CorrectionProcessor:
                 "params": params,
                 "proposal": proposal.to_dict(),
                 "timestamp": datetime.now().isoformat()
+            }
             self.correction_history.append(self.last_correction)
             
             return fixed_container
@@ -422,6 +429,7 @@ class CorrectionSuggester:
             "duplicates": "重複タイムスタンプ",
             "spatial_anomalies": "空間的異常",
             "temporal_anomalies": "時間的異常"
+        }
         
         for problem_type, display_name in problem_types.items():
             # 問題タイプに対応する問題インデックスを取得
@@ -544,6 +552,7 @@ class CorrectionSuggester:
                         "before": current_quality,
                         "after": quality_after,
                         "change": quality_after - current_quality
+                    }
                 })
             
             # 推奨される修正方法を決定
@@ -649,6 +658,7 @@ class CorrectionSuggester:
                         "before": current_quality,
                         "after": quality_after,
                         "change": quality_after - current_quality
+                    }
                 })
             
             # 推奨される修正方法を決定
@@ -699,21 +709,25 @@ class CorrectionSuggester:
                     "description": "線形補間で欠損値を埋める",
                     "confidence": 0.9,
                     "parameters": {"method": "linear", "columns": [affected_column] if affected_column else []}
+                }
             elif option["id"] == "interpolate_time":
                 methods["time"] = {
                     "description": "時間ベースの補間で欠損値を埋める",
                     "confidence": 0.85,
                     "parameters": {"method": "time", "columns": [affected_column] if affected_column else []}
+                }
             elif option["id"] == "fill_forward":
                 methods["ffill"] = {
                     "description": "直前の値で欠損値を埋める",
                     "confidence": 0.8,
                     "parameters": {"method": "ffill", "columns": [affected_column] if affected_column else []}
+                }
             elif option["id"] == "fill_backward":
                 methods["bfill"] = {
                     "description": "直後の値で欠損値を埋める",
                     "confidence": 0.8,
                     "parameters": {"method": "bfill", "columns": [affected_column] if affected_column else []}
+                }
         
         elif problem_type == "out_of_range":
             if option["id"] == "clip_values":
@@ -727,11 +741,14 @@ class CorrectionSuggester:
                         "min_value": min_val,
                         "max_value": max_val,
                         "column": affected_column
+                    }
+                }
             elif option["id"] == "replace_with_null":
                 methods["null"] = {
                     "description": "問題のある値をNULLに置換",
                     "confidence": 0.7,
                     "parameters": {"method": "null", "column": affected_column}
+                }
         
         elif problem_type == "duplicates":
             if option["id"] == "offset_timestamps":
@@ -739,11 +756,13 @@ class CorrectionSuggester:
                     "description": "タイムスタンプを少しずらす",
                     "confidence": 0.85,
                     "parameters": {"offset_ms": 1}
+                }
             elif option["id"] == "keep_first":
                 methods["keep_first"] = {
                     "description": "最初のレコードのみを保持",
                     "confidence": 0.9,
                     "parameters": {"method": "keep_first"}
+                }
         
         elif problem_type == "spatial_anomalies":
             if option["id"] == "spatial_interpolate":
@@ -751,6 +770,7 @@ class CorrectionSuggester:
                     "description": "位置を前後のポイントから補間",
                     "confidence": 0.8,
                     "parameters": {"method": "linear", "columns": ["latitude", "longitude"]}
+                }
         
         elif problem_type == "temporal_anomalies":
             if option["id"] == "fix_timestamps":
@@ -758,6 +778,7 @@ class CorrectionSuggester:
                     "description": "タイムスタンプを修正",
                     "confidence": 0.85,
                     "parameters": {"method": "increment", "seconds_offset": 1.0}
+                }
         
         # デフォルトとして削除を追加
         if "remove" not in methods and option["id"] == "remove_rows":
@@ -765,6 +786,7 @@ class CorrectionSuggester:
                 "description": "問題のある行を削除",
                 "confidence": 0.7,
                 "parameters": {}
+            }
         
         return methods
     
@@ -858,6 +880,7 @@ class CorrectionSuggester:
                     "changed_columns": [],
                     "before_values": {},
                     "after_values": {}
+                }
                 
                 # 変更点を特定
                 for idx in target_indices:
@@ -972,6 +995,7 @@ class InteractiveCorrectionInterface:
             "spatial_anomalies": len(problem_indices.get("spatial_anomalies", [])),
             "temporal_anomalies": len(problem_indices.get("temporal_anomalies", [])),
             "all": len(problem_indices.get("all", []))
+        }
     
     def get_problem_records(self, problem_type: str = "all") -> pd.DataFrame:
         """
@@ -1015,6 +1039,7 @@ class InteractiveCorrectionInterface:
                 "重要度": issue_data.get("severity", "info"),
                 "問題タイプ": ", ".join(issue_data.get("issues", [])),
                 "説明": issue_data.get("description", "")
+            }
             problem_records.append(record)
         
         # DataFrameに変換
@@ -1298,4 +1323,5 @@ class InteractiveCorrectionInterface:
             "重複タイムスタンプ": "duplicates",
             "空間的異常": "spatial_anomalies",
             "時間的異常": "temporal_anomalies"
+        }
         return mapping.get(issue_type, "other")

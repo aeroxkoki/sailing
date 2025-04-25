@@ -199,6 +199,7 @@ class BaseMapElement(BaseElement):
             "scale_control": self.get_property("show_scale_control", True),
             "fullscreen_control": self.get_property("show_fullscreen_control", True),
             "measure_control": self.get_property("show_measure_control", False)
+        }
     
     def get_map_initialization_code(self, map_var: str = "map") -> str:
         """
