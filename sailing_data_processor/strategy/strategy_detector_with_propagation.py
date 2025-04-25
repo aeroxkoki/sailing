@@ -97,9 +97,10 @@ class StrategyDetectorWithPropagation(StrategyDetector):
                         target_time = reference_time + timedelta(seconds=t)
                         
                         # 風の場の予測
+                        # 注: wind_fusion_systemは内部で現在の風の場を管理しているため、
+                        # current_wind_fieldを渡す必要はありません
                         predicted_field = self.wind_fusion_system.predict_wind_field(
-                            target_time=target_time,
-                            current_wind_field=wind_field
+                            target_time=target_time
                         )
                         
                         if predicted_field:
