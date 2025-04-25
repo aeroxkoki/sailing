@@ -79,12 +79,14 @@ class QualityMetricsCalculatorExtension:
             "spatial_anomalies": [],
             "temporal_anomalies": [],
             "all": []
+        }
         
         # ルールカテゴリーの定義
         self.rule_categories = {
             "completeness": ["Required Columns Check", "No Null Values Check"],
             "accuracy": ["Value Range Check", "Spatial Consistency Check"],
             "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
+        }
         
         # 品質スコアを簡略化
         self.quality_scores = {
@@ -92,6 +94,7 @@ class QualityMetricsCalculatorExtension:
             "accuracy": 100.0,
             "consistency": 100.0,
             "total": 100.0
+        }
     
     def calculate_quality_scores(self) -> Dict[str, float]:
         """
@@ -113,6 +116,7 @@ class QualityMetricsCalculatorExtension:
                 "completeness": 100.0,
                 "accuracy": 100.0,
                 "consistency": 100.0
+            }
         
         # 問題のあるレコード数とその重み付け
         error_count = len(self.problematic_indices.get("all", set()))
@@ -124,6 +128,7 @@ class QualityMetricsCalculatorExtension:
             "duplicates": 0.5,    # 警告
             "spatial_anomalies": 0.5,  # 警告
             "temporal_anomalies": 0.5  # 警告
+        }
         
         # 重み付けされた問題スコアの計算
         weighted_sum = 0
@@ -142,6 +147,7 @@ class QualityMetricsCalculatorExtension:
             "completeness": category_scores["completeness"],
             "accuracy": category_scores["accuracy"],
             "consistency": category_scores["consistency"]
+        }
     
     def calculate_category_quality_scores(self) -> Dict[str, float]:
         """
@@ -162,6 +168,7 @@ class QualityMetricsCalculatorExtension:
                 "completeness": 100.0,
                 "accuracy": 100.0,
                 "consistency": 100.0
+            }
         
         # カテゴリごとの問題数をカウント
         completeness_issues = len(self.problematic_indices.get("missing_data", []))

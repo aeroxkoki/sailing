@@ -139,6 +139,7 @@ try:
                         "duplicates": 0,
                         "spatial_anomalies": 0,
                         "temporal_anomalies": 0
+                    }
                 
                 def calculate_quality_scores(self):
                     return {
@@ -146,6 +147,7 @@ try:
                         "completeness": 100.0,
                         "accuracy": 100.0,
                         "consistency": 100.0
+                    }
                 
                 def calculate_category_quality_scores(self):
                     return {
