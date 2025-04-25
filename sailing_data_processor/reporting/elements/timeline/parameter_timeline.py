@@ -68,6 +68,22 @@ class ParameterTimeline(BaseElement):
             "point_radius": kwargs.get("point_radius", 2),
             "enable_zoom": kwargs.get("enable_zoom", True),
             "time_format": kwargs.get("time_format", "HH:mm:ss"),
+ {
+            "show_speed": kwargs.get("show_speed", True),
+            "show_wind_speed": kwargs.get("show_wind_speed", False),
+            "show_wind_direction": kwargs.get("show_wind_direction", False),
+            "show_heading": kwargs.get("show_heading", False),
+            "show_heel": kwargs.get("show_heel", False),
+            "show_vmg": kwargs.get("show_vmg", False),
+            "custom_parameters": kwargs.get("custom_parameters", []),
+            "timeline_height": kwargs.get("timeline_height", 300),
+            "show_statistics": kwargs.get("show_statistics", True),
+            "show_trends": kwargs.get("show_trends", False),
+            "line_style": kwargs.get("line_style", "linear"),
+            "interactive": kwargs.get("interactive", True),
+            "point_radius": kwargs.get("point_radius", 2),
+            "enable_zoom": kwargs.get("enable_zoom", True),
+            "time_format": kwargs.get("time_format", "HH:mm:ss"),}
         
         # オプションをプロパティに設定
         for key, value in self._options.items():
@@ -81,6 +97,13 @@ class ParameterTimeline(BaseElement):
             "heading": {"color": "#9C27B0", "label": "艇首方位", "unit": "°", "axis": "y-right"},
             "heel": {"color": "#FFC107", "label": "ヒール角", "unit": "°", "axis": "y-left"},
             "vmg": {"color": "#607D8B", "label": "VMG", "unit": "kt", "axis": "y-left"},
+ {
+            "speed": {"color": "#FF5722", "label": "速度", "unit": "kt", "axis": "y-left"},
+            "wind_speed": {"color": "#2196F3", "label": "風速", "unit": "kt", "axis": "y-left"},
+            "wind_direction": {"color": "#4CAF50", "label": "風向", "unit": "°", "axis": "y-right"},
+            "heading": {"color": "#9C27B0", "label": "艇首方位", "unit": "°", "axis": "y-right"},
+            "heel": {"color": "#FFC107", "label": "ヒール角", "unit": "°", "axis": "y-left"},
+            "vmg": {"color": "#607D8B", "label": "VMG", "unit": "kt", "axis": "y-left"},}
         
         # データソース
         self.set_property("data_source", kwargs.get("data_source", ""))
@@ -159,6 +182,12 @@ class ParameterTimeline(BaseElement):
             "label": label or name,
             "unit": unit,
             "axis": axis
+ {
+            "field": field,
+            "color": color,
+            "label": label or name,
+            "unit": unit,
+            "axis": axis}
         
         # カスタムパラメータリストを更新
         custom_parameters = self.get_property("custom_parameters", [])
@@ -404,6 +433,11 @@ class ParameterTimeline(BaseElement):
                     "label": param, 
                     "unit": "", 
                     "axis": "y-left"
+ {
+                    "color": "#607D8B", 
+                    "label": param, 
+                    "unit": "", 
+                    "axis": "y-left"}
                 })
                 
                 # フィールド名の取得（カスタムパラメータの場合）
@@ -440,6 +474,18 @@ class ParameterTimeline(BaseElement):
                     "borderWidth": 2,
                     "yAxisID": param_info['axis'],
                     "statistics": stats
+ {
+                    "label": f"{param_info['label']} ({param_info['unit']})" if param_info['unit'] else param_info['label'],
+                    "data": data_points,
+                    "borderColor": param_info['color'],
+                    "backgroundColor": f"{param_info['color']}33",  # 半透明
+                    "fill": False,
+                    "tension": 0.1 if line_style == "spline" else 0,
+                    "pointRadius": point_radius,
+                    "pointHoverRadius": point_radius + 2,
+                    "borderWidth": 2,
+                    "yAxisID": param_info['axis'],
+                    "statistics": stats}
                 
                 datasets.append(dataset)
         
@@ -459,6 +505,10 @@ class ParameterTimeline(BaseElement):
             "type": "line",
             "data": {
                 "datasets": []  # データセットはJavaScriptで追加
+ {
+            "type": "line",
+            "data": {
+                "datasets": []  # データセットはJavaScriptで追加}
             },
             "options": {
                 "responsive": True,
@@ -466,6 +516,12 @@ class ParameterTimeline(BaseElement):
                 "interaction": {
                     "mode": "index",
                     "intersect": False
+ {
+                "responsive": True,
+                "maintainAspectRatio": False,
+                "interaction": {
+                    "mode": "index",
+                    "intersect": False}
                 },
                 "scales": {
                     "x": {
@@ -476,10 +532,22 @@ class ParameterTimeline(BaseElement):
                                 "second": time_format,
                                 "minute": time_format,
                                 "hour": time_format
+ {
+                    "x": {
+                        "type": "time",
+                        "time": {
+                            "displayFormats": {
+                                "millisecond": time_format,
+                                "second": time_format,
+                                "minute": time_format,
+                                "hour": time_format}
                         },
                         "title": {
                             "display": True,
                             "text": "時間"
+ {
+                            "display": True,
+                            "text": "時間"}
                     },
                     "y-left": {
                         "type": "linear",
@@ -487,29 +555,53 @@ class ParameterTimeline(BaseElement):
                         "title": {
                             "display": True,
                             "text": "値"
+ {
+                        "type": "linear",
+                        "position": "left",
+                        "title": {
+                            "display": True,
+                            "text": "値"}
                         },
                         "grid": {
                             "display": True,
                             "color": "rgba(0, 0, 0, 0.1)"
+ {
+                            "display": True,
+                            "color": "rgba(0, 0, 0, 0.1)"}
                     },
                     "y-right": {
                         "type": "linear",
                         "position": "right",
                         "grid": {
                             "display": False
+ {
+                        "type": "linear",
+                        "position": "right",
+                        "grid": {
+                            "display": False}
                         },
                         "title": {
                             "display": True,
                             "text": "角度 (°)"
+ {
+                            "display": True,
+                            "text": "角度 (°)"}
                 },
                 "plugins": {
                     "legend": {
                         "display": True,
                         "position": "top"
+ {
+                    "legend": {
+                        "display": True,
+                        "position": "top"}
                     },
                     "tooltip": {
                         "mode": "index",
                         "intersect": False
+ {
+                        "mode": "index",
+                        "intersect": False}
         
         # ズーム機能が有効な場合
         if enable_zoom:
@@ -517,15 +609,24 @@ class ParameterTimeline(BaseElement):
                 "zoom": {
                     "wheel": {
                         "enabled": True
+ {
+                "zoom": {
+                    "wheel": {
+                        "enabled": True}
                     },
                     "pinch": {
                         "enabled": True
+ {
+                        "enabled": True}
                     },
                     "mode": "xy"
                 },
                 "pan": {
                     "enabled": True,
                     "mode": "xy"
+ {
+                    "enabled": True,
+                    "mode": "xy"}
         
         # 設定をJSON形式に変換
         chart_config_json = json.dumps(chart_config, ensure_ascii=False)

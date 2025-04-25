@@ -42,6 +42,15 @@ class PlaybackControl:
             "control_size": kwargs.get("control_size", "medium"),  # small, medium, large
             "position": kwargs.get("position", "bottom"),  # top, bottom
             "auto_fit_time_range": kwargs.get("auto_fit_time_range", True)
+ {
+            "playback_speed": kwargs.get("playback_speed", 1.0),
+            "loop": kwargs.get("loop", False),
+            "show_timeline": kwargs.get("show_timeline", True),
+            "show_time_display": kwargs.get("show_time_display", True),
+            "show_controls": kwargs.get("show_controls", True),
+            "control_size": kwargs.get("control_size", "medium"),  # small, medium, large
+            "position": kwargs.get("position", "bottom"),  # top, bottom
+            "auto_fit_time_range": kwargs.get("auto_fit_time_range", True)}
         
         # キーフレーム
         self._keyframes = []
@@ -202,6 +211,33 @@ class PlaybackControl:
             "playing": self._playing,
             "options": self._options,
             "keyframes": self._keyframes
+ {
+            "element_id": self.element_id,
+            "name": self.name,
+            "current_time": self._current_time,
+            "start_time": self._start_time,
+            "end_time": self._end_time,
+            "playing": self._playing,
+            "options": self._options,
+            "keyframes": self._keyframes}
+        return {
+            "element_id": self.element_id,
+            "name": self.name,
+            "current_time": self._current_time,
+            "start_time": self._start_time,
+            "end_time": self._end_time,
+            "playing": self._playing,
+            "options": self._options,
+            "keyframes": self._keyframes}
+ {
+            "element_id": self.element_id,
+            "name": self.name,
+            "current_time": self._current_time,
+            "start_time": self._start_time,
+            "end_time": self._end_time,
+            "playing": self._playing,
+            "options": self._options,
+            "keyframes": self._keyframes}}
     
     @classmethod
     def from_dict(cls, data):

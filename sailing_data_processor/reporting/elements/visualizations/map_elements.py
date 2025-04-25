@@ -119,6 +119,15 @@ class TrackMapElement(BaseChartElement):
             "track_width": track_width,
             "show_time_slider": show_time_slider,
             "time_key": time_key
+ {
+            "map_type": map_type,
+            "center_auto": center_auto,
+            "center": [center_lat, center_lng],
+            "zoom_level": zoom_level,
+            "track_color": track_color,
+            "track_width": track_width,
+            "show_time_slider": show_time_slider,
+            "time_key": time_key}
         
         map_config_json = json.dumps(map_config)
         
@@ -426,6 +435,12 @@ class HeatMapLayerElement(BaseChartElement):
             "0.7": "lime",
             "0.8": "yellow",
             "1.0": "red"
+ {
+            "0.4": "blue",
+            "0.6": "cyan",
+            "0.7": "lime",
+            "0.8": "yellow",
+            "1.0": "red"}
         })
         
         # マップのタイプと設定
@@ -451,6 +466,19 @@ class HeatMapLayerElement(BaseChartElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
+ {
+            "map_type": map_type,
+            "center_auto": center_auto,
+            "center": [center_lat, center_lng],
+            "zoom_level": zoom_level,
+            "heat_value_key": heat_value_key,
+            "max_value": max_value,
+            "radius": radius,
+            "blur": blur,
+            "gradient": gradient,
+            "show_track": show_track,
+            "track_color": track_color,
+            "track_width": track_width}
         
         map_config_json = json.dumps(map_config)
         
@@ -702,6 +730,12 @@ class StrategyPointLayerElement(BaseChartElement):
             "mark_rounding": {"color": "red", "icon": "flag-checkered"},
             "wind_shift": {"color": "purple", "icon": "wind"},
             "default": {"color": "gray", "icon": "map-marker-alt"}
+ {
+            "tack": {"color": "blue", "icon": "exchange-alt"},
+            "gybe": {"color": "green", "icon": "random"},
+            "mark_rounding": {"color": "red", "icon": "flag-checkered"},
+            "wind_shift": {"color": "purple", "icon": "wind"},
+            "default": {"color": "gray", "icon": "map-marker-alt"}}
         })
         
         # データをJSON文字列に変換
@@ -717,6 +751,15 @@ class StrategyPointLayerElement(BaseChartElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
+ {
+            "map_type": map_type,
+            "center_auto": center_auto,
+            "center": [center_lat, center_lng],
+            "zoom_level": zoom_level,
+            "show_track": show_track,
+            "track_color": track_color,
+            "track_width": track_width,
+            "point_icons": point_icons}
         
         map_config_json = json.dumps(map_config)
         
@@ -1033,6 +1076,22 @@ class WindFieldElement(BaseChartElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
+ {
+            "map_type": map_type,
+            "center_auto": center_auto,
+            "center": [center_lat, center_lng],
+            "zoom_level": zoom_level,
+            "wind_speed_scale": wind_speed_scale,
+            "min_velocity": min_velocity,
+            "max_velocity": max_velocity,
+            "velocity_units": velocity_units,
+            "show_time_dimension": show_time_dimension,
+            "time_key": time_key,
+            "animation_duration": animation_duration,
+            "animation_loop": animation_loop,
+            "show_track": show_track,
+            "track_color": track_color,
+            "track_width": track_width}
         
         map_config_json = json.dumps(map_config)
         

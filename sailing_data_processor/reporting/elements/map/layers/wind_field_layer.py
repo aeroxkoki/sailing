@@ -388,6 +388,20 @@ class WindFieldLayer(BaseMapLayer):
             "customColors": custom_colors_js,
             "minFilter": min_filter,
             "maxFilter": max_filter
+ {
+            "displayType": display_type,
+            "arrowScale": arrow_scale,
+            "arrowDensity": arrow_density,
+            "colorScale": color_scale,
+            "colorBy": color_by,
+            "minSpeed": "null" if min_speed is None else min_speed,
+            "maxSpeed": "null" if max_speed is None else max_speed,
+            "animate": str(animate).lower(),
+            "showLegend": str(show_legend).lower(),
+            "opacity": opacity,
+            "customColors": custom_colors_js,
+            "minFilter": min_filter,
+            "maxFilter": max_filter}
         
         # JavaScript コード
         code = f"""

@@ -404,6 +404,11 @@ class WindRoseElement(BaseChartElement):
             "data": {
                 "labels": direction_labels,
                 "datasets": datasets
+ {
+            "type": "polarArea",
+            "data": {
+                "labels": direction_labels,
+                "datasets": datasets}
             
         
         return chart_data
@@ -426,15 +431,27 @@ class WindRoseElement(BaseChartElement):
                     "beginAtZero": True,
                     "precision": self.get_property("tick_precision", 0),
                     "maxTicksLimit": self.get_property("max_ticks", 5)
+ {
+            "scale": {
+                "ticks": {
+                    "beginAtZero": True,
+                    "precision": self.get_property("tick_precision", 0),
+                    "maxTicksLimit": self.get_property("max_ticks", 5)}
                 
             },
             "plugins": {
                 "legend": {
                     "position": self.get_property("legend_position", "top")
+ {
+                "legend": {
+                    "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) { return context.label + ': ' + context.raw.toFixed(1); }"
+ {
+                    "callbacks": {
+                        "label": "function(context) { return context.label + ': ' + context.raw.toFixed(1); }"}
                     
                 },
                 "datalabels": {
@@ -442,6 +459,11 @@ class WindRoseElement(BaseChartElement):
                     "color": "white",
                     "font": {
                         "weight": "bold"
+ {
+                    "display": self.get_property("show_labels", False),
+                    "color": "white",
+                    "font": {
+                        "weight": "bold"}
                     },
                     "formatter": "function(value) { return value.toFixed(1); }"
                 
@@ -449,6 +471,9 @@ class WindRoseElement(BaseChartElement):
             "animation": {
                 "duration": self.get_property("animation_duration", 1000),
                 "easing": "easeOutQuart"
+ {
+                "duration": self.get_property("animation_duration", 1000),
+                "easing": "easeOutQuart"}
             
         
         # 詳細表示が有効な場合の追加設定
@@ -456,6 +481,9 @@ class WindRoseElement(BaseChartElement):
             wind_rose_options["plugins"]["tooltip"]["callbacks"] = {
                 "title": "function(context) { return context[0].label; }",
                 "label": "function(context) { var dataIndex = context.dataIndex; var value = context.raw; " +
+ {
+                "title": "function(context) { return context[0].label; }",
+                "label": "function(context) { var dataIndex = context.dataIndex; var value = context.raw; " +}
                          "return [" +
                          "'値: ' + value.toFixed(1)," +
                          "'全体に対する割合: ' + (value / context.chart.data.datasets[0].data.reduce((a,b) => a + b, 0) * 100).toFixed(1) + '%'" +
@@ -467,11 +495,41 @@ class WindRoseElement(BaseChartElement):
             wind_rose_options["plugins"]["colorschemes"] = {
                 "scheme": "brewer.diverging.Spectral11",
                 "reverse": False
+ {
+                "scheme": "brewer.diverging.Spectral11",
+                "reverse": False}
+            wind_rose_options["plugins"]["colorschemes"] = {
+                "scheme": "brewer.diverging.Spectral11",
+                "reverse": False}
+ {
+                "scheme": "brewer.diverging.Spectral11",
+                "reverse": False}}
+            wind_rose_options["plugins"]["colorschemes"] = {
+                "scheme": "brewer.diverging.Spectral11",
+                "reverse": False}
+ {
+                "scheme": "brewer.diverging.Spectral11",
+                "reverse": False}}
             
         elif color_scale_type == "categorical":
             wind_rose_options["plugins"]["colorschemes"] = {
                 "scheme": "brewer.qualitative.Set3",
                 "override": True
+ {
+                "scheme": "brewer.qualitative.Set3",
+                "override": True}
+            wind_rose_options["plugins"]["colorschemes"] = {
+                "scheme": "brewer.qualitative.Set3",
+                "override": True}
+ {
+                "scheme": "brewer.qualitative.Set3",
+                "override": True}}
+            wind_rose_options["plugins"]["colorschemes"] = {
+                "scheme": "brewer.qualitative.Set3",
+                "override": True}
+ {
+                "scheme": "brewer.qualitative.Set3",
+                "override": True}}
             
         # 角度ラインのカスタマイズ
         angle_lines_enabled = self.get_property("angle_lines_enabled", True)
@@ -479,6 +537,21 @@ class WindRoseElement(BaseChartElement):
         wind_rose_options["scale"]["angleLines"] = {
             "display": angle_lines_enabled,
             "color": angle_lines_color
+ {
+            "display": angle_lines_enabled,
+            "color": angle_lines_color}
+        wind_rose_options["scale"]["angleLines"] = {
+            "display": angle_lines_enabled,
+            "color": angle_lines_color}
+ {
+            "display": angle_lines_enabled,
+            "color": angle_lines_color}}
+        wind_rose_options["scale"]["angleLines"] = {
+            "display": angle_lines_enabled,
+            "color": angle_lines_color}
+ {
+            "display": angle_lines_enabled,
+            "color": angle_lines_color}}
         
         # 時間フィルタリングの表示
         time_filter_enabled = self.get_property("time_filter_enabled", False)
@@ -498,6 +571,31 @@ class WindRoseElement(BaseChartElement):
                     "text": title_text,
                     "font": {
                         "size": 16
+ {
+                    "display": True,
+                    "text": title_text,
+                    "font": {
+                        "size": 16}
+                options["plugins"]["title"] = {
+                    "display": True,
+                    "text": title_text,
+                    "font": {
+                        "size": 16}
+ {
+                    "display": True,
+                    "text": title_text,
+                    "font": {
+                        "size": 16}}
+                options["plugins"]["title"] = {
+                    "display": True,
+                    "text": title_text,
+                    "font": {
+                        "size": 16}
+ {
+                    "display": True,
+                    "text": title_text,
+                    "font": {
+                        "size": 16}}
                     
                 
             # サブタイトルの追加
@@ -515,6 +613,12 @@ class WindRoseElement(BaseChartElement):
                 "font": {
                     "size": 12,
                     "style": "italic"
+ {
+                "display": True,
+                "text": filter_text,
+                "font": {
+                    "size": 12,
+                    "style": "italic"}
                 },
                 "color": "rgba(100, 100, 100, 0.8)"
             
@@ -734,11 +838,22 @@ class PolarDiagramElement(BaseChartElement):
                         "radialaxis": {
                             "visible": True,
                             "range": [0, 10]
+ {
+                "data": [],
+                "layout": {
+                    "polar": {
+                        "radialaxis": {
+                            "visible": True,
+                            "range": [0, 10]}
                         },
                         "angularaxis": {
                             "visible": True,
                             "direction": "clockwise",
                             "dtick": 30
+ {
+                            "visible": True,
+                            "direction": "clockwise",
+                            "dtick": 30}
                         
                     },
                     "showlegend": True
@@ -750,6 +865,21 @@ class PolarDiagramElement(BaseChartElement):
                 "data": {
                     "labels": [f"{i}°" for i in range(0, 360, 30)],
                     "datasets": []
+ {
+                "type": "radar",
+                "data": {
+                    "labels": [f"{i}°" for i in range(0, 360, 30)],
+                    "datasets": []}
+            return {
+                "type": "radar",
+                "data": {
+                    "labels": [f"{i}°" for i in range(0, 360, 30)],
+                    "datasets": []}
+ {
+                "type": "radar",
+                "data": {
+                    "labels": [f"{i}°" for i in range(0, 360, 30)],
+                    "datasets": []}}
                 
             
     def _create_plotly_polar_data(self, data: Any) -> Dict[str, Any]:
@@ -826,6 +956,10 @@ class PolarDiagramElement(BaseChartElement):
                                     "color": self._get_color_for_wind_speed(wind_speed),
                                     "width": 2,
                                     "dash": "solid"
+ {
+                                    "color": self._get_color_for_wind_speed(wind_speed),
+                                    "width": 2,
+                                    "dash": "solid"}
                                 
                             })
             
@@ -861,6 +995,10 @@ class PolarDiagramElement(BaseChartElement):
                                     "size": 8,
                                     "color": self._get_color_for_wind_speed(wind_speed),
                                     "symbol": "circle"
+ {
+                                    "size": 8,
+                                    "color": self._get_color_for_wind_speed(wind_speed),
+                                    "symbol": "circle"}
                                 
                             })
             
@@ -895,6 +1033,13 @@ class PolarDiagramElement(BaseChartElement):
                                     "line": {
                                         "width": 2,
                                         "color": "white"
+ {
+                                    "size": 12,
+                                    "color": self._get_color_for_wind_speed(wind_speed),
+                                    "symbol": "star",
+                                    "line": {
+                                        "width": 2,
+                                        "color": "white"}
                                     
                                 
                             })
@@ -913,6 +1058,13 @@ class PolarDiagramElement(BaseChartElement):
                                     "line": {
                                         "width": 2,
                                         "color": "white"
+ {
+                                    "size": 12,
+                                    "color": self._get_color_for_wind_speed(wind_speed),
+                                    "symbol": "diamond",
+                                    "line": {
+                                        "width": 2,
+                                        "color": "white"}
                                     
                                 
                             })
@@ -963,6 +1115,10 @@ class PolarDiagramElement(BaseChartElement):
                             "size": 8,
                             "color": self._get_color_for_wind_speed(wind_speed),
                             "symbol": "circle"
+ {
+                            "size": 8,
+                            "color": self._get_color_for_wind_speed(wind_speed),
+                            "symbol": "circle"}
                         
                     })
                 
@@ -988,6 +1144,10 @@ class PolarDiagramElement(BaseChartElement):
                             "color": self._get_color_for_wind_speed(wind_speed),
                             "width": 2,
                             "dash": "solid"
+ {
+                            "color": self._get_color_for_wind_speed(wind_speed),
+                            "width": 2,
+                            "dash": "solid"}
                         
                     })
                 
@@ -1012,6 +1172,13 @@ class PolarDiagramElement(BaseChartElement):
                                 "line": {
                                     "width": 2,
                                     "color": "white"
+ {
+                                "size": 12,
+                                "color": self._get_color_for_wind_speed(wind_speed),
+                                "symbol": symbol,
+                                "line": {
+                                    "width": 2,
+                                    "color": "white"}
                                 
                             
                         })
@@ -1040,6 +1207,14 @@ class PolarDiagramElement(BaseChartElement):
                     "range": [0, max_boat_speed],
                     "title": {
                         "text": "ボート速度（kt）"
+ {
+            "title": self.title,
+            "polar": {
+                "radialaxis": {
+                    "visible": True,
+                    "range": [0, max_boat_speed],
+                    "title": {
+                        "text": "ボート速度（kt）"}
                     
                 },
                 "angularaxis": {
@@ -1047,17 +1222,34 @@ class PolarDiagramElement(BaseChartElement):
                     "direction": "clockwise",
                     "dtick": 30,
                     "period": 360
+ {
+                    "visible": True,
+                    "direction": "clockwise",
+                    "dtick": 30,
+                    "period": 360}
                 
             },
             "showlegend": True,
             "legend": {
                 "x": 1,
                 "y": 0.9
+ {
+                "x": 1,
+                "y": 0.9}
             
         
         return {
             "data": traces,
             "layout": layout
+ {
+            "data": traces,
+            "layout": layout}
+        return {
+            "data": traces,
+            "layout": layout}
+ {
+            "data": traces,
+            "layout": layout}}
         
     def _create_chartjs_polar_data(self, data: Any) -> Dict[str, Any]:
         """
@@ -1253,6 +1445,11 @@ class PolarDiagramElement(BaseChartElement):
             "data": {
                 "labels": angle_labels,
                 "datasets": datasets
+ {
+            "type": "radar",
+            "data": {
+                "labels": angle_labels,
+                "datasets": datasets}
             },
             "options": {
                 "scales": {
@@ -1261,12 +1458,22 @@ class PolarDiagramElement(BaseChartElement):
                         "max": max_boat_speed,
                         "ticks": {
                             "stepSize": max_boat_speed / 5
+ {
+                "scales": {
+                    "r": {
+                        "beginAtZero": True,
+                        "max": max_boat_speed,
+                        "ticks": {
+                            "stepSize": max_boat_speed / 5}
                         
                     
                 },
                 "elements": {
                     "line": {
                         "tension": 0.1
+ {
+                    "line": {
+                        "tension": 0.1}
                     
                 
             
@@ -1339,17 +1546,32 @@ class PolarDiagramElement(BaseChartElement):
                         "angleLines": {
                             "display": True,
                             "color": "rgba(0, 0, 0, 0.1)"
+ {
+                "scales": {
+                    "r": {
+                        "beginAtZero": True,
+                        "angleLines": {
+                            "display": True,
+                            "color": "rgba(0, 0, 0, 0.1)"}
                         },
                         "grid": {
                             "color": "rgba(0, 0, 0, 0.1)"
+ {
+                            "color": "rgba(0, 0, 0, 0.1)"}
                         },
                         "ticks": {
                             "backdropColor": "rgba(255, 255, 255, 0.75)",
                             "color": "#666"
+ {
+                            "backdropColor": "rgba(255, 255, 255, 0.75)",
+                            "color": "#666"}
                         },
                         "pointLabels": {
                             "font": {
                                 "size": 10
+ {
+                            "font": {
+                                "size": 10}
                             
                         
                     
@@ -1360,18 +1582,30 @@ class PolarDiagramElement(BaseChartElement):
                         "labels": {
                             "font": {
                                 "size": 11
+ {
+                    "legend": {
+                        "position": "right",
+                        "labels": {
+                            "font": {
+                                "size": 11}
                             
                         
                     },
                     "tooltip": {
                         "callbacks": {
                             "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"
+ {
+                        "callbacks": {
+                            "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"}
                         
                     
                 },
                 "animation": {
                     "duration": 1000,
                     "easing": "easeOutQuart"
+ {
+                    "duration": 1000,
+                    "easing": "easeOutQuart"}
                 
             
             # オプションを結合
@@ -1568,6 +1802,11 @@ class CoursePerformanceElement(BaseChartElement):
             "data": {
                 "labels": direction_labels,
                 "datasets": datasets
+ {
+            "type": "radar",
+            "data": {
+                "labels": direction_labels,
+                "datasets": datasets}
             
         
         return chart_data
@@ -1589,20 +1828,35 @@ class CoursePerformanceElement(BaseChartElement):
                 "angleLines": {
                     "display": True,
                     "color": self.get_property("angle_lines_color", "rgba(0, 0, 0, 0.1)")
+ {
+            "scale": {
+                "angleLines": {
+                    "display": True,
+                    "color": self.get_property("angle_lines_color", "rgba(0, 0, 0, 0.1)")}
                 },
                 "ticks": {
                     "beginAtZero": True,
                     "precision": 1,
                     "maxTicksLimit": self.get_property("max_ticks", 5)
+ {
+                    "beginAtZero": True,
+                    "precision": 1,
+                    "maxTicksLimit": self.get_property("max_ticks", 5)}
                 
             },
             "plugins": {
                 "legend": {
                     "position": "top"
+ {
+                "legend": {
+                    "position": "top"}
                 },
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"
+ {
+                    "callbacks": {
+                        "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"}
                     
                 
             
@@ -1612,15 +1866,36 @@ class CoursePerformanceElement(BaseChartElement):
             performance_options["plugins"]["tooltip"]["callbacks"] = {
                 "title": "function(context) { return '風向角: ' + context[0].label; }",
                 "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"
+ {
+                "title": "function(context) { return '風向角: ' + context[0].label; }",
+                "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"}
+            performance_options["plugins"]["tooltip"]["callbacks"] = {
+                "title": "function(context) { return '風向角: ' + context[0].label; }",
+                "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"}
+ {
+                "title": "function(context) { return '風向角: ' + context[0].label; }",
+                "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"}}
+            performance_options["plugins"]["tooltip"]["callbacks"] = {
+                "title": "function(context) { return '風向角: ' + context[0].label; }",
+                "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"}
+ {
+                "title": "function(context) { return '風向角: ' + context[0].label; }",
+                "label": "function(context) { return context.dataset.label + ': ' + context.raw.toFixed(1) + ' kt'; }"}}
             
             # 追加のプラグイン設定（クロスヘアなど）
             performance_options["plugins"]["crosshair"] = {
                 "line": {
                     "color": "rgba(100, 100, 100, 0.4)",
                     "width": 1
+ {
+                "line": {
+                    "color": "rgba(100, 100, 100, 0.4)",
+                    "width": 1}
                 },
                 "sync": {
                     "enabled": True
+ {
+                    "enabled": True}
                 
             
         # 効率指標表示が有効な場合
@@ -1635,6 +1910,51 @@ class CoursePerformanceElement(BaseChartElement):
                     "font": {
                         "size": 12,
                         "style": "italic"
+ {
+                "display": True,
+                "text": self.title,
+                "subtitle": {
+                    "display": True,
+                    "text": "パフォーマンス効率: 計算中...",
+                    "font": {
+                        "size": 12,
+                        "style": "italic"}
+            performance_options["plugins"]["title"] = {
+                "display": True,
+                "text": self.title,
+                "subtitle": {
+                    "display": True,
+                    "text": "パフォーマンス効率: 計算中...",
+                    "font": {
+                        "size": 12,
+                        "style": "italic"}
+ {
+                "display": True,
+                "text": self.title,
+                "subtitle": {
+                    "display": True,
+                    "text": "パフォーマンス効率: 計算中...",
+                    "font": {
+                        "size": 12,
+                        "style": "italic"}}
+            performance_options["plugins"]["title"] = {
+                "display": True,
+                "text": self.title,
+                "subtitle": {
+                    "display": True,
+                    "text": "パフォーマンス効率: 計算中...",
+                    "font": {
+                        "size": 12,
+                        "style": "italic"}
+ {
+                "display": True,
+                "text": self.title,
+                "subtitle": {
+                    "display": True,
+                    "text": "パフォーマンス効率: 計算中...",
+                    "font": {
+                        "size": 12,
+                        "style": "italic"}}
                     
                 
             
@@ -1657,6 +1977,26 @@ class CoursePerformanceElement(BaseChartElement):
                 "display": True,
                 "text": f"ボートポーラー参照: {polar_reference}",
                 "color": "rgba(100, 100, 100, 0.8)"
+ {
+                "display": True,
+                "text": f"ボートポーラー参照: {polar_reference}",
+                "color": "rgba(100, 100, 100, 0.8)"}
+            performance_options["plugins"]["subtitle"] = {
+                "display": True,
+                "text": f"ボートポーラー参照: {polar_reference}",
+                "color": "rgba(100, 100, 100, 0.8)"}
+ {
+                "display": True,
+                "text": f"ボートポーラー参照: {polar_reference}",
+                "color": "rgba(100, 100, 100, 0.8)"}}
+            performance_options["plugins"]["subtitle"] = {
+                "display": True,
+                "text": f"ボートポーラー参照: {polar_reference}",
+                "color": "rgba(100, 100, 100, 0.8)"}
+ {
+                "display": True,
+                "text": f"ボートポーラー参照: {polar_reference}",
+                "color": "rgba(100, 100, 100, 0.8)"}}
             
         # オプションを結合
         self._merge_options(options, performance_options)
@@ -1744,6 +2084,16 @@ class CoursePerformanceElement(BaseChartElement):
             "pointBorderColor": "#fff",
             "pointHoverBackgroundColor": "#fff",
             "pointHoverBorderColor": color.replace("0.5", "1")
+ {
+            "label": self.get_property(f"{key}_label", label),
+            "data": values,
+            "fill": True,
+            "backgroundColor": color,
+            "borderColor": color.replace("0.5", "1"),
+            "pointBackgroundColor": color.replace("0.5", "1"),
+            "pointBorderColor": "#fff",
+            "pointHoverBackgroundColor": "#fff",
+            "pointHoverBorderColor": color.replace("0.5", "1")}
         
         return dataset
     
@@ -1939,6 +2289,11 @@ class TackingAngleElement(BaseChartElement):
             "data": {
                 "labels": bin_labels,
                 "datasets": datasets
+ {
+            "type": "bar",
+            "data": {
+                "labels": bin_labels,
+                "datasets": datasets}
             
         
         return chart_data
@@ -1966,12 +2321,23 @@ class TackingAngleElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": "頻度"
+ {
+            "scales": {
+                "y": {
+                    "beginAtZero": True,
+                    "title": {
+                        "display": True,
+                        "text": "頻度"}
                     
                 },
                 "x": {
                     "title": {
                         "display": True,
                         "text": "タッキング角度"
+ {
+                    "title": {
+                        "display": True,
+                        "text": "タッキング角度"}
                     
                 
             },
@@ -1979,11 +2345,19 @@ class TackingAngleElement(BaseChartElement):
                 "legend": {
                     "display": True,
                     "position": "top"
+ {
+                "legend": {
+                    "display": True,
+                    "position": "top"}
                 },
                 "tooltip": {
                     "callbacks": {
                         "title": "function(context) { return '角度: ' + context[0].label; }",
                         "label": "function(context) { return '頻度: ' + context.raw; }"
+ {
+                    "callbacks": {
+                        "title": "function(context) { return '角度: ' + context[0].label; }",
+                        "label": "function(context) { return '頻度: ' + context.raw; }"}
                     
                 },
                 "annotation": {
@@ -1999,6 +2373,19 @@ class TackingAngleElement(BaseChartElement):
                                 "enabled": True,
                                 "content": "最適範囲",
                                 "position": "top"
+ {
+                    "annotations": {
+                        "optimal_range": {
+                            "type": "box",
+                            "xMin": f"{optimal_min}°",
+                            "xMax": f"{optimal_max}°",
+                            "backgroundColor": "rgba(75, 192, 192, 0.2)",
+                            "borderColor": "rgba(75, 192, 192, 1)",
+                            "borderWidth": 1,
+                            "label": {
+                                "enabled": True,
+                                "content": "最適範囲",
+                                "position": "top"}
                             
                         
                     
@@ -2115,6 +2502,12 @@ class StrategyPointMapElement(BaseChartElement):
             "mark_rounding": {"color": "red", "icon": "flag"},
             "wind_shift": {"color": "purple", "icon": "wind"},
             "default": {"color": "gray", "icon": "map-marker"}
+ {
+            "tack": {"color": "blue", "icon": "exchange-alt"},
+            "gybe": {"color": "green", "icon": "random"},
+            "mark_rounding": {"color": "red", "icon": "flag"},
+            "wind_shift": {"color": "purple", "icon": "wind"},
+            "default": {"color": "gray", "icon": "map-marker"}}
         })
         
         icon_config_json = json.dumps(icon_config)

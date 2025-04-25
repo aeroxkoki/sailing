@@ -301,6 +301,11 @@ class ChartData:
             "datasets": [{
                 "data": values,
                 "backgroundColor": self._generate_colors(len(values))
+ {
+            "labels": labels,
+            "datasets": [{
+                "data": values,
+                "backgroundColor": self._generate_colors(len(values))}
             }]
         
         return self
@@ -341,6 +346,13 @@ class ChartData:
                     "backgroundColor": self._generate_colors(1)[0],
                     "borderColor": self._generate_border_colors(1)[0],
                     "borderWidth": 1
+ {
+                "labels": labels,
+                "datasets": [{
+                    "data": values,
+                    "backgroundColor": self._generate_colors(1)[0],
+                    "borderColor": self._generate_border_colors(1)[0],
+                    "borderWidth": 1}
                 }]
         else:
             # 複数系列の場合
@@ -374,6 +386,9 @@ class ChartData:
             self.data = {
                 "labels": labels,
                 "datasets": datasets
+ {
+                "labels": labels,
+                "datasets": datasets}
         
         return self
     
@@ -413,6 +428,14 @@ class ChartData:
                     "borderWidth": 1,
                     "pointRadius": 4,
                     "pointHoverRadius": 6
+ {
+                "datasets": [{
+                    "data": points,
+                    "backgroundColor": self._generate_colors(1)[0],
+                    "borderColor": self._generate_border_colors(1)[0],
+                    "borderWidth": 1,
+                    "pointRadius": 4,
+                    "pointHoverRadius": 6}
                 }]
         else:
             # 複数系列の場合
@@ -443,6 +466,8 @@ class ChartData:
             
             self.data = {
                 "datasets": datasets
+ {
+                "datasets": datasets}
         
         return self
     
@@ -487,6 +512,15 @@ class ChartData:
                     "borderWidth": 2,
                     "tension": 0.1,
                     "fill": True
+ {
+                "labels": x_values,
+                "datasets": [{
+                    "data": y_values,
+                    "backgroundColor": self._generate_colors(1)[0] + "33",  # 透明度を追加
+                    "borderColor": self._generate_border_colors(1)[0],
+                    "borderWidth": 2,
+                    "tension": 0.1,
+                    "fill": True}
                 }]
         else:
             # 複数系列の場合
@@ -524,6 +558,9 @@ class ChartData:
             self.data = {
                 "labels": all_x_values,
                 "datasets": datasets
+ {
+                "labels": all_x_values,
+                "datasets": datasets}
         
         return self
     

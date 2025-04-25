@@ -202,6 +202,21 @@ class DistributionChartElement(BaseChartElement):
                 "data": {
                     "labels": labels,
                     "datasets": datasets
+ {
+                "type": "bar",
+                "data": {
+                    "labels": labels,
+                    "datasets": datasets}
+            return {
+                "type": "bar",
+                "data": {
+                    "labels": labels,
+                    "datasets": datasets}
+ {
+                "type": "bar",
+                "data": {
+                    "labels": labels,
+                    "datasets": datasets}}
         
         else:
             # カテゴリなしの場合、単一のヒストグラムを計算
@@ -229,6 +244,16 @@ class DistributionChartElement(BaseChartElement):
                         "backgroundColor": "rgba(54, 162, 235, 0.6)",
                         "borderColor": "rgba(54, 162, 235, 1.0)",
                         "borderWidth": 1
+ {
+                "type": "bar",
+                "data": {
+                    "labels": labels,
+                    "datasets": [{
+                        "label": self.get_property("dataset_label", "頻度"),
+                        "data": counts.tolist(),
+                        "backgroundColor": "rgba(54, 162, 235, 0.6)",
+                        "borderColor": "rgba(54, 162, 235, 1.0)",
+                        "borderWidth": 1}
                     }]
     
     def _prepare_violin_data(self, data: Any, value_key: str, category_key: Optional[str]) -> Dict[str, Any]:
@@ -304,6 +329,18 @@ class DistributionChartElement(BaseChartElement):
                         "borderWidth": 1,
                         "outlierColor": "rgba(255, 99, 132, 0.8)",
                         "outlierRadius": 5
+ {
+                "type": "violin",
+                "data": {
+                    "labels": labels,
+                    "datasets": [{
+                        "label": self.get_property("dataset_label", "分布"),
+                        "data": violin_data,
+                        "backgroundColor": "rgba(54, 162, 235, 0.6)",
+                        "borderColor": "rgba(54, 162, 235, 1.0)",
+                        "borderWidth": 1,
+                        "outlierColor": "rgba(255, 99, 132, 0.8)",
+                        "outlierRadius": 5}
                     }]
         
         else:
@@ -320,6 +357,18 @@ class DistributionChartElement(BaseChartElement):
                         "borderWidth": 1,
                         "outlierColor": "rgba(255, 99, 132, 0.8)",
                         "outlierRadius": 5
+ {
+                "type": "violin",
+                "data": {
+                    "labels": ["全データ"],
+                    "datasets": [{
+                        "label": self.get_property("dataset_label", "分布"),
+                        "data": [values],
+                        "backgroundColor": "rgba(54, 162, 235, 0.6)",
+                        "borderColor": "rgba(54, 162, 235, 1.0)",
+                        "borderWidth": 1,
+                        "outlierColor": "rgba(255, 99, 132, 0.8)",
+                        "outlierRadius": 5}
                     }]
     
     def _prepare_kde_data(self, data: Any, value_key: str, category_key: Optional[str]) -> Dict[str, Any]:
@@ -423,6 +472,21 @@ class DistributionChartElement(BaseChartElement):
                 "data": {
                     "labels": x_vals.tolist(),
                     "datasets": datasets
+ {
+                "type": "line",
+                "data": {
+                    "labels": x_vals.tolist(),
+                    "datasets": datasets}
+            return {
+                "type": "line",
+                "data": {
+                    "labels": x_vals.tolist(),
+                    "datasets": datasets}
+ {
+                "type": "line",
+                "data": {
+                    "labels": x_vals.tolist(),
+                    "datasets": datasets}}
         
         else:
             # カテゴリなしの場合、単一のKDEを計算
@@ -453,6 +517,19 @@ class DistributionChartElement(BaseChartElement):
                         "fill": True,
                         "tension": 0.4,
                         "pointRadius": 0
+ {
+                "type": "line",
+                "data": {
+                    "labels": x_vals.tolist(),
+                    "datasets": [{
+                        "label": self.get_property("dataset_label", "密度"),
+                        "data": kde_values,
+                        "borderColor": "rgba(54, 162, 235, 1.0)",
+                        "backgroundColor": "rgba(54, 162, 235, 0.2)",
+                        "borderWidth": 2,
+                        "fill": True,
+                        "tension": 0.4,
+                        "pointRadius": 0}
                     }]
     
     def get_chart_options(self) -> Dict[str, Any]:
@@ -477,15 +554,29 @@ class DistributionChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "頻度" if chart_type == "histogram" else "密度")
+ {
+            "scales": {
+                "y": {
+                    "beginAtZero": True,
+                    "title": {
+                        "display": True,
+                        "text": self.get_property("y_axis_title", "頻度" if chart_type == "histogram" else "密度")}
                 },
                 "x": {
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "値")
+ {
+                    "title": {
+                        "display": True,
+                        "text": self.get_property("x_axis_title", "値")}
             },
             "plugins": {
                 "tooltip": {
                     "mode": "index"
+ {
+                "tooltip": {
+                    "mode": "index"}
         
         # チャートタイプに応じたオプション
         if chart_type == "histogram":
@@ -494,12 +585,21 @@ class DistributionChartElement(BaseChartElement):
                 "plugins": {
                     "legend": {
                         "display": self.get_property("category_key") is not None
+ {
+                "plugins": {
+                    "legend": {
+                        "display": self.get_property("category_key") is not None}
                 },
                 "scales": {
                     "x": {
                         "offset": True,
                         "grid": {
                             "offset": True
+ {
+                    "x": {
+                        "offset": True,
+                        "grid": {
+                            "offset": True}
             
             # カテゴリがある場合の表示設定
             if self.get_property("category_key"):
@@ -521,6 +621,12 @@ class DistributionChartElement(BaseChartElement):
                         "ticks": {
                             "min": self.get_property("y_min", None),
                             "max": self.get_property("y_max", None)
+ {
+                "scales": {
+                    "y": {
+                        "ticks": {
+                            "min": self.get_property("y_min", None),
+                            "max": self.get_property("y_max", None)}
             
             # オプションを結合
             self._merge_options(distribution_options, violin_options)
@@ -533,6 +639,12 @@ class DistributionChartElement(BaseChartElement):
                         "beginAtZero": True,
                         "ticks": {
                             "min": 0
+ {
+                "scales": {
+                    "y": {
+                        "beginAtZero": True,
+                        "ticks": {
+                            "min": 0}
             
             # オプションを結合
             self._merge_options(distribution_options, kde_options)

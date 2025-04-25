@@ -53,6 +53,11 @@ class MapLayerManager:
             "name": layer_name,
             "type": layer_type,
             "options": options
+ {
+            "id": layer_id,
+            "name": layer_name,
+            "type": layer_type,
+            "options": options}
         }
         
         # k��U�_������ƣ�kY�
@@ -86,6 +91,12 @@ class MapLayerManager:
             "type": layer_type,
             "visible": visible,
             "options": options
+ {
+            "id": layer_id,
+            "name": layer_name,
+            "type": layer_type,
+            "visible": visible,
+            "options": options}
         }
         
         # h:Y����k��
@@ -191,6 +202,11 @@ class MapLayerManager:
             "overlay_layers": list(self.overlay_layers.values()),
             "active_base_layer": active_base,
             "active_overlay_layers": active_overlays
+ {
+            "base_layers": list(self.base_layers.values()),
+            "overlay_layers": list(self.overlay_layers.values()),
+            "active_base_layer": active_base,
+            "active_overlay_layers": active_overlays}
         }
     
     def to_json(self) -> str:
@@ -243,22 +259,34 @@ class MapLayerElement(BaseElement):
         self.layer_manager.add_base_layer("osm", "OpenStreetMap", "tile", {
             "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             "attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
+ {
+            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"}
         })
         
         self.layer_manager.add_base_layer("satellite", "Satellite", "tile", {
             "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
             "attribution": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+ {
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            "attribution": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}
         })
         
         self.layer_manager.add_base_layer("nautical", "Nautical", "tile", {
             "url": "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
             "attribution": "Map data: &copy; <a href='http://www.openseamap.org'>OpenSeaMap</a> contributors"
+ {
+            "url": "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+            "attribution": "Map data: &copy; <a href='http://www.openseamap.org'>OpenSeaMap</a> contributors"}
         })
         
         # �թ��n��������
         self.layer_manager.add_overlay_layer("track", "GPS Track", "track", True, {
             "color": "rgba(255, 87, 34, 0.8)",
             "weight": 3
+ {
+            "color": "rgba(255, 87, 34, 0.8)",
+            "weight": 3}
         })
         
         self.layer_manager.add_overlay_layer("markers", "Markers", "markers", True)

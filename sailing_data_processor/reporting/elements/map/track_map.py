@@ -222,6 +222,26 @@ class TrackMapElement(BaseTrackMapElement):
             "show_layer_control": show_layer_control,
             "show_scale_control": show_scale_control,
             "show_fullscreen_control": show_fullscreen_control
+ {
+            "map_type": map_type,
+            "center_auto": center_auto,
+            "center": [center_lat, center_lng],
+            "zoom_level": zoom_level,
+            "track_color": track_color,
+            "track_width": track_width,
+            "show_time_slider": show_time_slider,
+            "time_key": time_key,
+            "enable_interaction": enable_interaction,
+            "enable_selection": enable_selection,
+            "selection_color": selection_color,
+            "hover_color": hover_color,
+            "show_markers": show_markers,
+            "custom_markers": custom_markers,
+            "layers": layers,
+            "overlay_layers": overlay_layers,
+            "show_layer_control": show_layer_control,
+            "show_scale_control": show_scale_control,
+            "show_fullscreen_control": show_fullscreen_control}
         
         map_config_json = json.dumps(map_config)
         

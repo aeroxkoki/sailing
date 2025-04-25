@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 sailing_data_processor.reporting.elements.map.layer_manager
 
@@ -52,6 +53,7 @@ class MapLayerManager:
             "name": layer_name,
             "type": layer_type,
             "options": options
+        }
         
         # k��U�_������ƣ�kY�
         if self.active_base_layer is None:
@@ -84,6 +86,7 @@ class MapLayerManager:
             "type": layer_type,
             "visible": visible,
             "options": options
+        }
         
         # h:Y����k��
         if visible and layer_id not in self.active_overlay_layers:
@@ -188,6 +191,7 @@ class MapLayerManager:
             "overlay_layers": list(self.overlay_layers.values()),
             "active_base_layer": active_base,
             "active_overlay_layers": active_overlays
+        }
     
     def to_json(self) -> str:
         """

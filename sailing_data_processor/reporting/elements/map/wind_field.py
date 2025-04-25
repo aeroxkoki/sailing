@@ -203,6 +203,29 @@ class WindFieldElement(BaseWindFieldElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
+ {
+            "map_type": map_type,
+            "center_auto": center_auto,
+            "center": [center_lat, center_lng],
+            "zoom_level": zoom_level,
+            "wind_speed_scale": wind_speed_scale,
+            "vector_density": vector_density,
+            "arrow_scale": arrow_scale,
+            "min_velocity": min_velocity,
+            "max_velocity": max_velocity,
+            "velocity_units": velocity_units,
+            "interpolation_method": interpolation_method,
+            "show_wind_shifts": show_wind_shifts,
+            "show_wind_trends": show_wind_trends,
+            "compare_forecast": compare_forecast,
+            "show_terrain_effects": show_terrain_effects,
+            "show_time_dimension": show_time_dimension,
+            "time_key": time_key,
+            "animation_duration": animation_duration,
+            "animation_loop": animation_loop,
+            "show_track": show_track,
+            "track_color": track_color,
+            "track_width": track_width}
         
         map_config_json = json.dumps(map_config)
         

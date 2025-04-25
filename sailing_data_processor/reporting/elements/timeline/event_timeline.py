@@ -2,8 +2,8 @@
 """
 sailing_data_processor.reporting.elements.timeline.event_timeline
 
-¤ÙóÈ¿¤àé¤ó¯é¹’Ğ›Y‹â¸åüëgY
-»üêó°-n¤ÙóÈ¿Ã¯¸ã¤ÖŞü¯Ş*ji	’B“ø
+ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½é¹’Ğ›Yï¿½ï¿½ï¿½ï¿½ï¿½gY
+ï¿½ï¿½ï¿½ï¿½-nï¿½ï¿½ï¿½ï¿½ï¿½Ã¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*ji	ï¿½Bï¿½ï¿½
 kh:W~Y
 """
 
@@ -18,29 +18,30 @@ from sailing_data_processor.reporting.templates.template_model import ElementTyp
 
 class EventTimeline(BaseElement):
     """
-    ¤ÙóÈ¿¤àé¤ó¯é¹
+    ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½
     
-    »üêó°-n¤ÙóÈ¿Ã¯¸ã¤ÖŞü¯Ş*ji	’
-    B“ø
-kh:Y‹¿¤àé¤ó’Ğ›W~Y
+    ï¿½ï¿½ï¿½ï¿½-nï¿½ï¿½ï¿½ï¿½ï¿½Ã¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*ji	ï¿½
+    Bï¿½ï¿½
+kh:Yï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ğ›W~Y
     """
     
-    def __init__(self, model: Optional[ElementModel] = None, element_id=None, name="¤ÙóÈ¿¤àé¤ó", **kwargs):
+    def __init__(self, model: Optional[ElementModel] = None, element_id=None, name="ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½", **kwargs):
         """
         
         
         Parameters
         ----------
         model : Optional[ElementModel], optional
-             âÇë, by default None
+            ï¿½ ï¿½ï¿½ï¿½, by default None
         element_id : str, optional
-             ID, by default None (êÕ)
+            ï¿½ ID, by default None (ï¿½ï¿½)
         name : str, optional
-             , by default "¤ÙóÈ¿¤àé¤ó"
+            ï¿½ 
+, by default "ï¿½ï¿½ï¿½È¿ï¿½ï¿½ï¿½ï¿½"
         **kwargs : dict
-            ]nÖn×íÑÆ£
+            ]nï¿½nï¿½ï¿½ï¿½Æ£
         """
-        # ÇÕ©ëÈg¿¤àé¤ó ¿¤×’-š
+        # ï¿½Õ©ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½×’-ï¿½
         if model is None and 'element_type' not in kwargs:
             kwargs['element_type'] = ElementType.TIMELINE
         
@@ -49,10 +50,10 @@ kh:Y‹¿¤àé¤ó’Ğ›W~Y
         
         super().__init__(model, element_id=element_id, name=name, **kwargs)
         
-        # ¤ÙóÈÇü¿
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         self._events = []
         
-        # h:ª×·çó
+        # h:ï¿½×·ï¿½ï¿½
         self._options = {
             "show_tacks": kwargs.get("show_tacks", True),
             "show_jibes": kwargs.get("show_jibes", True),
@@ -64,62 +65,86 @@ kh:Y‹¿¤àé¤ó’Ğ›W~Y
             "handle_overflow": kwargs.get("handle_overflow", True),
             "tooltip_placement": kwargs.get("tooltip_placement", "top"),
             "time_format": kwargs.get("time_format", "HH:mm:ss"),
+ {
+            "show_tacks": kwargs.get("show_tacks", True),
+            "show_jibes": kwargs.get("show_jibes", True),
+            "show_marks": kwargs.get("show_marks", True),
+            "show_custom": kwargs.get("show_custom", True),
+            "event_height": kwargs.get("event_height", 20),
+            "group_events": kwargs.get("group_events", True),
+            "timeline_height": kwargs.get("timeline_height", 150),
+            "handle_overflow": kwargs.get("handle_overflow", True),
+            "tooltip_placement": kwargs.get("tooltip_placement", "top"),
+            "time_format": kwargs.get("time_format", "HH:mm:ss"),}
         }
         
-        # ª×·çó’×íÑÆ£k-š
+        # ï¿½×·ï¿½ï¿½ï¿½ï¿½ï¿½Æ£k-ï¿½
         for key, value in self._options.items():
             self.set_property(key, value)
         
-        # ¤ÙóÈ¿¤×nš©hr
+        # ï¿½ï¿½ï¿½È¿ï¿½ï¿½nï¿½ï¿½hr
         self._event_types = {
-            "tack": {"color": "#FF5722", "symbol": "ò", "label": "¿Ã¯"},
-            "jibe": {"color": "#2196F3", "symbol": "ó", "label": "¸ã¤Ö"},
-            "mark_rounding": {"color": "#4CAF50", "symbol": "Î", "label": "Şü¯Ş*"},
-            "start": {"color": "#FFC107", "symbol": "¶", "label": "¹¿üÈ"},
-            "finish": {"color": "#9C27B0", "symbol": " ", "label": "Õ£ËÃ·å"},
-            "custom": {"color": "#607D8B", "symbol": "", "label": "«¹¿à"}
+            "tack": {"color": "#FF5722", "symbol": "ï¿½", "label": "ï¿½Ã¯"},
+            "jibe": {"color": "#2196F3", "symbol": "ï¿½", "label": "ï¿½ï¿½ï¿½"},
+            "mark_rounding": {"color": "#4CAF50", "symbol": "ï¿½", "label": "ï¿½ï¿½ï¿½ï¿½*"},
+            "start": {"color": "#FFC107", "symbol": "ï¿½", "label": "ï¿½ï¿½ï¿½ï¿½"},
+            "finish": {"color": "#9C27B0", "symbol": "ï¿½", "label": "Õ£ï¿½Ã·ï¿½"},
+            "custom": {"color": "#607D8B", "symbol": "", "label": "ï¿½ï¿½ï¿½ï¿½"}
+ {
+            "tack": {"color": "#FF5722", "symbol": "ï¿½", "label": "ï¿½Ã¯"},
+            "jibe": {"color": "#2196F3", "symbol": "ï¿½", "label": "ï¿½ï¿½ï¿½"},
+            "mark_rounding": {"color": "#4CAF50", "symbol": "ï¿½", "label": "ï¿½ï¿½ï¿½ï¿½*"},
+            "start": {"color": "#FFC107", "symbol": "ï¿½", "label": "ï¿½ï¿½ï¿½ï¿½"},
+            "finish": {"color": "#9C27B0", "symbol": "ï¿½", "label": "Õ£ï¿½Ã·ï¿½"},
+            "custom": {"color": "#607D8B", "symbol": "", "label": "ï¿½ï¿½ï¿½ï¿½"}}
         }
         
-        # ¤ÙóÈ¿¤×hÕ£üëÉnşÜ
+        # ï¿½ï¿½ï¿½È¿ï¿½ï¿½hÕ£ï¿½ï¿½ï¿½nï¿½ï¿½
         self.set_property("event_type_fields", {
             "tack": "is_tack",
             "jibe": "is_jibe",
             "mark_rounding": "is_mark_rounding",
             "start": "is_start",
             "finish": "is_finish"
+ {
+            "tack": "is_tack",
+            "jibe": "is_jibe",
+            "mark_rounding": "is_mark_rounding",
+            "start": "is_start",
+            "finish": "is_finish"}
         })
         
-        # s0Å1nÕ£üëÉ
+        # s0ï¿½1nÕ£ï¿½ï¿½ï¿½
         self.set_property("detail_fields", [
             "speed", "wind_speed", "wind_direction", "heading"
         ])
         
-        # Çü¿½ü¹
+        # ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         self.set_property("data_source", kwargs.get("data_source", ""))
     
     def add_event(self, timestamp, event_type, label=None, details=None, **kwargs):
         """
-        ¤ÙóÈ’ı 
+        ï¿½ï¿½ï¿½È’ï¿½ï¿½
         
         Parameters
         ----------
         timestamp : str or datetime
-            ¤ÙóÈnzB;
+            ï¿½ï¿½ï¿½ï¿½nzB;
         event_type : str
-            ¤ÙóÈ¿¤× ("tack", "jibe", "mark_rounding", "start", "finish", "custom")
+            ï¿½ï¿½ï¿½È¿ï¿½ï¿½ ("tack", "jibe", "mark_rounding", "start", "finish", "custom")
         label : str, optional
-            ¤ÙóÈnéÙë, by default None
+            ï¿½ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½, by default None
         details : dict, optional
-            ¤ÙóÈns0Å1, by default None
+            ï¿½ï¿½ï¿½ï¿½ns0ï¿½1, by default None
         **kwargs : dict
-            ]nÖn¤ÙóÈ^'
+            ]nï¿½nï¿½ï¿½ï¿½ï¿½^'
             
         Returns
         -------
         dict
-            ı UŒ_¤ÙóÈÅ1
+            ï¿½ï¿½Uï¿½_ï¿½ï¿½ï¿½ï¿½ï¿½1
         """
-        # ¿¤à¹¿ó×nb’Á§Ã¯
+        # ï¿½ï¿½à¹¿ï¿½ï¿½nbï¿½ï¿½ï¿½Ã¯
         if isinstance(timestamp, str):
             try:
                 timestamp = datetime.fromisoformat(timestamp)
@@ -127,16 +152,16 @@ kh:Y‹¿¤àé¤ó’Ğ›W~Y
                 try:
                     timestamp = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
                 except (ValueError, TypeError):
-                    raise ValueError(f"!¹j¿¤à¹¿ó×b: {timestamp}")
+                    raise ValueError(f"!ï¿½jï¿½ï¿½à¹¿ï¿½ï¿½b: {timestamp}")
         
         if not isinstance(timestamp, datetime):
-            raise TypeError("¿¤à¹¿ó×odatetimeªÖ¸§¯È~_oISObn‡WgB‹ÅLBŠ~Y")
+            raise TypeError("ï¿½ï¿½à¹¿ï¿½ï¿½odatetimeï¿½Ö¸ï¿½ï¿½ï¿½~_oISObnï¿½WgBï¿½ÅLBï¿½~Y")
         
-        # ¤ÙóÈ¿¤×n<
+        # ï¿½ï¿½ï¿½È¿ï¿½ï¿½n<
         if event_type not in self._event_types and event_type != "custom":
-            raise ValueError(f"!¹j¤ÙóÈ¿¤×: {event_type}")
+            raise ValueError(f"!ï¿½jï¿½ï¿½ï¿½È¿ï¿½ï¿½: {event_type}")
         
-        # ¤ÙóÈÅ1’\
+        # ï¿½ï¿½ï¿½ï¿½ï¿½1ï¿½\
         event = {
             "id": str(uuid.uuid4()),
             "timestamp": timestamp.isoformat(),
@@ -145,53 +170,61 @@ kh:Y‹¿¤àé¤ó’Ğ›W~Y
             "symbol": self._event_types[event_type]["symbol"],
             "color": self._event_types[event_type]["color"],
             "details": details or {}
+ {
+            "id": str(uuid.uuid4()),
+            "timestamp": timestamp.isoformat(),
+            "type": event_type,
+            "label": label or self._event_types[event_type]["label"],
+            "symbol": self._event_types[event_type]["symbol"],
+            "color": self._event_types[event_type]["color"],
+            "details": details or {}}
         }
         
-        # ]nÖn^'’ı 
+        # ]nï¿½n^'ï¿½ï¿½ï¿½
         for key, value in kwargs.items():
             if key not in event:
                 event[key] = value
         
-        # ¤ÙóÈ’ı 
+        # ï¿½ï¿½ï¿½È’ï¿½ï¿½
         self._events.append(event)
         
         return event
     
     def clear_events(self):
-        """¤ÙóÈ’¯ê¢"""
+        """ï¿½ï¿½ï¿½È’ï¿½ï¿½"""
         self._events = []
     
     def set_property(self, key: str, value: Any) -> None:
         """
-        ×íÑÆ£’-š
+        ï¿½ï¿½ï¿½Æ£ï¿½-ï¿½
         
         Parameters
         ----------
         key : str
-            ×íÑÆ£
+            ï¿½ï¿½ï¿½Æ£
         value : Any
-            ×íÑÆ£$
+            ï¿½ï¿½ï¿½Æ£$
         """
         super().set_property(key, value)
         
-        # _options‚ô°
+        # _optionsï¿½ï¿½ï¿½
         if key in self._options:
             self._options[key] = value
     
     def get_property(self, key: str, default: Any = None) -> Any:
         """
-        ×íÑÆ£’Ö—
+        ï¿½ï¿½ï¿½Æ£ï¿½Ö—
         
         Parameters
         ----------
         key : str
-            ×íÑÆ£
+            ï¿½ï¿½ï¿½Æ£
         default : Any, optional
-            ÇÕ©ëÈ$, by default None
+            ï¿½Õ©ï¿½ï¿½$, by default None
             
         Returns
         -------
         Any
-            ×íÑÆ£$
+            ï¿½ï¿½ï¿½Æ£$
         """
         return super().get_property(key, default)

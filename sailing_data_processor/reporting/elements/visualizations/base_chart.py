@@ -148,6 +148,13 @@ class BaseChartElement(BaseElement):
                 "title": {
                     "display": bool(self.title),
                     "text": self.title
+ {
+            "type": self.chart_type,
+            "data": data,
+            "options": {
+                "title": {
+                    "display": bool(self.title),
+                    "text": self.title}
                 },
                 "responsive": True,
                 "maintainAspectRatio": False
@@ -169,22 +176,37 @@ class BaseChartElement(BaseElement):
             "title": {
                 "display": bool(self.title),
                 "text": self.title
+ {
+            "title": {
+                "display": bool(self.title),
+                "text": self.title}
             },
             "responsive": True,
             "maintainAspectRatio": False,
             "animation": {
                 "duration": 1000,
                 "easing": "easeOutQuart"
+ {
+                "duration": 1000,
+                "easing": "easeOutQuart"}
             },
             "plugins": {
                 "legend": {
                     "display": True,
                     "position": "top"
+ {
+                "legend": {
+                    "display": True,
+                    "position": "top"}
                 },
                 "tooltip": {
                     "enabled": True,
                     "mode": "index",
                     "intersect": False
+ {
+                    "enabled": True,
+                    "mode": "index",
+                    "intersect": False}
         
         # ユーザー定義のオプションを追加
         user_options = self.get_property("options", {})

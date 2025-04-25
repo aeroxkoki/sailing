@@ -151,6 +151,15 @@ class LineChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
+ {
+            "type": chart_type,
+            "data": data}
+        return {
+            "type": chart_type,
+            "data": data}
+ {
+            "type": chart_type,
+            "data": data}}
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -170,19 +179,35 @@ class LineChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "")
+ {
+            "scales": {
+                "x": {
+                    "title": {
+                        "display": True,
+                        "text": self.get_property("x_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+ {
+                        "display": self.get_property("show_x_grid", True),
+                        "color": "rgba(0, 0, 0, 0.1)"}
                 },
                 "y": {
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
+ {
+                    "title": {
+                        "display": True,
+                        "text": self.get_property("y_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+ {
+                        "display": self.get_property("show_y_grid", True),
+                        "color": "rgba(0, 0, 0, 0.1)"}
                     },
                     "beginAtZero": self.get_property("begin_at_zero", False)
             },
@@ -190,22 +215,38 @@ class LineChartElement(BaseChartElement):
                 "legend": {
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
+ {
+                "legend": {
+                    "display": self.get_property("show_legend", True),
+                    "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
                     "mode": self.get_property("tooltip_mode", "index"),
                     "intersect": False
+ {
+                    "mode": self.get_property("tooltip_mode", "index"),
+                    "intersect": False}
             },
             "interaction": {
                 "mode": "nearest",
                 "axis": "x",
                 "intersect": False
+ {
+                "mode": "nearest",
+                "axis": "x",
+                "intersect": False}
             },
             "animation": {
                 "duration": self.get_property("animation_duration", 1000)
+ {
+                "duration": self.get_property("animation_duration", 1000)}
             },
             "elements": {
                 "line": {
                     "tension": self.get_property("tension", 0.1)
+ {
+                "line": {
+                    "tension": self.get_property("tension", 0.1)}
         
         # データラベル表示設定
         show_data_labels = self.get_property("show_data_labels", False)
@@ -217,6 +258,13 @@ class LineChartElement(BaseChartElement):
                 "formatter": "function(value) { return value.toFixed(1); }",
                 "font": {
                     "weight": "bold"
+ {
+                "display": True,
+                "anchor": "end",
+                "align": "top",
+                "formatter": "function(value) { return value.toFixed(1); }",
+                "font": {
+                    "weight": "bold"}
                 },
                 "padding": 6
         
@@ -385,6 +433,15 @@ class ScatterChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
+ {
+            "type": chart_type,
+            "data": data}
+        return {
+            "type": chart_type,
+            "data": data}
+ {
+            "type": chart_type,
+            "data": data}}
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -404,19 +461,35 @@ class ScatterChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "")
+ {
+            "scales": {
+                "x": {
+                    "title": {
+                        "display": True,
+                        "text": self.get_property("x_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+ {
+                        "display": self.get_property("show_x_grid", True),
+                        "color": "rgba(0, 0, 0, 0.1)"}
                 },
                 "y": {
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
+ {
+                    "title": {
+                        "display": True,
+                        "text": self.get_property("y_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+ {
+                        "display": self.get_property("show_y_grid", True),
+                        "color": "rgba(0, 0, 0, 0.1)"}
                     },
                     "beginAtZero": self.get_property("begin_at_zero", False)
             },
@@ -424,13 +497,22 @@ class ScatterChartElement(BaseChartElement):
                 "legend": {
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
+ {
+                "legend": {
+                    "display": self.get_property("show_legend", True),
+                    "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) { return `(${context.parsed.x}, ${context.parsed.y})`; }"
+ {
+                    "callbacks": {
+                        "label": "function(context) { return `(${context.parsed.x}, ${context.parsed.y})`; }"}
             },
             "animation": {
                 "duration": self.get_property("animation_duration", 1000)
+ {
+                "duration": self.get_property("animation_duration", 1000)}
         
         # ズーム有効化
         enable_zoom = self.get_property("enable_zoom", True)
@@ -439,13 +521,22 @@ class ScatterChartElement(BaseChartElement):
                 "pan": {
                     "enabled": True,
                     "mode": "xy"
+ {
+                "pan": {
+                    "enabled": True,
+                    "mode": "xy"}
                 },
                 "zoom": {
                     "wheel": {
                         "enabled": True
+ {
+                    "wheel": {
+                        "enabled": True}
                     },
                     "pinch": {
                         "enabled": True
+ {
+                        "enabled": True}
                     },
                     "mode": "xy"
         
@@ -513,6 +604,31 @@ class ScatterChartElement(BaseChartElement):
                     "width": 2,
                     "lineStyle": "dotted",
                     "projection": self.get_property("regression_projection", False)
+ {
+                    "style": dataset["borderColor"].replace("0.7", "1"),
+                    "width": 2,
+                    "lineStyle": "dotted",
+                    "projection": self.get_property("regression_projection", False)}
+                dataset["trendlineLinear"] = {
+                    "style": dataset["borderColor"].replace("0.7", "1"),
+                    "width": 2,
+                    "lineStyle": "dotted",
+                    "projection": self.get_property("regression_projection", False)}
+ {
+                    "style": dataset["borderColor"].replace("0.7", "1"),
+                    "width": 2,
+                    "lineStyle": "dotted",
+                    "projection": self.get_property("regression_projection", False)}}
+                dataset["trendlineLinear"] = {
+                    "style": dataset["borderColor"].replace("0.7", "1"),
+                    "width": 2,
+                    "lineStyle": "dotted",
+                    "projection": self.get_property("regression_projection", False)}
+ {
+                    "style": dataset["borderColor"].replace("0.7", "1"),
+                    "width": 2,
+                    "lineStyle": "dotted",
+                    "projection": self.get_property("regression_projection", False)}}
         
         # ディメンションを取得
         width, height = self.get_chart_dimensions()
@@ -525,6 +641,10 @@ class ScatterChartElement(BaseChartElement):
                 "plugins": {
                     "zoom": self.get_property("enable_zoom", True),
                     "regression": self.get_property("show_regression_line", False)
+            {
+                "plugins": {
+                    "zoom": self.get_property("enable_zoom", True),
+                    "regression": self.get_property("show_regression_line", False)}
         )
         
         # チャートをレンダリング
@@ -675,6 +795,15 @@ class BarChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
+ {
+            "type": chart_type,
+            "data": data}
+        return {
+            "type": chart_type,
+            "data": data}
+ {
+            "type": chart_type,
+            "data": data}}
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -694,19 +823,35 @@ class BarChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "")
+ {
+            "scales": {
+                "x": {
+                    "title": {
+                        "display": True,
+                        "text": self.get_property("x_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+ {
+                        "display": self.get_property("show_x_grid", True),
+                        "color": "rgba(0, 0, 0, 0.1)"}
                 },
                 "y": {
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
+ {
+                    "title": {
+                        "display": True,
+                        "text": self.get_property("y_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+ {
+                        "display": self.get_property("show_y_grid", True),
+                        "color": "rgba(0, 0, 0, 0.1)"}
                     },
                     "beginAtZero": True
             },
@@ -714,13 +859,22 @@ class BarChartElement(BaseChartElement):
                 "legend": {
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
+ {
+                "legend": {
+                    "display": self.get_property("show_legend", True),
+                    "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
                     "mode": "index",
                     "intersect": False
+ {
+                    "mode": "index",
+                    "intersect": False}
             },
             "animation": {
                 "duration": self.get_property("animation_duration", 1000)
+ {
+                "duration": self.get_property("animation_duration", 1000)}
         
         # 横棒グラフの場合、x軸とy軸の設定を入れ替え
         horizontal = self.get_property("horizontal", False)
@@ -745,6 +899,16 @@ class BarChartElement(BaseChartElement):
                 bar_options["scales"][stacked_key]["max"] = 100
                 bar_options["scales"][stacked_key]["ticks"] = {
                     "callback": "function(value) { return value + '%'; }"
+ {
+                    "callback": "function(value) { return value + '%'; }"}
+                bar_options["scales"][stacked_key]["ticks"] = {
+                    "callback": "function(value) { return value + '%'; }"}
+ {
+                    "callback": "function(value) { return value + '%'; }"}}
+                bar_options["scales"][stacked_key]["ticks"] = {
+                    "callback": "function(value) { return value + '%'; }"}
+ {
+                    "callback": "function(value) { return value + '%'; }"}}
         
         # データラベル表示設定
         show_data_labels = self.get_property("show_data_labels", False)
@@ -756,6 +920,13 @@ class BarChartElement(BaseChartElement):
                 "formatter": "function(value) { return value.toFixed(1); }",
                 "font": {
                     "weight": "bold"
+ {
+                "display": True,
+                "anchor": "end",
+                "align": "top",
+                "formatter": "function(value) { return value.toFixed(1); }",
+                "font": {
+                    "weight": "bold"}
                 },
                 "padding": 6
         
@@ -938,6 +1109,15 @@ class PieChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
+ {
+            "type": chart_type,
+            "data": data}
+        return {
+            "type": chart_type,
+            "data": data}
+ {
+            "type": chart_type,
+            "data": data}}
     
     def get_chart_options(self) -> Dict[str, Any]:
         """
@@ -960,10 +1140,18 @@ class PieChartElement(BaseChartElement):
                 "legend": {
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
+ {
+            "plugins": {
+                "legend": {
+                    "display": self.get_property("show_legend", True),
+                    "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) { " +
+ {
+                    "callbacks": {
+                        "label": "function(context) { " +}
                                 "var dataset = context.dataset; " +
                                 "var total = dataset.data.reduce((sum, value) => sum + value, 0); " +
                                 "var value = dataset.data[context.dataIndex]; " +
@@ -977,6 +1165,10 @@ class PieChartElement(BaseChartElement):
                 "duration": self.get_property("animation_duration", 1000),
                 "animateRotate": True,
                 "animateScale": self.get_property("animate_scale", True)
+ {
+                "duration": self.get_property("animation_duration", 1000),
+                "animateRotate": True,
+                "animateScale": self.get_property("animate_scale", True)}
         
         # ドーナツグラフの場合
         if self.get_property("pie_type", "pie") == "doughnut":
@@ -993,6 +1185,11 @@ class PieChartElement(BaseChartElement):
                 "color": "#fff",
                 "font": {
                     "weight": "bold"
+ {
+                "display": True,
+                "color": "#fff",
+                "font": {
+                    "weight": "bold"}
                 },
                 "formatter": "function(value, context) { " +
                             "var label = context.chart.data.labels[context.dataIndex]; " +

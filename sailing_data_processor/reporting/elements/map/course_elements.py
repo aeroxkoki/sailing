@@ -48,6 +48,10 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "color": "rgba(255, 0, 0, 0.6)",
             "weight": 2,
             "dashArray": "5,5"
+ {
+            "color": "rgba(255, 0, 0, 0.6)",
+            "weight": 2,
+            "dashArray": "5,5"}
         }))
         
         # 戦略設定の初期化
@@ -104,6 +108,9 @@ class CourseElementsLayer(StrategyPointLayerElement):
         start_line = {
             "pin": pin,
             "boat": boat,
+ {
+            "pin": pin,
+            "boat": boat,}
             **options
         }
         
@@ -181,6 +188,8 @@ class CourseElementsLayer(StrategyPointLayerElement):
         
         route = {
             "points": points,
+ {
+            "points": points,}
             **options
         }
         
@@ -254,6 +263,10 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "color": "rgba(255, 0, 0, 0.6)",
             "weight": 2,
             "dashArray": "5,5"
+ {
+            "color": "rgba(255, 0, 0, 0.6)",
+            "weight": 2,
+            "dashArray": "5,5"}
         })
         
         # 戦略設定
@@ -276,6 +289,14 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "caution": {"color": "orange", "icon": "exclamation-triangle"},
             "information": {"color": "blue", "icon": "info-circle"},
             "default": {"color": "gray", "icon": "map-marker-alt"}
+ {
+            "mark": {"color": "red", "icon": "map-marker-alt"},
+            "start": {"color": "green", "icon": "flag"},
+            "finish": {"color": "blue", "icon": "flag-checkered"},
+            "advantage": {"color": "green", "icon": "thumbs-up"},
+            "caution": {"color": "orange", "icon": "exclamation-triangle"},
+            "information": {"color": "blue", "icon": "info-circle"},
+            "default": {"color": "gray", "icon": "map-marker-alt"}}
         })
         
         # データをJSON形式に変換
@@ -293,6 +314,17 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "strategy_points": strategy_points,
             "optimal_route": optimal_route,
             "risk_areas": risk_areas
+ {
+            "marks": marks,
+            "course_shape": course_shape,
+            "start_line": start_line,
+            "finish_line": finish_line,
+            "show_laylines": show_laylines,
+            "tacking_angle": tacking_angle,
+            "layline_style": layline_style,
+            "strategy_points": strategy_points,
+            "optimal_route": optimal_route,
+            "risk_areas": risk_areas}
         }
         
         course_config_json = json.dumps(course_config)
@@ -307,6 +339,15 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
+ {
+            "map_type": map_type,
+            "center_auto": center_auto,
+            "center": [center_lat, center_lng],
+            "zoom_level": zoom_level,
+            "show_track": show_track,
+            "track_color": track_color,
+            "track_width": track_width,
+            "point_icons": point_icons}
         }
         
         map_config_json = json.dumps(map_config)
