@@ -105,6 +105,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "pin": pin,
             "boat": boat,
             **options
+        }
         
         self.set_property("start_line", start_line)
     
@@ -181,6 +182,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
         route = {
             "points": points,
             **options
+        }
         
         self.set_property("optimal_route", route)
     
@@ -291,6 +293,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "strategy_points": strategy_points,
             "optimal_route": optimal_route,
             "risk_areas": risk_areas
+        }
         
         course_config_json = json.dumps(course_config)
         
@@ -304,6 +307,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
+        }
         
         map_config_json = json.dumps(map_config)
         
