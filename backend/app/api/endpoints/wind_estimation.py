@@ -11,7 +11,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.core.dependencies import get_current_user, get_db
-from app.schemas.wind_estimation import WindEstimationResult, WindEstimationInput
+from app.schemas.wind_estimation import WindEstimationInput
+from app.models.wind_data import WindEstimationResult
 from app.services.wind_estimation_service import estimate_wind
 
 router = APIRouter()
