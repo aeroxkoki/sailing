@@ -7,8 +7,8 @@ from fastapi import APIRouter
 
 from app.core.config import settings
 from app.api.endpoints import (
-    # wind_estimation,  # 一時的に無効化
-    # strategy_detection,  # 一時的に無効化
+    wind_estimation,
+    strategy_detection,
     data_import,
     projects,
     sessions,
@@ -21,18 +21,17 @@ from app.api.endpoints import (
 api_router = APIRouter()
 
 # エンドポイントルーターの登録
-# 風速推定とストラテジー検出は一時的に無効化
-# api_router.include_router(
-#     wind_estimation.router,
-#     prefix="/wind-estimation",
-#     tags=["wind estimation"]
-# )
+api_router.include_router(
+    wind_estimation.router,
+    prefix="/wind-estimation",
+    tags=["wind estimation"]
+)
 
-# api_router.include_router(
-#     strategy_detection.router,
-#     prefix="/strategy-detection",
-#     tags=["strategy detection"]
-# )
+api_router.include_router(
+    strategy_detection.router,
+    prefix="/strategy-detection",
+    tags=["strategy detection"]
+)
 
 api_router.include_router(
     data_import.router,
