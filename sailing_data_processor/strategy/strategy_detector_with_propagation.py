@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 StrategyDetectorWithPropagation 
 
@@ -97,10 +96,9 @@ class StrategyDetectorWithPropagation(StrategyDetector):
                         target_time = reference_time + timedelta(seconds=t)
                         
                         # 風の場の予測
-                        # 注: wind_fusion_systemは内部で現在の風の場を管理しているため、
-                        # current_wind_fieldを渡す必要はありません
                         predicted_field = self.wind_fusion_system.predict_wind_field(
-                            target_time=target_time
+                            target_time=target_time,
+                            current_wind_field=wind_field
                         )
                         
                         if predicted_field:
@@ -463,35 +461,6 @@ class StrategyDetectorWithPropagation(StrategyDetector):
         # 角度から判定（負ならポート、正ならスターボードタック）
         return 'port' if relative_angle < 0 else 'starboard'
     
-    def _get_wind_at_position_and_time(self, position: Tuple[float, float], time_point, wind_field: Dict[str, Any]) -> Optional[Dict[str, float]]:
-        """
-        特定の位置・時間における風の情報を取得
-        
-        Parameters:
-        -----------
-        position : Tuple[float, float]
-            位置（緯度, 経度）
-        time_point : any
-            時間
-        wind_field : Dict[str, Any]
-            風の場データ
-            
-        Returns:
-        --------
-        Optional[Dict[str, float]]
-            取得された風情報
-        """
-        # 位置座標を取得
-        lat, lon = position
-        
-        # 親クラスの_get_wind_at_positionメソッドを呼び出し
-        # time_pointがdict型の場合は、そのままではなく値を渡す必要がある
-        if isinstance(time_point, dict) and "timestamp" in time_point:
-            time_point = time_point["timestamp"]
-            
-        # 親クラスの_get_wind_at_positionメソッドを直接呼び出し
-        return super()._get_wind_at_position(lat, lon, time_point, wind_field)
-    
     def _calculate_strategic_score(self, maneuver_type: str, 
                                  before_tack_type: str, 
                                  after_tack_type: str,
@@ -525,7 +494,7 @@ class StrategyDetectorWithPropagation(StrategyDetector):
         note = "通常の戦略的変更"
         
         # 風情報取得
-        wind = self._get_wind_at_position_and_time(position, time_point, wind_field)
+        wind = self._get_wind_at_position(position[0], position[1], time_point, wind_field)
         
         if not wind:
             return score, note
