@@ -476,6 +476,17 @@ class WindFieldFusionSystem:
             grid_resolution = 10
             simple_field = self._create_simple_wind_field(sorted_data, grid_resolution, latest_time)
             self.current_wind_field = simple_field
+            
+            # 履歴に追加 (テスト環境でも履歴を更新するように修正)
+            self.wind_field_history.append({
+                'time': latest_time,
+                'field': simple_field
+            })
+            
+            # 履歴サイズを制限
+            if len(self.wind_field_history) > self.max_history_size:
+                self.wind_field_history.pop(0)
+                
             return simple_field
         
         # grid_densityパラメータの設定
@@ -798,6 +809,17 @@ class WindFieldFusionSystem:
                 # タイムスタンプだけ対象時間に更新
                 simple_field['time'] = target_time
                 self.current_wind_field = simple_field
+                
+                # 履歴に追加 (テスト環境でも履歴を更新するように修正)
+                self.wind_field_history.append({
+                    'time': latest_time,
+                    'field': simple_field
+                })
+                
+                # 履歴サイズを制限
+                if len(self.wind_field_history) > self.max_history_size:
+                    self.wind_field_history.pop(0)
+                
                 return simple_field
             else:
                 # データポイントがない場合はダミー風場を生成
