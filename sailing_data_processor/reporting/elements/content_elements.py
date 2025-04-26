@@ -448,13 +448,6 @@ class ChartElement(BaseElement):
                 "title": chart_title,
                 "responsive": True,
                 "maintainAspectRatio": False
- {
-            "type": chart_type,
-            "data": data,
-            "options": {
-                "title": chart_title,
-                "responsive": True,
-                "maintainAspectRatio": False}
             }
         }
         
@@ -567,13 +560,6 @@ class MapElement(BaseElement):
                 "center_auto": center_auto,
                 "zoom_level": zoom_level,
                 "track_color": track_color
- {
-            "type": map_type,
-            "data": data,
-            "options": {
-                "center_auto": center_auto,
-                "zoom_level": zoom_level,
-                "track_color": track_color}
             }
         }
         
@@ -683,11 +669,6 @@ class DiagramElement(BaseElement):
             "data": data,
             "options": {
                 "title": diagram_title
- {
-            "type": diagram_type,
-            "data": data,
-            "options": {
-                "title": diagram_title}
             }
         }
         
