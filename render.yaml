@@ -5,10 +5,13 @@ services:
     runtime: python
     region: singapore  # お客様の主な利用地域に近いリージョンを選択
     buildCommand: |
-      cd backend
       python3 -m pip install --upgrade pip setuptools wheel
+      # プロジェクトルートのsailing_data_processorをインストール
+      python3 -m pip install -e .
+      cd backend
       python3 -m pip install -r requirements.txt
-      python3 -m pip install -e ..
+      # sailing_data_processorが正しくインストールされているか確認
+      python3 -c "try: import sailing_data_processor; print(f'sailing_data_processor version: {sailing_data_processor.__version__}'); except ImportError as e: print(f'Error importing sailing_data_processor: {e}'); exit(1)"
       python3 fix_encoding.py
     startCommand: |
       cd backend
