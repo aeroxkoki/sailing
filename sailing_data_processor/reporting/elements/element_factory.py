@@ -25,7 +25,7 @@ from sailing_data_processor.reporting.elements.layout_elements import (
 
 
 # 要素タイプと要素クラスのマッピング
-_ELEMENT_CLASSES: Dict[ElementType, Type[BaseElement]] = {
+_ELEMENT_CLASSES: Dict[ElementType, Type[BaseElement]] = {}
     # コンテンツ要素
     ElementType.TEXT: TextElement,
     ElementType.TABLE: TableElement,

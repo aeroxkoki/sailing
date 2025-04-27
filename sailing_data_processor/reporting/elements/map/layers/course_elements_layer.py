@@ -116,15 +116,14 @@ class CourseElementsLayer(BaseMapLayer):
         marks = self.get_property("marks", [])
         
         # マークプロパティ
-        mark = {
+        mark = {}
             "lat": lat,
             "lng": lng,
             "name": name,
             "color": color if color else self.get_property("mark_color" if not is_gate else "gate_color"),
             "size": size if size else self.get_property("mark_size"),
             "is_gate": is_gate
- {
-            "lat": lat,
+ "lat": lat,
             "lng": lng,
             "name": name,
             "color": color if color else self.get_property("mark_color" if not is_gate else "gate_color"),
@@ -177,7 +176,7 @@ class CourseElementsLayer(BaseMapLayer):
         left_mark = {
             "lat": lat1,
             "lng": lng1,
-            "name": f"{name} (L)",
+            "name": f"name} (L)",
             "color": gate_color,
             "size": self.get_property("mark_size"),
             "is_gate": True,
@@ -185,7 +184,7 @@ class CourseElementsLayer(BaseMapLayer):
  {
             "lat": lat1,
             "lng": lng1,
-            "name": f"{name} (L)",
+            "name": f"name} (L)",
             "color": gate_color,
             "size": self.get_property("mark_size"),
             "is_gate": True,
@@ -195,7 +194,7 @@ class CourseElementsLayer(BaseMapLayer):
         right_mark = {
             "lat": lat2,
             "lng": lng2,
-            "name": f"{name} (R)",
+            "name": f"name} (R)",
             "color": gate_color,
             "size": self.get_property("mark_size"),
             "is_gate": True,
@@ -203,7 +202,7 @@ class CourseElementsLayer(BaseMapLayer):
  {
             "lat": lat2,
             "lng": lng2,
-            "name": f"{name} (R)",
+            "name": f"name} (R)",
             "color": gate_color,
             "size": self.get_property("mark_size"),
             "is_gate": True,
@@ -257,7 +256,7 @@ class CourseElementsLayer(BaseMapLayer):
         pin_mark = {
             "lat": lat1,
             "lng": lng1,
-            "name": f"{name} (Pin)",
+            "name": f"name} (Pin)",
             "color": start_color,
             "size": self.get_property("mark_size"),
             "is_start": True,
@@ -265,7 +264,7 @@ class CourseElementsLayer(BaseMapLayer):
  {
             "lat": lat1,
             "lng": lng1,
-            "name": f"{name} (Pin)",
+            "name": f"name} (Pin)",
             "color": start_color,
             "size": self.get_property("mark_size"),
             "is_start": True,
@@ -275,7 +274,7 @@ class CourseElementsLayer(BaseMapLayer):
         committee_mark = {
             "lat": lat2,
             "lng": lng2,
-            "name": f"{name} (Committee)",
+            "name": f"name} (Committee)",
             "color": start_color,
             "size": self.get_property("mark_size"),
             "is_start": True,
@@ -283,7 +282,7 @@ class CourseElementsLayer(BaseMapLayer):
  {
             "lat": lat2,
             "lng": lng2,
-            "name": f"{name} (Committee)",
+            "name": f"name} (Committee)",
             "color": start_color,
             "size": self.get_property("mark_size"),
             "is_start": True,
@@ -337,7 +336,7 @@ class CourseElementsLayer(BaseMapLayer):
         pin_mark = {
             "lat": lat1,
             "lng": lng1,
-            "name": f"{name} (Pin)",
+            "name": f"name} (Pin)",
             "color": finish_color,
             "size": self.get_property("mark_size"),
             "is_finish": True,
@@ -345,7 +344,7 @@ class CourseElementsLayer(BaseMapLayer):
  {
             "lat": lat1,
             "lng": lng1,
-            "name": f"{name} (Pin)",
+            "name": f"name} (Pin)",
             "color": finish_color,
             "size": self.get_property("mark_size"),
             "is_finish": True,
@@ -355,7 +354,7 @@ class CourseElementsLayer(BaseMapLayer):
         committee_mark = {
             "lat": lat2,
             "lng": lng2,
-            "name": f"{name} (Committee)",
+            "name": f"name} (Committee)",
             "color": finish_color,
             "size": self.get_property("mark_size"),
             "is_finish": True,
@@ -363,7 +362,7 @@ class CourseElementsLayer(BaseMapLayer):
  {
             "lat": lat2,
             "lng": lng2,
-            "name": f"{name} (Committee)",
+            "name": f"name} (Committee)",
             "color": finish_color,
             "size": self.get_property("mark_size"),
             "is_finish": True,
@@ -409,8 +408,7 @@ class CourseElementsLayer(BaseMapLayer):
             "coordinates": coordinates,
             "name": name,
             "color": color if color else self.get_property("restricted_color")
- {
-            "coordinates": coordinates,
+ "coordinates": coordinates,
             "name": name,
             "color": color if color else self.get_property("restricted_color")}
         
@@ -555,7 +553,7 @@ class CourseElementsLayer(BaseMapLayer):
             // コース要素レイヤーの作成 {layer_id}
             {layer_var} = (function() {{
                 var courseConfig = {{
-                    markSize: {mark_size},
+                    markSize: mark_size},
                     markColor: '{mark_color}',
                     gateColor: '{gate_color}',
                     startColor: '{start_color}',
@@ -609,8 +607,7 @@ class CourseElementsLayer(BaseMapLayer):
                             var size = mark.size || config.markSize;
                             
                             // マークのアイコン作成
-                            var markIcon = L.divIcon({{
-                                html: '<div style="' +
+                            var markIcon = L.divIcon({html: '<div style="' +
                                     'background-color: ' + color + '; ' +
                                     'width: ' + size + 'px; ' +
                                     'height: ' + size + 'px; ' +
@@ -625,8 +622,7 @@ class CourseElementsLayer(BaseMapLayer):
                             }});
                             
                             // マーカー作成
-                            var marker = L.marker([mark.lat, mark.lng], {{
-                                icon: markIcon,
+                            var marker = L.marker([mark.lat, mark.lng], {icon: markIcon,
                                 title: mark.name || 'Mark ' + (i+1)
                             }});
                             
@@ -634,14 +630,10 @@ class CourseElementsLayer(BaseMapLayer):
                             var popupContent = '<div style="min-width: 150px;"><h4 style="margin: 0 0 5px 0;">' + 
                                                (mark.name || 'Mark ' + (i+1)) + '</h4>';
                             
-                            if (mark.is_gate) {{
-                                popupContent += '<p>Gate mark</p>';
-                            }} else if (mark.is_start) {{
-                                popupContent += '<p>Start line mark</p>';
-                            }} else if (mark.is_finish) {{
-                                popupContent += '<p>Finish line mark</p>';
-                            }} else {{
-                                popupContent += '<p>Course mark</p>';
+                            if (mark.is_gate) {popupContent += '<p>Gate mark</p>';
+                            }} else if (mark.is_start) {popupContent += '<p>Start line mark</p>';
+                            }} else if (mark.is_finish) {popupContent += '<p>Finish line mark</p>';
+                            }} else {popupContent += '<p>Course mark</p>';
                             }}
                             
                             popupContent += '<p>Position: ' + mark.lat.toFixed(6) + ', ' + mark.lng.toFixed(6) + '</p>';
@@ -652,9 +644,7 @@ class CourseElementsLayer(BaseMapLayer):
                             
                             // レイラインの描画
                             if (config.showLaylines && !mark.is_start && !mark.is_finish && 
-                                (!mark.is_gate || (mark.is_gate && !marks[mark.gate_pair || -1]))) {{
-                                
-                                // 風上レイライン
+                                (!mark.is_gate || (mark.is_gate && !marks[mark.gate_pair || -1]))) {// 風上レイライン
                                 var upwindLat1 = mark.lat;
                                 var upwindLng1 = mark.lng;
                                 var upwindDirection1 = (config.windDirection - config.twaUpwind + 360) % 360;
@@ -694,8 +684,7 @@ class CourseElementsLayer(BaseMapLayer):
                                 // ゲートラインの描画
                                 var gateLine = L.polyline(
                                     [[mark.lat, mark.lng], [pairMark.lat, pairMark.lng]], 
-                                    {{
-                                        color: mark.color || config.gateColor,
+                                    {color: mark.color || config.gateColor,
                                         weight: 3,
                                         opacity: 0.8,
                                         dashArray: '5, 5'
@@ -722,8 +711,7 @@ class CourseElementsLayer(BaseMapLayer):
                                 // スタートラインの描画
                                 var startLine = L.polyline(
                                     [[mark.lat, mark.lng], [pairMark.lat, pairMark.lng]], 
-                                    {{
-                                        color: mark.color || config.startColor,
+                                    {color: mark.color || config.startColor,
                                         weight: 3,
                                         opacity: 0.8
                                     }}
@@ -744,8 +732,7 @@ class CourseElementsLayer(BaseMapLayer):
                                 // フィニッシュラインの描画
                                 var finishLine = L.polyline(
                                     [[mark.lat, mark.lng], [pairMark.lat, pairMark.lng]], 
-                                    {{
-                                        color: mark.color || config.finishColor,
+                                    {color: mark.color || config.finishColor,
                                         weight: 3,
                                         opacity: 0.8
                                     }}
@@ -766,8 +753,7 @@ class CourseElementsLayer(BaseMapLayer):
                             var mark = marks[i];
                             if (!mark.is_gate && !mark.is_start && !mark.is_finish && 
                                 mark.gate_pair === undefined && mark.start_pair === undefined && 
-                                mark.finish_pair === undefined) {{
-                                courseMarkIndices.push(i);
+                                mark.finish_pair === undefined) {courseMarkIndices.push(i);
                             }}
                         }}
                         
@@ -775,15 +761,13 @@ class CourseElementsLayer(BaseMapLayer):
                         if (courseMarkIndices.length >= 2) {{
                             var coursePoints = [];
                             
-                            for (var i = 0; i < courseMarkIndices.length; i++) {{
-                                var mark = marks[courseMarkIndices[i]];
+                            for (var i = 0; i < courseMarkIndices.length; i++) {var mark = marks[courseMarkIndices[i]];
                                 coursePoints.push([mark.lat, mark.lng]);
                             }}
                             
                             var courseLine = L.polyline(
                                 coursePoints, 
-                                {{
-                                    color: config.courseColor,
+                                {color: config.courseColor,
                                     weight: 2,
                                     opacity: 0.6,
                                     dashArray: '5, 10'
@@ -802,14 +786,12 @@ class CourseElementsLayer(BaseMapLayer):
                             if (area.coordinates && area.coordinates.length >= 3) {{
                                 var polygonPoints = [];
                                 
-                                for (var j = 0; j < area.coordinates.length; j++) {{
-                                    polygonPoints.push([area.coordinates[j][0], area.coordinates[j][1]]);
+                                for (var j = 0; j < area.coordinates.length; j++) {polygonPoints.push([area.coordinates[j][0], area.coordinates[j][1]]);
                                 }}
                                 
                                 var restrictedPolygon = L.polygon(
                                     polygonPoints, 
-                                    {{
-                                        color: area.color || config.restrictedColor,
+                                    {color: area.color || config.restrictedColor,
                                         weight: 2,
                                         opacity: 0.8,
                                         fillColor: area.color || config.restrictedColor,
@@ -835,14 +817,12 @@ class CourseElementsLayer(BaseMapLayer):
                         
                         // レイヤーコントロールを探す
                         for (var id in map._layers) {{
-                            if (map._layers[id] instanceof L.Control.Layers) {{
-                                layerControls = map._layers[id];
+                            if (map._layers[id] instanceof L.Control.Layers) {layerControls = map._layers[id];
                                 break;
                             }}
                         }}
                         
-                        if (layerControls) {{
-                            layerControls.addOverlay(marksLayer, "Course Marks");
+                        if (layerControls) {layerControls.addOverlay(marksLayer, "Course Marks");
                             layerControls.addOverlay(linesLayer, "Course Lines");
                             layerControls.addOverlay(restrictedLayer, "Restricted Areas");
                             layerControls.addOverlay(laylinesLayer, "Laylines");
@@ -866,8 +846,7 @@ class CourseElementsLayer(BaseMapLayer):
                     // ラインの描画
                     var layline = L.polyline(
                         [[lat, lng], [lat2, lng2]], 
-                        {{
-                            color: color,
+                        {color: color,
                             weight: 2,
                             opacity: 0.7,
                             dashArray: '5, 8'
@@ -879,8 +858,7 @@ class CourseElementsLayer(BaseMapLayer):
                 }}
                 
                 // 距離計算ヘルパー関数（ヘイバーシン公式）
-                function calculateDistance(lat1, lon1, lat2, lon2) {{
-                    // 地球の半径（メートル）
+                function calculateDistance(lat1, lon1, lat2, lon2) {// 地球の半径（メートル）
                     var R = 6371000;
                     
                     // 緯度経度をラジアンに変換

@@ -50,7 +50,7 @@ class DataExporter(BaseExporter):
         super().__init__(**options)
         
         # データエクスポートのデフォルトオプション
-        data_defaults = {
+        data_defaults = {}
             "format": "csv",  # 'csv', 'json', 'xml'
             "delimiter": ",",  # CSVの区切り文字
             "encoding": "utf-8",

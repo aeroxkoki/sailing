@@ -50,7 +50,7 @@ class ExcelExporter(BaseExporter):
         super().__init__(**options)
         
         # Excelデフォルトオプション
-        excel_defaults = {
+        excel_defaults = {}
             "engine": "auto",  # 'openpyxl', 'xlsxwriter', 'auto'
             "include_metadata": True,
             "include_summary": True,
@@ -68,8 +68,7 @@ class ExcelExporter(BaseExporter):
                 "strategy_points"
             ],
             "format": {
-                "header": {
-                    "bold": True,
+                "header": "bold": True,
                     "bg_color": "#4F81BD",
                     "font_color": "#FFFFFF",
                     "border": True

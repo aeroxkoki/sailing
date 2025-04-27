@@ -110,7 +110,7 @@ class EnhancedWindRoseElement(WindRoseElement):
             
             # データがない場合は空のデータを返す
             if not data:
-                return {"type": "polar", "data": {"r": [], "theta": [], "type": "barpolar"}}
+                return {"type": "polar", "data": "r": [], "theta": [], "type": "barpolar"}}
             
             # 角度分割数の取得
             angle_divisions = self.get_property("angle_divisions", 16)
@@ -178,7 +178,7 @@ class EnhancedWindRoseElement(WindRoseElement):
                     "r": r_values,
                     "theta": angle_bins,
                     "name": label,
-                    "marker": {"line": {"color": "white", "width": 0.5}},
+                    "marker": {"line": "color": "white", "width": 0.5}},
                     "opacity": 0.8
                 })
             
@@ -187,19 +187,19 @@ class EnhancedWindRoseElement(WindRoseElement):
             title_text = f"風配図 - 集計方法: {self._get_aggregation_method_display(aggregation_method)}"
             
             # Plotly用のレイアウト設定
-            layout = {
+            layout = {}
                 "title": title_text,
-                "font": {"size": 12},
-                "legend": {"font": {"size": 10}, "orientation": "h", "y": -0.1},
+                "font": "size": 12},
+                "legend": {"font": "size": 10}, "orientation": "h", "y": -0.1},
                 "polar": {
-                    "radialaxis": {"ticksuffix": "%" if aggregation_method == "frequency" else ""},
+                    "radialaxis": "ticksuffix": "%" if aggregation_method == "frequency" else ""},
                     "angularaxis": {"direction": "clockwise", "period": 360}
  {
                 "title": title_text,
-                "font": {"size": 12},
-                "legend": {"font": {"size": 10}, "orientation": "h", "y": -0.1},
+                "font": "size": 12},
+                "legend": {"font": "size": 10}, "orientation": "h", "y": -0.1},
                 "polar": {
-                    "radialaxis": {"ticksuffix": "%" if aggregation_method == "frequency" else ""},
+                    "radialaxis": "ticksuffix": "%" if aggregation_method == "frequency" else ""},
                     "angularaxis": {"direction": "clockwise", "period": 360}}
                 },
                 "margin": {"t": 100, "b": 100}
@@ -208,19 +208,19 @@ class EnhancedWindRoseElement(WindRoseElement):
             return {
                 "data": plotly_data,
                 "layout": layout,
-                "config": {"responsive": True}
+                "config": "responsive": True}
  {
                 "data": plotly_data,
                 "layout": layout,
-                "config": {"responsive": True}}
+                "config": "responsive": True}}
             return {
                 "data": plotly_data,
                 "layout": layout,
-                "config": {"responsive": True}}
+                "config": "responsive": True}}
  {
                 "data": plotly_data,
                 "layout": layout,
-                "config": {"responsive": True}}}
+                "config": "responsive": True}}}
         
         # それ以外の場合（標準の風配図）
         return chart_data
@@ -248,34 +248,34 @@ class EnhancedWindRoseElement(WindRoseElement):
             "plugins": {
                 "tooltip": {
                     "callbacks": {
-                        "label": f"function(context) {{ return context.label + ': ' + context.raw.toFixed(1) + '{unit_suffix}'; }}"
+                        "label": f"function(context) {{ return context.label + ': ' + context.raw.toFixed(1) + 'unit_suffix}'; }}"
  {
             "plugins": {
                 "tooltip": {
                     "callbacks": {
-                        "label": f"function(context) {{ return context.label + ': ' + context.raw.toFixed(1) + '{unit_suffix}'; }}"}
+                        "label": f"function(context) {{ return context.label + ': ' + context.raw.toFixed(1) + 'unit_suffix}'; }}"}
             },
             "scale": {
                 "ticks": {
-                    "callback": f"function(value) {{ return value + '{unit_suffix}'; }}"
+                    "callback": f"function(value) {{ return value + 'unit_suffix}'; }}"
  {
                 "ticks": {
-                    "callback": f"function(value) {{ return value + '{unit_suffix}'; }}"}
+                    "callback": f"function(value) {{ return value + 'unit_suffix}'; }}"}
         
         # 詳細表示が有効な場合の追加設定
         if self.get_property("show_details", True):
             additional_options["plugins"]["tooltip"]["callbacks"] = {
-                "title": "function(context) { return context[0].label; }",
+                "title": "function(context) return context[0].label; }",
                 "label": f"function(context) {{ var dataIndex = context.dataIndex; var value = context.raw; " +
  {
-                "title": "function(context) { return context[0].label; }",
-                "label": f"function(context) {{ var dataIndex = context.dataIndex; var value = context.raw; " +}
+                "title": "function(context) return context[0].label; }",
+                "label": f"function(context) {var dataIndex = context.dataIndex; var value = context.raw; " +}
             additional_options["plugins"]["tooltip"]["callbacks"] = {
-                "title": "function(context) { return context[0].label; }",
-                "label": f"function(context) {{ var dataIndex = context.dataIndex; var value = context.raw; " +}
+                "title": "function(context) return context[0].label; }",
+                "label": f"function(context) {var dataIndex = context.dataIndex; var value = context.raw; " +}
  {
-                "title": "function(context) { return context[0].label; }",
-                "label": f"function(context) {{ var dataIndex = context.dataIndex; var value = context.raw; " +}}
+                "title": "function(context) return context[0].label; }",
+                "label": f"function(context) {var dataIndex = context.dataIndex; var value = context.raw; " +}}
                          f"return [" +
                          f"'値: ' + value.toFixed(1) + '{unit_suffix}'," +
                          f"'全体に対する割合: ' + (value / context.chart.data.datasets[0].data.reduce((a,b) => a + b, 0) * 100).toFixed(1) + '%'" +
@@ -327,7 +327,7 @@ class EnhancedWindRoseElement(WindRoseElement):
         show_labels = self.get_property("show_labels", False)
         
         # Plotlyレンダラーを使用し、3D表示が有効な場合はレンダラーオプションを変更
-        renderer_options = {"plugins": {"datalabels": show_labels}}
+        renderer_options = {"plugins": "datalabels": show_labels}}
         if renderer_type == "plotly" and self.get_property("enable_3d", False):
             renderer_options["mode"] = "3d"
         
@@ -496,7 +496,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "type": "scatterpolar",
                             "r": speeds,
                             "theta": angles,
-                            "name": f"{wind_speed} kt",
+                            "name": f"wind_speed} kt",
                             "mode": "lines+markers",
                             "fill": "toself"
                         })
@@ -504,11 +504,11 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 # レイアウト設定
                 layout = {
                     "polar": {
-                        "radialaxis": {"visible": True, "range": [0, None]},
+                        "radialaxis": "visible": True, "range": [0, None]},
                         "angularaxis": {"direction": "clockwise", "period": 360}
  {
                     "polar": {
-                        "radialaxis": {"visible": True, "range": [0, None]},
+                        "radialaxis": "visible": True, "range": [0, None]},
                         "angularaxis": {"direction": "clockwise", "period": 360}}
                     },
                     "showlegend": True
@@ -516,8 +516,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 return {
                     "data": plotly_data,
                     "layout": layout
- {
-                    "data": plotly_data,
+ "data": plotly_data,
                     "layout": layout}
             else:
                 # ChartJS用のデータ構造
@@ -561,7 +560,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         # データセットを追加
                         color = colors[color_idx % len(colors)]
                         datasets.append({
-                            "label": f"{wind_speed} kt",
+                            "label": f"wind_speed} kt",
                             "data": speeds,
                             "backgroundColor": color,
                             "borderColor": color.replace("0.5", "1"),
@@ -582,18 +581,15 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "datasets": datasets
  {
                     "type": "radar",
-                    "data": {
-                        "labels": labels,
+                    "data": "labels": labels,
                         "datasets": datasets}
                 return {
                     "type": "radar",
-                    "data": {
-                        "labels": labels,
+                    "data": "labels": labels,
                         "datasets": datasets}
  {
                     "type": "radar",
-                    "data": {
-                        "labels": labels,
+                    "data": "labels": labels,
                         "datasets": datasets}}
         
         # VMG最適化分析が有効な場合
@@ -628,14 +624,13 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "type": "scatterpolar",
                         "r": [upwind_optimal[1]],
                         "theta": [upwind_optimal[0]],
-                        "name": f"最適風上角 ({int(upwind_optimal[0])}°)",
+                        "name": f"最適風上角 (int(upwind_optimal[0])}°)",
                         "mode": "markers",
                         "marker": {
                             "size": 10,
                             "symbol": "star",
                             "color": "green"
- {
-                            "size": 10,
+ "size": 10,
                             "symbol": "star",
                             "color": "green"}
                     })
@@ -645,14 +640,13 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "type": "scatterpolar",
                         "r": [downwind_optimal[1]],
                         "theta": [downwind_optimal[0]],
-                        "name": f"最適風下角 ({int(downwind_optimal[0])}°)",
+                        "name": f"最適風下角 (int(downwind_optimal[0])}°)",
                         "mode": "markers",
                         "marker": {
                             "size": 10,
                             "symbol": "star",
                             "color": "orange"
- {
-                            "size": 10,
+ "size": 10,
                             "symbol": "star",
                             "color": "orange"}
                     })
@@ -660,15 +654,14 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 # レイアウト設定
                 layout = chart_data.get("layout", {})
                 layout["annotations"] = [
-                    {"text": f"最適風上角: {int(upwind_optimal[0])}°", "x": 0.1, "y": 1.1, "showarrow": False},
-                    {"text": f"最適風下角: {int(downwind_optimal[0])}°", "x": 0.9, "y": 1.1, "showarrow": False}
+                    {"text": f"最適風上角: int(upwind_optimal[0])}°", "x": 0.1, "y": 1.1, "showarrow": False},
+                    {"text": f"最適風下角: int(downwind_optimal[0])}°", "x": 0.9, "y": 1.1, "showarrow": False}
                 ]
                 
                 return {
                     "data": plotly_data,
                     "layout": layout
- {
-                    "data": plotly_data,
+ "data": plotly_data,
                     "layout": layout}
             else:
                 # ChartJS用のデータセット
@@ -700,42 +693,42 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 annotations = {}
                 annotations["optimal_upwind"] = {
                     "type": "label",
-                    "xValue": f"{int(upwind_optimal[0])}°",
+                    "xValue": f"int(upwind_optimal[0])}°",
                     "yValue": upwind_optimal[1],
                     "backgroundColor": "rgba(75, 192, 192, 0.7)",
                     "content": f"最適風上角: {int(upwind_optimal[0])}°",
                     "font": {"style": "bold"}
  {
                     "type": "label",
-                    "xValue": f"{int(upwind_optimal[0])}°",
+                    "xValue": f"int(upwind_optimal[0])}°",
                     "yValue": upwind_optimal[1],
                     "backgroundColor": "rgba(75, 192, 192, 0.7)",
                     "content": f"最適風上角: {int(upwind_optimal[0])}°",
                     "font": {"style": "bold"}}
                 annotations["optimal_upwind"] = {
                     "type": "label",
-                    "xValue": f"{int(upwind_optimal[0])}°",
+                    "xValue": f"int(upwind_optimal[0])}°",
                     "yValue": upwind_optimal[1],
                     "backgroundColor": "rgba(75, 192, 192, 0.7)",
                     "content": f"最適風上角: {int(upwind_optimal[0])}°",
                     "font": {"style": "bold"}}
  {
                     "type": "label",
-                    "xValue": f"{int(upwind_optimal[0])}°",
+                    "xValue": f"int(upwind_optimal[0])}°",
                     "yValue": upwind_optimal[1],
                     "backgroundColor": "rgba(75, 192, 192, 0.7)",
                     "content": f"最適風上角: {int(upwind_optimal[0])}°",
                     "font": {"style": "bold"}}}
                 annotations["optimal_upwind"] = {
                     "type": "label",
-                    "xValue": f"{int(upwind_optimal[0])}°",
+                    "xValue": f"int(upwind_optimal[0])}°",
                     "yValue": upwind_optimal[1],
                     "backgroundColor": "rgba(75, 192, 192, 0.7)",
                     "content": f"最適風上角: {int(upwind_optimal[0])}°",
                     "font": {"style": "bold"}}
  {
                     "type": "label",
-                    "xValue": f"{int(upwind_optimal[0])}°",
+                    "xValue": f"int(upwind_optimal[0])}°",
                     "yValue": upwind_optimal[1],
                     "backgroundColor": "rgba(75, 192, 192, 0.7)",
                     "content": f"最適風上角: {int(upwind_optimal[0])}°",
@@ -743,42 +736,42 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 
                 annotations["optimal_downwind"] = {
                     "type": "label",
-                    "xValue": f"{int(downwind_optimal[0])}°",
+                    "xValue": f"int(downwind_optimal[0])}°",
                     "yValue": downwind_optimal[1],
                     "backgroundColor": "rgba(255, 159, 64, 0.7)",
                     "content": f"最適風下角: {int(downwind_optimal[0])}°",
                     "font": {"style": "bold"}
  {
                     "type": "label",
-                    "xValue": f"{int(downwind_optimal[0])}°",
+                    "xValue": f"int(downwind_optimal[0])}°",
                     "yValue": downwind_optimal[1],
                     "backgroundColor": "rgba(255, 159, 64, 0.7)",
                     "content": f"最適風下角: {int(downwind_optimal[0])}°",
                     "font": {"style": "bold"}}
                 annotations["optimal_downwind"] = {
                     "type": "label",
-                    "xValue": f"{int(downwind_optimal[0])}°",
+                    "xValue": f"int(downwind_optimal[0])}°",
                     "yValue": downwind_optimal[1],
                     "backgroundColor": "rgba(255, 159, 64, 0.7)",
                     "content": f"最適風下角: {int(downwind_optimal[0])}°",
                     "font": {"style": "bold"}}
  {
                     "type": "label",
-                    "xValue": f"{int(downwind_optimal[0])}°",
+                    "xValue": f"int(downwind_optimal[0])}°",
                     "yValue": downwind_optimal[1],
                     "backgroundColor": "rgba(255, 159, 64, 0.7)",
                     "content": f"最適風下角: {int(downwind_optimal[0])}°",
                     "font": {"style": "bold"}}}
                 annotations["optimal_downwind"] = {
                     "type": "label",
-                    "xValue": f"{int(downwind_optimal[0])}°",
+                    "xValue": f"int(downwind_optimal[0])}°",
                     "yValue": downwind_optimal[1],
                     "backgroundColor": "rgba(255, 159, 64, 0.7)",
                     "content": f"最適風下角: {int(downwind_optimal[0])}°",
                     "font": {"style": "bold"}}
  {
                     "type": "label",
-                    "xValue": f"{int(downwind_optimal[0])}°",
+                    "xValue": f"int(downwind_optimal[0])}°",
                     "yValue": downwind_optimal[1],
                     "backgroundColor": "rgba(255, 159, 64, 0.7)",
                     "content": f"最適風下角: {int(downwind_optimal[0])}°",
@@ -793,8 +786,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 
                 chart_data["options"]["plugins"]["annotation"] = {
                     "annotations": annotations
- {
-                    "annotations": annotations}
+ "annotations": annotations}
                 chart_data["options"]["plugins"]["annotation"] = {
                     "annotations": annotations}
  {
@@ -831,35 +823,30 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
  {
                 "plugins": {
                     "crosshair": {
-                        "line": {
-                            "color": "rgba(100, 100, 100, 0.4)",
+                        "line": "color": "rgba(100, 100, 100, 0.4)",
                             "width": 1}
                         },
                         "sync": {
                             "enabled": True
- {
-                            "enabled": True}
+ "enabled": True}
                     },
                     "zoom": {
                         "pan": {
                             "enabled": True,
                             "mode": "xy"
  {
-                        "pan": {
-                            "enabled": True,
+                        "pan": "enabled": True,
                             "mode": "xy"}
                         },
                         "zoom": {
                             "wheel": {
                                 "enabled": True
  {
-                            "wheel": {
-                                "enabled": True}
+                            "wheel": "enabled": True}
                             },
                             "pinch": {
                                 "enabled": True
- {
-                                "enabled": True}
+ "enabled": True}
                             },
                             "mode": "xy"
             
@@ -889,8 +876,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "subtitle": {
                             "display": True,
                             "text": "VMG最適化分析を含む",
-                            "font": {
-                                "size": 12,
+                            "font": "size": 12,
                                 "style": "italic"}
                     },
                     "tooltip": {
@@ -898,7 +884,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "label": "function(context) { " +
  {
                         "callbacks": {
-                            "label": "function(context) { " +}
+                            "label": "function(context) " +}
                                     "var label = context.dataset.label || ''; " +
                                     "var value = context.raw; " +
                                     "var isOptimal = context.datasetIndex === context.chart.data.datasets.length - 1; " +
@@ -934,8 +920,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "subtitle": {
                             "display": True,
                             "text": "複数風速の性能比較",
-                            "font": {
-                                "size": 12,
+                            "font": "size": 12,
                                 "style": "italic"}
             
             # 風速フィルタが設定されている場合はサブタイトルに表示
@@ -999,8 +984,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 "zoom": enable_interactive_selection,
                 "annotation": show_vmg_optimization
  {
-            "plugins": {
-                "datalabels": False,
+            "plugins": "datalabels": False,
                 "crosshair": enable_interactive_selection,
                 "zoom": enable_interactive_selection,
                 "annotation": show_vmg_optimization}
@@ -1091,7 +1075,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
         
         # データがない場合は空のデータを返す
         if not data:
-            return {"type": "bar", "data": {"labels": [], "datasets": []}}
+            return {"type": "bar", "data": "labels": [], "datasets": []}}
         
         # 表示モードを取得
         display_mode = self.get_property("display_mode", "histogram")
@@ -1242,8 +1226,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                 # Plotly用のヒストグラムデータ
                 return {
                     "data": [
- {
-                    "data": [}
+ "data": [}
                         {
                             "type": "histogram",
                             "x": tacking_angles,
@@ -1255,8 +1238,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "width": 1
  {
                                 "color": "rgba(54, 162, 235, 0.6)",
-                                "line": {
-                                    "color": "rgba(54, 162, 235, 1)",
+                                "line": "color": "rgba(54, 162, 235, 1)",
                                     "width": 1}
                             },
                             "name": "タッキング角度"
@@ -1266,14 +1248,12 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "title": "タッキング角度",
                             "range": [min_angle, max_angle]
  {
-                        "xaxis": {
-                            "title": "タッキング角度",
+                        "xaxis": "title": "タッキング角度",
                             "range": [min_angle, max_angle]}
                         },
                         "yaxis": {
                             "title": "頻度"
- {
-                            "title": "頻度"}
+ "title": "頻度"}
                         },
                         "shapes": [
                             {
@@ -1295,8 +1275,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "y1": 1,
                                 "yref": "paper",
                                 "fillcolor": "rgba(75, 192, 192, 0.2)",
-                                "line": {
-                                    "color": "rgba(75, 192, 192, 1)",
+                                "line": "color": "rgba(75, 192, 192, 1)",
                                     "width": 1}
                         ],
                         "annotations": [
@@ -1314,8 +1293,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "yref": "paper",
                                 "text": "最適範囲",
                                 "showarrow": False,
-                                "font": {
-                                    "size": 12}
+                                "font": "size": 12}
                         ]
             else:
                 # ChartJS用のヒストグラムデータ
@@ -1364,18 +1342,15 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "datasets": datasets
  {
                     "type": "bar",
-                    "data": {
-                        "labels": bin_labels,
+                    "data": "labels": bin_labels,
                         "datasets": datasets}
                 return {
                     "type": "bar",
-                    "data": {
-                        "labels": bin_labels,
+                    "data": "labels": bin_labels,
                         "datasets": datasets}
  {
                     "type": "bar",
-                    "data": {
-                        "labels": bin_labels,
+                    "data": "labels": bin_labels,
                         "datasets": datasets}}
         
         elif display_mode == "scatter":
@@ -1385,8 +1360,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                     # Plotly用の散布図データ
                     return {
                         "data": [
- {
-                        "data": [}
+ "data": [}
                             {
                                 "type": "scatter",
                                 "x": tacking_angles,
@@ -1401,8 +1375,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
  {
                                     "color": "rgba(54, 162, 235, 0.6)",
                                     "size": 10,
-                                    "line": {
-                                        "color": "rgba(54, 162, 235, 1)",
+                                    "line": "color": "rgba(54, 162, 235, 1)",
                                         "width": 1}
                                 },
                                 "name": "タッキング効率"
@@ -1412,14 +1385,12 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "title": "タッキング角度",
                                 "range": [min_angle, max_angle]
  {
-                            "xaxis": {
-                                "title": "タッキング角度",
+                            "xaxis": "title": "タッキング角度",
                                 "range": [min_angle, max_angle]}
                             },
                             "yaxis": {
                                 "title": "効率 (%)"
- {
-                                "title": "効率 (%)"}
+ "title": "効率 (%)"}
                             },
                             "shapes": [
                                 {
@@ -1439,15 +1410,14 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "y0": 0,
                                     "y1": 100,
                                     "fillcolor": "rgba(75, 192, 192, 0.2)",
-                                    "line": {
-                                        "color": "rgba(75, 192, 192, 1)",
+                                    "line": "color": "rgba(75, 192, 192, 1)",
                                         "width": 1}
                             ]
                 else:
                     # ChartJS用の散布図データ
                     datasets = [{
                         "label": "タッキング効率",
-                        "data": [{"x": angle, "y": eff} for angle, eff in zip(tacking_angles, tacking_efficiency)],
+                        "data": ["x": angle, "y": eff} for angle, eff in zip(tacking_angles, tacking_efficiency)],
                         "backgroundColor": "rgba(54, 162, 235, 0.6)",
                         "borderColor": "rgba(54, 162, 235, 1)",
                         "pointRadius": 6,
@@ -1460,8 +1430,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "datasets": datasets
  {
                         "type": "scatter",
-                        "data": {
-                            "datasets": datasets}
+                        "data": "datasets": datasets}
                         },
                         "options": {
                             "scales": {
@@ -1472,8 +1441,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
  {
                             "scales": {
                                 "x": {
-                                    "title": {
-                                        "display": True,
+                                    "title": "display": True,
                                         "text": "タッキング角度"}
                                     },
                                     "min": min_angle,
@@ -1484,8 +1452,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                         "display": True,
                                         "text": "効率 (%)"
  {
-                                    "title": {
-                                        "display": True,
+                                    "title": "display": True,
                                         "text": "効率 (%)"}
                                     },
                                     "min": 0,
@@ -1496,8 +1463,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                     # Plotly用の時系列散布図データ
                     return {
                         "data": [
- {
-                        "data": [}
+ "data": [}
                             {
                                 "type": "scatter",
                                 "x": list(range(len(tacking_angles))),
@@ -1506,15 +1472,13 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "marker": {
                                     "color": "rgba(54, 162, 235, 0.6)",
                                     "size": 8
- {
-                                    "color": "rgba(54, 162, 235, 0.6)",
+ "color": "rgba(54, 162, 235, 0.6)",
                                     "size": 8}
                                 },
                                 "line": {
                                     "color": "rgba(54, 162, 235, 0.3)",
                                     "width": 1
- {
-                                    "color": "rgba(54, 162, 235, 0.3)",
+ "color": "rgba(54, 162, 235, 0.3)",
                                     "width": 1}
                                 },
                                 "name": "タッキング角度"
@@ -1523,14 +1487,12 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "xaxis": {
                                 "title": "タッキング順序"
  {
-                            "xaxis": {
-                                "title": "タッキング順序"}
+                            "xaxis": "title": "タッキング順序"}
                             },
                             "yaxis": {
                                 "title": "タッキング角度",
                                 "range": [min_angle, max_angle]
- {
-                                "title": "タッキング角度",
+ "title": "タッキング角度",
                                 "range": [min_angle, max_angle]}
                             },
                             "shapes": [
@@ -1551,15 +1513,14 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "y0": optimal_min,
                                     "y1": optimal_max,
                                     "fillcolor": "rgba(75, 192, 192, 0.2)",
-                                    "line": {
-                                        "color": "rgba(75, 192, 192, 1)",
+                                    "line": "color": "rgba(75, 192, 192, 1)",
                                         "width": 1}
                             ]
                 else:
                     # ChartJS用の時系列散布図データ
                     datasets = [{
                         "label": "タッキング角度",
-                        "data": [{"x": i, "y": angle} for i, angle in enumerate(tacking_angles)],
+                        "data": ["x": i, "y": angle} for i, angle in enumerate(tacking_angles)],
                         "backgroundColor": "rgba(54, 162, 235, 0.6)",
                         "borderColor": "rgba(54, 162, 235, 0.3)",
                         "borderWidth": 1,
@@ -1575,16 +1536,13 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "datasets": datasets
  {
                         "type": "scatter",
-                        "data": {
-                            "datasets": datasets}
+                        "data": "datasets": datasets}
                     return {
                         "type": "scatter",
-                        "data": {
-                            "datasets": datasets}
+                        "data": "datasets": datasets}
  {
                         "type": "scatter",
-                        "data": {
-                            "datasets": datasets}}
+                        "data": "datasets": datasets}}
         
         elif display_mode == "boxplot":
             # 箱ひげ図モード
@@ -1592,8 +1550,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                 # Plotly用の箱ひげ図データ
                 return {
                     "data": [
- {
-                    "data": [}
+ "data": [}
                         {
                             "type": "box",
                             "y": tacking_angles,
@@ -1601,16 +1558,14 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "boxmean": True,
                             "marker": {
                                 "color": "rgba(54, 162, 235, 0.6)"
- {
-                                "color": "rgba(54, 162, 235, 0.6)"}
+ "color": "rgba(54, 162, 235, 0.6)"}
                     ],
                     "layout": {
                         "yaxis": {
                             "title": "タッキング角度",
                             "range": [min_angle, max_angle]
  {
-                        "yaxis": {
-                            "title": "タッキング角度",
+                        "yaxis": "title": "タッキング角度",
                             "range": [min_angle, max_angle]}
                         },
                         "shapes": [
@@ -1633,8 +1588,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "y0": optimal_min,
                                 "y1": optimal_max,
                                 "fillcolor": "rgba(75, 192, 192, 0.2)",
-                                "line": {
-                                    "color": "rgba(75, 192, 192, 1)",
+                                "line": "color": "rgba(75, 192, 192, 1)",
                                     "width": 1}
                         ]
             else:
@@ -1671,21 +1625,18 @@ class EnhancedTackingAngleElement(TackingAngleElement):
  {
                 "plugins": {
                     "zoom": {
-                        "pan": {
-                            "enabled": True,
+                        "pan": "enabled": True,
                             "mode": "xy"}
                         },
                         "zoom": {
                             "wheel": {
                                 "enabled": True
  {
-                            "wheel": {
-                                "enabled": True}
+                            "wheel": "enabled": True}
                             },
                             "pinch": {
                                 "enabled": True
- {
-                                "enabled": True}
+ "enabled": True}
                             },
                             "mode": "xy"
             
@@ -1708,8 +1659,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                     "x": {
                         "type": "linear",
                         "position": "bottom",
-                        "title": {
-                            "display": True,
+                        "title": "display": True,
                             "text": "タッキング角度" if self.get_property("show_efficiency", False) else "タッキング順序"}
                     },
                     "y": {
@@ -1717,18 +1667,17 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "display": True,
                             "text": "効率 (%)" if self.get_property("show_efficiency", False) else "タッキング角度"
  {
-                        "title": {
-                            "display": True,
+                        "title": "display": True,
                             "text": "効率 (%)" if self.get_property("show_efficiency", False) else "タッキング角度"}
                 },
                 "plugins": {
                     "tooltip": {
                         "callbacks": {
-                            "label": "function(context) { return `${context.dataset.label}: (${context.parsed.x.toFixed(1)}, ${context.parsed.y.toFixed(1)})`; }"
+                            "label": "function(context) { return `$context.dataset.label}: (${context.parsed.x.toFixed(1)}, ${context.parsed.y.toFixed(1)})`; }"
  {
                     "tooltip": {
                         "callbacks": {
-                            "label": "function(context) { return `${context.dataset.label}: (${context.parsed.x.toFixed(1)}, ${context.parsed.y.toFixed(1)})`; }"}
+                            "label": "function(context) { return `$context.dataset.label}: (${context.parsed.x.toFixed(1)}, ${context.parsed.y.toFixed(1)})`; }"}
             
             # オプションを結合
             self._merge_options(options, scatter_options)
@@ -1756,8 +1705,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "subtitle": {
                             "display": True,
                             "text": self.get_statistics_text(),
-                            "font": {
-                                "size": 12,
+                            "font": "size": 12,
                                 "style": "italic"}
             
             # オプションを結合
@@ -1797,8 +1745,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "subtitle": {
                             "display": True,
                             "text": filter_text,
-                            "font": {
-                                "size": 12,
+                            "font": "size": 12,
                                 "style": "italic"}
             
             # オプションを結合
@@ -1855,8 +1802,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                 "annotation": True,
                 "zoom": enable_interactive_selection
  {
-            "plugins": {
-                "annotation": True,
+            "plugins": "annotation": True,
                 "zoom": enable_interactive_selection}
         
         # レンダラーを作成

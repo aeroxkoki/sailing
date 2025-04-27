@@ -419,10 +419,10 @@ class BaseElement(ABC):
         
         result = text
         
-        # 簡易的な変数置換（{{variable}}形式）
+        # 簡易的な変数置換（{variable}}形式）
         start_pos = 0
         while True:
-            start_pos = result.find("{{", start_pos)
+            start_pos = result.find("{", start_pos)
             if start_pos == -1:
                 break
                 

@@ -62,10 +62,10 @@ class EnhancedValidationVisualization:
         gauge_chart = go.Figure(go.Indicator(
             mode="gauge+number",
             value=quality_scores["total"],
-"""            title={"text": "データ品質スコア", "font": {"size": 24}},"""
-            number={"font": {"size": 32, "color": self._get_score_color(quality_scores["total"])}},
-            gauge={
-                "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
+"""            title={"text": "データ品質スコア", "font": "size": 24}},"""
+            number={"font": "size": 32, "color": self._get_score_color(quality_scores["total"])}},
+            gauge={}
+                "axis": "range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
                 "bar": {"color": self._get_score_color(quality_scores["total"])},
                 "bgcolor": "white",
                 "borderwidth": 2,
@@ -77,7 +77,7 @@ class EnhancedValidationVisualization:
 """                    {"range": [90, 100], "color": "#AAFFAA"}  # 濃い緑系 - 非常に高品質"""
                 ],
                 "threshold": {
-                    "line": {"color": "black", "width": 4},
+                    "line": "color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": quality_scores["total"]
         ))
@@ -114,7 +114,7 @@ class EnhancedValidationVisualization:
                 x=display_categories,
                 y=values,
                 marker_color=bar_colors,
-                text=[f"{v:.1f}" for v in values],
+                text=[f"v:.1f}" for v in values],
                 textposition="auto",
                 hoverinfo="text",
                 hovertext=[
@@ -631,8 +631,7 @@ class EnhancedValidationVisualization:
         grid_data = []
         for grid in spatial_scores:
             center_lat, center_lon = grid["center"]
-            grid_data.append({
-                "lat": center_lat,
+            grid_data.append("lat": center_lat,
                 "lon": center_lon,
                 "problem_count": grid["problem_count"],
                 "problem_percentage": grid["problem_percentage"],
@@ -792,7 +791,7 @@ class EnhancedValidationVisualization:
         problem_type_keys = temporal_scores[0]["problem_types"].keys()
         
         # 問題タイプごとのデータを抽出
-        problem_types_data = {}
+        problem_types_data = }
         for key in problem_type_keys:
             problem_types_data[key] = [score["problem_types"].get(key, 0) for score in temporal_scores]
         
@@ -827,7 +826,7 @@ class EnhancedValidationVisualization:
                     marker_color=colors.get(key, "gray"),
                     hoverinfo="text",
                     hovertext=[
-"""f"時間帯: {labels[i]}<br>{problem_type_names.get(key, key)}: {problem_types_data[key][i]}件""""
+"""f"時間帯: labels[i]}<br>{problem_type_names.get(key, key)}: {problem_types_data[key][i]}件""""
                         for i in range(len(labels))
                     ]
                 ))
@@ -877,8 +876,7 @@ class EnhancedValidationVisualization:
 """"consistency": "一貫性""""
         
         # カード形式のデータを構築
-        cards = [{
-""""title": "総合品質スコア","""
+        cards = [""""title": "総合品質スコア","""
             "value": quality_scores["total"],
 """"description": "データ全体の品質評価","""
             "color": self._get_score_color(quality_scores["total"]),
@@ -893,7 +891,7 @@ class EnhancedValidationVisualization:
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
  # AUTO-COMMENTED: キーワード引数の後に位置引数があります
                 cards.append({
-""""title": f"{category_names.get(category, category)}スコア","""
+""""title": f"category_names.get(category, category)}スコア","""
                     "value": score,
                     "description": self._get_category_description(category),
                     "color": self._get_score_color(score),

@@ -78,7 +78,7 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
         Dict[str, int]
             問題タイプ別のカウント
         """
-        problem_type_counts = {
+        problem_type_counts = {}
             "missing_data": 0,
             "out_of_range": 0,
             "duplicates": 0,

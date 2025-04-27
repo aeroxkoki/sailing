@@ -60,7 +60,7 @@ class ImageExporter(BaseExporter):
         super().__init__(**options)
         
         # 画像デフォルトオプション
-        image_defaults = {
+        image_defaults = {}
             "format": "png",  # 'png', 'jpeg', 'svg'
             "dpi": 300,
             "width": 1200,

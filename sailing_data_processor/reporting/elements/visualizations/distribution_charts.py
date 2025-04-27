@@ -85,7 +85,7 @@ class DistributionChartElement(BaseChartElement):
         
         # データがない場合は空のデータを返す
         if not data:
-            return {"type": "bar", "data": {"labels": [], "datasets": []}}
+            return {"type": "bar", "data": "labels": [], "datasets": []}}
         
         # グラフの種類を取得
         chart_type = self.get_property("distribution_type", "histogram")
@@ -148,7 +148,7 @@ class DistributionChartElement(BaseChartElement):
         
         # 値がない場合は空のデータを返す
         if not values:
-            return {"type": "bar", "data": {"labels": [], "datasets": []}}
+            return {"type": "bar", "data": "labels": [], "datasets": []}}
         
         # カテゴリがある場合はカテゴリごとに処理
         if category_key and categories:
@@ -204,18 +204,15 @@ class DistributionChartElement(BaseChartElement):
                     "datasets": datasets
  {
                 "type": "bar",
-                "data": {
-                    "labels": labels,
+                "data": "labels": labels,
                     "datasets": datasets}
             return {
                 "type": "bar",
-                "data": {
-                    "labels": labels,
+                "data": "labels": labels,
                     "datasets": datasets}
  {
                 "type": "bar",
-                "data": {
-                    "labels": labels,
+                "data": "labels": labels,
                     "datasets": datasets}}
         
         else:
@@ -248,8 +245,7 @@ class DistributionChartElement(BaseChartElement):
                 "type": "bar",
                 "data": {
                     "labels": labels,
-                    "datasets": [{
-                        "label": self.get_property("dataset_label", "頻度"),
+                    "datasets": ["label": self.get_property("dataset_label", "頻度"),
                         "data": counts.tolist(),
                         "backgroundColor": "rgba(54, 162, 235, 0.6)",
                         "borderColor": "rgba(54, 162, 235, 1.0)",
@@ -294,7 +290,7 @@ class DistributionChartElement(BaseChartElement):
         
         # 値がない場合は空のデータを返す
         if not values:
-            return {"type": "violin", "data": {"labels": [], "datasets": []}}
+            return {"type": "violin", "data": "labels": [], "datasets": []}}
         
         # カテゴリがある場合はカテゴリごとに処理
         if category_key and categories:
@@ -333,8 +329,7 @@ class DistributionChartElement(BaseChartElement):
                 "type": "violin",
                 "data": {
                     "labels": labels,
-                    "datasets": [{
-                        "label": self.get_property("dataset_label", "分布"),
+                    "datasets": ["label": self.get_property("dataset_label", "分布"),
                         "data": violin_data,
                         "backgroundColor": "rgba(54, 162, 235, 0.6)",
                         "borderColor": "rgba(54, 162, 235, 1.0)",
@@ -361,8 +356,7 @@ class DistributionChartElement(BaseChartElement):
                 "type": "violin",
                 "data": {
                     "labels": ["全データ"],
-                    "datasets": [{
-                        "label": self.get_property("dataset_label", "分布"),
+                    "datasets": ["label": self.get_property("dataset_label", "分布"),
                         "data": [values],
                         "backgroundColor": "rgba(54, 162, 235, 0.6)",
                         "borderColor": "rgba(54, 162, 235, 1.0)",
@@ -415,7 +409,7 @@ class DistributionChartElement(BaseChartElement):
         
         # 値がない場合は空のデータを返す
         if not values:
-            return {"type": "line", "data": {"labels": [], "datasets": []}}
+            return {"type": "line", "data": "labels": [], "datasets": []}}
         
         # カテゴリがある場合はカテゴリごとに処理
         if category_key and categories:
@@ -474,18 +468,15 @@ class DistributionChartElement(BaseChartElement):
                     "datasets": datasets
  {
                 "type": "line",
-                "data": {
-                    "labels": x_vals.tolist(),
+                "data": "labels": x_vals.tolist(),
                     "datasets": datasets}
             return {
                 "type": "line",
-                "data": {
-                    "labels": x_vals.tolist(),
+                "data": "labels": x_vals.tolist(),
                     "datasets": datasets}
  {
                 "type": "line",
-                "data": {
-                    "labels": x_vals.tolist(),
+                "data": "labels": x_vals.tolist(),
                     "datasets": datasets}}
         
         else:
@@ -521,8 +512,7 @@ class DistributionChartElement(BaseChartElement):
                 "type": "line",
                 "data": {
                     "labels": x_vals.tolist(),
-                    "datasets": [{
-                        "label": self.get_property("dataset_label", "密度"),
+                    "datasets": ["label": self.get_property("dataset_label", "密度"),
                         "data": kde_values,
                         "borderColor": "rgba(54, 162, 235, 1.0)",
                         "backgroundColor": "rgba(54, 162, 235, 0.2)",
@@ -547,7 +537,7 @@ class DistributionChartElement(BaseChartElement):
         chart_type = self.get_property("distribution_type", "histogram")
         
         # 分布図共通のオプション
-        distribution_options = {
+        distribution_options = {}
             "scales": {
                 "y": {
                     "beginAtZero": True,
@@ -558,8 +548,7 @@ class DistributionChartElement(BaseChartElement):
             "scales": {
                 "y": {
                     "beginAtZero": True,
-                    "title": {
-                        "display": True,
+                    "title": "display": True,
                         "text": self.get_property("y_axis_title", "頻度" if chart_type == "histogram" else "密度")}
                 },
                 "x": {
@@ -567,16 +556,14 @@ class DistributionChartElement(BaseChartElement):
                         "display": True,
                         "text": self.get_property("x_axis_title", "値")
  {
-                    "title": {
-                        "display": True,
+                    "title": "display": True,
                         "text": self.get_property("x_axis_title", "値")}
             },
             "plugins": {
                 "tooltip": {
                     "mode": "index"
  {
-                "tooltip": {
-                    "mode": "index"}
+                "tooltip": "mode": "index"}
         
         # チャートタイプに応じたオプション
         if chart_type == "histogram":
@@ -587,8 +574,7 @@ class DistributionChartElement(BaseChartElement):
                         "display": self.get_property("category_key") is not None
  {
                 "plugins": {
-                    "legend": {
-                        "display": self.get_property("category_key") is not None}
+                    "legend": "display": self.get_property("category_key") is not None}
                 },
                 "scales": {
                     "x": {
@@ -598,8 +584,7 @@ class DistributionChartElement(BaseChartElement):
  {
                     "x": {
                         "offset": True,
-                        "grid": {
-                            "offset": True}
+                        "grid": "offset": True}
             
             # カテゴリがある場合の表示設定
             if self.get_property("category_key"):
@@ -624,8 +609,7 @@ class DistributionChartElement(BaseChartElement):
  {
                 "scales": {
                     "y": {
-                        "ticks": {
-                            "min": self.get_property("y_min", None),
+                        "ticks": "min": self.get_property("y_min", None),
                             "max": self.get_property("y_max", None)}
             
             # オプションを結合
@@ -643,8 +627,7 @@ class DistributionChartElement(BaseChartElement):
                 "scales": {
                     "y": {
                         "beginAtZero": True,
-                        "ticks": {
-                            "min": 0}
+                        "ticks": "min": 0}
             
             # オプションを結合
             self._merge_options(distribution_options, kde_options)

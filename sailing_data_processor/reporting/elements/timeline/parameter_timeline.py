@@ -52,7 +52,7 @@ class ParameterTimeline(BaseElement):
         self._data = None
         
         # 表示オプション
-        self._options = {
+        self._options = {}
             "show_speed": kwargs.get("show_speed", True),
             "show_wind_speed": kwargs.get("show_wind_speed", False),
             "show_wind_direction": kwargs.get("show_wind_direction", False),
@@ -68,8 +68,7 @@ class ParameterTimeline(BaseElement):
             "point_radius": kwargs.get("point_radius", 2),
             "enable_zoom": kwargs.get("enable_zoom", True),
             "time_format": kwargs.get("time_format", "HH:mm:ss"),
- {
-            "show_speed": kwargs.get("show_speed", True),
+ "show_speed": kwargs.get("show_speed", True),
             "show_wind_speed": kwargs.get("show_wind_speed", False),
             "show_wind_direction": kwargs.get("show_wind_direction", False),
             "show_heading": kwargs.get("show_heading", False),
@@ -91,14 +90,14 @@ class ParameterTimeline(BaseElement):
         
         # パラメータの定義と色
         self._parameters = {
-            "speed": {"color": "#FF5722", "label": "速度", "unit": "kt", "axis": "y-left"},
+            "speed": "color": "#FF5722", "label": "速度", "unit": "kt", "axis": "y-left"},
             "wind_speed": {"color": "#2196F3", "label": "風速", "unit": "kt", "axis": "y-left"},
             "wind_direction": {"color": "#4CAF50", "label": "風向", "unit": "°", "axis": "y-right"},
             "heading": {"color": "#9C27B0", "label": "艇首方位", "unit": "°", "axis": "y-right"},
             "heel": {"color": "#FFC107", "label": "ヒール角", "unit": "°", "axis": "y-left"},
             "vmg": {"color": "#607D8B", "label": "VMG", "unit": "kt", "axis": "y-left"},
  {
-            "speed": {"color": "#FF5722", "label": "速度", "unit": "kt", "axis": "y-left"},
+            "speed": "color": "#FF5722", "label": "速度", "unit": "kt", "axis": "y-left"},
             "wind_speed": {"color": "#2196F3", "label": "風速", "unit": "kt", "axis": "y-left"},
             "wind_direction": {"color": "#4CAF50", "label": "風向", "unit": "°", "axis": "y-right"},
             "heading": {"color": "#9C27B0", "label": "艇首方位", "unit": "°", "axis": "y-right"},
@@ -182,8 +181,7 @@ class ParameterTimeline(BaseElement):
             "label": label or name,
             "unit": unit,
             "axis": axis
- {
-            "field": field,
+ "field": field,
             "color": color,
             "label": label or name,
             "unit": unit,
@@ -433,8 +431,7 @@ class ParameterTimeline(BaseElement):
                     "label": param, 
                     "unit": "", 
                     "axis": "y-left"
- {
-                    "color": "#607D8B", 
+ "color": "#607D8B", 
                     "label": param, 
                     "unit": "", 
                     "axis": "y-left"}
@@ -463,7 +460,7 @@ class ParameterTimeline(BaseElement):
                 
                 # データセットを追加
                 dataset = {
-                    "label": f"{param_info['label']} ({param_info['unit']})" if param_info['unit'] else param_info['label'],
+                    "label": f"param_info['label']} ({param_info['unit']})" if param_info['unit'] else param_info['label'],
                     "data": data_points,
                     "borderColor": param_info['color'],
                     "backgroundColor": f"{param_info['color']}33",  # 半透明
@@ -475,7 +472,7 @@ class ParameterTimeline(BaseElement):
                     "yAxisID": param_info['axis'],
                     "statistics": stats
  {
-                    "label": f"{param_info['label']} ({param_info['unit']})" if param_info['unit'] else param_info['label'],
+                    "label": f"param_info['label']} ({param_info['unit']})" if param_info['unit'] else param_info['label'],
                     "data": data_points,
                     "borderColor": param_info['color'],
                     "backgroundColor": f"{param_info['color']}33",  # 半透明
@@ -507,8 +504,7 @@ class ParameterTimeline(BaseElement):
                 "datasets": []  # データセットはJavaScriptで追加
  {
             "type": "line",
-            "data": {
-                "datasets": []  # データセットはJavaScriptで追加}
+            "data": "datasets": []  # データセットはJavaScriptで追加}
             },
             "options": {
                 "responsive": True,
@@ -519,8 +515,7 @@ class ParameterTimeline(BaseElement):
  {
                 "responsive": True,
                 "maintainAspectRatio": False,
-                "interaction": {
-                    "mode": "index",
+                "interaction": "mode": "index",
                     "intersect": False}
                 },
                 "scales": {
@@ -536,8 +531,7 @@ class ParameterTimeline(BaseElement):
                     "x": {
                         "type": "time",
                         "time": {
-                            "displayFormats": {
-                                "millisecond": time_format,
+                            "displayFormats": "millisecond": time_format,
                                 "second": time_format,
                                 "minute": time_format,
                                 "hour": time_format}
@@ -545,8 +539,7 @@ class ParameterTimeline(BaseElement):
                         "title": {
                             "display": True,
                             "text": "時間"
- {
-                            "display": True,
+ "display": True,
                             "text": "時間"}
                     },
                     "y-left": {
@@ -558,15 +551,13 @@ class ParameterTimeline(BaseElement):
  {
                         "type": "linear",
                         "position": "left",
-                        "title": {
-                            "display": True,
+                        "title": "display": True,
                             "text": "値"}
                         },
                         "grid": {
                             "display": True,
                             "color": "rgba(0, 0, 0, 0.1)"
- {
-                            "display": True,
+ "display": True,
                             "color": "rgba(0, 0, 0, 0.1)"}
                     },
                     "y-right": {
@@ -577,14 +568,12 @@ class ParameterTimeline(BaseElement):
  {
                         "type": "linear",
                         "position": "right",
-                        "grid": {
-                            "display": False}
+                        "grid": "display": False}
                         },
                         "title": {
                             "display": True,
                             "text": "角度 (°)"
- {
-                            "display": True,
+ "display": True,
                             "text": "角度 (°)"}
                 },
                 "plugins": {
@@ -592,15 +581,13 @@ class ParameterTimeline(BaseElement):
                         "display": True,
                         "position": "top"
  {
-                    "legend": {
-                        "display": True,
+                    "legend": "display": True,
                         "position": "top"}
                     },
                     "tooltip": {
                         "mode": "index",
                         "intersect": False
- {
-                        "mode": "index",
+ "mode": "index",
                         "intersect": False}
         
         # ズーム機能が有効な場合
@@ -611,21 +598,18 @@ class ParameterTimeline(BaseElement):
                         "enabled": True
  {
                 "zoom": {
-                    "wheel": {
-                        "enabled": True}
+                    "wheel": "enabled": True}
                     },
                     "pinch": {
                         "enabled": True
- {
-                        "enabled": True}
+ "enabled": True}
                     },
                     "mode": "xy"
                 },
                 "pan": {
                     "enabled": True,
                     "mode": "xy"
- {
-                    "enabled": True,
+ "enabled": True,
                     "mode": "xy"}
         
         # 設定をJSON形式に変換
@@ -645,7 +629,7 @@ class ParameterTimeline(BaseElement):
             <script>
                 (function() {{
                     // データセット
-                    const datasets = {datasets_json};
+                    const datasets = datasets_json};
                     
                     // Chart.jsの設定
                     const config = {chart_config_json};
@@ -669,8 +653,8 @@ class ParameterTimeline(BaseElement):
                                 
                                 // 最小値/最大値/平均値のラインを追加
                                 if ('avg' in stats) {{
-                                    config.options.plugins.annotation = config.options.plugins.annotation || {{}};
-                                    config.options.plugins.annotation.annotations = config.options.plugins.annotation.annotations || {{}};
+                                    config.options.plugins.annotation = config.options.plugins.annotation || {}};
+                                    config.options.plugins.annotation.annotations = config.options.plugins.annotation.annotations || {}};
                                     
                                     const avgAnnotation = {{
                                         type: 'line',
@@ -681,13 +665,13 @@ class ParameterTimeline(BaseElement):
                                         borderDash: [5, 5],
                                         label: {{
                                             display: true,
-                                            content: `平均: ${{stats.avg.toFixed(2)}}`,
+                                            content: `平均: ${stats.avg.toFixed(2)}}`,
                                             position: 'start'
                                         }}
                                     }};
                                     
                                     // 注釈のIDを設定
-                                    const annotationId = `avg_${{dataset.label.replace(/[\\s()]/g, '_')}}`;
+                                    const annotationId = `avg_${dataset.label.replace(/[\\s()]/g, '_')}}`;
                                     config.options.plugins.annotation.annotations[annotationId] = avgAnnotation;
                                 }}
                             }}
@@ -703,8 +687,7 @@ class ParameterTimeline(BaseElement):
                                 const xValues = [];
                                 const yValues = [];
                                 
-                                dataset.data.forEach((point, index) => {{
-                                    xValues.push(index);  // インデックスを使用
+                                dataset.data.forEach((point, index) => {xValues.push(index);  // インデックスを使用
                                     yValues.push(point.y);
                                 }});
                                 
@@ -724,10 +707,10 @@ class ParameterTimeline(BaseElement):
                                 
                                 // トレンドラインのデータセットを追加
                                 const trendDataset = {{
-                                    label: `${{dataset.label}} トレンド`,
+                                    label: `${dataset.label}} トレンド`,
                                     data: [
-                                        {{ x: dataset.data[0].x, y: startY }},
-                                        {{ x: dataset.data[n-1].x, y: endY }}
+                                        {x: dataset.data[0].x, y: startY }},
+                                        {x: dataset.data[n-1].x, y: endY }}
                                     ],
                                     borderColor: dataset.borderColor,
                                     borderDash: [10, 5],
@@ -760,8 +743,7 @@ class ParameterTimeline(BaseElement):
                         resetButton.style.borderRadius = '4px';
                         resetButton.style.cursor = 'pointer';
                         
-                        resetButton.addEventListener('click', () => {{
-                            chart.resetZoom();
+                        resetButton.addEventListener('click', () => {chart.resetZoom();
                         }});
                         
                         document.getElementById('{self.element_id}_wrapper').appendChild(resetButton);

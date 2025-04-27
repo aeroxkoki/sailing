@@ -206,7 +206,7 @@ class HTMLRenderer(BaseRenderer):
         section_element = create_element(
             ElementType.SECTION,
             name=section.name,
-            properties={
+            properties={}
                 "title": section.title,
                 "description": section.description,
                 "title_level": 2
@@ -247,7 +247,7 @@ class HTMLRenderer(BaseRenderer):
         <style>
             /* グローバルスタイル */
             :root {{
-                --color-primary: {color_primary};
+                --color-primary: color_primary};
                 --color-secondary: {color_secondary};
                 --color-accent: {color_accent};
                 --color-background: {color_background};
@@ -256,8 +256,7 @@ class HTMLRenderer(BaseRenderer):
                 --base-font-size: {base_font_size}px;
             }}
             
-            body {{
-                font-family: var(--font-family);
+            body {font-family: var(--font-family);
                 font-size: var(--base-font-size);
                 line-height: 1.6;
                 color: var(--color-text);
@@ -267,63 +266,53 @@ class HTMLRenderer(BaseRenderer):
             }}
             
             /* レポートコンテナ */
-            .report-container {{
-                max-width: 1200px;
+            .report-container {max-width: 1200px;
                 margin: 0 auto;
                 background-color: #fff;
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             }}
             
             /* レポートコンテンツ */
-            .report-content {{
-                padding: 20px;
+            .report-content {padding: 20px;
             }}
             
             /* セクション */
-            .report-section {{
-                margin-bottom: 30px;
+            .report-section {margin-bottom: 30px;
                 padding: 20px;
                 border-radius: 5px;
                 background-color: #fff;
             }}
             
-            .report-section-title {{
-                color: var(--color-primary);
+            .report-section-title {color: var(--color-primary);
                 margin-top: 0;
                 margin-bottom: 15px;
                 border-bottom: 1px solid #eee;
                 padding-bottom: 10px;
             }}
             
-            .report-section-description {{
-                color: #666;
+            .report-section-description {color: #666;
                 margin-bottom: 20px;
             }}
             
-            .report-section-content {{
-                /* セクションコンテンツのスタイル */
+            .report-section-content {/* セクションコンテンツのスタイル */
             }}
             
             /* テキスト要素 */
-            .report-text {{
-                margin-bottom: 15px;
+            .report-text {margin-bottom: 15px;
                 line-height: 1.6;
             }}
             
             /* テーブル要素 */
-            .report-table-container {{
-                overflow-x: auto;
+            .report-table-container {overflow-x: auto;
                 margin-bottom: 20px;
             }}
             
-            .report-table {{
-                width: 100%;
+            .report-table {width: 100%;
                 border-collapse: collapse;
                 border-spacing: 0;
             }}
             
-            .report-table th {{
-                background-color: var(--color-primary);
+            .report-table th {background-color: var(--color-primary);
                 color: white;
                 font-weight: bold;
                 text-align: left;
@@ -331,51 +320,41 @@ class HTMLRenderer(BaseRenderer):
                 border: 1px solid #ddd;
             }}
             
-            .report-table td {{
-                padding: 10px;
+            .report-table td {padding: 10px;
                 border: 1px solid #ddd;
             }}
             
-            .report-table tr:nth-child(even) {{
-                background-color: #f9f9f9;
+            .report-table tr:nth-child(even) {background-color: #f9f9f9;
             }}
             
-            .report-table tr:hover {{
-                background-color: #f1f1f1;
+            .report-table tr:hover {background-color: #f1f1f1;
             }}
             
             /* リスト要素 */
-            .report-list-container {{
-                margin-bottom: 20px;
+            .report-list-container {margin-bottom: 20px;
             }}
             
-            .report-list {{
-                margin-left: 20px;
+            .report-list {margin-left: 20px;
                 padding-left: 0;
             }}
             
-            .report-list li {{
-                margin-bottom: 8px;
+            .report-list li {margin-bottom: 8px;
             }}
             
             /* キー・バリュー要素 */
-            .report-key-value-container {{
-                margin-bottom: 20px;
+            .report-key-value-container {margin-bottom: 20px;
             }}
             
-            .report-key-value-title {{
-                color: var(--color-primary);
+            .report-key-value-title {color: var(--color-primary);
                 margin-top: 0;
                 margin-bottom: 10px;
             }}
             
-            .report-key-value-table {{
-                width: 100%;
+            .report-key-value-table {width: 100%;
                 border-collapse: collapse;
             }}
             
-            .report-key-value-key {{
-                width: 30%;
+            .report-key-value-key {width: 30%;
                 font-weight: bold;
                 padding: 8px;
                 border-bottom: 1px solid #ddd;
@@ -383,91 +362,76 @@ class HTMLRenderer(BaseRenderer):
                 color: var(--color-secondary);
             }}
             
-            .report-key-value-value {{
-                padding: 8px;
+            .report-key-value-value {padding: 8px;
                 border-bottom: 1px solid #ddd;
             }}
             
             /* チャート要素 */
-            .report-chart-container {{
-                margin-bottom: 20px;
+            .report-chart-container {margin-bottom: 20px;
                 border: 1px solid #eee;
                 border-radius: 5px;
                 padding: 10px;
             }}
             
-            .report-chart {{
-                width: 100%;
+            .report-chart {width: 100%;
                 height: 100%;
             }}
             
             /* マップ要素 */
-            .report-map-container {{
-                margin-bottom: 20px;
+            .report-map-container {margin-bottom: 20px;
                 border: 1px solid #eee;
                 border-radius: 5px;
                 padding: 10px;
             }}
             
-            .report-map {{
-                width: 100%;
+            .report-map {width: 100%;
                 height: 400px;
                 background-color: #f5f5f5;
             }}
             
             /* ダイアグラム要素 */
-            .report-diagram-container {{
-                margin-bottom: 20px;
+            .report-diagram-container {margin-bottom: 20px;
                 border: 1px solid #eee;
                 border-radius: 5px;
                 padding: 10px;
             }}
             
-            .report-diagram {{
-                width: 100%;
+            .report-diagram {width: 100%;
                 height: 400px;
                 background-color: #f5f5f5;
             }}
             
             /* 画像要素 */
-            .report-image-container {{
-                margin-bottom: 20px;
+            .report-image-container {margin-bottom: 20px;
                 text-align: center;
             }}
             
-            .report-image {{
-                max-width: 100%;
+            .report-image {max-width: 100%;
                 height: auto;
                 border-radius: 5px;
             }}
             
             /* カラム要素 */
-            .report-column {{
-                margin-bottom: 20px;
+            .report-column {margin-bottom: 20px;
             }}
             
             /* グリッド要素 */
-            .report-grid {{
-                margin-bottom: 20px;
+            .report-grid {margin-bottom: 20px;
             }}
             
-            .report-grid-item {{
-                padding: 10px;
+            .report-grid-item {padding: 10px;
             }}
             
             /* タブ要素 */
-            .report-tab-container {{
-                margin-bottom: 20px;
+            .report-tab-container {margin-bottom: 20px;
             }}
             
-            .report-tab-nav {{
-                display: flex;
+            .report-tab-nav {display: flex;
                 border-bottom: 1px solid #ddd;
                 margin-bottom: 15px;
             }}
             
-            .report-tab-button {{
-                padding: 10px 15px;
+            .report-tab-button {padding: 10px 15px;
                 background-color: #f5f5f5;
                 border: 1px solid #ddd;
                 border-bottom: none;
@@ -477,72 +441,61 @@ class HTMLRenderer(BaseRenderer):
                 font-size: 16px;
             }}
             
-            .report-tab-active {{
-                background-color: #fff;
+            .report-tab-active {background-color: #fff;
                 border-bottom: 2px solid var(--color-primary);
                 color: var(--color-primary);
             }}
             
-            .report-tab-panel {{
-                padding: 15px;
+            .report-tab-panel {padding: 15px;
                 border: 1px solid #ddd;
                 border-top: none;
                 border-radius: 0 0 5px 5px;
             }}
             
             /* 区切り線要素 */
-            .report-divider {{
-                margin: 20px 0;
+            .report-divider {margin: 20px 0;
                 border: none;
                 border-top: 1px solid #ddd;
             }}
             
             /* ボックス要素 */
-            .report-box {{
-                padding: 15px;
+            .report-box {padding: 15px;
                 margin-bottom: 20px;
                 border-radius: 5px;
                 background-color: #f9f9f9;
                 border: 1px solid #ddd;
             }}
             
-            .report-box-icon {{
-                margin-bottom: 10px;
+            .report-box-icon {margin-bottom: 10px;
                 text-align: center;
             }}
             
-            .report-box-icon i {{
-                font-size: 36px;
+            .report-box-icon i {font-size: 36px;
                 color: var(--color-primary);
             }}
             
-            .report-box-title {{
-                font-size: 18px;
+            .report-box-title {font-size: 18px;
                 font-weight: bold;
                 margin-bottom: 10px;
                 color: var(--color-secondary);
                 text-align: center;
             }}
             
-            .report-box-value {{
-                font-size: 24px;
+            .report-box-value {font-size: 24px;
                 font-weight: bold;
                 margin-bottom: 10px;
                 text-align: center;
                 color: var(--color-accent);
             }}
             
-            .report-box-content {{
-                margin-bottom: 10px;
+            .report-box-content {margin-bottom: 10px;
             }}
             
-            .report-box-children {{
-                /* ボックス子要素のスタイル */
+            .report-box-children {/* ボックス子要素のスタイル */
             }}
             
             /* 背景要素 */
-            .report-background {{
-                padding: 20px;
+            .report-background {padding: 20px;
                 margin-bottom: 20px;
                 border-radius: 5px;
             }}
@@ -555,8 +508,7 @@ class HTMLRenderer(BaseRenderer):
             .report-map-empty,
             .report-diagram-empty,
             .report-image-empty,
-            .report-tab-empty {{
-                padding: 15px;
+            .report-tab-empty {padding: 15px;
                 margin-bottom: 20px;
                 background-color: #f5f5f5;
                 border: 1px dashed #ddd;
@@ -567,39 +519,32 @@ class HTMLRenderer(BaseRenderer):
             
             /* レスポンシブデザイン */
             @media (max-width: 768px) {{
-                .report-container {{
-                    max-width: 100%;
+                .report-container {max-width: 100%;
                     margin: 0;
                 }}
                 
-                .report-content {{
-                    padding: 10px;
+                .report-content {padding: 10px;
                 }}
                 
-                .report-section {{
-                    padding: 15px;
+                .report-section {padding: 15px;
                 }}
                 
-                .report-tab-button {{
-                    padding: 8px 12px;
+                .report-tab-button {padding: 8px 12px;
                     font-size: 14px;
                 }}
             }}
             
             @media print {{
-                body {{
-                    background-color: #fff;
+                body {background-color: #fff;
                 }}
                 
-                .report-container {{
-                    max-width: 100%;
+                .report-container {max-width: 100%;
                     margin: 0;
                     box-shadow: none;
                 }}
                 
                 /* 印刷時のページ区切り */
-                .report-section {{
-                    page-break-inside: avoid;
+                .report-section {page-break-inside: avoid;
                 }}
             }}
         </style>

@@ -199,8 +199,7 @@ class BaseMapElement(BaseElement):
             "scale_control": self.get_property("show_scale_control", True),
             "fullscreen_control": self.get_property("show_fullscreen_control", True),
             "measure_control": self.get_property("show_measure_control", False)
- {
-            "layer_control": self.get_property("show_layer_control", True),
+ "layer_control": self.get_property("show_layer_control", True),
             "scale_control": self.get_property("show_scale_control", True),
             "fullscreen_control": self.get_property("show_fullscreen_control", True),
             "measure_control": self.get_property("show_measure_control", False)}
@@ -234,29 +233,24 @@ class BaseMapElement(BaseElement):
         return f"""
             // マップの初期化
             var {map_var} = L.map('{self.map_id}', {{
-                fullscreenControl: {str(controls['fullscreen_control']).lower()}
+                fullscreenControl: str(controls['fullscreen_control']).lower()}
             }});
             
             // ベースレイヤーの定義
-            var osmLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            var osmLayer = L.tileLayer('https://{s}}.tile.openstreetmap.org/{z}}/{x}}/{y}}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }});
             
-            var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
-                attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+            var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}}/{y}}/{x}}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
             }});
             
-            var nauticalLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{{z}}/{{x}}/{{y}}.png', {{
-                attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
+            var nauticalLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}}/{x}}/{y}}.png', {attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
             }});
             
-            var topoLayer = L.tileLayer('https://{{s}}.tile.opentopomap.org/{{z}}/{{x}}/{{y}}.png', {{
-                attribution: 'Map data: &copy; <a href="https://www.opentopomap.org">OpenTopoMap</a> contributors'
+            var topoLayer = L.tileLayer('https://{s}}.tile.opentopomap.org/{z}}/{x}}/{y}}.png', {attribution: 'Map data: &copy; <a href="https://www.opentopomap.org">OpenTopoMap</a> contributors'
             }});
             
             // レイヤーコントロールの設定
-            var baseLayers = {{
-                "OpenStreetMap": osmLayer,
+            var baseLayers = {"OpenStreetMap": osmLayer,}
                 "Satellite": satelliteLayer,
                 "Nautical": nauticalLayer,
                 "Topographic": topoLayer
@@ -264,8 +258,7 @@ class BaseMapElement(BaseElement):
             
             // デフォルトベースレイヤーの選択
             var defaultBaseLayer;
-            switch('{base_layer}') {{
-                case 'satellite':
+            switch('{base_layer}') {case 'satellite':
                     defaultBaseLayer = satelliteLayer;
                     break;
                 case 'nautical':
@@ -283,16 +276,14 @@ class BaseMapElement(BaseElement):
             
             // スケールコントロールの追加
             if ({str(controls['scale_control']).lower()}) {{
-                L.control.scale({{
-                    imperial: false,
+                L.control.scale({imperial: false,
                     maxWidth: 200
                 }}).addTo({map_var});
             }}
             
             // 計測ツールの追加
             if ({str(controls['measure_control']).lower()}) {{
-                var measureControl = new L.Control.Measure({{
-                    position: 'topleft',
+                var measureControl = new L.Control.Measure({position: 'topleft',
                     primaryLengthUnit: 'meters',
                     secondaryLengthUnit: 'kilometers',
                     primaryAreaUnit: 'sqmeters',
@@ -306,7 +297,7 @@ class BaseMapElement(BaseElement):
             
             // レイヤーコントロールの追加
             if ({str(controls['layer_control']).lower()}) {{
-                var overlayLayers = {{}};
+                var overlayLayers = {}};
                 L.control.layers(baseLayers, overlayLayers).addTo({map_var});
             }}
             
@@ -358,7 +349,7 @@ class BaseMapElement(BaseElement):
             
             <style>
                 #{self.map_id} {{
-                    width: {width};
+                    width: width};
                     height: {height};
                 }}
             </style>
@@ -372,7 +363,7 @@ class BaseMapElement(BaseElement):
                 (function() {{
                     // マップ初期化
                     window.addEventListener('load', function() {{
-                        {init_code}
+                        init_code}
                     }});
                 }})();
             </script>

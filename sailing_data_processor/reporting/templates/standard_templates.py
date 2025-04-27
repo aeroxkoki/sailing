@@ -45,8 +45,8 @@ def create_basic_template() -> Template:
     title_element = Element(
         element_type=ElementType.TEXT,
         name="report_title",
-        properties={
-            "content": "{{session_name}} - セーリングセッションレポート",
+        properties={}
+            "content": "{session_name}} - セーリングセッションレポート",
             "content_type": "dynamic"
         },
         styles={
@@ -61,7 +61,7 @@ def create_basic_template() -> Template:
         element_type=ElementType.TEXT,
         name="report_date",
         properties={
-            "content": "セッション日時: {{session_date}}",
+            "content": "セッション日時: {session_date}}",
             "content_type": "dynamic"
         },
         styles={
@@ -75,7 +75,7 @@ def create_basic_template() -> Template:
         element_type=ElementType.TEXT,
         name="report_location",
         properties={
-            "content": "場所: {{session_location}}",
+            "content": "場所: {session_location}}",
             "content_type": "dynamic"
         },
         styles={
@@ -105,7 +105,7 @@ def create_basic_template() -> Template:
         properties={
             "data_source": "session_summary",
             "columns": [
-                {"field": "metric", "header": "指標"},
+                "field": "metric", "header": "指標"},
                 {"field": "value", "header": "値"}
             ]
         },
@@ -137,7 +137,7 @@ def create_basic_template() -> Template:
             "data_source": "wind_data",
             "x_axis": "timestamp",
             "series": [
-                {"y_axis": "wind_speed", "label": "風速", "color": "#4CAF50"},
+                "y_axis": "wind_speed", "label": "風速", "color": "#4CAF50"},
                 {"y_axis": "wind_direction", "label": "風向", "color": "#2196F3"}
             ],
             "title": "風向風速の変化"
@@ -214,7 +214,7 @@ def create_basic_template() -> Template:
         properties={
             "data_source": "strategy_points",
             "columns": [
-                {"field": "timestamp", "header": "時刻"},
+                "field": "timestamp", "header": "時刻"},
                 {"field": "type", "header": "タイプ"},
                 {"field": "score", "header": "スコア"},
                 {"field": "description", "header": "説明"}
@@ -244,7 +244,7 @@ def create_basic_template() -> Template:
         element_type=ElementType.TEXT,
         name="footer_text",
         properties={
-            "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {{generation_date}}",
+            "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {generation_date}}",
             "content_type": "dynamic"
         },
         styles={
@@ -314,7 +314,7 @@ def create_detailed_template() -> Template:
             "data_source": "performance_data",
             "x_axis": "timestamp",
             "series": [
-                {"y_axis": "speed", "label": "速度", "color": "#E91E63"},
+                "y_axis": "speed", "label": "速度", "color": "#E91E63"},
                 {"y_axis": "optimal_speed", "label": "最適速度", "color": "#9C27B0", "line_style": "dashed"}
             ],
             "title": "速度分析"
@@ -335,7 +335,7 @@ def create_detailed_template() -> Template:
             "data_source": "performance_data",
             "x_axis": "timestamp",
             "series": [
-                {"y_axis": "vmg", "label": "VMG", "color": "#FF9800"},
+                "y_axis": "vmg", "label": "VMG", "color": "#FF9800"},
                 {"y_axis": "optimal_vmg", "label": "最適VMG", "color": "#FF5722", "line_style": "dashed"}
             ],
             "title": "VMG分析"
@@ -404,7 +404,7 @@ def create_detailed_template() -> Template:
             "data_source": "comparison_data",
             "x_axis": "metric",
             "series": [
-                {"y_axis": "current_value", "label": "現在のセッション", "color": "#3F51B5"},
+                "y_axis": "current_value", "label": "現在のセッション", "color": "#3F51B5"},
                 {"y_axis": "average_value", "label": "過去の平均", "color": "#607D8B"}
             ],
             "title": "過去のセッションとの比較"
@@ -489,7 +489,7 @@ def create_presentation_template() -> Template:
         element_type=ElementType.TEXT,
         name="cover_title",
         properties={
-            "content": "{{session_name}}",
+            "content": "{session_name}}",
             "content_type": "dynamic"
         },
         styles={
@@ -518,7 +518,7 @@ def create_presentation_template() -> Template:
         element_type=ElementType.TEXT,
         name="cover_date",
         properties={
-            "content": "{{session_date}}",
+            "content": "{session_date}}",
             "content_type": "dynamic"
         },
         styles={
@@ -532,7 +532,7 @@ def create_presentation_template() -> Template:
         element_type=ElementType.TEXT,
         name="cover_location",
         properties={
-            "content": "{{session_location}}",
+            "content": "{session_location}}",
             "content_type": "dynamic"
         },
         styles={
@@ -554,7 +554,7 @@ def create_presentation_template() -> Template:
         title="主要指標",
         description="セッションの主要指標",
         order=1,
-        layout={"columns": 2, "margin": {"top": 30, "right": 30, "bottom": 30, "left": 30}}
+        layout={"columns": 2, "margin": "top": 30, "right": 30, "bottom": 30, "left": 30}}
     )
     
     # 速度指標要素
@@ -563,7 +563,7 @@ def create_presentation_template() -> Template:
         name="speed_metric",
         properties={
             "title": "平均速度",
-            "value": "{{avg_speed}} ノット",
+            "value": "{avg_speed}} ノット",
             "icon": "speedometer"
         },
         styles={
@@ -581,7 +581,7 @@ def create_presentation_template() -> Template:
         name="wind_metric",
         properties={
             "title": "平均風速",
-            "value": "{{avg_wind_speed}} ノット",
+            "value": "{avg_wind_speed}} ノット",
             "icon": "air"
         },
         styles={
@@ -599,7 +599,7 @@ def create_presentation_template() -> Template:
         name="distance_metric",
         properties={
             "title": "セーリング距離",
-            "value": "{{total_distance}} 海里",
+            "value": "{total_distance}} 海里",
             "icon": "straighten"
         },
         styles={
@@ -617,7 +617,7 @@ def create_presentation_template() -> Template:
         name="time_metric",
         properties={
             "title": "セーリング時間",
-            "value": "{{total_time}}",
+            "value": "{total_time}}",
             "icon": "access_time"
         },
         styles={
@@ -642,7 +642,7 @@ def create_presentation_template() -> Template:
         title="パフォーマンス概要",
         description="重要なデータを視覚化したグラフ",
         order=2,
-        layout={"columns": 1, "margin": {"top": 30, "right": 30, "bottom": 30, "left": 30}}
+        layout={"columns": 1, "margin": "top": 30, "right": 30, "bottom": 30, "left": 30}}
     )
     
     # 航跡マップ要素
@@ -676,7 +676,7 @@ def create_presentation_template() -> Template:
             "data_source": "performance_data",
             "x_axis": "timestamp",
             "series": [
-                {"y_axis": "speed", "label": "速度", "color": "#1976D2"},
+                "y_axis": "speed", "label": "速度", "color": "#1976D2"},
                 {"y_axis": "wind_speed", "label": "風速", "color": "#4CAF50"}
             ],
             "title": "速度と風速の関係",
@@ -704,7 +704,7 @@ def create_presentation_template() -> Template:
         title="セッションハイライト",
         description="セッションの重要なポイント",
         order=3,
-        layout={"columns": 1, "margin": {"top": 30, "right": 30, "bottom": 30, "left": 30}}
+        layout={"columns": 1, "margin": "top": 30, "right": 30, "bottom": 30, "left": 30}}
     )
     
     # ハイライトテキスト要素
@@ -712,7 +712,7 @@ def create_presentation_template() -> Template:
         element_type=ElementType.TEXT,
         name="highlights_text",
         properties={
-            "content": "{{session_highlights}}",
+            "content": "{session_highlights}}",
             "content_type": "dynamic"
         },
         styles={
@@ -728,7 +728,7 @@ def create_presentation_template() -> Template:
         name="strategy_list",
         properties={
             "data_source": "strategy_highlights",
-            "item_template": "<strong>{{timestamp}}</strong>: {{description}} (スコア: {{score}})",
+            "item_template": "<strong>{timestamp}}</strong>: {description}} (スコア: {score}})",
             "list_type": "ordered"
         },
         styles={
@@ -761,7 +761,7 @@ def create_presentation_template() -> Template:
         element_type=ElementType.TEXT,
         name="footer_text",
         properties={
-            "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {{generation_date}}",
+            "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {generation_date}}",
             "content_type": "dynamic"
         },
         styles={
@@ -826,7 +826,7 @@ def create_coaching_template() -> Template:
         element_type=ElementType.TEXT,
         name="report_title",
         properties={
-            "content": "{{sailor_name}} - コーチングレポート",
+            "content": "{sailor_name}} - コーチングレポート",
             "content_type": "dynamic"
         },
         styles={
@@ -842,7 +842,7 @@ def create_coaching_template() -> Template:
         element_type=ElementType.TEXT,
         name="report_date",
         properties={
-            "content": "セッション日時: {{session_date}}",
+            "content": "セッション日時: {session_date}}",
             "content_type": "dynamic"
         },
         styles={
@@ -856,7 +856,7 @@ def create_coaching_template() -> Template:
         element_type=ElementType.TEXT,
         name="report_location",
         properties={
-            "content": "場所: {{session_location}}",
+            "content": "場所: {session_location}}",
             "content_type": "dynamic"
         },
         styles={
@@ -870,7 +870,7 @@ def create_coaching_template() -> Template:
         element_type=ElementType.TEXT,
         name="coach_info",
         properties={
-            "content": "コーチ: {{coach_name}}",
+            "content": "コーチ: {coach_name}}",
             "content_type": "dynamic"
         },
         styles={
@@ -900,7 +900,7 @@ def create_coaching_template() -> Template:
         element_type=ElementType.TEXT,
         name="summary_text",
         properties={
-            "content": "{{session_summary}}",
+            "content": "{session_summary}}",
             "content_type": "dynamic"
         },
         styles={
@@ -920,7 +920,7 @@ def create_coaching_template() -> Template:
         title="強みと改善点",
         description="セッションで示された強みと改善が必要な点",
         order=2,
-        layout={"columns": 2, "margin": {"top": 20, "right": 20, "bottom": 20, "left": 20}}
+        layout={"columns": 2, "margin": "top": 20, "right": 20, "bottom": 20, "left": 20}}
     )
     
     # 強み要素
@@ -975,7 +975,7 @@ def create_coaching_template() -> Template:
         element_type=ElementType.TEXT,
         name="improvement_text",
         properties={
-            "content": "{{improvement_intro}}",
+            "content": "{improvement_intro}}",
             "content_type": "dynamic"
         },
         styles={
@@ -991,7 +991,7 @@ def create_coaching_template() -> Template:
         name="improvement_list",
         properties={
             "data_source": "improvement_items",
-            "item_template": "<strong>{{title}}</strong>: {{description}}",
+            "item_template": "<strong>{title}}</strong>: {description}}",
             "list_type": "unordered"
         },
         styles={
@@ -1009,7 +1009,7 @@ def create_coaching_template() -> Template:
         properties={
             "data_source": "practice_plan",
             "columns": [
-                {"field": "day", "header": "日付"},
+                "field": "day", "header": "日付"},
                 {"field": "focus", "header": "フォーカス"},
                 {"field": "exercises", "header": "エクササイズ"},
                 {"field": "goals", "header": "ゴール"}
@@ -1089,7 +1089,7 @@ def create_coaching_template() -> Template:
         element_type=ElementType.TEXT,
         name="footer_text",
         properties={
-            "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {{generation_date}}",
+            "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {generation_date}}",
             "content_type": "dynamic"
         },
         styles={

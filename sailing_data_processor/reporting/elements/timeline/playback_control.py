@@ -33,7 +33,7 @@ class PlaybackControl:
         self._end_time = 100  # デフォルト値、データ設定時に更新
         
         # 再生設定
-        self._options = {
+        self._options = {}
             "playback_speed": kwargs.get("playback_speed", 1.0),
             "loop": kwargs.get("loop", False),
             "show_timeline": kwargs.get("show_timeline", True),
@@ -42,8 +42,7 @@ class PlaybackControl:
             "control_size": kwargs.get("control_size", "medium"),  # small, medium, large
             "position": kwargs.get("position", "bottom"),  # top, bottom
             "auto_fit_time_range": kwargs.get("auto_fit_time_range", True)
- {
-            "playback_speed": kwargs.get("playback_speed", 1.0),
+ "playback_speed": kwargs.get("playback_speed", 1.0),
             "loop": kwargs.get("loop", False),
             "show_timeline": kwargs.get("show_timeline", True),
             "show_time_display": kwargs.get("show_time_display", True),
@@ -102,7 +101,7 @@ class PlaybackControl:
         """キーフレームを追加"""
         self._keyframes.append({
             "time": time,
-            "label": label or f"Keyframe {len(self._keyframes) + 1}",
+            "label": label or f"Keyframe len(self._keyframes) + 1}",
             "details": details or {}
         })
         
@@ -211,8 +210,7 @@ class PlaybackControl:
             "playing": self._playing,
             "options": self._options,
             "keyframes": self._keyframes
- {
-            "element_id": self.element_id,
+ "element_id": self.element_id,
             "name": self.name,
             "current_time": self._current_time,
             "start_time": self._start_time,
@@ -310,7 +308,7 @@ class PlaybackControl:
             # プレイバックコントロールのJavaScript実装
             (function() {
                 # コントロール要素の取得
-                const playButton = document.getElementById("{self.element_id}_play");
+                const playButton = document.getElementById("self.element_id}_play");
                 const stopButton = document.getElementById("{self.element_id}_stop");
                 const prevButton = document.getElementById("{self.element_id}_prev");
                 const nextButton = document.getElementById("{self.element_id}_next");
@@ -333,7 +331,7 @@ class PlaybackControl:
                     const minutes = Math.floor((time % 3600) / 60);
                     const seconds = Math.floor(time % 60);
                     timeDisplay.textContent = 
-                        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                        `$hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
                 
                 # 再生状態の更新
                 function updatePlayState(playing) {
@@ -343,8 +341,7 @@ class PlaybackControl:
                     
                     if (playing) {
                         lastUpdateTime = performance.now();
-                        if (!animationFrameId) {
-                            animationFrameId = requestAnimationFrame(updateAnimation);
+                        if (!animationFrameId) animationFrameId = requestAnimationFrame(updateAnimation);
                     } else if (animationFrameId) {
                         cancelAnimationFrame(animationFrameId);
                         animationFrameId = null;
@@ -352,7 +349,7 @@ class PlaybackControl:
                     # カスタムイベントを発火
                     const event = new CustomEvent("playbackStateChange", {
                         detail: {
-                            elementId: "{self.element_id}",
+                            elementId: "self.element_id}",
                             playing: playing
                     });
                     document.dispatchEvent(event);
@@ -366,7 +363,7 @@ class PlaybackControl:
                     # カスタムイベントを発火
                     const event = new CustomEvent("playbackTimeChange", {
                         detail: {
-                            elementId: "{self.element_id}",
+                            elementId: "self.element_id}",
                             time: time
                     });
                     document.dispatchEvent(event);
@@ -379,11 +376,11 @@ class PlaybackControl:
                     if (isPlaying) {
                         const newTime = currentTime + elapsed * playbackSpeed;
                         
-                        if (newTime >= {self._end_time}) {
+                        if (newTime >= self._end_time}) {
                             if (loopEnabled) {
-                                updateSeekPosition({self._start_time});
+                                updateSeekPosition(self._start_time});
                             } else {
-                                updateSeekPosition({self._end_time});
+                                updateSeekPosition(self._end_time});
                                 updatePlayState(false);
                         } else {
                             updateSeekPosition(newTime);
@@ -391,24 +388,23 @@ class PlaybackControl:
                         animationFrameId = requestAnimationFrame(updateAnimation);
                 
                 # イベントリスナーの設定
-                playButton.addEventListener("click", function() {
-                    updatePlayState(!isPlaying);
+                playButton.addEventListener("click", function() updatePlayState(!isPlaying);
                 });
                 
                 stopButton.addEventListener("click", function() {
                     updatePlayState(false);
-                    updateSeekPosition({self._start_time});
+                    updateSeekPosition(self._start_time});
                 });
                 
                 prevButton.addEventListener("click", function() {
                     const frameStep = 1; # 1秒単位での移動
-                    const newTime = Math.max({self._start_time}, currentTime - frameStep);
+                    const newTime = Math.max(self._start_time}, currentTime - frameStep);
                     updateSeekPosition(newTime);
                 });
                 
                 nextButton.addEventListener("click", function() {
                     const frameStep = 1; # 1秒単位での移動
-                    const newTime = Math.min({self._end_time}, currentTime + frameStep);
+                    const newTime = Math.min(self._end_time}, currentTime + frameStep);
                     updateSeekPosition(newTime);
                 });
                 
@@ -426,8 +422,7 @@ class PlaybackControl:
                 
                 # キーフレームのクリックイベント
                 document.querySelectorAll(".keyframe-marker").forEach(marker => {
-                    marker.addEventListener("click", function() {
-                        const time = parseFloat(this.dataset.time);
+                    marker.addEventListener("click", function() const time = parseFloat(this.dataset.time);
                         updateSeekPosition(time);
                     });
                 });
@@ -442,7 +437,7 @@ class PlaybackControl:
                     pause: () => updatePlayState(false),
                     stop: () => {
                         updatePlayState(false);
-                        updateSeekPosition({self._start_time});
+                        updateSeekPosition(self._start_time});
                     },
                     setTime: (time) => updateSeekPosition(Math.max({self._start_time}, Math.min({self._end_time}, time))),
                     getTime: () => currentTime,
@@ -453,12 +448,12 @@ class PlaybackControl:
                     },
                     nextFrame: () => {
                         const frameStep = 1;
-                        const newTime = Math.min({self._end_time}, currentTime + frameStep);
+                        const newTime = Math.min(self._end_time}, currentTime + frameStep);
                         updateSeekPosition(newTime);
                     },
                     prevFrame: () => {
                         const frameStep = 1;
-                        const newTime = Math.max({self._start_time}, currentTime - frameStep);
+                        const newTime = Math.max(self._start_time}, currentTime - frameStep);
                         updateSeekPosition(newTime);
                 };
             })();
@@ -509,10 +504,10 @@ class PlaybackControl:
         <script>
             # キーフレーム選択のイベントリスナー
             document.getElementById("{self.element_id}_goto_keyframe").addEventListener("click", function() {
-                const select = document.getElementById("{self.element_id}_keyframes");
+                const select = document.getElementById("self.element_id}_keyframes");
                 const index = select.value;
                 if (index !== '') {
-                    const controller = window["{self.element_id}_controller"];
+                    const controller = window["self.element_id}_controller"];
                     const keyframes = {json.dumps(self._keyframes)};
                     if (controller && keyframes[index]) {
                         controller.setTime(keyframes[index].time);

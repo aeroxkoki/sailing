@@ -164,10 +164,10 @@ class NotificationManager:
         self._notifications = {}  # {user_id: [notifications]}
         
         # 購読管理
-        self._subscriptions = {}  # {event_type: {user_id: settings}}
+        self._subscriptions = {}  # {event_type: user_id: settings}}
         
         # 通知チャネル
-        self._channels = {
+        self._channels = {}
             "app": AppNotificationChannel(),
             "email": EmailNotificationChannel(),
             "slack": SlackNotificationChannel()
@@ -284,7 +284,7 @@ class NotificationManager:
                 "created_at": now.isoformat(),
                 "read": False,
                 "priority": priority,
-                "metadata": metadata or {},
+                "metadata": metadata or },
                 "event_data": event_data
             }
             

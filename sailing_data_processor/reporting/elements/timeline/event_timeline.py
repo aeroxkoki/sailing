@@ -54,7 +54,7 @@ kh:Y������ЛW~Y
         self._events = []
         
         # h:�׷��
-        self._options = {
+        self._options = {}
             "show_tacks": kwargs.get("show_tacks", True),
             "show_jibes": kwargs.get("show_jibes", True),
             "show_marks": kwargs.get("show_marks", True),
@@ -65,8 +65,7 @@ kh:Y������ЛW~Y
             "handle_overflow": kwargs.get("handle_overflow", True),
             "tooltip_placement": kwargs.get("tooltip_placement", "top"),
             "time_format": kwargs.get("time_format", "HH:mm:ss"),
- {
-            "show_tacks": kwargs.get("show_tacks", True),
+ "show_tacks": kwargs.get("show_tacks", True),
             "show_jibes": kwargs.get("show_jibes", True),
             "show_marks": kwargs.get("show_marks", True),
             "show_custom": kwargs.get("show_custom", True),
@@ -84,14 +83,14 @@ kh:Y������ЛW~Y
         
         # ���ȿ��n��hr
         self._event_types = {
-            "tack": {"color": "#FF5722", "symbol": "�", "label": "�ï"},
+            "tack": "color": "#FF5722", "symbol": "�", "label": "�ï"},
             "jibe": {"color": "#2196F3", "symbol": "�", "label": "���"},
             "mark_rounding": {"color": "#4CAF50", "symbol": "�", "label": "����*"},
             "start": {"color": "#FFC107", "symbol": "�", "label": "����"},
             "finish": {"color": "#9C27B0", "symbol": "�", "label": "գ�÷�"},
             "custom": {"color": "#607D8B", "symbol": "", "label": "����"}
  {
-            "tack": {"color": "#FF5722", "symbol": "�", "label": "�ï"},
+            "tack": "color": "#FF5722", "symbol": "�", "label": "�ï"},
             "jibe": {"color": "#2196F3", "symbol": "�", "label": "���"},
             "mark_rounding": {"color": "#4CAF50", "symbol": "�", "label": "����*"},
             "start": {"color": "#FFC107", "symbol": "�", "label": "����"},
@@ -106,8 +105,7 @@ kh:Y������ЛW~Y
             "mark_rounding": "is_mark_rounding",
             "start": "is_start",
             "finish": "is_finish"
- {
-            "tack": "is_tack",
+ "tack": "is_tack",
             "jibe": "is_jibe",
             "mark_rounding": "is_mark_rounding",
             "start": "is_start",
@@ -169,7 +167,7 @@ kh:Y������ЛW~Y
             "label": label or self._event_types[event_type]["label"],
             "symbol": self._event_types[event_type]["symbol"],
             "color": self._event_types[event_type]["color"],
-            "details": details or {}
+            "details": details or }
  {
             "id": str(uuid.uuid4()),
             "timestamp": timestamp.isoformat(),
@@ -177,7 +175,7 @@ kh:Y������ЛW~Y
             "label": label or self._event_types[event_type]["label"],
             "symbol": self._event_types[event_type]["symbol"],
             "color": self._event_types[event_type]["color"],
-            "details": details or {}}
+            "details": details or }}
         }
         
         # ]n�n^'���

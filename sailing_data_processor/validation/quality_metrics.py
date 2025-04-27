@@ -46,7 +46,7 @@ class QualityMetricsCalculator:
         self.data = data if data is not None else pd.DataFrame()
         
         # カテゴリー別のルール分類
-        self.rule_categories = {
+        self.rule_categories = {}
             "completeness": ["Required Columns Check", "No Null Values Check"],
             "accuracy": ["Value Range Check", "Spatial Consistency Check"],
             "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
@@ -76,12 +76,12 @@ class QualityMetricsCalculator:
             self.category_scores[category] = {
                 "score": 100.0,
                 "issues": 0,
-                "details": {}
+                "details": }
             }
         
         # 問題分布を簡略化
         self.problem_distribution = {
-            "temporal": {"has_data": False},
+            "temporal": "has_data": False},
             "spatial": {"has_data": False},
             "problem_type": {"has_data": False}
         }
@@ -140,8 +140,7 @@ class QualityMetricsCalculator:
             "accuracy_score": self.quality_scores.get("accuracy", 100.0),
             "consistency_score": self.quality_scores.get("consistency", 100.0),
             "total_issues": total_issues,
-            "issue_counts": {
-                "missing_data": missing_data_count,
+            "issue_counts": "missing_data": missing_data_count,
                 "out_of_range": out_of_range_count,
                 "duplicates": dupes_count,
                 "spatial_anomalies": spatial_count,

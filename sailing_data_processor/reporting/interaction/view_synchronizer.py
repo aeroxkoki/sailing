@@ -41,8 +41,7 @@ class ViewSynchronizer:
         view_type : Optional[str], optional
             ���n.^, by default None
         """
-        self._views[view_id] = {
-            "object": view_object,
+        self._views[view_id] = "object": view_object,
             "type": view_type or view_object.__class__.__name__
         }
         self._contexts[view_id] = {}
@@ -70,7 +69,7 @@ class ViewSynchronizer:
             del self._contexts[view_id]
         
         # �#Y����Jd
-        self._connections = {k: v for k, v in self._connections.items() 
+        self._connections = k: v for k, v in self._connections.items() 
                             if k[0] != view_id and k[1] != view_id}
         
         return True
@@ -113,14 +112,13 @@ class ViewSynchronizer:
         default_props = ["time", "selection", "zoom", "center"]
         sync_properties = sync_props or default_props
         
-        self._connections[(source_id, target_id)] = {
-            "sync_properties": sync_properties,
+        self._connections[(source_id, target_id)] = "sync_properties": sync_properties,
             "active": True
         }
         
         # ̹n4o�n�����
         if bidirectional:
-            self._connections[(target_id, source_id)] = {
+            self._connections[(target_id, source_id)] = {}
                 "sync_properties": sync_properties,
                 "active": True
             }
@@ -431,7 +429,7 @@ class ViewSynchronizer:
         instance = cls()
         
         # ����{2
-        for view_id, view_info in data.get("views", {}).items():
+        for view_id, view_info in data.get("views", }).items():
             if view_id in view_objects:
                 instance.register_view(
                     view_id=view_id,

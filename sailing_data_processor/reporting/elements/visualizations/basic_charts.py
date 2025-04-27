@@ -99,7 +99,7 @@ class LineChartElement(BaseChartElement):
         chart_data = ChartData().from_context(context, self.data_source)
         
         if chart_data.get_data() is None:
-            return {"type": "line", "data": {"labels": [], "datasets": []}}
+            return {"type": "line", "data": "labels": [], "datasets": []}}
         
         # データを適切な形式に変換
         x_key = self.get_property("x_field", "x")
@@ -151,8 +151,7 @@ class LineChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
- {
-            "type": chart_type,
+ "type": chart_type,
             "data": data}
         return {
             "type": chart_type,
@@ -173,7 +172,7 @@ class LineChartElement(BaseChartElement):
         options = super().get_chart_options()
         
         # 折れ線グラフ特有のオプション
-        line_options = {
+        line_options = {}
             "scales": {
                 "x": {
                     "title": {
@@ -182,15 +181,13 @@ class LineChartElement(BaseChartElement):
  {
             "scales": {
                 "x": {
-                    "title": {
-                        "display": True,
+                    "title": "display": True,
                         "text": self.get_property("x_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
- {
-                        "display": self.get_property("show_x_grid", True),
+ "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                 },
                 "y": {
@@ -198,15 +195,13 @@ class LineChartElement(BaseChartElement):
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
  {
-                    "title": {
-                        "display": True,
+                    "title": "display": True,
                         "text": self.get_property("y_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
- {
-                        "display": self.get_property("show_y_grid", True),
+ "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                     },
                     "beginAtZero": self.get_property("begin_at_zero", False)
@@ -216,37 +211,32 @@ class LineChartElement(BaseChartElement):
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
  {
-                "legend": {
-                    "display": self.get_property("show_legend", True),
+                "legend": "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
                     "mode": self.get_property("tooltip_mode", "index"),
                     "intersect": False
- {
-                    "mode": self.get_property("tooltip_mode", "index"),
+ "mode": self.get_property("tooltip_mode", "index"),
                     "intersect": False}
             },
             "interaction": {
                 "mode": "nearest",
                 "axis": "x",
                 "intersect": False
- {
-                "mode": "nearest",
+ "mode": "nearest",
                 "axis": "x",
                 "intersect": False}
             },
             "animation": {
                 "duration": self.get_property("animation_duration", 1000)
- {
-                "duration": self.get_property("animation_duration", 1000)}
+ "duration": self.get_property("animation_duration", 1000)}
             },
             "elements": {
                 "line": {
                     "tension": self.get_property("tension", 0.1)
  {
-                "line": {
-                    "tension": self.get_property("tension", 0.1)}
+                "line": "tension": self.get_property("tension", 0.1)}
         
         # データラベル表示設定
         show_data_labels = self.get_property("show_data_labels", False)
@@ -255,14 +245,14 @@ class LineChartElement(BaseChartElement):
                 "display": True,
                 "anchor": "end",
                 "align": "top",
-                "formatter": "function(value) { return value.toFixed(1); }",
+                "formatter": "function(value) return value.toFixed(1); }",
                 "font": {
                     "weight": "bold"
  {
                 "display": True,
                 "anchor": "end",
                 "align": "top",
-                "formatter": "function(value) { return value.toFixed(1); }",
+                "formatter": "function(value) return value.toFixed(1); }",
                 "font": {
                     "weight": "bold"}
                 },
@@ -309,7 +299,7 @@ class LineChartElement(BaseChartElement):
         renderer = RendererFactory.create_renderer(
             renderer_type, 
             self.chart_id, 
-            {"plugins": {"datalabels": self.get_property("show_data_labels", False)}}
+            {"plugins": "datalabels": self.get_property("show_data_labels", False)}}
         )
         
         # チャートをレンダリング
@@ -406,7 +396,7 @@ class ScatterChartElement(BaseChartElement):
         chart_data = ChartData().from_context(context, self.data_source)
         
         if chart_data.get_data() is None:
-            return {"type": "scatter", "data": {"datasets": []}}
+            return {"type": "scatter", "data": "datasets": []}}
         
         # データを適切な形式に変換
         x_key = self.get_property("x_field", "x")
@@ -433,8 +423,7 @@ class ScatterChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
- {
-            "type": chart_type,
+ "type": chart_type,
             "data": data}
         return {
             "type": chart_type,
@@ -464,15 +453,13 @@ class ScatterChartElement(BaseChartElement):
  {
             "scales": {
                 "x": {
-                    "title": {
-                        "display": True,
+                    "title": "display": True,
                         "text": self.get_property("x_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
- {
-                        "display": self.get_property("show_x_grid", True),
+ "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                 },
                 "y": {
@@ -480,15 +467,13 @@ class ScatterChartElement(BaseChartElement):
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
  {
-                    "title": {
-                        "display": True,
+                    "title": "display": True,
                         "text": self.get_property("y_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
- {
-                        "display": self.get_property("show_y_grid", True),
+ "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                     },
                     "beginAtZero": self.get_property("begin_at_zero", False)
@@ -498,21 +483,19 @@ class ScatterChartElement(BaseChartElement):
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
  {
-                "legend": {
-                    "display": self.get_property("show_legend", True),
+                "legend": "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
                     "callbacks": {
-                        "label": "function(context) { return `(${context.parsed.x}, ${context.parsed.y})`; }"
+                        "label": "function(context) { return `($context.parsed.x}, ${context.parsed.y})`; }"
  {
                     "callbacks": {
-                        "label": "function(context) { return `(${context.parsed.x}, ${context.parsed.y})`; }"}
+                        "label": "function(context) { return `($context.parsed.x}, ${context.parsed.y})`; }"}
             },
             "animation": {
                 "duration": self.get_property("animation_duration", 1000)
- {
-                "duration": self.get_property("animation_duration", 1000)}
+ "duration": self.get_property("animation_duration", 1000)}
         
         # ズーム有効化
         enable_zoom = self.get_property("enable_zoom", True)
@@ -522,21 +505,18 @@ class ScatterChartElement(BaseChartElement):
                     "enabled": True,
                     "mode": "xy"
  {
-                "pan": {
-                    "enabled": True,
+                "pan": "enabled": True,
                     "mode": "xy"}
                 },
                 "zoom": {
                     "wheel": {
                         "enabled": True
  {
-                    "wheel": {
-                        "enabled": True}
+                    "wheel": "enabled": True}
                     },
                     "pinch": {
                         "enabled": True
- {
-                        "enabled": True}
+ "enabled": True}
                     },
                     "mode": "xy"
         
@@ -604,8 +584,7 @@ class ScatterChartElement(BaseChartElement):
                     "width": 2,
                     "lineStyle": "dotted",
                     "projection": self.get_property("regression_projection", False)
- {
-                    "style": dataset["borderColor"].replace("0.7", "1"),
+ "style": dataset["borderColor"].replace("0.7", "1"),
                     "width": 2,
                     "lineStyle": "dotted",
                     "projection": self.get_property("regression_projection", False)}
@@ -642,8 +621,7 @@ class ScatterChartElement(BaseChartElement):
                     "zoom": self.get_property("enable_zoom", True),
                     "regression": self.get_property("show_regression_line", False)
             {
-                "plugins": {
-                    "zoom": self.get_property("enable_zoom", True),
+                "plugins": "zoom": self.get_property("enable_zoom", True),
                     "regression": self.get_property("show_regression_line", False)}
         )
         
@@ -749,7 +727,7 @@ class BarChartElement(BaseChartElement):
         chart_data = ChartData().from_context(context, self.data_source)
         
         if chart_data.get_data() is None:
-            return {"type": "bar", "data": {"labels": [], "datasets": []}}
+            return {"type": "bar", "data": "labels": [], "datasets": []}}
         
         # データを適切な形式に変換
         label_key = self.get_property("label_field", "label")
@@ -795,8 +773,7 @@ class BarChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
- {
-            "type": chart_type,
+ "type": chart_type,
             "data": data}
         return {
             "type": chart_type,
@@ -826,15 +803,13 @@ class BarChartElement(BaseChartElement):
  {
             "scales": {
                 "x": {
-                    "title": {
-                        "display": True,
+                    "title": "display": True,
                         "text": self.get_property("x_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
- {
-                        "display": self.get_property("show_x_grid", True),
+ "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                 },
                 "y": {
@@ -842,15 +817,13 @@ class BarChartElement(BaseChartElement):
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
  {
-                    "title": {
-                        "display": True,
+                    "title": "display": True,
                         "text": self.get_property("y_axis_title", "")}
                     },
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
- {
-                        "display": self.get_property("show_y_grid", True),
+ "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                     },
                     "beginAtZero": True
@@ -860,21 +833,18 @@ class BarChartElement(BaseChartElement):
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
  {
-                "legend": {
-                    "display": self.get_property("show_legend", True),
+                "legend": "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
                     "mode": "index",
                     "intersect": False
- {
-                    "mode": "index",
+ "mode": "index",
                     "intersect": False}
             },
             "animation": {
                 "duration": self.get_property("animation_duration", 1000)
- {
-                "duration": self.get_property("animation_duration", 1000)}
+ "duration": self.get_property("animation_duration", 1000)}
         
         # 横棒グラフの場合、x軸とy軸の設定を入れ替え
         horizontal = self.get_property("horizontal", False)
@@ -898,17 +868,17 @@ class BarChartElement(BaseChartElement):
                 bar_options["scales"][stacked_key]["min"] = 0
                 bar_options["scales"][stacked_key]["max"] = 100
                 bar_options["scales"][stacked_key]["ticks"] = {
-                    "callback": "function(value) { return value + '%'; }"
+                    "callback": "function(value) return value + '%'; }"
  {
-                    "callback": "function(value) { return value + '%'; }"}
+                    "callback": "function(value) return value + '%'; }"}
                 bar_options["scales"][stacked_key]["ticks"] = {
-                    "callback": "function(value) { return value + '%'; }"}
+                    "callback": "function(value) return value + '%'; }"}
  {
-                    "callback": "function(value) { return value + '%'; }"}}
+                    "callback": "function(value) return value + '%'; }"}}
                 bar_options["scales"][stacked_key]["ticks"] = {
-                    "callback": "function(value) { return value + '%'; }"}
+                    "callback": "function(value) return value + '%'; }"}
  {
-                    "callback": "function(value) { return value + '%'; }"}}
+                    "callback": "function(value) return value + '%'; }"}}
         
         # データラベル表示設定
         show_data_labels = self.get_property("show_data_labels", False)
@@ -917,14 +887,14 @@ class BarChartElement(BaseChartElement):
                 "display": True,
                 "anchor": "end",
                 "align": "top",
-                "formatter": "function(value) { return value.toFixed(1); }",
+                "formatter": "function(value) return value.toFixed(1); }",
                 "font": {
                     "weight": "bold"
  {
                 "display": True,
                 "anchor": "end",
                 "align": "top",
-                "formatter": "function(value) { return value.toFixed(1); }",
+                "formatter": "function(value) return value.toFixed(1); }",
                 "font": {
                     "weight": "bold"}
                 },
@@ -971,7 +941,7 @@ class BarChartElement(BaseChartElement):
         renderer = RendererFactory.create_renderer(
             renderer_type, 
             self.chart_id, 
-            {"plugins": {"datalabels": self.get_property("show_data_labels", False)}}
+            {"plugins": "datalabels": self.get_property("show_data_labels", False)}}
         )
         
         # チャートをレンダリング
@@ -1076,7 +1046,7 @@ class PieChartElement(BaseChartElement):
         chart_data = ChartData().from_context(context, self.data_source)
         
         if chart_data.get_data() is None:
-            return {"type": "pie", "data": {"labels": [], "datasets": [{"data": []}]}}
+            return {"type": "pie", "data": {"labels": [], "datasets": ["data": []}]}}
         
         # データを適切な形式に変換
         label_key = self.get_property("label_field", "label")
@@ -1109,8 +1079,7 @@ class PieChartElement(BaseChartElement):
         return {
             "type": chart_type,
             "data": data
- {
-            "type": chart_type,
+ "type": chart_type,
             "data": data}
         return {
             "type": chart_type,
@@ -1142,8 +1111,7 @@ class PieChartElement(BaseChartElement):
                     "position": self.get_property("legend_position", "top")
  {
             "plugins": {
-                "legend": {
-                    "display": self.get_property("show_legend", True),
+                "legend": "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")}
                 },
                 "tooltip": {
@@ -1151,7 +1119,7 @@ class PieChartElement(BaseChartElement):
                         "label": "function(context) { " +
  {
                     "callbacks": {
-                        "label": "function(context) { " +}
+                        "label": "function(context) " +}
                                 "var dataset = context.dataset; " +
                                 "var total = dataset.data.reduce((sum, value) => sum + value, 0); " +
                                 "var value = dataset.data[context.dataIndex]; " +
@@ -1165,8 +1133,7 @@ class PieChartElement(BaseChartElement):
                 "duration": self.get_property("animation_duration", 1000),
                 "animateRotate": True,
                 "animateScale": self.get_property("animate_scale", True)
- {
-                "duration": self.get_property("animation_duration", 1000),
+ "duration": self.get_property("animation_duration", 1000),
                 "animateRotate": True,
                 "animateScale": self.get_property("animate_scale", True)}
         
@@ -1188,13 +1155,12 @@ class PieChartElement(BaseChartElement):
  {
                 "display": True,
                 "color": "#fff",
-                "font": {
-                    "weight": "bold"}
+                "font": "weight": "bold"}
                 },
                 "formatter": "function(value, context) { " +
                             "var label = context.chart.data.labels[context.dataIndex]; " +
                             "var dataset = context.chart.data.datasets[context.datasetIndex]; " +
-                            "var total = dataset.data.reduce(function(sum, val) { return sum + val; }, 0); " +
+                            "var total = dataset.data.reduce(function(sum, val) return sum + val; }, 0); " +
                             "var percentage = Math.round((value / total) * 100); " +
                             "var result = ''; " +
                             f"var showLabels = {str(show_labels).lower()}; " +
@@ -1247,7 +1213,7 @@ class PieChartElement(BaseChartElement):
         renderer = RendererFactory.create_renderer(
             renderer_type, 
             self.chart_id, 
-            {"plugins": {"datalabels": self.get_property("show_labels", True)}}
+            {"plugins": "datalabels": self.get_property("show_labels", True)}}
         )
         
         # チャートをレンダリング

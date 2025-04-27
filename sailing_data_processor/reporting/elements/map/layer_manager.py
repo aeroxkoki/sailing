@@ -48,13 +48,12 @@ class MapLayerManager:
         if options is None:
             options = {}
         
-        self.base_layers[layer_id] = {
+        self.base_layers[layer_id] = {}
             "id": layer_id,
             "name": layer_name,
             "type": layer_type,
             "options": options
- {
-            "id": layer_id,
+ "id": layer_id,
             "name": layer_name,
             "type": layer_type,
             "options": options}
@@ -91,8 +90,7 @@ class MapLayerManager:
             "type": layer_type,
             "visible": visible,
             "options": options
- {
-            "id": layer_id,
+ "id": layer_id,
             "name": layer_name,
             "type": layer_type,
             "visible": visible,
@@ -202,8 +200,7 @@ class MapLayerManager:
             "overlay_layers": list(self.overlay_layers.values()),
             "active_base_layer": active_base,
             "active_overlay_layers": active_overlays
- {
-            "base_layers": list(self.base_layers.values()),
+ "base_layers": list(self.base_layers.values()),
             "overlay_layers": list(self.overlay_layers.values()),
             "active_base_layer": active_base,
             "active_overlay_layers": active_overlays}
@@ -257,26 +254,26 @@ class MapLayerElement(BaseElement):
         """
         # ������0��	
         self.layer_manager.add_base_layer("osm", "OpenStreetMap", "tile", {
-            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "url": "https://s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             "attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
  {
-            "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            "url": "https://s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
             "attribution": "&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"}
         })
         
         self.layer_manager.add_base_layer("satellite", "Satellite", "tile", {
-            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/z}/{y}/{x}",
             "attribution": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
  {
-            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+            "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/z}/{y}/{x}",
             "attribution": "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"}
         })
         
         self.layer_manager.add_base_layer("nautical", "Nautical", "tile", {
-            "url": "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+            "url": "https://tiles.openseamap.org/seamark/z}/{x}/{y}.png",
             "attribution": "Map data: &copy; <a href='http://www.openseamap.org'>OpenSeaMap</a> contributors"
  {
-            "url": "https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png",
+            "url": "https://tiles.openseamap.org/seamark/z}/{x}/{y}.png",
             "attribution": "Map data: &copy; <a href='http://www.openseamap.org'>OpenSeaMap</a> contributors"}
         })
         
@@ -284,8 +281,7 @@ class MapLayerElement(BaseElement):
         self.layer_manager.add_overlay_layer("track", "GPS Track", "track", True, {
             "color": "rgba(255, 87, 34, 0.8)",
             "weight": 3
- {
-            "color": "rgba(255, 87, 34, 0.8)",
+ "color": "rgba(255, 87, 34, 0.8)",
             "weight": 3}
         })
         
@@ -369,37 +365,31 @@ class MapLayerElement(BaseElement):
         html_content = f'''
         <div id="{self.element_id}" class="map-layer-control" style="{css_style}">
             <style>
-                .map-layer-control {{
-                    padding: 10px;
+                .map-layer-control {padding: 10px;
                     background: white;
                     border: 1px solid #ccc;
                     border-radius: 4px;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 }}
                 
-                .map-layer-section {{
-                    margin-bottom: 10px;
+                .map-layer-section {margin-bottom: 10px;
                 }}
                 
-                .map-layer-section h4 {{
-                    margin: 0 0 8px 0;
+                .map-layer-section h4 {margin: 0 0 8px 0;
                     padding-bottom: 5px;
                     font-size: 14px;
                     border-bottom: 1px solid #eee;
                 }}
                 
-                .map-layer-item {{
-                    margin-bottom: 5px;
+                .map-layer-item {margin-bottom: 5px;
                 }}
                 
-                .map-layer-item label {{
-                    display: flex;
+                .map-layer-item label {display: flex;
                     align-items: center;
                     cursor: pointer;
                 }}
                 
-                .map-layer-item input {{
-                    margin-right: 8px;
+                .map-layer-item input {margin-right: 8px;
                 }}
             </style>
             
@@ -420,11 +410,11 @@ class MapLayerElement(BaseElement):
             <script>
                 (function() {{
                     // ���-�
-                    var layerConfig = {layer_config_json};
+                    var layerConfig = layer_config_json};
                     
                     // ���������\
                     function createLayerControls() {{
-                        var baseLayersContainer = document.getElementById('{self.element_id}_base_layers');
+                        var baseLayersContainer = document.getElementById('self.element_id}_base_layers');
                         var overlayLayersContainer = document.getElementById('{self.element_id}_overlay_layers');
                         
                         // ������n鸪ܿ�
@@ -440,14 +430,14 @@ class MapLayerElement(BaseElement):
                                 var label = document.createElement('label');
                                 var input = document.createElement('input');
                                 input.type = 'radio';
-                                input.name = '{self.element_id}_base_layer';
+                                input.name = 'self.element_id}_base_layer';
                                 input.value = layer.id;
                                 input.checked = checked;
                                 
                                 input.addEventListener('change', function(e) {{
                                     // ������Ȓǣ����
                                     var event = new CustomEvent('base_layer_changed', {{ 
-                                        detail: {{ element_id: '{self.element_id}', layer_id: layer.id }}
+                                        detail: {{ element_id: 'self.element_id}', layer_id: layer.id }}
                                     }});
                                     document.dispatchEvent(event);
                                 }});
@@ -465,7 +455,7 @@ class MapLayerElement(BaseElement):
                             overlayLayersContainer.innerHTML = '';
                             
                             layerConfig.overlay_layers.forEach(function(layer) {{
-                                var checked = layerConfig.active_overlay_layers.some(function(l) {{ return l.id === layer.id; }});
+                                var checked = layerConfig.active_overlay_layers.some(function(l) {return l.id === layer.id; }});
                                 
                                 var itemDiv = document.createElement('div');
                                 itemDiv.className = 'map-layer-item';
@@ -481,7 +471,7 @@ class MapLayerElement(BaseElement):
                                     // ������Ȓǣ����
                                     var event = new CustomEvent('overlay_layer_toggled', {{ 
                                         detail: {{ 
-                                            element_id: '{self.element_id}',
+                                            element_id: 'self.element_id}',
                                             layer_id: layer.id,
                                             visible: this.checked
                                         }}

@@ -63,10 +63,10 @@ class ValidationVisualizer:
         gauge_chart = go.Figure(go.Indicator(
             mode="gauge+number",
             value=quality_scores["total"],
-            title={"text": "データ品質スコア", "font": {"size": 24}},
-            number={"font": {"size": 32, "color": self._get_score_color(quality_scores["total"])}},
-            gauge={
-                "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
+            title={"text": "データ品質スコア", "font": "size": 24}},
+            number={"font": "size": 32, "color": self._get_score_color(quality_scores["total"])}},
+            gauge={}
+                "axis": "range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
                 "bar": {"color": self._get_score_color(quality_scores["total"])},
                 "bgcolor": "white",
                 "borderwidth": 2,
@@ -78,7 +78,7 @@ class ValidationVisualizer:
                     {"range": [90, 100], "color": "#AAFFAA"}  # 濃い緑系 - 非常に高品質
                 ],
                 "threshold": {
-                    "line": {"color": "black", "width": 4},
+                    "line": "color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": quality_scores["total"]
         ))
@@ -133,7 +133,7 @@ class ValidationVisualizer:
                 x=display_categories,
                 y=values,
                 marker_color=bar_colors,
-                text=[f"{v:.1f}" for v in values],
+                text=[f"v:.1f}" for v in values],
                 textposition="auto",
                 hoverinfo="text",
                 hovertext=[
@@ -626,8 +626,7 @@ class ValidationVisualizer:
         
         # 円グラフデータを準備
         pie_data = {
-            "problem_types": {
-                "labels": list(problem_counts.keys()),
+            "problem_types": "labels": list(problem_counts.keys()),
                 "values": list(problem_counts.values())
             },
             "severity": {
@@ -656,7 +655,7 @@ class ValidationVisualizer:
         """
         # タイムスタンプカラムがない場合はスキップ
         if "timestamp" not in self.data.columns:
-            return {"has_data": False}
+            return "has_data": False}
         
         problem_indices = self.quality_metrics.problematic_indices["all"]
         
@@ -669,7 +668,7 @@ class ValidationVisualizer:
             
             # 問題タイプとマーカー情報のマッピング
             problem_types = {
-                "missing_data": {"color": "blue", "symbol": "circle", "name": "欠損値"},
+                "missing_data": "color": "blue", "symbol": "circle", "name": "欠損値"},
                 "out_of_range": {"color": "red", "symbol": "triangle-up", "name": "範囲外の値"},
                 "duplicates": {"color": "green", "symbol": "square", "name": "重複"},
                 "spatial_anomalies": {"color": "purple", "symbol": "diamond", "name": "空間的異常"},
@@ -768,9 +767,9 @@ class ValidationVisualizer:
         fig = go.Figure(go.Indicator(
             mode="gauge+number",
             value=self.quality_metrics.quality_scores["total"],
-            title={"text": "データ品質スコア"},
+            title="text": "データ品質スコア"},
             gauge={
-                "axis": {"range": [0, 100]},
+                "axis": "range": [0, 100]},
                 "bar": {"color": "darkblue"},
                 "steps": [
                     {"range": [0, 50], "color": "red"},
@@ -779,7 +778,7 @@ class ValidationVisualizer:
                     {"range": [90, 100], "color": "green"}
                 ],
                 "threshold": {
-                    "line": {"color": "black", "width": 4},
+                    "line": "color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": self.quality_metrics.quality_scores["total"]
         ))
@@ -833,7 +832,7 @@ class ValidationVisualizer:
             annotations.append(dict(
                 x=i,
                 y=values[i] + 5,  # スコアの上に表示
-                text=f"{values[i]:.1f}",
+                text=f"values[i]:.1f}",
                 showarrow=False,
                 font=dict(size=12)
             ))
@@ -860,7 +859,7 @@ class ValidationVisualizer:
             "時間的異常": len(self.quality_metrics.problematic_indices["temporal_anomalies"])
         
         # 値が0のカテゴリを除外
-        problem_counts = {k: v for k, v in problem_counts.items() if v > 0}
+        problem_counts = k: v for k, v in problem_counts.items() if v > 0}
         
         if not problem_counts:
             # 問題がない場合は空のグラフを返す
@@ -1064,7 +1063,7 @@ class ValidationVisualizer:
             # トラック品質データがない場合も空のグラフを返す
             fig = go.Figure()
             fig.update_layout(
-                title=f"トラック品質分析 ({track_quality.get('reason', 'データなし')})",
+                title=f"トラック品質分析 (track_quality.get('reason', 'データなし')})",
                 height=400,
                 margin=dict(t=50, b=30, l=30, r=30)
             )
@@ -1084,7 +1083,7 @@ class ValidationVisualizer:
             title={"text": "トラック総合品質"},
             domain={"row": 0, "column": 0},
             gauge={
-                "axis": {"range": [0, 100]},
+                "axis": "range": [0, 100]},
                 "bar": {"color": "darkblue"},
                 "steps": [
                     {"range": [0, 50], "color": "red"},
@@ -1093,7 +1092,7 @@ class ValidationVisualizer:
                     {"range": [90, 100], "color": "green"}
                 ],
                 "threshold": {
-                    "line": {"color": "black", "width": 4},
+                    "line": "color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": track_quality_score
         ))
@@ -1106,7 +1105,7 @@ class ValidationVisualizer:
                 title={"text": "速度一貫性"},
                 domain={"row": 0, "column": 1},
                 gauge={
-                    "axis": {"range": [0, 100]},
+                    "axis": "range": [0, 100]},
                     "bar": {"color": "darkblue"},
                     "steps": [
                         {"range": [0, 50], "color": "red"},
@@ -1115,7 +1114,7 @@ class ValidationVisualizer:
                         {"range": [90, 100], "color": "green"}
                     ],
                     "threshold": {
-                        "line": {"color": "black", "width": 4},
+                        "line": "color": "black", "width": 4},
                         "thickness": 0.75,
                         "value": track_stats["speed"]["consistency"]
             ))
@@ -1128,7 +1127,7 @@ class ValidationVisualizer:
                 title={"text": "方向一貫性"},
                 domain={"row": 0, "column": 2},
                 gauge={
-                    "axis": {"range": [0, 100]},
+                    "axis": "range": [0, 100]},
                     "bar": {"color": "darkblue"},
                     "steps": [
                         {"range": [0, 50], "color": "red"},
@@ -1137,7 +1136,7 @@ class ValidationVisualizer:
                         {"range": [90, 100], "color": "green"}
                     ],
                     "threshold": {
-                        "line": {"color": "black", "width": 4},
+                        "line": "color": "black", "width": 4},
                         "thickness": 0.75,
                         "value": track_stats["turn_rate"]["consistency"]
             ))
@@ -1599,7 +1598,7 @@ class ValidationVisualizer:
         
         # 各問題タイプの時間帯分布を追加
         for problem_type, distribution in problem_type_temporal.items():
-            tod_distribution = distribution.get("time_of_day_distribution", {})
+            tod_distribution = distribution.get("time_of_day_distribution", })
             
             if not tod_distribution.get("periods", []) or not tod_distribution.get("counts", {}):
                 continue
@@ -1842,7 +1841,7 @@ class ValidationVisualizer:
             marker=dict(
                 colors=colors
             ),
-            hovertemplate='<b>%{label}</b><br>スコア: %{value:.1f}<br><extra></extra>',
+            hovertemplate='<b>%label}</b><br>スコア: %{value:.1f}<br><extra></extra>',
             maxdepth=2  # 最大2階層まで表示
         ))
         
@@ -2001,8 +2000,7 @@ class ValidationVisualizer:
             "total_records": len(self.data),
             "problematic_records": len(self.quality_metrics.problematic_indices["all"]),
             "problem_percentage": round(len(self.quality_metrics.problematic_indices["all"]) / len(self.data) * 100, 1) if len(self.data) > 0 else 0,
-            "problem_counts": {
-                "missing_data": len(self.quality_metrics.problematic_indices["missing_data"]),
+            "problem_counts": "missing_data": len(self.quality_metrics.problematic_indices["missing_data"]),
                 "out_of_range": len(self.quality_metrics.problematic_indices["out_of_range"]),
                 "duplicates": len(self.quality_metrics.problematic_indices["duplicates"]),
                 "spatial_anomalies": len(self.quality_metrics.problematic_indices["spatial_anomalies"]),
@@ -2050,7 +2048,7 @@ class ValidationVisualizer:
             問題タイプ詳細のチャート
         """
         # 問題タイプの詳細情報を取得
-        problem_type_distribution = self.metrics_calculator.problem_distribution.get("problem_type", {})
+        problem_type_distribution = self.metrics_calculator.problem_distribution.get("problem_type", })
         
         if not problem_type_distribution.get("has_data", False):
             # データがない場合は空のグラフを返す
@@ -2085,8 +2083,7 @@ class ValidationVisualizer:
         data = []
         for problem_type, count in problem_counts.items():
             if count > 0:
-                data.append({
-                    "problem_type": type_names.get(problem_type, problem_type),
+                data.append("problem_type": type_names.get(problem_type, problem_type),
                     "count": count,
                     "color": colors.get(problem_type, "gray")
                 })
@@ -2243,8 +2240,7 @@ class ValidationDashboard:
         problem_records_df = pd.DataFrame(detailed_report["problem_records"])
         
         return {
-            "charts": {
-                "problem_distribution": problem_distribution_chart,
+            "charts": "problem_distribution": problem_distribution_chart,
                 "problem_heatmap": problem_heatmap,
                 "timeline": timeline_chart
             },
@@ -2269,7 +2265,7 @@ class ValidationDashboard:
                 "name": "欠損値の処理",
                 "description": "欠損値を線形補間、前後の値、または定数で埋めることができます",
                 "methods": [
-                    {"id": "interpolate", "name": "線形補間", "description": "前後の値から補間"},
+                    "id": "interpolate", "name": "線形補間", "description": "前後の値から補間"},
                     {"id": "ffill", "name": "前の値で埋める", "description": "直前の有効な値で欠損値を埋める"},
                     {"id": "bfill", "name": "後の値で埋める", "description": "直後の有効な値で欠損値を埋める"},
                     {"id": "value", "name": "定数で埋める", "description": "指定した値で欠損値を埋める"},
@@ -2282,7 +2278,7 @@ class ValidationDashboard:
                 "name": "範囲外の値の処理",
                 "description": "範囲外の値をクリップ、削除、または補間することができます",
                 "methods": [
-                    {"id": "clip", "name": "値をクリップ", "description": "範囲内に収まるよう値を切り詰める"},
+                    "id": "clip", "name": "値をクリップ", "description": "範囲内に収まるよう値を切り詰める"},
                     {"id": "remove", "name": "値をNULLにする", "description": "範囲外の値をNULLに置き換え"},
                     {"id": "drop", "name": "行を削除", "description": "範囲外の値を含む行を削除"}
                 ]
@@ -2293,7 +2289,7 @@ class ValidationDashboard:
                 "name": "重複の処理",
                 "description": "重複するタイムスタンプをずらすか、重複行を削除することができます",
                 "methods": [
-                    {"id": "offset", "name": "時間をずらす", "description": "重複するタイムスタンプを少しずつずらす"},
+                    "id": "offset", "name": "時間をずらす", "description": "重複するタイムスタンプを少しずつずらす"},
                     {"id": "drop", "name": "重複を削除", "description": "重複する2番目以降の行を削除"}
                 ]
         
@@ -2303,7 +2299,7 @@ class ValidationDashboard:
                 "name": "空間的異常の処理",
                 "description": "異常な位置や速度を示すポイントを処理できます",
                 "methods": [
-                    {"id": "remove", "name": "異常を削除", "description": "異常なポイントを削除"},
+                    "id": "remove", "name": "異常を削除", "description": "異常なポイントを削除"},
                     {"id": "interpolate", "name": "位置を補間", "description": "前後のポイントから位置を補間"}
                 ]
         
@@ -2313,7 +2309,7 @@ class ValidationDashboard:
                 "name": "時間的異常の処理",
                 "description": "時間ギャップや逆行を処理できます",
                 "methods": [
-                    {"id": "remove_reverse", "name": "逆行を削除", "description": "時間が逆行している行を削除"},
+                    "id": "remove_reverse", "name": "逆行を削除", "description": "時間が逆行している行を削除"},
                     {"id": "split", "name": "セッション分割", "description": "大きなギャップで別セッションに分割"}
                 ]
         
@@ -2539,7 +2535,7 @@ class ValidationVisualization:
         Dict[int, Dict[str, Any]]
             インデックスごとの問題詳細
         """
-        record_issues = {}
+        record_issues = }
         
         # 問題カテゴリとその説明
         issue_categories = {
@@ -2607,7 +2603,7 @@ class ValidationVisualization:
                 issue_data["longitude"] = row.get("longitude", None)
                 
                 # 問題の詳細説明を生成
-                issue_data["description"] = f"{issue_data['issue_count']}個の問題: " + ", ".join(issue_data["issues"])
+                issue_data["description"] = f"issue_data['issue_count']}個の問題: " + ", ".join(issue_data["issues"])
         
         return record_issues
     
@@ -2659,7 +2655,7 @@ class ValidationVisualization:
             "値": [
                 len(self.data),
                 len(self.problematic_indices["all"]),
-                f"{(len(self.problematic_indices['all']) / len(self.data) * 100):.2f}%" if len(self.data) > 0 else "0.00%",
+                f"(len(self.problematic_indices['all']) / len(self.data) * 100):.2f}%" if len(self.data) > 0 else "0.00%",
                 severity_counts["error"],
                 severity_counts["warning"],
                 severity_counts["info"]
@@ -2847,7 +2843,7 @@ class ValidationVisualization:
         df = pd.DataFrame(problem_records)
         
         # 重要度でソート
-        severity_order = {"error": 0, "warning": 1, "info": 2}
+        severity_order = "error": 0, "warning": 1, "info": 2}
         if not df.empty and "重要度" in df.columns:
             df["severity_order"] = df["重要度"].map(severity_order)
             df = df.sort_values(["severity_order", "問題数"], ascending=[True, False])
@@ -2883,7 +2879,7 @@ class ValidationVisualization:
                         recommendations.append({
                             "rule": rule_name,
                             "severity": severity,
-                            "issue": f"必須カラム '{col}' が欠落しています",
+                            "issue": f"必須カラム 'col}' が欠落しています",
                             "recommendation": "データインポート時にこのカラムをマッピングしてください",
                             "automatic_fix": False,  # 自動修正不可
                             "action_type": "import_mapping",
@@ -2900,7 +2896,7 @@ class ValidationVisualization:
                             recommendations.append({
                                 "rule": rule_name,
                                 "severity": severity,
-                                "issue": f"カラム '{col}' に {count}個の欠損値があります",
+                                "issue": f"カラム 'col}' に {count}個の欠損値があります",
                                 "recommendation": "線形補間で欠損値を埋めるか、欠損値を持つ行を削除してください",
                                 "automatic_fix": True,  # 自動修正可能
                                 "action_type": "fill_nulls",
@@ -2928,7 +2924,7 @@ class ValidationVisualization:
                     recommendations.append({
                         "rule": rule_name,
                         "severity": severity,
-                        "issue": f"カラム '{col}' に {details['out_of_range_count']}個の範囲外の値があります",
+                        "issue": f"カラム 'col}' に {details['out_of_range_count']}個の範囲外の値があります",
                         "recommendation": f"値を{range_str}にクリップするか、異常値を持つ行を削除してください",
                         "automatic_fix": True,  # 自動修正可能
                         "action_type": "clip_values",

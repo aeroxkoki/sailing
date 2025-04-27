@@ -25,10 +25,10 @@ class BaseExporter:
     
     def __init__(self, **options):
         """初期化"""
-        self.options = {
+        self.options = {}
             # デフォルトオプション
             "output_path": "",
-            "filename": f"report_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            "filename": f"report_datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}",
             "include_metadata": True,
             "include_timestamp": True,
             # 子クラスで上書き/追加されるオプション

@@ -138,7 +138,7 @@ class BaseChartElement(BaseElement):
         
         # データがない場合は空のデータを返す
         if not data:
-            return {"type": self.chart_type, "data": {}}
+            return {"type": self.chart_type, "data": }}
         
         # 基本的なチャートデータ
         return {
@@ -152,8 +152,7 @@ class BaseChartElement(BaseElement):
             "type": self.chart_type,
             "data": data,
             "options": {
-                "title": {
-                    "display": bool(self.title),
+                "title": "display": bool(self.title),
                     "text": self.title}
                 },
                 "responsive": True,
@@ -172,13 +171,12 @@ class BaseChartElement(BaseElement):
             チャートオプション
         """
         # 基本的なチャートオプション
-        options = {
+        options = {}
             "title": {
                 "display": bool(self.title),
                 "text": self.title
  {
-            "title": {
-                "display": bool(self.title),
+            "title": "display": bool(self.title),
                 "text": self.title}
             },
             "responsive": True,
@@ -186,8 +184,7 @@ class BaseChartElement(BaseElement):
             "animation": {
                 "duration": 1000,
                 "easing": "easeOutQuart"
- {
-                "duration": 1000,
+ "duration": 1000,
                 "easing": "easeOutQuart"}
             },
             "plugins": {
@@ -195,16 +192,14 @@ class BaseChartElement(BaseElement):
                     "display": True,
                     "position": "top"
  {
-                "legend": {
-                    "display": True,
+                "legend": "display": True,
                     "position": "top"}
                 },
                 "tooltip": {
                     "enabled": True,
                     "mode": "index",
                     "intersect": False
- {
-                    "enabled": True,
+ "enabled": True,
                     "mode": "index",
                     "intersect": False}
         
@@ -325,11 +320,11 @@ class BaseChartElement(BaseElement):
             <script>
                 (function() {{
                     // チャート設定
-                    var config = {chart_config_json};
+                    var config = chart_config_json};
                     
                     // チャート初期化
                     window.addEventListener('load', function() {{
-                        {init_code}
+                        init_code}
                     }});
                 }})();
             </script>

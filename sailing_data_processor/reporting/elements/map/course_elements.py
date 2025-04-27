@@ -48,8 +48,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "color": "rgba(255, 0, 0, 0.6)",
             "weight": 2,
             "dashArray": "5,5"
- {
-            "color": "rgba(255, 0, 0, 0.6)",
+ "color": "rgba(255, 0, 0, 0.6)",
             "weight": 2,
             "dashArray": "5,5"}
         }))
@@ -105,11 +104,10 @@ class CourseElementsLayer(StrategyPointLayerElement):
         if options is None:
             options = {}
         
-        start_line = {
+        start_line = {}
             "pin": pin,
             "boat": boat,
- {
-            "pin": pin,
+ "pin": pin,
             "boat": boat,}
             **options
         }
@@ -188,8 +186,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
         
         route = {
             "points": points,
- {
-            "points": points,}
+ "points": points,}
             **options
         }
         
@@ -263,8 +260,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "color": "rgba(255, 0, 0, 0.6)",
             "weight": 2,
             "dashArray": "5,5"
- {
-            "color": "rgba(255, 0, 0, 0.6)",
+ "color": "rgba(255, 0, 0, 0.6)",
             "weight": 2,
             "dashArray": "5,5"}
         })
@@ -282,7 +278,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
         
         # ポイントアイコン設定
         point_icons = self.get_property("point_icons", {
-            "mark": {"color": "red", "icon": "map-marker-alt"},
+            "mark": "color": "red", "icon": "map-marker-alt"},
             "start": {"color": "green", "icon": "flag"},
             "finish": {"color": "blue", "icon": "flag-checkered"},
             "advantage": {"color": "green", "icon": "thumbs-up"},
@@ -290,7 +286,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "information": {"color": "blue", "icon": "info-circle"},
             "default": {"color": "gray", "icon": "map-marker-alt"}
  {
-            "mark": {"color": "red", "icon": "map-marker-alt"},
+            "mark": "color": "red", "icon": "map-marker-alt"},
             "start": {"color": "green", "icon": "flag"},
             "finish": {"color": "blue", "icon": "flag-checkered"},
             "advantage": {"color": "green", "icon": "thumbs-up"},
@@ -314,8 +310,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "strategy_points": strategy_points,
             "optimal_route": optimal_route,
             "risk_areas": risk_areas
- {
-            "marks": marks,
+ "marks": marks,
             "course_shape": course_shape,
             "start_line": start_line,
             "finish_line": finish_line,
@@ -339,8 +334,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
- {
-            "map_type": map_type,
+ "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
             "zoom_level": zoom_level,
@@ -415,7 +409,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
         
         # 完全なHTMLコンテンツ
         html_content = f'''
-        <div id="{self.element_id}" class="report-map-container" style="{css_style}">
+        <div id="self.element_id}" class="report-map-container" style="{css_style}">
             <!-- Leaflet CSS -->
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
@@ -426,31 +420,28 @@ class CourseElementsLayer(StrategyPointLayerElement):
             <script>
                 (function() {{
                     // 基本データ
-                    var courseData = {data_json};
+                    var courseData = data_json};
                     var courseConfig = {course_config_json};
                     var mapConfig = {map_config_json};
                     
                     // 初期化関数
                     window.addEventListener('load', function() {{
                         // マップの作成
-                        var map = L.map('{self.map_id}');
+                        var map = L.map('self.map_id}');
                         
                         // ベースマップの選択
                         var tileLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
-                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
-                                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}}/{y}}/{x}}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                                 }});
                                 break;
                             case 'nautical':
-                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
+                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}}/{x}}/{y}}.png', {attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
                                 }});
                                 break;
                             default:  // 'osm'
-                                tileLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                tileLayer = L.tileLayer('https://{s}}.tile.openstreetmap.org/{z}}/{x}}/{y}}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 }});
                         }}
                         
@@ -467,18 +458,15 @@ class CourseElementsLayer(StrategyPointLayerElement):
                             // 配列形式の場合、座標データの取得
                             if (courseData.length > 0 && typeof courseData[0] === 'object') {{
                                 // キー名の確認
-                                if ('latitude' in courseData[0] && 'longitude' in courseData[0]) {{
-                                    latKey = 'latitude';
+                                if ('latitude' in courseData[0] && 'longitude' in courseData[0]) {latKey = 'latitude';
                                     lngKey = 'longitude';
-                                }} else if ('lat' in courseData[0] && 'lon' in courseData[0]) {{
-                                    lngKey = 'lon';
+                                }} else if ('lat' in courseData[0] && 'lon' in courseData[0]) {lngKey = 'lon';
                                 }}
                                 
                                 // 座標ポイントを追加
                                 for (var i = 0; i < courseData.length; i++) {{
                                     var point = courseData[i];
-                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
-                                        trackPoints.push([point[latKey], point[lngKey]]);
+                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {trackPoints.push([point[latKey], point[lngKey]]);
                                     }}
                                 }}
                             }}
@@ -487,15 +475,13 @@ class CourseElementsLayer(StrategyPointLayerElement):
                             if ('track' in courseData && Array.isArray(courseData.track)) {{
                                 for (var i = 0; i < courseData.track.length; i++) {{
                                     var point = courseData.track[i];
-                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
-                                        trackPoints.push([point[latKey], point[lngKey]]);
+                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {trackPoints.push([point[latKey], point[lngKey]]);
                                     }}
                                 }}
                             }} else if ('points' in courseData && Array.isArray(courseData.points)) {{
                                 for (var i = 0; i < courseData.points.length; i++) {{
                                     var point = courseData.points[i];
-                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
-                                        trackPoints.push([point[latKey], point[lngKey]]);
+                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {trackPoints.push([point[latKey], point[lngKey]]);
                                     }}
                                 }}
                             }}
@@ -511,12 +497,11 @@ class CourseElementsLayer(StrategyPointLayerElement):
                         var riskLayer = L.layerGroup();
                         
                         // オーバーレイのリスト作成
-                        var overlays = {{}};
+                        var overlays = {}};
                         
                         // トラック表示（GPS航跡の場合）
                         if (mapConfig.show_track && trackPoints.length > 0) {{
-                            var trackLine = L.polyline(trackPoints, {{
-                                color: mapConfig.track_color,
+                            var trackLine = L.polyline(trackPoints, {color: mapConfig.track_color,
                                 weight: mapConfig.track_width,
                                 opacity: 0.8,
                                 lineJoin: 'round'
@@ -535,16 +520,14 @@ class CourseElementsLayer(StrategyPointLayerElement):
                                 var iconName = mark.icon || iconConfig.icon || 'map-marker-alt';
                                 
                                 // アイコンを作成
-                                var markIcon = L.divIcon({{
-                                    html: '<div class="course-mark-icon" style="background-color: ' + iconColor + ';"><i class="fas fa-' + iconName + '"></i></div>',
+                                var markIcon = L.divIcon({html: '<div class="course-mark-icon" style="background-color: ' + iconColor + ';"><i class="fas fa-' + iconName + '"></i></div>',
                                     className: 'course-mark-icon-wrapper',
                                     iconSize: [32, 32],
                                     iconAnchor: [16, 16]
                                 }});
                                 
                                 // マーカーの作成
-                                var marker = L.marker([mark.lat, mark.lng], {{
-                                    icon: markIcon,
+                                var marker = L.marker([mark.lat, mark.lng], {icon: markIcon,
                                     title: mark.name || 'Mark'
                                 }}).addTo(markLayer);
                                 
@@ -569,36 +552,31 @@ class CourseElementsLayer(StrategyPointLayerElement):
                             var boatPos = [courseConfig.start_line.boat.lat, courseConfig.start_line.boat.lng];
                             
                             // ラインを作成
-                            var startLine = L.polyline([pinPos, boatPos], {{
-                                color: 'green',
+                            var startLine = L.polyline([pinPos, boatPos], {color: 'green',
                                 weight: 3,
                                 opacity: 0.8,
                                 className: 'start-line'
                             }}).addTo(lineLayer);
                             
                             // ピン側のマーカー
-                            var pinIcon = L.divIcon({{
-                                html: '<div class="course-mark-icon" style="background-color: green;"><i class="fas fa-flag"></i></div>',
+                            var pinIcon = L.divIcon({html: '<div class="course-mark-icon" style="background-color: green;"><i class="fas fa-flag"></i></div>',
                                 className: 'course-mark-icon-wrapper',
                                 iconSize: [24, 24],
                                 iconAnchor: [12, 12]
                             }});
                             
-                            var pinMarker = L.marker(pinPos, {{
-                                icon: pinIcon,
+                            var pinMarker = L.marker(pinPos, {icon: pinIcon,
                                 title: 'Start Line (Pin End)'
                             }}).addTo(lineLayer);
                             
                             // コミッティボート側のマーカー
-                            var boatIcon = L.divIcon({{
-                                html: '<div class="course-mark-icon" style="background-color: green;"><i class="fas fa-ship"></i></div>',
+                            var boatIcon = L.divIcon({html: '<div class="course-mark-icon" style="background-color: green;"><i class="fas fa-ship"></i></div>',
                                 className: 'course-mark-icon-wrapper',
                                 iconSize: [24, 24],
                                 iconAnchor: [12, 12]
                             }});
                             
-                            var boatMarker = L.marker(boatPos, {{
-                                icon: boatIcon,
+                            var boatMarker = L.marker(boatPos, {icon: boatIcon,
                                 title: 'Start Line (Boat End)'
                             }}).addTo(lineLayer);
                             
@@ -616,36 +594,31 @@ class CourseElementsLayer(StrategyPointLayerElement):
                             var boatPos = [courseConfig.finish_line.boat.lat, courseConfig.finish_line.boat.lng];
                             
                             // フィニッシュライン
-                            var finishLine = L.polyline([pinPos, boatPos], {{
-                                color: 'blue',
+                            var finishLine = L.polyline([pinPos, boatPos], {color: 'blue',
                                 weight: 3,
                                 opacity: 0.8,
                                 className: 'finish-line'
                             }}).addTo(lineLayer);
                             
                             // ピン側のマーカー
-                            var pinIcon = L.divIcon({{
-                                html: '<div class="course-mark-icon" style="background-color: blue;"><i class="fas fa-flag"></i></div>',
+                            var pinIcon = L.divIcon({html: '<div class="course-mark-icon" style="background-color: blue;"><i class="fas fa-flag"></i></div>',
                                 className: 'course-mark-icon-wrapper',
                                 iconSize: [24, 24],
                                 iconAnchor: [12, 12]
                             }});
                             
-                            var pinMarker = L.marker(pinPos, {{
-                                icon: pinIcon,
+                            var pinMarker = L.marker(pinPos, {icon: pinIcon,
                                 title: 'Finish Line (Pin End)'
                             }}).addTo(lineLayer);
                             
                             // コミッティボート側のマーカー
-                            var boatIcon = L.divIcon({{
-                                html: '<div class="course-mark-icon" style="background-color: blue;"><i class="fas fa-ship"></i></div>',
+                            var boatIcon = L.divIcon({html: '<div class="course-mark-icon" style="background-color: blue;"><i class="fas fa-ship"></i></div>',
                                 className: 'course-mark-icon-wrapper',
                                 iconSize: [24, 24],
                                 iconAnchor: [12, 12]
                             }});
                             
-                            var boatMarker = L.marker(boatPos, {{
-                                icon: boatIcon,
+                            var boatMarker = L.marker(boatPos, {icon: boatIcon,
                                 title: 'Finish Line (Boat End)'
                             }}).addTo(lineLayer);
                             
@@ -670,18 +643,15 @@ class CourseElementsLayer(StrategyPointLayerElement):
                             // コース形状からマークを特定
                             if (courseConfig.course_shape === 'windward_leeward') {{
                                 // 風上風下コースの場合、順番で判定
-                                if (courseConfig.marks.length >= 2) {{
-                                    windwardMark = courseConfig.marks[0];
+                                if (courseConfig.marks.length >= 2) {windwardMark = courseConfig.marks[0];
                                     leewardMark = courseConfig.marks[1];
                                 }}
                             }} else {{
                                 // それ以外の場合、タイプで特定
                                 for (var i = 0; i < courseConfig.marks.length; i++) {{
                                     var mark = courseConfig.marks[i];
-                                    if (mark.type === 'windward' || mark.role === 'windward') {{
-                                        windwardMark = mark;
-                                    }} else if (mark.type === 'leeward' || mark.role === 'leeward') {{
-                                        leewardMark = mark;
+                                    if (mark.type === 'windward' || mark.role === 'windward') {windwardMark = mark;
+                                    }} else if (mark.type === 'leeward' || mark.role === 'leeward') {leewardMark = mark;
                                     }}
                                 }}
                             }}
@@ -691,8 +661,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
                             var halfAngle = tackingAngle / 2;
                             
                             // レイラインのスタイル
-                            var laylineStyle = {{
-                                color: 'rgba(255, 0, 0, 0.6)',
+                            var laylineStyle = {color: 'rgba(255, 0, 0, 0.6)',
                                 weight: 2,
                                 dashArray: '5,5',
                                 className: 'layline'
@@ -700,12 +669,11 @@ class CourseElementsLayer(StrategyPointLayerElement):
                             
                             // スタイルのカスタマイズ
                             if (courseConfig.layline_style) {{
-                                laylineStyle = Object.assign({{}}, laylineStyle, courseConfig.layline_style);
+                                laylineStyle = Object.assign({}}, laylineStyle, courseConfig.layline_style);
                             }}
                             
                             // 風上マークのレイライン
-                            if (windwardMark) {{
-                                var windwardPos = [windwardMark.lat, windwardMark.lng];
+                            if (windwardMark) {var windwardPos = [windwardMark.lat, windwardMark.lng];
                                 
                                 // ラインの長さ（約1km）
                                 var laylineLength = 0.01;  // 約1kmの経度差
@@ -733,8 +701,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
                             }}
                             
                             // 風下マークのレイライン
-                            if (leewardMark) {{
-                                var leewardPos = [leewardMark.lat, leewardMark.lng];
+                            if (leewardMark) {var leewardPos = [leewardMark.lat, leewardMark.lng];
                                 
                                 // ラインの長さ（約1km）
                                 var laylineLength = 0.01;  // 約1kmの経度差
@@ -774,16 +741,14 @@ class CourseElementsLayer(StrategyPointLayerElement):
                                 var iconName = point.icon || iconConfig.icon || 'info-circle';
                                 
                                 // ポイントアイコンの作成
-                                var pointIcon = L.divIcon({{
-                                    html: '<div class="course-mark-icon" style="background-color: ' + iconColor + ';"><i class="fas fa-' + iconName + '"></i></div>',
+                                var pointIcon = L.divIcon({html: '<div class="course-mark-icon" style="background-color: ' + iconColor + ';"><i class="fas fa-' + iconName + '"></i></div>',
                                     className: 'course-mark-icon-wrapper',
                                     iconSize: [32, 32],
                                     iconAnchor: [16, 16]
                                 }});
                                 
                                 // マーカーの作成
-                                var marker = L.marker([point.lat, point.lng], {{
-                                    icon: pointIcon,
+                                var marker = L.marker([point.lat, point.lng], {icon: pointIcon,
                                     title: point.name || point.description || 'Strategy Point'
                                 }}).addTo(strategyLayer);
                                 
@@ -810,13 +775,11 @@ class CourseElementsLayer(StrategyPointLayerElement):
                         if (courseConfig.optimal_route && courseConfig.optimal_route.points && courseConfig.optimal_route.points.length > 0) {{
                             var routePoints = [];
                             
-                            courseConfig.optimal_route.points.forEach(function(point) {{
-                                routePoints.push([point.lat, point.lng]);
+                            courseConfig.optimal_route.points.forEach(function(point) {routePoints.push([point.lat, point.lng]);
                             }});
                             
                             // ルートライン
-                            var routeLine = L.polyline(routePoints, {{
-                                color: 'rgba(0, 128, 0, 0.8)',
+                            var routeLine = L.polyline(routePoints, {color: 'rgba(0, 128, 0, 0.8)',
                                 weight: 3,
                                 opacity: 0.8,
                                 lineJoin: 'round',
@@ -845,25 +808,21 @@ class CourseElementsLayer(StrategyPointLayerElement):
                                 // ポリゴンの座標点
                                 var polygonPoints = [];
                                 
-                                area.polygon.forEach(function(point) {{
-                                    polygonPoints.push([point.lat, point.lng]);
+                                area.polygon.forEach(function(point) {polygonPoints.push([point.lat, point.lng]);
                                 }});
                                 
                                 // リスクタイプに応じたスタイル
-                                var areaStyle = {{
-                                    color: 'rgba(255, 165, 0, 0.8)',
+                                var areaStyle = {color: 'rgba(255, 165, 0, 0.8)',
                                     weight: 1,
                                     fillColor: 'rgba(255, 165, 0, 0.3)',
                                     fillOpacity: 0.3,
                                     className: 'risk-area risk-area-caution'
                                 }};
                                 
-                                if (area.type === 'danger') {{
-                                    areaStyle.color = 'rgba(255, 0, 0, 0.8)';
+                                if (area.type === 'danger') {areaStyle.color = 'rgba(255, 0, 0, 0.8)';
                                     areaStyle.fillColor = 'rgba(255, 0, 0, 0.3)';
                                     areaStyle.className = 'risk-area risk-area-danger';
-                                }} else if (area.type === 'information') {{
-                                    areaStyle.color = 'rgba(0, 0, 255, 0.6)';
+                                }} else if (area.type === 'information') {areaStyle.color = 'rgba(0, 0, 255, 0.6)';
                                     areaStyle.fillColor = 'rgba(0, 0, 255, 0.2)';
                                     areaStyle.className = 'risk-area risk-area-information';
                                 }}
@@ -902,35 +861,29 @@ class CourseElementsLayer(StrategyPointLayerElement):
                         if (courseConfig.marks && courseConfig.marks.length > 0) {{
                             var points = [];
                             
-                            courseConfig.marks.forEach(function(mark) {{
-                                points.push([mark.lat, mark.lng]);
+                            courseConfig.marks.forEach(function(mark) {points.push([mark.lat, mark.lng]);
                             }});
                             
                             // スタート/フィニッシュラインの座標も追加
-                            if (courseConfig.start_line && courseConfig.start_line.pin && courseConfig.start_line.boat) {{
-                                points.push([courseConfig.start_line.pin.lat, courseConfig.start_line.pin.lng]);
+                            if (courseConfig.start_line && courseConfig.start_line.pin && courseConfig.start_line.boat) {points.push([courseConfig.start_line.pin.lat, courseConfig.start_line.pin.lng]);
                                 points.push([courseConfig.start_line.boat.lat, courseConfig.start_line.boat.lng]);
                             }}
                             
-                            if (courseConfig.finish_line && courseConfig.finish_line.pin && courseConfig.finish_line.boat) {{
-                                points.push([courseConfig.finish_line.pin.lat, courseConfig.finish_line.pin.lng]);
+                            if (courseConfig.finish_line && courseConfig.finish_line.pin && courseConfig.finish_line.boat) {points.push([courseConfig.finish_line.pin.lat, courseConfig.finish_line.pin.lng]);
                                 points.push([courseConfig.finish_line.boat.lat, courseConfig.finish_line.boat.lng]);
                             }}
                             
                             bounds = L.latLngBounds(points);
                         }}
                         // マークがなく、トラックデータがある場合はトラックから範囲を決定
-                        else if (trackPoints.length > 0) {{
-                            bounds = L.latLngBounds(trackPoints);
+                        else if (trackPoints.length > 0) {bounds = L.latLngBounds(trackPoints);
                         }}
                         
                         // 自動的に表示範囲を調整
                         if (mapConfig.center_auto && bounds) {{
-                            map.fitBounds(bounds, {{
-                                padding: [50, 50]  // 余白
+                            map.fitBounds(bounds, {padding: [50, 50]  // 余白
                             }});
-                        }} else {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        }} else {map.setView(mapConfig.center, mapConfig.zoom_level);
                         }}
                         
                         // グローバル変数にマップを保存

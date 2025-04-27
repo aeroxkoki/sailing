@@ -322,7 +322,7 @@ class Section:
         self.title = title
         self.description = description
         self.order = order
-        self.layout = layout or {"columns": 1, "margin": {"top": 20, "right": 20, "bottom": 20, "left": 20}}
+        self.layout = layout or {"columns": 1, "margin": "top": 20, "right": 20, "bottom": 20, "left": 20}}
         self.styles = styles or {}
         self.conditions = [Condition.from_dict(c) for c in (conditions or [])]
         self.elements = [Element.from_dict(e) for e in (elements or [])]

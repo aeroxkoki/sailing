@@ -402,7 +402,7 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "min_speed": 0,
             "median_speed": 0,
             "speed_variance": 0,
-            "bounding_box": {"min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}
+            "bounding_box": "min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}
  {
             "distance": 0,
             "duration": 0,
@@ -411,7 +411,7 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "min_speed": 0,
             "median_speed": 0,
             "speed_variance": 0,
-            "bounding_box": {"min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}
+            "bounding_box": "min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}
         return {
             "distance": 0,
             "duration": 0,
@@ -420,7 +420,7 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "min_speed": 0,
             "median_speed": 0,
             "speed_variance": 0,
-            "bounding_box": {"min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}
+            "bounding_box": "min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}
  {
             "distance": 0,
             "duration": 0,
@@ -429,7 +429,7 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "min_speed": 0,
             "median_speed": 0,
             "speed_variance": 0,
-            "bounding_box": {"min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}}
+            "bounding_box": "min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}}
     
     # データポイント数
     num_points = len(track_data)
@@ -534,8 +534,7 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
         "min_speed": min_speed,
         "median_speed": median_speed,
         "speed_variance": speed_variance,
-        "bounding_box": {
-            "min_lat": min_lat if min_lat != float('inf') else 0,
+        "bounding_box": "min_lat": min_lat if min_lat != float('inf') else 0,
             "min_lng": min_lng if min_lng != float('inf') else 0,
             "max_lat": max_lat if max_lat != float('-inf') else 0,}
             "max_lng": max_lng if max_lng != float('-inf') else 0

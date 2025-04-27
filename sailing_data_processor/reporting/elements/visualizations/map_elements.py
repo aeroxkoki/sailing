@@ -110,7 +110,7 @@ class TrackMapElement(BaseChartElement):
         data_json = json.dumps(data)
         
         # マップ設定をJSON文字列に変換
-        map_config = {
+        map_config = {}
             "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
@@ -119,8 +119,7 @@ class TrackMapElement(BaseChartElement):
             "track_width": track_width,
             "show_time_slider": show_time_slider,
             "time_key": time_key
- {
-            "map_type": map_type,
+ "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
             "zoom_level": zoom_level,
@@ -143,30 +142,27 @@ class TrackMapElement(BaseChartElement):
             <script>
                 (function() {{
                     // マップデータ
-                    var mapData = {data_json};
+                    var mapData = data_json};
                     var mapConfig = {map_config_json};
                     
                     // マップ初期化
                     window.addEventListener('load', function() {{
                         // マップの作成
-                        var map = L.map('{self.map_id}');
+                        var map = L.map('self.map_id}');
                         
                         // タイルレイヤーの選択
                         var tileLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
-                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
-                                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}}/{y}}/{x}}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                                 }});
                                 break;
                             case 'nautical':
-                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
+                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}}/{x}}/{y}}.png', {attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
                                 }});
                                 break;
                             default:  // 'osm'
-                                tileLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                tileLayer = L.tileLayer('https://{s}}.tile.openstreetmap.org/{z}}/{x}}/{y}}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 }});
                         }}
                         
@@ -186,11 +182,9 @@ class TrackMapElement(BaseChartElement):
                             if (mapData.length > 0) {{
                                 // 座標キーを特定
                                 if (typeof mapData[0] === 'object') {{
-                                    if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {{
-                                        latKey = 'latitude';
+                                    if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {latKey = 'latitude';
                                         lngKey = 'longitude';
-                                    }} else if ('lat' in mapData[0] && 'lon' in mapData[0]) {{
-                                        lngKey = 'lon';
+                                    }} else if ('lat' in mapData[0] && 'lon' in mapData[0]) {lngKey = 'lon';
                                     }}
                                 }}
                                 
@@ -203,10 +197,8 @@ class TrackMapElement(BaseChartElement):
                                         // タイムスライダー用の時間値を抽出
                                         if (mapConfig.show_time_slider && timeKey in point) {{
                                             var time = point[timeKey];
-                                            if (typeof time === 'string') {{
-                                                timeValues.push(new Date(time));
-                                            }} else if (typeof time === 'number') {{
-                                                // Unixタイムスタンプの場合（秒単位）
+                                            if (typeof time === 'string') {timeValues.push(new Date(time));
+                                            }} else if (typeof time === 'number') {// Unixタイムスタンプの場合（秒単位）
                                                 timeValues.push(new Date(time * 1000));
                                             }}
                                         }}
@@ -224,10 +216,8 @@ class TrackMapElement(BaseChartElement):
                                         // タイムスライダー用の時間値を抽出
                                         if (mapConfig.show_time_slider && timeKey in point) {{
                                             var time = point[timeKey];
-                                            if (typeof time === 'string') {{
-                                                timeValues.push(new Date(time));
-                                            }} else if (typeof time === 'number') {{
-                                                // Unixタイムスタンプの場合（秒単位）
+                                            if (typeof time === 'string') {timeValues.push(new Date(time));
+                                            }} else if (typeof time === 'number') {// Unixタイムスタンプの場合（秒単位）
                                                 timeValues.push(new Date(time * 1000));
                                             }}
                                         }}
@@ -237,14 +227,12 @@ class TrackMapElement(BaseChartElement):
                         }}
                         
                         // トラックポイントがない場合は中心座標を設定
-                        if (trackPoints.length === 0) {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        if (trackPoints.length === 0) {map.setView(mapConfig.center, mapConfig.zoom_level);
                             return;
                         }}
                         
                         // トラックラインを作成
-                        var trackLine = L.polyline(trackPoints, {{
-                            color: mapConfig.track_color,
+                        var trackLine = L.polyline(trackPoints, {color: mapConfig.track_color,
                             weight: mapConfig.track_width,
                             opacity: 0.8,
                             lineJoin: 'round'
@@ -254,35 +242,30 @@ class TrackMapElement(BaseChartElement):
                         var startPoint = trackPoints[0];
                         var endPoint = trackPoints[trackPoints.length - 1];
                         
-                        var startIcon = L.divIcon({{
-                            html: '<i class="fas fa-play-circle" style="color: green; font-size: 24px;"></i>',
+                        var startIcon = L.divIcon({html: '<i class="fas fa-play-circle" style="color: green; font-size: 24px;"></i>',
                             className: 'track-start-icon',
                             iconSize: [24, 24],
                             iconAnchor: [12, 12]
                         }});
                         
-                        var endIcon = L.divIcon({{
-                            html: '<i class="fas fa-flag-checkered" style="color: red; font-size: 24px;"></i>',
+                        var endIcon = L.divIcon({html: '<i class="fas fa-flag-checkered" style="color: red; font-size: 24px;"></i>',
                             className: 'track-end-icon',
                             iconSize: [24, 24],
                             iconAnchor: [12, 12]
                         }});
                         
-                        L.marker(startPoint, {{ icon: startIcon }}).addTo(map);
-                        L.marker(endPoint, {{ icon: endIcon }}).addTo(map);
+                        L.marker(startPoint, {icon: startIcon }}).addTo(map);
+                        L.marker(endPoint, {icon: endIcon }}).addTo(map);
                         
                         // 自動的にトラック全体が表示されるようにズーム
-                        if (mapConfig.center_auto) {{
-                            map.fitBounds(trackLine.getBounds());
-                        }} else {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        if (mapConfig.center_auto) {map.fitBounds(trackLine.getBounds());
+                        }} else {map.setView(mapConfig.center, mapConfig.zoom_level);
                         }}
                         
                         // タイムスライダーの追加
                         if (mapConfig.show_time_slider && timeValues.length > 0) {{
                             // タイムディメンションの設定
-                            var timeDimension = new L.TimeDimension({{
-                                times: timeValues,
+                            var timeDimension = new L.TimeDimension({times: timeValues,
                                 currentTime: timeValues[0].getTime()
                             }});
                             
@@ -290,8 +273,7 @@ class TrackMapElement(BaseChartElement):
                             
                             // タイムディメンションコントロールを追加
                             var tdControl = new L.Control.TimeDimension({{
-                                player: {{
-                                    buffer: 1,
+                                player: {buffer: 1,
                                     minBufferReady: 1,
                                     loop: true,
                                     transitionTime: 500
@@ -307,11 +289,11 @@ class TrackMapElement(BaseChartElement):
                                     {{
                                         "type": "Feature",
                                         "properties": {{
-                                            "time": timeValues.map(function(time) {{ return time.toISOString(); }})
+                                            "time": timeValues.map(function(time) {return time.toISOString(); }})
                                         }},
                                         "geometry": {{
                                             "type": "LineString",
-                                            "coordinates": trackPoints.map(function(point) {{ return [point[1], point[0]]; }})
+                                            "coordinates": trackPoints.map(function(point) {return [point[1], point[0]]; }})
                                         }}
                                     }}
                                 ]
@@ -319,14 +301,12 @@ class TrackMapElement(BaseChartElement):
                             
                             var tdGeoJsonLayer = L.timeDimension.layer.geoJson(
                                 L.geoJson(geoJsonData, {{
-                                    style: {{
-                                        color: mapConfig.track_color,
+                                    style: {color: mapConfig.track_color,
                                         weight: mapConfig.track_width,
                                         opacity: 0.8
                                     }}
                                 }}),
-                                {{
-                                    updateTimeDimension: true,
+                                {updateTimeDimension: true,
                                     addlastPoint: true,
                                     waitForReady: true
                                 }}
@@ -435,8 +415,7 @@ class HeatMapLayerElement(BaseChartElement):
             "0.7": "lime",
             "0.8": "yellow",
             "1.0": "red"
- {
-            "0.4": "blue",
+ "0.4": "blue",
             "0.6": "cyan",
             "0.7": "lime",
             "0.8": "yellow",
@@ -466,8 +445,7 @@ class HeatMapLayerElement(BaseChartElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
- {
-            "map_type": map_type,
+ "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
             "zoom_level": zoom_level,
@@ -493,30 +471,27 @@ class HeatMapLayerElement(BaseChartElement):
             <script>
                 (function() {{
                     // マップデータ
-                    var mapData = {data_json};
+                    var mapData = data_json};
                     var mapConfig = {map_config_json};
                     
                     // マップ初期化
                     window.addEventListener('load', function() {{
                         // マップの作成
-                        var map = L.map('{self.map_id}');
+                        var map = L.map('self.map_id}');
                         
                         // タイルレイヤーの選択
                         var tileLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
-                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
-                                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}}/{y}}/{x}}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                                 }});
                                 break;
                             case 'nautical':
-                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
+                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}}/{x}}/{y}}.png', {attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
                                 }});
                                 break;
                             default:  // 'osm'
-                                tileLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                tileLayer = L.tileLayer('https://{s}}.tile.openstreetmap.org/{z}}/{x}}/{y}}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 }});
                         }}
                         
@@ -537,17 +512,14 @@ class HeatMapLayerElement(BaseChartElement):
                             if (mapData.length > 0) {{
                                 // 座標キーを特定
                                 if (typeof mapData[0] === 'object') {{
-                                    if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {{
-                                        latKey = 'latitude';
+                                    if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {latKey = 'latitude';
                                         lngKey = 'longitude';
-                                    }} else if ('lat' in mapData[0] && 'lon' in mapData[0]) {{
-                                        lngKey = 'lon';
+                                    }} else if ('lat' in mapData[0] && 'lon' in mapData[0]) {lngKey = 'lon';
                                     }}
                                 }}
                                 
                                 // 最大値を計算（指定がない場合）
-                                if (!maxValue && valueKey in mapData[0]) {{
-                                    maxValue = Math.max(...mapData.map(p => p[valueKey] || 0));
+                                if (!maxValue && valueKey in mapData[0]) {maxValue = Math.max(...mapData.map(p => p[valueKey] || 0));
                                 }}
                                 
                                 // ポイントを抽出
@@ -559,8 +531,7 @@ class HeatMapLayerElement(BaseChartElement):
                                         
                                         // ヒートマップポイントを追加
                                         var intensity = 0;
-                                        if (valueKey in point) {{
-                                            intensity = maxValue ? point[valueKey] / maxValue : point[valueKey];
+                                        if (valueKey in point) {intensity = maxValue ? point[valueKey] / maxValue : point[valueKey];
                                         }}
                                         
                                         heatPoints.push([point[latKey], point[lngKey], intensity]);
@@ -573,8 +544,7 @@ class HeatMapLayerElement(BaseChartElement):
                             
                             if (Array.isArray(pointsArray) && pointsArray.length > 0) {{
                                 // 最大値を計算（指定がない場合）
-                                if (!maxValue && valueKey in pointsArray[0]) {{
-                                    maxValue = Math.max(...pointsArray.map(p => p[valueKey] || 0));
+                                if (!maxValue && valueKey in pointsArray[0]) {maxValue = Math.max(...pointsArray.map(p => p[valueKey] || 0));
                                 }}
                                 
                                 // ポイントを抽出
@@ -586,8 +556,7 @@ class HeatMapLayerElement(BaseChartElement):
                                         
                                         // ヒートマップポイントを追加
                                         var intensity = 0;
-                                        if (valueKey in point) {{
-                                            intensity = maxValue ? point[valueKey] / maxValue : point[valueKey];
+                                        if (valueKey in point) {intensity = maxValue ? point[valueKey] / maxValue : point[valueKey];
                                         }}
                                         
                                         heatPoints.push([point[latKey], point[lngKey], intensity]);
@@ -597,15 +566,13 @@ class HeatMapLayerElement(BaseChartElement):
                         }}
                         
                         // ポイントがない場合は中心座標を設定
-                        if (trackPoints.length === 0) {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        if (trackPoints.length === 0) {map.setView(mapConfig.center, mapConfig.zoom_level);
                             return;
                         }}
                         
                         // トラックラインを作成（表示設定がオンの場合）
                         if (mapConfig.show_track) {{
-                            var trackLine = L.polyline(trackPoints, {{
-                                color: mapConfig.track_color,
+                            var trackLine = L.polyline(trackPoints, {color: mapConfig.track_color,
                                 weight: mapConfig.track_width,
                                 opacity: 0.8,
                                 lineJoin: 'round'
@@ -613,19 +580,16 @@ class HeatMapLayerElement(BaseChartElement):
                         }}
                         
                         // ヒートマップレイヤーを作成
-                        var heat = L.heatLayer(heatPoints, {{
-                            radius: mapConfig.radius,
+                        var heat = L.heatLayer(heatPoints, {radius: mapConfig.radius,
                             blur: mapConfig.blur,
                             maxZoom: 18,
                             gradient: mapConfig.gradient
                         }}).addTo(map);
                         
                         // 自動的にトラック全体が表示されるようにズーム
-                        if (mapConfig.center_auto && trackPoints.length > 0) {{
-                            var bounds = L.latLngBounds(trackPoints);
+                        if (mapConfig.center_auto && trackPoints.length > 0) {var bounds = L.latLngBounds(trackPoints);
                             map.fitBounds(bounds);
-                        }} else {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        }} else {map.setView(mapConfig.center, mapConfig.zoom_level);
                         }}
                     }});
                 }})();
@@ -725,13 +689,13 @@ class StrategyPointLayerElement(BaseChartElement):
         
         # ポイントタイプ別のアイコン設定
         point_icons = self.get_property("point_icons", {
-            "tack": {"color": "blue", "icon": "exchange-alt"},
+            "tack": "color": "blue", "icon": "exchange-alt"},
             "gybe": {"color": "green", "icon": "random"},
             "mark_rounding": {"color": "red", "icon": "flag-checkered"},
             "wind_shift": {"color": "purple", "icon": "wind"},
             "default": {"color": "gray", "icon": "map-marker-alt"}
  {
-            "tack": {"color": "blue", "icon": "exchange-alt"},
+            "tack": "color": "blue", "icon": "exchange-alt"},
             "gybe": {"color": "green", "icon": "random"},
             "mark_rounding": {"color": "red", "icon": "flag-checkered"},
             "wind_shift": {"color": "purple", "icon": "wind"},
@@ -751,8 +715,7 @@ class StrategyPointLayerElement(BaseChartElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
- {
-            "map_type": map_type,
+ "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
             "zoom_level": zoom_level,
@@ -771,8 +734,7 @@ class StrategyPointLayerElement(BaseChartElement):
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
             
             <style>
-                .strategy-point-icon {{
-                    display: flex;
+                .strategy-point-icon {display: flex;
                     align-items: center;
                     justify-content: center;
                     width: 32px;
@@ -782,18 +744,15 @@ class StrategyPointLayerElement(BaseChartElement):
                     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
                 }}
                 
-                .strategy-point-popup {{
-                    min-width: 200px;
+                .strategy-point-popup {min-width: 200px;
                 }}
                 
-                .strategy-point-popup h4 {{
-                    margin: 0 0 8px 0;
+                .strategy-point-popup h4 {margin: 0 0 8px 0;
                     padding-bottom: 5px;
                     border-bottom: 1px solid #eee;
                 }}
                 
-                .strategy-point-popup p {{
-                    margin: 5px 0;
+                .strategy-point-popup p {margin: 5px 0;
                 }}
             </style>
             
@@ -802,30 +761,27 @@ class StrategyPointLayerElement(BaseChartElement):
             <script>
                 (function() {{
                     // マップデータ
-                    var mapData = {data_json};
+                    var mapData = data_json};
                     var mapConfig = {map_config_json};
                     
                     // マップ初期化
                     window.addEventListener('load', function() {{
                         // マップの作成
-                        var map = L.map('{self.map_id}');
+                        var map = L.map('self.map_id}');
                         
                         // タイルレイヤーの選択
                         var tileLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
-                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
-                                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}}/{y}}/{x}}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                                 }});
                                 break;
                             case 'nautical':
-                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
+                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}}/{x}}/{y}}.png', {attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
                                 }});
                                 break;
                             default:  // 'osm'
-                                tileLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                tileLayer = L.tileLayer('https://{s}}.tile.openstreetmap.org/{z}}/{x}}/{y}}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 }});
                         }}
                         
@@ -845,19 +801,16 @@ class StrategyPointLayerElement(BaseChartElement):
                             
                             // 座標キーを特定
                             if (mapData.length > 0 && typeof mapData[0] === 'object') {{
-                                if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {{
-                                    latKey = 'latitude';
+                                if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {latKey = 'latitude';
                                     lngKey = 'longitude';
-                                }} else if ('lat' in mapData[0] && 'lon' in mapData[0]) {{
-                                    lngKey = 'lon';
+                                }} else if ('lat' in mapData[0] && 'lon' in mapData[0]) {lngKey = 'lon';
                                 }}
                             }}
                             
                             // トラックポイントを生成
                             for (var i = 0; i < mapData.length; i++) {{
                                 var point = mapData[i];
-                                if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
-                                    trackPoints.push([point[latKey], point[lngKey]]);
+                                if (typeof point === 'object' && point[latKey] && point[lngKey]) {trackPoints.push([point[latKey], point[lngKey]]);
                                 }}
                             }}
                         }} else if (typeof mapData === 'object') {{
@@ -865,28 +818,24 @@ class StrategyPointLayerElement(BaseChartElement):
                             if ('track' in mapData && Array.isArray(mapData.track)) {{
                                 for (var i = 0; i < mapData.track.length; i++) {{
                                     var point = mapData.track[i];
-                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
-                                        trackPoints.push([point[latKey], point[lngKey]]);
+                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {trackPoints.push([point[latKey], point[lngKey]]);
                                     }}
                                 }}
                             }}
                             
-                            if ('points' in mapData && Array.isArray(mapData.points)) {{
-                                strategyPoints = mapData.points;
+                            if ('points' in mapData && Array.isArray(mapData.points)) {strategyPoints = mapData.points;
                             }}
                         }}
                         
                         // ポイントがない場合は中心座標を設定
-                        if (trackPoints.length === 0 && strategyPoints.length === 0) {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        if (trackPoints.length === 0 && strategyPoints.length === 0) {map.setView(mapConfig.center, mapConfig.zoom_level);
                             return;
                         }}
                         
                         // トラックラインを作成（表示設定がオンの場合）
                         var bounds;
                         if (mapConfig.show_track && trackPoints.length > 0) {{
-                            var trackLine = L.polyline(trackPoints, {{
-                                color: mapConfig.track_color,
+                            var trackLine = L.polyline(trackPoints, {color: mapConfig.track_color,
                                 weight: mapConfig.track_width,
                                 opacity: 0.8,
                                 lineJoin: 'round'
@@ -906,8 +855,7 @@ class StrategyPointLayerElement(BaseChartElement):
                                 var iconConfig = mapConfig.point_icons[pointType] || mapConfig.point_icons.default;
                                 
                                 // アイコンの作成
-                                var divIcon = L.divIcon({{
-                                    html: '<div class="strategy-point-icon" style="background-color: ' + iconConfig.color + ';">' +
+                                var divIcon = L.divIcon({html: '<div class="strategy-point-icon" style="background-color: ' + iconConfig.color + ';">' +
                                           '<i class="fas fa-' + iconConfig.icon + '"></i></div>',
                                     className: 'strategy-point-div-icon',
                                     iconSize: [32, 32],
@@ -915,8 +863,7 @@ class StrategyPointLayerElement(BaseChartElement):
                                 }});
                                 
                                 // マーカーの作成
-                                var marker = L.marker(latLng, {{
-                                    icon: divIcon,
+                                var marker = L.marker(latLng, {icon: divIcon,
                                     title: point.name || point.description || pointType
                                 }}).addTo(map);
                                 
@@ -932,19 +879,15 @@ class StrategyPointLayerElement(BaseChartElement):
                                 marker.bindPopup(popupContent);
                                 
                                 // 境界を更新
-                                if (!bounds) {{
-                                    bounds = L.latLngBounds([latLng]);
-                                }} else {{
-                                    bounds.extend(latLng);
+                                if (!bounds) {bounds = L.latLngBounds([latLng]);
+                                }} else {bounds.extend(latLng);
                                 }}
                             }}
                         }}
                         
                         // 自動的にポイント全体が表示されるようにズーム
-                        if (mapConfig.center_auto && bounds) {{
-                            map.fitBounds(bounds);
-                        }} else {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        if (mapConfig.center_auto && bounds) {map.fitBounds(bounds);
+                        }} else {map.setView(mapConfig.center, mapConfig.zoom_level);
                         }}
                     }});
                 }})();
@@ -1076,8 +1019,7 @@ class WindFieldElement(BaseChartElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
- {
-            "map_type": map_type,
+ "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
             "zoom_level": zoom_level,
@@ -1108,30 +1050,27 @@ class WindFieldElement(BaseChartElement):
             <script>
                 (function() {{
                     // マップデータ
-                    var mapData = {data_json};
+                    var mapData = data_json};
                     var mapConfig = {map_config_json};
                     
                     // マップ初期化
                     window.addEventListener('load', function() {{
                         // マップの作成
-                        var map = L.map('{self.map_id}');
+                        var map = L.map('self.map_id}');
                         
                         // タイルレイヤーの選択
                         var tileLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
-                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
-                                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}}/{y}}/{x}}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                                 }});
                                 break;
                             case 'nautical':
-                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
+                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}}/{x}}/{y}}.png', {attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
                                 }});
                                 break;
                             default:  // 'osm'
-                                tileLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                tileLayer = L.tileLayer('https://{s}}.tile.openstreetmap.org/{z}}/{x}}/{y}}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 }});
                         }}
                         
@@ -1149,18 +1088,15 @@ class WindFieldElement(BaseChartElement):
                             // 配列形式の場合（トラックポイントの可能性）
                             if (mapData.length > 0 && typeof mapData[0] === 'object') {{
                                 // 座標キーを特定
-                                if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {{
-                                    latKey = 'latitude';
+                                if ('latitude' in mapData[0] && 'longitude' in mapData[0]) {latKey = 'latitude';
                                     lngKey = 'longitude';
-                                }} else if ('lat' in mapData[0] && 'lon' in mapData[0]) {{
-                                    lngKey = 'lon';
+                                }} else if ('lat' in mapData[0] && 'lon' in mapData[0]) {lngKey = 'lon';
                                 }}
                                 
                                 // トラックポイントを抽出
                                 for (var i = 0; i < mapData.length; i++) {{
                                     var point = mapData[i];
-                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
-                                        trackPoints.push([point[latKey], point[lngKey]]);
+                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {trackPoints.push([point[latKey], point[lngKey]]);
                                     }}
                                 }}
                             }}
@@ -1169,37 +1105,30 @@ class WindFieldElement(BaseChartElement):
                             if ('track' in mapData && Array.isArray(mapData.track)) {{
                                 for (var i = 0; i < mapData.track.length; i++) {{
                                     var point = mapData.track[i];
-                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {{
-                                        trackPoints.push([point[latKey], point[lngKey]]);
+                                    if (typeof point === 'object' && point[latKey] && point[lngKey]) {trackPoints.push([point[latKey], point[lngKey]]);
                                     }}
                                 }}
                             }}
                             
                             // 風場データの抽出
-                            if ('wind_field' in mapData) {{
-                                windFieldData = mapData.wind_field;
+                            if ('wind_field' in mapData) {windFieldData = mapData.wind_field;
                             }} else if ('data' in mapData && 
                                       (('u-wind' in mapData.data && 'v-wind' in mapData.data) || 
-                                       ('u_component' in mapData.data && 'v_component' in mapData.data))) {{
-                                windFieldData = mapData.data;
-                            }} else if ('u-wind' in mapData && 'v-wind' in mapData) {{
-                                windFieldData = mapData;
-                            }} else if ('u_component' in mapData && 'v_component' in mapData) {{
-                                windFieldData = mapData;
+                                       ('u_component' in mapData.data && 'v_component' in mapData.data))) {windFieldData = mapData.data;
+                            }} else if ('u-wind' in mapData && 'v-wind' in mapData) {windFieldData = mapData;
+                            }} else if ('u_component' in mapData && 'v_component' in mapData) {windFieldData = mapData;
                             }}
                         }}
                         
                         // ポイントがない場合は中心座標を設定
                         var bounds;
-                        if (trackPoints.length === 0 && !windFieldData) {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        if (trackPoints.length === 0 && !windFieldData) {map.setView(mapConfig.center, mapConfig.zoom_level);
                             return;
                         }}
                         
                         // トラックラインを作成（表示設定がオンの場合）
                         if (mapConfig.show_track && trackPoints.length > 0) {{
-                            var trackLine = L.polyline(trackPoints, {{
-                                color: mapConfig.track_color,
+                            var trackLine = L.polyline(trackPoints, {color: mapConfig.track_color,
                                 weight: mapConfig.track_width,
                                 opacity: 0.8,
                                 lineJoin: 'round'
@@ -1217,8 +1146,7 @@ class WindFieldElement(BaseChartElement):
                             var uComponentKey = 'u-wind';
                             var vComponentKey = 'v-wind';
                             
-                            if ('u_component' in windFieldData) {{
-                                uComponentKey = 'u_component';
+                            if ('u_component' in windFieldData) {uComponentKey = 'u_component';
                                 vComponentKey = 'v_component';
                             }}
                             
@@ -1229,8 +1157,7 @@ class WindFieldElement(BaseChartElement):
                             if (uComponentKey in windFieldData && vComponentKey in windFieldData) {{
                                 // U成分の設定
                                 var uData = {{
-                                    header: {{
-                                        parameterUnit: mapConfig.velocity_units || "kt",
+                                    header: {parameterUnit: mapConfig.velocity_units || "kt",
                                         parameterNumberName: "eastward_wind",
                                         parameterNumber: 2,
                                         parameterCategory: 2,
@@ -1244,13 +1171,12 @@ class WindFieldElement(BaseChartElement):
                                         ny: windFieldData.ny || windFieldData[uComponentKey][0].length,
                                         refTime: new Date().toISOString()
                                     }},
-                                    data: windFieldData[uComponentKey].flat().map(function(val) {{ return val * scale; }})
+                                    data: windFieldData[uComponentKey].flat().map(function(val) {return val * scale; }})
                                 }};
                                 
                                 // V成分の設定
                                 var vData = {{
-                                    header: {{
-                                        parameterUnit: mapConfig.velocity_units || "kt",
+                                    header: {parameterUnit: mapConfig.velocity_units || "kt",
                                         parameterNumberName: "northward_wind",
                                         parameterNumber: 3,
                                         parameterCategory: 2,
@@ -1264,7 +1190,7 @@ class WindFieldElement(BaseChartElement):
                                         ny: windFieldData.ny || windFieldData[uComponentKey][0].length,
                                         refTime: new Date().toISOString()
                                     }},
-                                    data: windFieldData[vComponentKey].flat().map(function(val) {{ return val * scale; }})
+                                    data: windFieldData[vComponentKey].flat().map(function(val) {return val * scale; }})
                                 }};
                                 
                                 velocityData.push(uData);
@@ -1273,8 +1199,7 @@ class WindFieldElement(BaseChartElement):
                                 // 風場レイヤーを作成
                                 var velocityLayer = L.velocityLayer({{
                                     displayValues: true,
-                                    displayOptions: {{
-                                        velocityType: 'Wind',
+                                    displayOptions: {velocityType: 'Wind',
                                         position: 'bottomleft',
                                         emptyString: 'No wind data',
                                         angleConvention: 'bearingCW',
@@ -1288,23 +1213,19 @@ class WindFieldElement(BaseChartElement):
                                 }}).addTo(map);
                                 
                                 // 風場の範囲も考慮して境界を拡張
-                                if (!bounds) {{
-                                    bounds = L.latLngBounds(
+                                if (!bounds) {bounds = L.latLngBounds(
                                         [uData.header.la1, uData.header.lo1],
                                         [uData.header.la2, uData.header.lo2]
                                     );
-                                }} else {{
-                                    bounds.extend([uData.header.la1, uData.header.lo1]);
+                                }} else {bounds.extend([uData.header.la1, uData.header.lo1]);
                                     bounds.extend([uData.header.la2, uData.header.lo2]);
                                 }}
                             }}
                         }}
                         
                         // 自動的に全体が表示されるようにズーム
-                        if (mapConfig.center_auto && bounds) {{
-                            map.fitBounds(bounds);
-                        }} else {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
+                        if (mapConfig.center_auto && bounds) {map.fitBounds(bounds);
+                        }} else {map.setView(mapConfig.center, mapConfig.zoom_level);
                         }}
                     }});
                 }})();

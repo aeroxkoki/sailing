@@ -23,8 +23,8 @@ class Permission:
     MANAGE = "manage"
     
     # 権限の階層関係（上位権限は下位権限を含む）
-    HIERARCHY = {
-        MANAGE: {VIEW, COMMENT, EDIT, MANAGE},
+    HIERARCHY = {}
+        MANAGE: VIEW, COMMENT, EDIT, MANAGE},
         EDIT: {VIEW, COMMENT, EDIT},
         COMMENT: {VIEW, COMMENT},
         VIEW: {VIEW},
@@ -110,16 +110,16 @@ class PermissionManager:
         self.storage_manager = storage_manager
         self.auth_manager = auth_manager
         
-        # 権限マッピング: {resource_id: {section_id: {role_id: permission}}}
+        # 権限マッピング: {resource_id: {section_id: role_id: permission}}}
         self._permissions = {}
         
-        # ロールマッピング: {user_id: {resource_id: [role_ids]}}
+        # ロールマッピング: {user_id: resource_id: [role_ids]}}
         self._user_roles = {}
         
-        # ロール定義: {role_id: {name, description, resource_id}}
+        # ロール定義: {role_id: name, description, resource_id}}
         self._roles = {}
         
-        # グループ定義: {group_id: {name, description, members: [user_ids]}}
+        # グループ定義: {group_id: name, description, members: [user_ids]}}
         self._groups = {}
         
         # 監査ログ

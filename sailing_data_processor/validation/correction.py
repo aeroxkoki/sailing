@@ -72,42 +72,42 @@ class CorrectionProcessor:
             return []
         
         # 問題タイプに対応する修正オプションのマッピング
-        options_mapping = {
+        options_mapping = {}
             "missing_data": [
                 {
                     "id": "interpolate_linear",
                     "name": "線形補間",
                     "description": "前後の値から欠損値を補間します",
                     "fix_type": "interpolate",
-                    "params": {"method": "linear"}
+                    "params": "method": "linear"}
                 },
                 {
                     "id": "interpolate_time",
                     "name": "時間ベース補間",
                     "description": "時間の経過に基づいて補間します",
                     "fix_type": "interpolate",
-                    "params": {"method": "time"}
+                    "params": "method": "time"}
                 },
                 {
                     "id": "fill_forward",
                     "name": "前方向に埋める",
                     "description": "直前の値で欠損値を埋めます",
                     "fix_type": "interpolate",
-                    "params": {"method": "ffill"}
+                    "params": "method": "ffill"}
                 },
                 {
                     "id": "fill_backward",
                     "name": "後方向に埋める",
                     "description": "直後の値で欠損値を埋めます",
                     "fix_type": "interpolate",
-                    "params": {"method": "bfill"}
+                    "params": "method": "bfill"}
                 },
                 {
                     "id": "remove_rows",
                     "name": "行を削除",
                     "description": "欠損値を含む行を削除します",
                     "fix_type": "remove",
-                    "params": {}
+                    "params": }
                 }
             ],
             "out_of_range": [
@@ -116,21 +116,21 @@ class CorrectionProcessor:
                     "name": "値を制限",
                     "description": "範囲外の値を最小値または最大値に制限します",
                     "fix_type": "replace",
-                    "params": {"method": "clip"}
+                    "params": "method": "clip"}
                 },
                 {
                     "id": "replace_with_null",
                     "name": "NULLに置換",
                     "description": "範囲外の値をNULLに置き換えます",
                     "fix_type": "replace",
-                    "params": {"method": "null"}
+                    "params": "method": "null"}
                 },
                 {
                     "id": "remove_rows",
                     "name": "行を削除",
                     "description": "範囲外の値を含む行を削除します",
                     "fix_type": "remove",
-                    "params": {}
+                    "params": }
                 }
             ],
             "duplicates": [
@@ -139,21 +139,21 @@ class CorrectionProcessor:
                     "name": "タイムスタンプをずらす",
                     "description": "重複するタイムスタンプを少しずつずらします",
                     "fix_type": "adjust",
-                    "params": {"method": "offset"}
+                    "params": "method": "offset"}
                 },
                 {
                     "id": "keep_first",
                     "name": "最初の行を保持",
                     "description": "重複するうち最初の行のみを保持します",
                     "fix_type": "remove",
-                    "params": {"method": "keep_first"}
+                    "params": "method": "keep_first"}
                 },
                 {
                     "id": "remove_all",
                     "name": "すべて削除",
                     "description": "重複するタイムスタンプを持つ行をすべて削除します",
                     "fix_type": "remove",
-                    "params": {"method": "remove_all"}
+                    "params": "method": "remove_all"}
                 }
             ],
             "spatial_anomalies": [
@@ -162,14 +162,14 @@ class CorrectionProcessor:
                     "name": "位置を補間",
                     "description": "異常な位置を前後のポイントから補間します",
                     "fix_type": "interpolate",
-                    "params": {"columns": ["latitude", "longitude"]}
+                    "params": "columns": ["latitude", "longitude"]}
                 },
                 {
                     "id": "spatial_remove",
                     "name": "異常ポイントを削除",
                     "description": "空間的に異常なポイントを削除します",
                     "fix_type": "remove",
-                    "params": {}
+                    "params": }
                 }
             ],
             "temporal_anomalies": [
@@ -178,21 +178,21 @@ class CorrectionProcessor:
                     "name": "逆行を削除",
                     "description": "タイムスタンプが逆行しているポイントを削除します",
                     "fix_type": "remove",
-                    "params": {"filter": "reverse"}
+                    "params": "filter": "reverse"}
                 },
                 {
                     "id": "fix_timestamps",
                     "name": "タイムスタンプを修正",
                     "description": "タイムスタンプが逆行している場合に修正します",
                     "fix_type": "adjust",
-                    "params": {"method": "fix_reverse"}
+                    "params": "method": "fix_reverse"}
                 },
                 {
                     "id": "mark_gaps",
                     "name": "ギャップをマーク",
                     "description": "大きな時間ギャップをメタデータにマークします",
                     "fix_type": "metadata",
-                    "params": {"method": "mark_gaps"}
+                    "params": "method": "mark_gaps"}
                 }
             ]
         }
@@ -526,7 +526,7 @@ class CorrectionSuggester:
                     "option_id": option["id"],
                     "target_indices": affected_indices,
                     "method": method_type,
-                    "parameters": method_info.get("parameters", {})
+                    "parameters": method_info.get("parameters", })
                 })
                 
                 quality_after = current_quality
@@ -547,7 +547,7 @@ class CorrectionSuggester:
                     "type": method_type,
                     "description": method_info.get("description", ""),
                     "confidence": method_info.get("confidence", 0.7),
-                    "parameters": method_info.get("parameters", {}),
+                    "parameters": method_info.get("parameters", }),
                     "quality_impact": {
                         "before": current_quality,
                         "after": quality_after,
@@ -570,7 +570,7 @@ class CorrectionSuggester:
                     "affected_column": affected_column,
                     "affected_indices": affected_indices,
                     "severity": issue_data.get("severity", "info"),
-                    "description": f"{option['name']} - {option['description']}",
+                    "description": f"option['name']} - {option['description']}",
                     "methods": methods,
                     "recommended_method": recommended_method
                 })
@@ -632,7 +632,7 @@ class CorrectionSuggester:
                     "option_id": option["id"],
                     "target_indices": indices,
                     "method": method_type,
-                    "parameters": method_info.get("parameters", {})
+                    "parameters": method_info.get("parameters", })
                 })
                 
                 quality_after = current_quality
@@ -651,7 +651,7 @@ class CorrectionSuggester:
                 # 修正方法情報を追加
                 methods.append({
                     "type": method_type,
-                    "description": f"{len(indices)}件のレコードに対して{method_info.get('description', '')}",
+                    "description": f"len(indices)}件のレコードに対して{method_info.get('description', '')}",
                     "confidence": method_info.get("confidence", 0.7),
                     "parameters": method_info.get("parameters", {}),
                     "quality_impact": {
@@ -676,7 +676,7 @@ class CorrectionSuggester:
                     "affected_column": affected_column,
                     "affected_indices": indices,
                     "severity": "batch",
-                    "description": f"【バッチ処理】 {len(indices)}件のレコードに対して {option['name']}",
+                    "description": f"【バッチ処理】 len(indices)}件のレコードに対して {option['name']}",
                     "methods": methods,
                     "recommended_method": recommended_method
                 })
@@ -708,25 +708,25 @@ class CorrectionSuggester:
                 methods["linear"] = {
                     "description": "線形補間で欠損値を埋める",
                     "confidence": 0.9,
-                    "parameters": {"method": "linear", "columns": [affected_column] if affected_column else []}
+                    "parameters": "method": "linear", "columns": [affected_column] if affected_column else []}
                 }
             elif option["id"] == "interpolate_time":
                 methods["time"] = {
                     "description": "時間ベースの補間で欠損値を埋める",
                     "confidence": 0.85,
-                    "parameters": {"method": "time", "columns": [affected_column] if affected_column else []}
+                    "parameters": "method": "time", "columns": [affected_column] if affected_column else []}
                 }
             elif option["id"] == "fill_forward":
                 methods["ffill"] = {
                     "description": "直前の値で欠損値を埋める",
                     "confidence": 0.8,
-                    "parameters": {"method": "ffill", "columns": [affected_column] if affected_column else []}
+                    "parameters": "method": "ffill", "columns": [affected_column] if affected_column else []}
                 }
             elif option["id"] == "fill_backward":
                 methods["bfill"] = {
                     "description": "直後の値で欠損値を埋める",
                     "confidence": 0.8,
-                    "parameters": {"method": "bfill", "columns": [affected_column] if affected_column else []}
+                    "parameters": "method": "bfill", "columns": [affected_column] if affected_column else []}
                 }
         
         elif problem_type == "out_of_range":
@@ -736,8 +736,7 @@ class CorrectionSuggester:
                 methods["clip"] = {
                     "description": "有効範囲内に設定",
                     "confidence": 0.9,
-                    "parameters": {
-                        "method": "clip",
+                    "parameters": "method": "clip",
                         "min_value": min_val,
                         "max_value": max_val,
                         "column": affected_column
@@ -747,7 +746,7 @@ class CorrectionSuggester:
                 methods["null"] = {
                     "description": "問題のある値をNULLに置換",
                     "confidence": 0.7,
-                    "parameters": {"method": "null", "column": affected_column}
+                    "parameters": "method": "null", "column": affected_column}
                 }
         
         elif problem_type == "duplicates":
@@ -755,13 +754,13 @@ class CorrectionSuggester:
                 methods["offset"] = {
                     "description": "タイムスタンプを少しずらす",
                     "confidence": 0.85,
-                    "parameters": {"offset_ms": 1}
+                    "parameters": "offset_ms": 1}
                 }
             elif option["id"] == "keep_first":
                 methods["keep_first"] = {
                     "description": "最初のレコードのみを保持",
                     "confidence": 0.9,
-                    "parameters": {"method": "keep_first"}
+                    "parameters": "method": "keep_first"}
                 }
         
         elif problem_type == "spatial_anomalies":
@@ -769,7 +768,7 @@ class CorrectionSuggester:
                 methods["spatial"] = {
                     "description": "位置を前後のポイントから補間",
                     "confidence": 0.8,
-                    "parameters": {"method": "linear", "columns": ["latitude", "longitude"]}
+                    "parameters": "method": "linear", "columns": ["latitude", "longitude"]}
                 }
         
         elif problem_type == "temporal_anomalies":
@@ -777,7 +776,7 @@ class CorrectionSuggester:
                 methods["increment"] = {
                     "description": "タイムスタンプを修正",
                     "confidence": 0.85,
-                    "parameters": {"method": "increment", "seconds_offset": 1.0}
+                    "parameters": "method": "increment", "seconds_offset": 1.0}
                 }
         
         # デフォルトとして削除を追加
@@ -785,7 +784,7 @@ class CorrectionSuggester:
             methods["remove"] = {
                 "description": "問題のある行を削除",
                 "confidence": 0.7,
-                "parameters": {}
+                "parameters": }
             }
         
         return methods
@@ -878,7 +877,7 @@ class CorrectionSuggester:
                 meta_info = {
                     "affected_indices": target_indices,
                     "changed_columns": [],
-                    "before_values": {},
+                    "before_values": },
                     "after_values": {}
                 }
                 

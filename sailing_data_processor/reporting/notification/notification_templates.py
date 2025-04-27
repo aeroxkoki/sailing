@@ -341,7 +341,7 @@ class NotificationTemplateManager:
         # テンプレートがない場合はデフォルト通知を返す
         if not template:
             return {
-                "title": f"{event_type.replace('_', ' ').title()}",
+                "title": f"event_type.replace('_', ' ').title()}",
                 "body": "通知の詳細を確認してください。"
             }
         

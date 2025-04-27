@@ -51,10 +51,10 @@ class PDFExporter(BaseExporter):
         super().__init__(**options)
         
         # PDFデフォルトオプション
-        pdf_defaults = {
+        pdf_defaults = {}
             "page_size": "A4",
             "orientation": "portrait",
-            "margin": {"top": 2.5, "right": 2.5, "bottom": 2.5, "left": 2.5},
+            "margin": "top": 2.5, "right": 2.5, "bottom": 2.5, "left": 2.5},
             "header": True,
             "footer": True,
             "page_numbers": True,
@@ -402,7 +402,7 @@ class PDFExporter(BaseExporter):
         # WeasyPrintのスタイルシートを生成
         css_content = f"""
         @page {{
-            size: {page_size_name} {'landscape' if orientation == 'landscape' else 'portrait'};
+            size: page_size_name} {'landscape' if orientation == 'landscape' else 'portrait'};
             margin: {margin['top']}cm {margin['right']}cm {margin['bottom']}cm {margin['left']}cm;
         }}
         """
@@ -457,22 +457,22 @@ class PDFExporter(BaseExporter):
             html_content = html_template
             
             # タイトルの置換
-            html_content = html_content.replace("{{title}}", title)
+            html_content = html_content.replace("{title}}", title)
             
             # 生成日時の置換
             now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            html_content = html_content.replace("{{generated_date}}", now)
+            html_content = html_content.replace("{generated_date}}", now)
             
             # メタデータの処理
-            if "{{metadata_table}}" in html_content:
+            if "{metadata_table}}" in html_content:
                 metadata_html = "<table><tr><th>項目</th><th>値</th></tr>"
                 for key, value in metadata.items():
                     metadata_html += f"<tr><td>{key}</td><td>{value}</td></tr>"
                 metadata_html += "</table>"
-                html_content = html_content.replace("{{metadata_table}}", metadata_html)
+                html_content = html_content.replace("{metadata_table}}", metadata_html)
             
             # データテーブルの処理
-            if "{{data_table}}" in html_content and hasattr(data, 'data'):
+            if "{data_table}}" in html_content and hasattr(data, 'data'):
                 df = data.data
                 
                 # ヘッダー行
@@ -494,10 +494,10 @@ class PDFExporter(BaseExporter):
                     data_html += "</tr>"
                 
                 data_html += "</table>"
-                html_content = html_content.replace("{{data_table}}", data_html)
+                html_content = html_content.replace("{data_table}}", data_html)
             
             # 基本統計量の処理
-            if "{{stats_table}}" in html_content and hasattr(data, 'data'):
+            if "{stats_table}}" in html_content and hasattr(data, 'data'):
                 df = data.data
                 stats_html = "<table><tr><th>項目</th><th>値</th></tr>"
                 
@@ -529,7 +529,7 @@ class PDFExporter(BaseExporter):
                     stats_html += f"<tr><td>最大速度</td><td>{df['speed'].max():.2f}</td></tr>"
                 
                 stats_html += "</table>"
-                html_content = html_content.replace("{{stats_table}}", stats_html)
+                html_content = html_content.replace("{stats_table}}", stats_html)
             
             return html_content
             
@@ -552,7 +552,7 @@ class PDFExporter(BaseExporter):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
+    <title>{title}}</title>
     <style>
         body { font-family: Helvetica, Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }
         .container { max-width: 1200px; margin: 0 auto; }
@@ -571,7 +571,7 @@ class PDFExporter(BaseExporter):
         .map-container { height: 500px; margin: 20px 0; }
         
         @media print {
-            body { font-size: 10pt; }
+            body font-size: 10pt; }
             .page-break { page-break-before: always; }
             table { page-break-inside: avoid; }
         }
@@ -579,26 +579,26 @@ class PDFExporter(BaseExporter):
 </head>
 <body>
     <div class="container">
-        <h1>{{title}}</h1>
-        <p>生成日時: {{generated_date}}</p>
+        <h1>{title}}</h1>
+        <p>生成日時: {generated_date}}</p>
         
         <h2>メタデータ</h2>
-        {{metadata_table}}
+        {metadata_table}}
         
         <h2>データサマリー</h2>
-        {{stats_table}}
+        {stats_table}}
         
         <div class="page-break"></div>
         
         <h2>データテーブル</h2>
         <p>以下は記録されたデータの最初の100行です。</p>
         <div style="overflow-x: auto;">
-            {{data_table}}
+            {data_table}}
         </div>
         
         <h2>エクスポート情報</h2>
         <p>このレポートはセーリング戦略分析システムによって生成されました。</p>
-        <p>生成日時: {{generated_date}}</p>
+        <p>生成日時: {generated_date}}</p>
     </div>
 </body>
 </html>

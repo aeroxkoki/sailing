@@ -101,8 +101,7 @@ class EventTimelineElement(BaseChartElement):
             "mark_rounding": "red",
             "wind_shift": "purple",
             "default": "gray"
- {
-            "tack": "blue",
+ "tack": "blue",
             "gybe": "green",
             "mark_rounding": "red",
             "wind_shift": "purple",
@@ -118,7 +117,7 @@ class EventTimelineElement(BaseChartElement):
         data_json = json.dumps(data)
         
         # タイムライン設定をJSON文字列に変換
-        timeline_config = {
+        timeline_config = {}
             "time_key": time_key,
             "event_key": event_key,
             "group_key": group_key,
@@ -127,8 +126,7 @@ class EventTimelineElement(BaseChartElement):
             "show_groups": show_groups,
             "show_tooltips": show_tooltips,
             "cluster_events": cluster_events
- {
-            "time_key": time_key,
+ "time_key": time_key,
             "event_key": event_key,
             "group_key": group_key,
             "content_key": content_key,
@@ -149,25 +147,21 @@ class EventTimelineElement(BaseChartElement):
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vis-timeline@7.7.0/dist/vis-timeline-graph2d.min.css" />
             
             <style>
-                .vis-item {{
-                    border-color: #3498db;
+                .vis-item {border-color: #3498db;
                     background-color: #AED6F1;
                     font-size: 12px;
                 }}
                 
-                .vis-timeline {{
-                    border: 1px solid #ddd;
+                .vis-timeline {border: 1px solid #ddd;
                     border-radius: 4px;
                     background-color: #fafafa;
                 }}
                 
-                .vis-panel.vis-center {{
-                    border-left: 1px solid #ddd;
+                .vis-panel.vis-center {border-left: 1px solid #ddd;
                     border-right: 1px solid #ddd;
                 }}
                 
-                .vis-event-tooltip {{
-                    background-color: rgba(255, 255, 255, 0.95);
+                .vis-event-tooltip {background-color: rgba(255, 255, 255, 0.95);
                     border: 1px solid #ddd;
                     border-radius: 4px;
                     padding: 8px;
@@ -176,8 +170,7 @@ class EventTimelineElement(BaseChartElement):
                     max-width: 300px;
                 }}
                 
-                .vis-custom-time {{
-                    background-color: #FF5722;
+                .vis-custom-time {background-color: #FF5722;
                 }}
             </style>
             
@@ -186,7 +179,7 @@ class EventTimelineElement(BaseChartElement):
             <script>
                 (function() {{
                     // タイムラインデータ
-                    var timelineData = {data_json};
+                    var timelineData = data_json};
                     var timelineConfig = {timeline_config_json};
                     
                     // タイムライン初期化
@@ -212,8 +205,7 @@ class EventTimelineElement(BaseChartElement):
                                     groupSets.add(group);
                                     groupIds.push(group);
                                     
-                                    groups.add({{
-                                        id: group,
+                                    groups.add({id: group,
                                         content: group,
                                         title: group
                                     }});
@@ -225,10 +217,8 @@ class EventTimelineElement(BaseChartElement):
                                 
                                 // 日時形式に変換
                                 var time = null;
-                                if (typeof eventTime === 'string') {{
-                                    time = moment(eventTime).toDate();
-                                }} else if (typeof eventTime === 'number') {{
-                                    // Unixタイムスタンプの場合（秒単位）
+                                if (typeof eventTime === 'string') {time = moment(eventTime).toDate();
+                                }} else if (typeof eventTime === 'number') {// Unixタイムスタンプの場合（秒単位）
                                     time = moment.unix(eventTime).toDate();
                                 }}
                                 
@@ -252,8 +242,7 @@ class EventTimelineElement(BaseChartElement):
                                         if (key !== timelineConfig.time_key && 
                                             key !== timelineConfig.event_key && 
                                             key !== timelineConfig.group_key && 
-                                            key !== timelineConfig.content_key) {{
-                                            tooltip += '<div><strong>' + key + ':</strong> ' + event[key] + '</div>';
+                                            key !== timelineConfig.content_key) {tooltip += '<div><strong>' + key + ':</strong> ' + event[key] + '</div>';
                                         }}
                                     }}
                                     
@@ -261,8 +250,7 @@ class EventTimelineElement(BaseChartElement):
                                 }}
                                 
                                 // イベントアイテムを追加
-                                items.add({{
-                                    id: 'item_' + i,
+                                items.add({id: 'item_' + i,
                                     group: group,
                                     content: content,
                                     title: tooltip,
@@ -283,8 +271,7 @@ class EventTimelineElement(BaseChartElement):
                                     groupSets.add(group);
                                     groupIds.push(group);
                                     
-                                    groups.add({{
-                                        id: group,
+                                    groups.add({id: group,
                                         content: group,
                                         title: group
                                     }});
@@ -296,10 +283,8 @@ class EventTimelineElement(BaseChartElement):
                                 
                                 // 日時形式に変換
                                 var time = null;
-                                if (typeof eventTime === 'string') {{
-                                    time = moment(eventTime).toDate();
-                                }} else if (typeof eventTime === 'number') {{
-                                    // Unixタイムスタンプの場合（秒単位）
+                                if (typeof eventTime === 'string') {time = moment(eventTime).toDate();
+                                }} else if (typeof eventTime === 'number') {// Unixタイムスタンプの場合（秒単位）
                                     time = moment.unix(eventTime).toDate();
                                 }}
                                 
@@ -323,8 +308,7 @@ class EventTimelineElement(BaseChartElement):
                                         if (key !== timelineConfig.time_key && 
                                             key !== timelineConfig.event_key && 
                                             key !== timelineConfig.group_key && 
-                                            key !== timelineConfig.content_key) {{
-                                            tooltip += '<div><strong>' + key + ':</strong> ' + event[key] + '</div>';
+                                            key !== timelineConfig.content_key) {tooltip += '<div><strong>' + key + ':</strong> ' + event[key] + '</div>';
                                         }}
                                     }}
                                     
@@ -332,8 +316,7 @@ class EventTimelineElement(BaseChartElement):
                                 }}
                                 
                                 // イベントアイテムを追加
-                                items.add({{
-                                    id: 'item_' + i,
+                                items.add({id: 'item_' + i,
                                     group: group,
                                     content: content,
                                     title: tooltip,
@@ -346,8 +329,7 @@ class EventTimelineElement(BaseChartElement):
                         
                         // グループが空の場合はデフォルトグループを追加
                         if (groups.length === 0) {{
-                            groups.add({{
-                                id: 'events',
+                            groups.add({id: 'events',
                                 content: 'イベント',
                                 title: 'イベント'
                             }});
@@ -356,8 +338,7 @@ class EventTimelineElement(BaseChartElement):
                         // タイムラインオプション
                         var options = {{
                             height: '100%',
-                            margin: {{
-                                item: 10,
+                            margin: {item: 10,
                                 axis: 5
                             }},
                             zoomMin: 1000 * 60,  // 1分
@@ -368,8 +349,7 @@ class EventTimelineElement(BaseChartElement):
                             groupHeightMode: 'auto',
                             cluster: timelineConfig.cluster_events ? {{
                                 maxItems: 5,
-                                clusterCriteria: function(item1, item2) {{
-                                    return Math.abs(item1.start - item2.start) < 10000; // 10秒以内
+                                clusterCriteria: function(item1, item2) {return Math.abs(item1.start - item2.start) < 10000; // 10秒以内
                                 }}
                             }} : false
                         }};
@@ -378,8 +358,7 @@ class EventTimelineElement(BaseChartElement):
                         var timeline = new vis.Timeline(document.getElementById('{timeline_id}'), items, groups, options);
                         
                         // タイムラインサイズの調整
-                        window.addEventListener('resize', function() {{
-                            timeline.redraw();
+                        window.addEventListener('resize', function() {timeline.redraw();
                         }});
                     }});
                 }})();
@@ -490,8 +469,7 @@ class ParameterTimelineElement(BaseChartElement):
             "show_points": show_points,
             "point_radius": point_radius,
             "brush_selection": brush_selection
- {
-            "time_key": time_key,
+ "time_key": time_key,
             "parameters": parameters,
             "auto_detect": auto_detect,
             "excluded_keys": excluded_keys,
@@ -514,7 +492,7 @@ class ParameterTimelineElement(BaseChartElement):
             <script>
                 (function() {{
                     // タイムラインデータ
-                    var timelineData = {data_json};
+                    var timelineData = data_json};
                     var timelineConfig = {timeline_config_json};
                     
                     // チャート初期化
@@ -550,8 +528,7 @@ class ParameterTimelineElement(BaseChartElement):
                                 for (var key in samplePoint) {{
                                     // 除外キーに含まれていない数値パラメータを抽出
                                     if (!timelineConfig.excluded_keys.includes(key) && 
-                                        typeof samplePoint[key] === 'number') {{
-                                        parameters.push(key);
+                                        typeof samplePoint[key] === 'number') {parameters.push(key);
                                     }}
                                 }}
                             }}
@@ -559,19 +536,16 @@ class ParameterTimelineElement(BaseChartElement):
                         
                         // 時間ラベルとパラメータ値を抽出
                         var timeValues = [];
-                        var parameterValues = {{}};
+                        var parameterValues = {}};
                         
                         // 各パラメータの配列を初期化
-                        parameters.forEach(function(param) {{
-                            parameterValues[param] = [];
+                        parameters.forEach(function(param) {parameterValues[param] = [];
                         }});
                         
                         // データソースからデータを抽出
                         var dataArray = [];
-                        if (Array.isArray(timelineData)) {{
-                            dataArray = timelineData;
-                        }} else if (timelineData.data && Array.isArray(timelineData.data)) {{
-                            dataArray = timelineData.data;
+                        if (Array.isArray(timelineData)) {dataArray = timelineData;
+                        }} else if (timelineData.data && Array.isArray(timelineData.data)) {dataArray = timelineData.data;
                         }}
                         
                         // 時間シリーズを抽出
@@ -581,10 +555,8 @@ class ParameterTimelineElement(BaseChartElement):
                             if (timeValue) {{
                                 // 時間値を変換
                                 var time;
-                                if (typeof timeValue === 'string') {{
-                                    time = moment(timeValue);
-                                }} else if (typeof timeValue === 'number') {{
-                                    time = moment.unix(timeValue);
+                                if (typeof timeValue === 'string') {time = moment(timeValue);
+                                }} else if (typeof timeValue === 'number') {time = moment.unix(timeValue);
                                 }}
                                 
                                 if (time && time.isValid()) {{
@@ -592,8 +564,7 @@ class ParameterTimelineElement(BaseChartElement):
                                     
                                     // 各パラメータの値を収集
                                     parameters.forEach(function(param) {{
-                                        parameterValues[param].push({{
-                                            x: time,
+                                        parameterValues[param].push({x: time,
                                             y: point[param] || 0
                                         }});
                                     }});
@@ -603,7 +574,7 @@ class ParameterTimelineElement(BaseChartElement):
                         
                         // 時系列が空の場合は処理を終了
                         if (timeValues.length === 0) {{
-                            document.getElementById('{self.element_id}').innerHTML = '<div class="report-chart-empty">パラメータタイムラインデータがありません</div>';
+                            document.getElementById('self.element_id}').innerHTML = '<div class="report-chart-empty">パラメータタイムラインデータがありません</div>';
                             return;
                         }}
                         
@@ -612,8 +583,7 @@ class ParameterTimelineElement(BaseChartElement):
                             var colorIndex = index % colorPalette.length;
                             var color = colorPalette[colorIndex];
                             
-                            chartDatasets.push({{
-                                label: param,
+                            chartDatasets.push({label: param,
                                 data: parameterValues[param],
                                 fill: false,
                                 borderColor: color,
@@ -628,8 +598,7 @@ class ParameterTimelineElement(BaseChartElement):
                         var options = {{
                             responsive: true,
                             maintainAspectRatio: false,
-                            animation: {{
-                                duration: 0
+                            animation: {duration: 0
                             }},
                             scales: {{
                                 x: {{
@@ -637,8 +606,7 @@ class ParameterTimelineElement(BaseChartElement):
                                     time: {{
                                         unit: 'minute',
                                         tooltipFormat: 'YYYY-MM-DD HH:mm:ss',
-                                        displayFormats: {{
-                                            millisecond: 'HH:mm:ss.SSS',
+                                        displayFormats: {millisecond: 'HH:mm:ss.SSS',
                                             second: 'HH:mm:ss',
                                             minute: 'HH:mm',
                                             hour: 'HH:mm',
@@ -649,46 +617,38 @@ class ParameterTimelineElement(BaseChartElement):
                                             year: 'YYYY'
                                         }}
                                     }},
-                                    title: {{
-                                        display: true,
+                                    title: {display: true,
                                         text: '時間'
                                     }}
                                 }},
                                 y: {{
                                     beginAtZero: false,
-                                    title: {{
-                                        display: true,
+                                    title: {display: true,
                                         text: 'パラメータ値'
                                     }}
                                 }}
                             }},
                             plugins: {{
                                 zoom: {{
-                                    pan: {{
-                                        enabled: true,
+                                    pan: {enabled: true,
                                         mode: 'x'
                                     }},
                                     zoom: {{
-                                        wheel: {{
-                                            enabled: true
+                                        wheel: {enabled: true
                                         }},
-                                        pinch: {{
-                                            enabled: true
+                                        pinch: {enabled: true
                                         }},
                                         mode: 'x',
                                         speed: 0.1
                                     }}
                                 }},
-                                legend: {{
-                                    position: 'top'
+                                legend: {position: 'top'
                                 }},
-                                tooltip: {{
-                                    mode: 'index',
+                                tooltip: {mode: 'index',
                                     intersect: false
                                 }}
                             }},
-                            interaction: {{
-                                mode: 'nearest',
+                            interaction: {mode: 'nearest',
                                 axis: 'x',
                                 intersect: false
                             }}
@@ -698,15 +658,13 @@ class ParameterTimelineElement(BaseChartElement):
                         var ctx = document.getElementById('{chart_id}').getContext('2d');
                         var chart = new Chart(ctx, {{
                             type: 'line',
-                            data: {{
-                                datasets: chartDatasets
+                            data: {datasets: chartDatasets
                             }},
                             options: options
                         }});
                         
                         // ブラシ選択の追加（オプション）
-                        if (timelineConfig.brush_selection) {{
-                            // ブラシ選択機能はオプション
+                        if (timelineConfig.brush_selection) {// ブラシ選択機能はオプション
                         }}
                     }});
                 }})();
@@ -811,8 +769,7 @@ class SegmentComparisonElement(BaseChartElement):
             "stack_data": stack_data,
             "show_average": show_average,
             "normalize_values": normalize_values
- {
-            "segment_key": segment_key,
+ "segment_key": segment_key,
             "session_key": session_key,
             "value_key": value_key,
             "chart_type": chart_type,
@@ -835,7 +792,7 @@ class SegmentComparisonElement(BaseChartElement):
             <script>
                 (function() {{
                     // セグメント比較データ
-                    var segmentData = {data_json};
+                    var segmentData = data_json};
                     var chartConfig = {chart_config_json};
                     
                     // チャート初期化
@@ -860,11 +817,9 @@ class SegmentComparisonElement(BaseChartElement):
                             var sessionSet = new Set();
                             
                             segmentData.forEach(function(item) {{
-                                if (item[chartConfig.segment_key]) {{
-                                    segmentSet.add(item[chartConfig.segment_key]);
+                                if (item[chartConfig.segment_key]) {segmentSet.add(item[chartConfig.segment_key]);
                                 }}
-                                if (item[chartConfig.session_key]) {{
-                                    sessionSet.add(item[chartConfig.session_key]);
+                                if (item[chartConfig.session_key]) {sessionSet.add(item[chartConfig.session_key]);
                                 }}
                             }});
                             
@@ -874,7 +829,7 @@ class SegmentComparisonElement(BaseChartElement):
                             
                             // セグメントがない場合は処理を終了
                             if (segments.length === 0) {{
-                                document.getElementById('{self.element_id}').innerHTML = '<div class="report-chart-empty">セグメントデータがありません</div>';
+                                document.getElementById('self.element_id}').innerHTML = '<div class="report-chart-empty">セグメントデータがありません</div>';
                                 return;
                             }}
                             
@@ -887,8 +842,7 @@ class SegmentComparisonElement(BaseChartElement):
                                 
                                 // 各セグメントの値を取得
                                 segments.forEach(function(segment) {{
-                                    var found = segmentData.find(function(item) {{
-                                        return item[chartConfig.segment_key] === segment && 
+                                    var found = segmentData.find(function(item) {return item[chartConfig.segment_key] === segment && 
                                                item[chartConfig.session_key] === session;
                                     }});
                                     
@@ -900,8 +854,7 @@ class SegmentComparisonElement(BaseChartElement):
                                 var colorIndex = index % colorPalette.length;
                                 var color = colorPalette[colorIndex];
                                 
-                                datasets.push({{
-                                    label: session,
+                                datasets.push({label: session,
                                     data: sessionData,
                                     backgroundColor: color,
                                     borderColor: color.replace('0.7', '1'),
@@ -918,8 +871,7 @@ class SegmentComparisonElement(BaseChartElement):
                                     var total = 0;
                                     var count = 0;
                                     
-                                    datasets.forEach(function(dataset) {{
-                                        total += dataset.data[idx];
+                                    datasets.forEach(function(dataset) {total += dataset.data[idx];
                                         count++;
                                     }});
                                     
@@ -927,8 +879,7 @@ class SegmentComparisonElement(BaseChartElement):
                                 }});
                                 
                                 // 平均値のデータセットを追加
-                                datasets.push({{
-                                    label: '平均',
+                                datasets.push({label: '平均',
                                     data: avgData,
                                     backgroundColor: 'rgba(255, 255, 255, 0.2)',
                                     borderColor: 'rgba(0, 0, 0, 0.7)',
@@ -939,26 +890,23 @@ class SegmentComparisonElement(BaseChartElement):
                             }}
                         }} else if (typeof segmentData === 'object') {{
                             // オブジェクト形式の場合
-                            if (segmentData.segments && Array.isArray(segmentData.segments)) {{
-                                labels = segmentData.segments;
-                            }} else if (segmentData.labels && Array.isArray(segmentData.labels)) {{
-                                labels = segmentData.labels;
+                            if (segmentData.segments && Array.isArray(segmentData.segments)) {labels = segmentData.segments;
+                            }} else if (segmentData.labels && Array.isArray(segmentData.labels)) {labels = segmentData.labels;
                             }}
                             
-                            if (segmentData.datasets && Array.isArray(segmentData.datasets)) {{
-                                datasets = segmentData.datasets;
+                            if (segmentData.datasets && Array.isArray(segmentData.datasets)) {datasets = segmentData.datasets;
                             }}
                         }}
                         
                         // ラベルがない場合は処理を終了
                         if (labels.length === 0) {{
-                            document.getElementById('{self.element_id}').innerHTML = '<div class="report-chart-empty">セグメントラベルがありません</div>';
+                            document.getElementById('self.element_id}').innerHTML = '<div class="report-chart-empty">セグメントラベルがありません</div>';
                             return;
                         }}
                         
                         // データセットがない場合は処理を終了
                         if (datasets.length === 0) {{
-                            document.getElementById('{self.element_id}').innerHTML = '<div class="report-chart-empty">セグメントデータセットがありません</div>';
+                            document.getElementById('self.element_id}').innerHTML = '<div class="report-chart-empty">セグメントデータセットがありません</div>';
                             return;
                         }}
                         
@@ -967,8 +915,7 @@ class SegmentComparisonElement(BaseChartElement):
                             datasets.forEach(function(dataset) {{
                                 var maxValue = Math.max(...dataset.data);
                                 if (maxValue > 0) {{
-                                    dataset.data = dataset.data.map(function(value) {{
-                                        return value / maxValue;
+                                    dataset.data = dataset.data.map(function(value) {return value / maxValue;
                                     }});
                                 }}
                             }});
@@ -982,25 +929,21 @@ class SegmentComparisonElement(BaseChartElement):
                                 y: {{
                                     beginAtZero: true,
                                     stacked: chartConfig.stack_data,
-                                    title: {{
-                                        display: true,
+                                    title: {display: true,
                                         text: chartConfig.value_key
                                     }}
                                 }},
                                 x: {{
                                     stacked: chartConfig.stack_data,
-                                    title: {{
-                                        display: true,
+                                    title: {display: true,
                                         text: chartConfig.segment_key
                                     }}
                                 }}
                             }},
                             plugins: {{
-                                legend: {{
-                                    position: 'top'
+                                legend: {position: 'top'
                                 }},
-                                tooltip: {{
-                                    mode: 'index',
+                                tooltip: {mode: 'index',
                                     intersect: false
                                 }}
                             }}
@@ -1010,8 +953,7 @@ class SegmentComparisonElement(BaseChartElement):
                         if (chartConfig.chart_type === 'radar') {{
                             options.scales = null;  // レーダーチャートはscalesを使用しない
                             options.elements = {{
-                                line: {{
-                                    tension: 0
+                                line: {tension: 0
                                 }}
                             }};
                         }}
@@ -1020,8 +962,7 @@ class SegmentComparisonElement(BaseChartElement):
                         var ctx = document.getElementById('{chart_id}').getContext('2d');
                         var chart = new Chart(ctx, {{
                             type: chartConfig.chart_type,
-                            data: {{
-                                labels: labels,
+                            data: {labels: labels,
                                 datasets: datasets
                             }},
                             options: options
@@ -1126,8 +1067,7 @@ class DataViewerElement(BaseChartElement):
             "map_view": map_view,
             "chart_view": chart_view,
             "data_table": data_table
- {
-            "time_key": time_key,
+ "time_key": time_key,
             "parameters": parameters,
             "map_view": map_view,
             "chart_view": chart_view,
@@ -1149,8 +1089,7 @@ class DataViewerElement(BaseChartElement):
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
             
             <style>
-                .data-viewer-container {{
-                    display: flex;
+                .data-viewer-container {display: flex;
                     flex-direction: column;
                     width: 100%;
                     height: 100%;
@@ -1159,70 +1098,60 @@ class DataViewerElement(BaseChartElement):
                     overflow: hidden;
                 }}
                 
-                .data-viewer-panels {{
-                    display: flex;
+                .data-viewer-panels {display: flex;
                     flex: 1;
                     overflow: hidden;
                 }}
                 
-                .data-viewer-panel {{
-                    flex: 1;
+                .data-viewer-panel {flex: 1;
                     padding: 10px;
                     border-right: 1px solid #ddd;
                     overflow: auto;
                 }}
                 
-                .data-viewer-panel:last-child {{
-                    border-right: none;
+                .data-viewer-panel:last-child {border-right: none;
                 }}
                 
-                .data-viewer-controls {{
-                    padding: 10px;
+                .data-viewer-controls {padding: 10px;
                     border-top: 1px solid #ddd;
                     background-color: #f9f9f9;
                 }}
                 
-                .data-viewer-slider {{
-                    width: 100%;
+                .data-viewer-slider {width: 100%;
                     margin-top: 5px;
                 }}
                 
-                .data-viewer-time-display {{
-                    text-align: center;
+                .data-viewer-time-display {text-align: center;
                     font-weight: bold;
                     margin-top: 5px;
                 }}
                 
-                .data-viewer-table {{
-                    width: 100%;
+                .data-viewer-table {width: 100%;
                     border-collapse: collapse;
                 }}
                 
-                .data-viewer-table th, .data-viewer-table td {{
-                    padding: 5px;
+                .data-viewer-table th, .data-viewer-table td {padding: 5px;
                     border: 1px solid #ddd;
                     text-align: left;
                 }}
                 
-                .data-viewer-table th {{
-                    background-color: #f2f2f2;
+                .data-viewer-table th {background-color: #f2f2f2;
                 }}
                 
-                .data-viewer-table tr.current-row {{
-                    background-color: #e2f3fe;
+                .data-viewer-table tr.current-row {background-color: #e2f3fe;
                 }}
             </style>
             
             <div id="{viewer_id}" class="data-viewer-container" style="width: {width}; height: {height};">
                 <div class="data-viewer-panels">
                     <!-- マップビュー（表示設定がオンの場合） -->
-                    {f'<div class="data-viewer-panel" id="{map_id}" style="flex: 2;"></div>' if viewer_config["map_view"] else ''}
+                    {f'<div class="data-viewer-panel" id="map_id}" style="flex: 2;"></div>' if viewer_config["map_view"] else ''}
                     
                     <!-- チャートビュー（表示設定がオンの場合） -->
-                    {f'<div class="data-viewer-panel" style="flex: 2;"><canvas id="{chart_id}"></canvas></div>' if viewer_config["chart_view"] else ''}
+                    {f'<div class="data-viewer-panel" style="flex: 2;"><canvas id="chart_id}"></canvas></div>' if viewer_config["chart_view"] else ''}
                     
                     <!-- データテーブル（表示設定がオンの場合） -->
-                    {f'<div class="data-viewer-panel" style="flex: 1; max-height: 100%; overflow-y: auto;"><table id="{table_id}" class="data-viewer-table"></table></div>' if viewer_config["data_table"] else ''}
+                    {f'<div class="data-viewer-panel" style="flex: 1; max-height: 100%; overflow-y: auto;"><table id="table_id}" class="data-viewer-table"></table></div>' if viewer_config["data_table"] else ''}
                 </div>
                 
                 <!-- コントロールパネル -->
@@ -1235,7 +1164,7 @@ class DataViewerElement(BaseChartElement):
             <script>
                 (function() {{
                     // データビューアデータ
-                    var viewerData = {data_json};
+                    var viewerData = data_json};
                     var viewerConfig = {viewer_config_json};
                     
                     // データビューア初期化
@@ -1245,21 +1174,19 @@ class DataViewerElement(BaseChartElement):
                         var data = [];
                         
                         // データの形式によって処理を分岐
-                        if (Array.isArray(viewerData)) {{
-                            data = viewerData;
-                        }} else if (viewerData.data && Array.isArray(viewerData.data)) {{
-                            data = viewerData.data;
+                        if (Array.isArray(viewerData)) {data = viewerData;
+                        }} else if (viewerData.data && Array.isArray(viewerData.data)) {data = viewerData.data;
                         }}
                         
                         // データが空の場合は処理を終了
                         if (data.length === 0) {{
-                            document.getElementById('{self.element_id}').innerHTML = '<div class="report-chart-empty">データビューアデータがありません</div>';
+                            document.getElementById('self.element_id}').innerHTML = '<div class="report-chart-empty">データビューアデータがありません</div>';
                             return;
                         }}
                         
                         // 時間値とパラメータを準備
                         var timeValues = [];
-                        var parameterData = {{}};
+                        var parameterData = {}};
                         
                         // パラメータが指定されていない場合は自動検出
                         var parameters = viewerConfig.parameters;
@@ -1271,16 +1198,14 @@ class DataViewerElement(BaseChartElement):
                             if (data.length > 0) {{
                                 for (var key in data[0]) {{
                                     // 除外キーでなく、数値型のパラメータを抽出
-                                    if (!excludedKeys.includes(key) && typeof data[0][key] === 'number') {{
-                                        parameters.push(key);
+                                    if (!excludedKeys.includes(key) && typeof data[0][key] === 'number') {parameters.push(key);
                                     }}
                                 }}
                             }}
                         }}
                         
                         // 各パラメータの配列を初期化
-                        parameters.forEach(function(param) {{
-                            parameterData[param] = [];
+                        parameters.forEach(function(param) {parameterData[param] = [];
                         }});
                         
                         // 時間とパラメータデータを抽出
@@ -1289,21 +1214,17 @@ class DataViewerElement(BaseChartElement):
                             
                             // 時間値を変換して追加
                             var time = null;
-                            if (typeof timeValue === 'string') {{
-                                time = moment(timeValue);
+                            if (typeof timeValue === 'string') {time = moment(timeValue);
                                 timeValues.push(time);
-                            }} else if (typeof timeValue === 'number') {{
-                                time = moment.unix(timeValue);
+                            }} else if (typeof timeValue === 'number') {time = moment.unix(timeValue);
                                 timeValues.push(time);
-                            }} else {{
-                                // 時間値がない場合はインデックスを使用
+                            }} else {// 時間値がない場合はインデックスを使用
                                 timeValues.push(index);
                             }}
                             
                             // 各パラメータの値を収集
                             parameters.forEach(function(param) {{
-                                parameterData[param].push({{
-                                    x: timeValues[timeValues.length - 1],
+                                parameterData[param].push({x: timeValues[timeValues.length - 1],
                                     y: point[param] || 0
                                 }});
                             }});
@@ -1325,11 +1246,10 @@ class DataViewerElement(BaseChartElement):
                         var trackLine = null;
                         
                         if (viewerConfig.map_view) {{
-                            map = L.map('{map_id}');
+                            map = L.map('map_id}');
                             
                             // 地図タイルの追加
-                            L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                            L.tileLayer('https://{s}}.tile.openstreetmap.org/{z}}/{x}}/{y}}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             }}).addTo(map);
                             
                             // トラックラインの作成
@@ -1339,25 +1259,21 @@ class DataViewerElement(BaseChartElement):
                             
                             // 座標キーを特定
                             if (data.length > 0) {{
-                                if ('latitude' in data[0] && 'longitude' in data[0]) {{
-                                    latKey = 'latitude';
+                                if ('latitude' in data[0] && 'longitude' in data[0]) {latKey = 'latitude';
                                     lngKey = 'longitude';
-                                }} else if ('lat' in data[0] && 'lon' in data[0]) {{
-                                    lngKey = 'lon';
+                                }} else if ('lat' in data[0] && 'lon' in data[0]) {lngKey = 'lon';
                                 }}
                             }}
                             
                             // トラックポイントを抽出
                             data.forEach(function(point) {{
-                                if (point[latKey] && point[lngKey]) {{
-                                    trackPoints.push([point[latKey], point[lngKey]]);
+                                if (point[latKey] && point[lngKey]) {trackPoints.push([point[latKey], point[lngKey]]);
                                 }}
                             }});
                             
                             // トラックポイントがある場合
                             if (trackPoints.length > 0) {{
-                                trackLine = L.polyline(trackPoints, {{
-                                    color: 'rgba(54, 162, 235, 0.8)',
+                                trackLine = L.polyline(trackPoints, {color: 'rgba(54, 162, 235, 0.8)',
                                     weight: 3,
                                     opacity: 0.7
                                 }}).addTo(map);
@@ -1394,8 +1310,7 @@ class DataViewerElement(BaseChartElement):
                                 var colorIndex = index % colorPalette.length;
                                 var color = colorPalette[colorIndex];
                                 
-                                datasets.push({{
-                                    label: param,
+                                datasets.push({label: param,
                                     data: parameterData[param],
                                     fill: false,
                                     borderColor: color,
@@ -1410,8 +1325,7 @@ class DataViewerElement(BaseChartElement):
                             var options = {{
                                 responsive: true,
                                 maintainAspectRatio: false,
-                                animation: {{
-                                    duration: 0
+                                animation: {duration: 0
                                 }},
                                 scales: {{
                                     x: {{
@@ -1419,38 +1333,32 @@ class DataViewerElement(BaseChartElement):
                                         time: typeof timeValues[0] === 'object' ? {{
                                             unit: 'minute',
                                             tooltipFormat: 'YYYY-MM-DD HH:mm:ss',
-                                            displayFormats: {{
-                                                millisecond: 'HH:mm:ss.SSS',
+                                            displayFormats: {millisecond: 'HH:mm:ss.SSS',
                                                 second: 'HH:mm:ss',
                                                 minute: 'HH:mm',
                                                 hour: 'HH:mm',
                                                 day: 'MMM D'
                                             }}
                                         }} : undefined,
-                                        title: {{
-                                            display: true,
+                                        title: {display: true,
                                             text: '時間'
                                         }}
                                     }},
                                     y: {{
                                         beginAtZero: false,
-                                        title: {{
-                                            display: true,
+                                        title: {display: true,
                                             text: 'パラメータ値'
                                         }}
                                     }}
                                 }},
                                 plugins: {{
-                                    legend: {{
-                                        position: 'top'
+                                    legend: {position: 'top'
                                     }},
-                                    tooltip: {{
-                                        mode: 'index',
+                                    tooltip: {mode: 'index',
                                         intersect: false
                                     }}
                                 }},
-                                interaction: {{
-                                    mode: 'nearest',
+                                interaction: {mode: 'nearest',
                                     axis: 'x',
                                     intersect: false
                                 }}
@@ -1460,8 +1368,7 @@ class DataViewerElement(BaseChartElement):
                             var ctx = document.getElementById('{chart_id}').getContext('2d');
                             chart = new Chart(ctx, {{
                                 type: 'line',
-                                data: {{
-                                    datasets: datasets
+                                data: {datasets: datasets
                                 }},
                                 options: options
                             }});
@@ -1475,14 +1382,12 @@ class DataViewerElement(BaseChartElement):
                                     var chartArea = this.chartArea;
                                     var ctx = this.ctx;
                                     
-                                    if (!chartArea) {{
-                                        return;
+                                    if (!chartArea) {return;
                                     }}
                                     
                                     // 現在位置のX座標を計算
                                     var dataset = this.chart.config.data.datasets[0];
-                                    if (dataset && dataset.data.length > currentIndex) {{
-                                        var xScale = this.scales.x;
+                                    if (dataset && dataset.data.length > currentIndex) {var xScale = this.scales.x;
                                         var xValue = dataset.data[currentIndex].x;
                                         var xPixel = xScale.getPixelForValue(xValue);
                                         
@@ -1513,13 +1418,11 @@ class DataViewerElement(BaseChartElement):
                         if (viewerConfig.data_table && tableElement) {{
                             // テーブルヘッダーの生成
                             var headers = ['インデックス', '時間'];
-                            parameters.forEach(function(param) {{
-                                headers.push(param);
+                            parameters.forEach(function(param) {headers.push(param);
                             }});
                             
                             var headerRow = document.createElement('tr');
-                            headers.forEach(function(header) {{
-                                var th = document.createElement('th');
+                            headers.forEach(function(header) {var th = document.createElement('th');
                                 th.textContent = header;
                                 headerRow.appendChild(th);
                             }});
@@ -1537,18 +1440,14 @@ class DataViewerElement(BaseChartElement):
                                 
                                 var timeCell = document.createElement('td');
                                 var timeValue = data[i][timeKey];
-                                if (typeof timeValue === 'string') {{
-                                    timeCell.textContent = moment(timeValue).format('YYYY-MM-DD HH:mm:ss');
-                                }} else if (typeof timeValue === 'number') {{
-                                    timeCell.textContent = moment.unix(timeValue).format('YYYY-MM-DD HH:mm:ss');
-                                }} else {{
-                                    timeCell.textContent = i;
+                                if (typeof timeValue === 'string') {timeCell.textContent = moment(timeValue).format('YYYY-MM-DD HH:mm:ss');
+                                }} else if (typeof timeValue === 'number') {timeCell.textContent = moment.unix(timeValue).format('YYYY-MM-DD HH:mm:ss');
+                                }} else {timeCell.textContent = i;
                                 }}
                                 row.appendChild(timeCell);
                                 
                                 // 各パラメータの値を追加
-                                parameters.forEach(function(param) {{
-                                    var cell = document.createElement('td');
+                                parameters.forEach(function(param) {var cell = document.createElement('td');
                                     var value = data[i][param];
                                     cell.textContent = typeof value === 'number' ? value.toFixed(2) : (value || '-');
                                     row.appendChild(cell);
@@ -1559,8 +1458,7 @@ class DataViewerElement(BaseChartElement):
                         }}
                         
                         // スクラブバーの変更イベント
-                        slider.addEventListener('input', function(e) {{
-                            updateViewer(parseInt(e.target.value));
+                        slider.addEventListener('input', function(e) {updateViewer(parseInt(e.target.value));
                         }});
                         
                         // ビューアの更新
@@ -1570,32 +1468,25 @@ class DataViewerElement(BaseChartElement):
                             
                             // 時間表示の更新
                             var timeValue = currentData[timeKey];
-                            if (typeof timeValue === 'string') {{
-                                timeDisplay.textContent = moment(timeValue).format('YYYY-MM-DD HH:mm:ss');
-                            }} else if (typeof timeValue === 'number') {{
-                                timeDisplay.textContent = moment.unix(timeValue).format('YYYY-MM-DD HH:mm:ss');
-                            }} else {{
-                                timeDisplay.textContent = 'インデックス: ' + index;
+                            if (typeof timeValue === 'string') {timeDisplay.textContent = moment(timeValue).format('YYYY-MM-DD HH:mm:ss');
+                            }} else if (typeof timeValue === 'number') {timeDisplay.textContent = moment.unix(timeValue).format('YYYY-MM-DD HH:mm:ss');
+                            }} else {timeDisplay.textContent = 'インデックス: ' + index;
                             }}
                             
                             // マップの更新（表示設定がオンの場合）
-                            if (map && marker && currentData.lat && currentData.lng) {{
-                                marker.setLatLng([currentData.lat, currentData.lng]);
-                            }} else if (map && marker && currentData.latitude && currentData.longitude) {{
-                                marker.setLatLng([currentData.latitude, currentData.longitude]);
+                            if (map && marker && currentData.lat && currentData.lng) {marker.setLatLng([currentData.lat, currentData.lng]);
+                            }} else if (map && marker && currentData.latitude && currentData.longitude) {marker.setLatLng([currentData.latitude, currentData.longitude]);
                             }}
                             
                             // チャートの更新（表示設定がオンの場合）
-                            if (chart) {{
-                                chart.update();
+                            if (chart) {chart.update();
                             }}
                             
                             // テーブルの更新（表示設定がオンの場合）
                             if (viewerConfig.data_table) {{
                                 // 前の選択行のハイライトを解除
                                 var oldSelectedRow = tableElement.querySelector('.current-row');
-                                if (oldSelectedRow) {{
-                                    oldSelectedRow.classList.remove('current-row');
+                                if (oldSelectedRow) {oldSelectedRow.classList.remove('current-row');
                                 }}
                                 
                                 // 現在の行をハイライト
@@ -1604,8 +1495,7 @@ class DataViewerElement(BaseChartElement):
                                     currentRow.classList.add('current-row');
                                     
                                     // 表示範囲内にスクロール
-                                    currentRow.scrollIntoView({{
-                                        behavior: 'smooth',
+                                    currentRow.scrollIntoView({behavior: 'smooth',
                                         block: 'center'
                                     }});
                                 }}

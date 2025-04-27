@@ -64,9 +64,9 @@ class TemplateManager:
                 with open(self.metadata_file, "r", encoding="utf-8") as f:
                     self.metadata = json.load(f)
             except (json.JSONDecodeError, Exception):
-                self.metadata = {"templates": {}, "categories": [], "tags": []}
+                self.metadata = {"templates": }, "categories": [], "tags": []}
         else:
-            self.metadata = {"templates": {}, "categories": [], "tags": []}
+            self.metadata = {"templates": }, "categories": [], "tags": []}
     
     def _save_metadata(self) -> None:
         """
@@ -87,7 +87,7 @@ class TemplateManager:
         template : Template
             更新するテンプレート
         """
-        template_meta = {
+        template_meta = {}
             "template_id": template.template_id,
             "name": template.name,
             "description": template.description,
@@ -693,7 +693,7 @@ class TemplateManager:
         
         テンプレートファイルからメタデータを再構築します。
         """
-        self.metadata = {"templates": {}, "categories": [], "tags": []}
+        self.metadata = {"templates": }, "categories": [], "tags": []}
         
         # すべてのテンプレートファイルを取得
         template_files = self._get_all_template_files()

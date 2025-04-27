@@ -300,7 +300,7 @@ class TabElement(BaseElement):
             tab_items = []
             for i, child in enumerate(self.children):
                 tab_items.append({
-                    "id": f"tab_{self.element_id}_{i}",
+                    "id": f"tab_self.element_id}_{i}",
                     "label": child.name or f"タブ {i+1}",
                     "content_index": i
                 })
@@ -375,14 +375,13 @@ class TabElement(BaseElement):
             (function() {{
                 // タブの切り替え機能
                 document.addEventListener('DOMContentLoaded', function() {{
-                    var tabs = document.querySelectorAll('#{self.element_id} .report-tab-button');
+                    var tabs = document.querySelectorAll('#self.element_id} .report-tab-button');
                     
                     for (var i = 0; i < tabs.length; i++) {{
                         tabs[i].addEventListener('click', function() {{
                             // 現在のアクティブタブを非アクティブに
-                            var currentActive = document.querySelector('#{self.element_id} .report-tab-active');
-                            if (currentActive) {{
-                                currentActive.classList.remove('report-tab-active');
+                            var currentActive = document.querySelector('#self.element_id} .report-tab-active');
+                            if (currentActive) {currentActive.classList.remove('report-tab-active');
                                 currentActive.setAttribute('aria-selected', 'false');
                                 document.getElementById(currentActive.getAttribute('aria-controls')).hidden = true;
                             }}

@@ -177,39 +177,29 @@ class TrackMapElement(BaseMapElement):
             
             // データの最初の要素でフィールド名を確認
             if ({data_var}.length > 0) {{
-                var firstPoint = {data_var}[0];
+                var firstPoint = data_var}[0];
                 
                 // 緯度・経度キーの確認
-                if ('latitude' in firstPoint && 'longitude' in firstPoint) {{
-                    latKey = 'latitude';
+                if ('latitude' in firstPoint && 'longitude' in firstPoint) {latKey = 'latitude';
                     lngKey = 'longitude';
-                }} else if ('lat' in firstPoint && 'lon' in firstPoint) {{
-                    lngKey = 'lon';
-                }} else if ('lat' in firstPoint && 'long' in firstPoint) {{
-                    lngKey = 'long';
+                }} else if ('lat' in firstPoint && 'lon' in firstPoint) {lngKey = 'lon';
+                }} else if ('lat' in firstPoint && 'long' in firstPoint) {lngKey = 'long';
                 }}
                 
                 // 速度キーの確認
-                if ('spd' in firstPoint) {{
-                    speedKey = 'spd';
-                }} else if ('sog' in firstPoint) {{
-                    speedKey = 'sog';
+                if ('spd' in firstPoint) {speedKey = 'spd';
+                }} else if ('sog' in firstPoint) {speedKey = 'sog';
                 }}
                 
                 // 方向キーの確認
-                if ('cog' in firstPoint) {{
-                    directionKey = 'cog';
-                }} else if ('course' in firstPoint) {{
-                    directionKey = 'course';
-                }} else if ('dir' in firstPoint) {{
-                    directionKey = 'dir';
+                if ('cog' in firstPoint) {directionKey = 'cog';
+                }} else if ('course' in firstPoint) {directionKey = 'course';
+                }} else if ('dir' in firstPoint) {directionKey = 'dir';
                 }}
                 
                 // 時間キーの確認
-                if ('time' in firstPoint) {{
-                    timeKey = 'time';
-                }} else if ('date' in firstPoint) {{
-                    timeKey = 'date';
+                if ('time' in firstPoint) {timeKey = 'time';
+                }} else if ('date' in firstPoint) {timeKey = 'date';
                 }}
             }}
             
@@ -221,31 +211,26 @@ class TrackMapElement(BaseMapElement):
             
             // データの変換
             for (var i = 0; i < {data_var}.length; i++) {{
-                var point = {data_var}[i];
+                var point = data_var}[i];
                 if (point[latKey] && point[lngKey]) {{
                     var latLng = [parseFloat(point[latKey]), parseFloat(point[lngKey])];
                     trackPoints.push(latLng);
                     
                     // カラーマッピング用の値
                     var value = null;
-                    if ('{color_by}' === 'speed' && speedKey in point) {{
-                        value = parseFloat(point[speedKey]);
-                    }} else if ('{color_by}' === 'direction' && directionKey in point) {{
-                        value = parseFloat(point[directionKey]);
+                    if ('color_by}' === 'speed' && speedKey in point) {value = parseFloat(point[speedKey]);
+                    }} else if ('{color_by}' === 'direction' && directionKey in point) {value = parseFloat(point[directionKey]);
                     }} else if ('{color_by}' === 'time' && timeKey in point) {{
                         var time = point[timeKey];
-                        if (typeof time === 'string') {{
-                            value = new Date(time).getTime() / 1000;
-                        }} else if (typeof time === 'number') {{
-                            value = time;
+                        if (typeof time === 'string') {value = new Date(time).getTime() / 1000;
+                        }} else if (typeof time === 'number') {value = time;
                         }}
                     }}
                     
                     trackValues.push(value);
                     
                     // 最小・最大値の更新
-                    if (value !== null) {{
-                        minValue = Math.min(minValue, value);
+                    if (value !== null) {minValue = Math.min(minValue, value);
                         maxValue = Math.max(maxValue, value);
                     }}
                 }}
@@ -260,18 +245,16 @@ class TrackMapElement(BaseMapElement):
             if ('{color_by}' !== 'none' && minValue !== Infinity && maxValue !== -Infinity) {{
                 // 色分けトラック
                 var palette;
-                if ('{color_by}' === 'speed') {{
+                if ('color_by}' === 'speed') {{
                     // 速度用パレット（青→緑→黄→赤）
-                    palette = {{
-                        0.0: 'blue',
+                    palette = {0.0: 'blue',}
                         0.33: 'green',
                         0.66: 'yellow',
                         1.0: 'red'
                     }};
                 }} else if ('{color_by}' === 'direction') {{
                     // 方向用パレット
-                    palette = {{
-                        0.0: 'blue',  // 0度 (北)
+                    palette = {0.0: 'blue',  // 0度 (北)
                         0.25: 'green', // 90度 (東)
                         0.5: 'yellow', // 180度 (南)
                         0.75: 'red',   // 270度 (西)
@@ -279,29 +262,26 @@ class TrackMapElement(BaseMapElement):
                     }};
                 }} else {{
                     // 時間用パレット
-                    palette = {{
-                        0.0: 'blue',
+                    palette = {0.0: 'blue',
                         0.5: 'yellow',
                         1.0: 'red'
                     }};
                 }}
                 
                 // 値を正規化
-                var normalizedValues = trackValues.map(function(value) {{
-                    if (value === null) return null;
+                var normalizedValues = trackValues.map(function(value) {if (value === null) return null;
                     return (value - minValue) / (maxValue - minValue);
                 }});
                 
                 // ホットラインとして描画
                 trackLine = L.hotline(
-                    trackPoints.map(function(point, i) {{
-                        return [point[0], point[1], normalizedValues[i] !== null ? normalizedValues[i] : 0];
+                    trackPoints.map(function(point, i) {return [point[0], point[1], normalizedValues[i] !== null ? normalizedValues[i] : 0];
                     }}),
                     {{
                         min: 0,
                         max: 1,
                         palette: palette,
-                        weight: {track_width},
+                        weight: track_width},
                         outlineWidth: 1,
                         outlineColor: 'rgba(0, 0, 0, 0.5)'
                     }}
@@ -309,7 +289,7 @@ class TrackMapElement(BaseMapElement):
             }} else {{
                 // 単色トラック
                 trackLine = L.polyline(trackPoints, {{
-                    color: '{track_color}',
+                    color: 'track_color}',
                     weight: {track_width},
                     opacity: 0.8,
                     lineJoin: 'round'
@@ -321,16 +301,15 @@ class TrackMapElement(BaseMapElement):
                 // ホバー効果
                 trackLine.on('mouseover', function(e) {{
                     if (!this._selected) {{
-                        this.setStyle({{ color: '{hover_color}', weight: {track_width + 1}, opacity: 0.7 }});
+                        this.setStyle({{ color: 'hover_color}', weight: {track_width + 1}, opacity: 0.7 }});
                     }}
                 }});
                 
                 trackLine.on('mouseout', function(e) {{
                     if (!this._selected) {{
-                        if ('{color_by}' === 'none') {{
-                            this.setStyle({{ color: '{track_color}', weight: {track_width}, opacity: 0.8 }});
-                        }} else {{
-                            // ホットラインの場合はリセットが不要
+                        if ('color_by}' === 'none') {{
+                            this.setStyle({{ color: 'track_color}', weight: {track_width}, opacity: 0.8 }});
+                        }} else {// ホットラインの場合はリセットが不要
                         }}
                     }}
                 }});
@@ -340,25 +319,24 @@ class TrackMapElement(BaseMapElement):
                     trackLine.on('click', function(e) {{
                         if (this._selected) {{
                             this._selected = false;
-                            if ('{color_by}' === 'none') {{
-                                this.setStyle({{ color: '{track_color}', weight: {track_width}, opacity: 0.8 }});
-                            }} else {{
-                                // ホットラインの場合はリセット
+                            if ('color_by}' === 'none') {{
+                                this.setStyle({{ color: 'track_color}', weight: {track_width}, opacity: 0.8 }});
+                            }} else {// ホットラインの場合はリセット
                                 // TODO: ホットラインの選択解除処理
                             }}
                             
                             // カスタムイベントの発火
-                            var event = new CustomEvent('track_deselected', {{ detail: {{ element_id: '{self.element_id}' }} }});
+                            var event = new CustomEvent('track_deselected', {{ detail: {{ element_id: 'self.element_id}' }} }});
                             document.dispatchEvent(event);
                         }} else {{
                             this._selected = true;
-                            this.setStyle({{ color: '{selection_color}', weight: {track_width + 2}, opacity: 0.9 }});
+                            this.setStyle({{ color: 'selection_color}', weight: {track_width + 2}, opacity: 0.9 }});
                             
                             // カスタムイベントの発火
                             var latLng = e.latlng;
                             var event = new CustomEvent('track_selected', {{ 
                                 detail: {{ 
-                                    element_id: '{self.element_id}',
+                                    element_id: 'self.element_id}',
                                     lat: latLng.lat,
                                     lng: latLng.lng
                                 }} 
@@ -375,8 +353,7 @@ class TrackMapElement(BaseMapElement):
             // レイヤーコントロールへの追加
             var overlayLayers = {map_var}._layers;
             for (var key in overlayLayers) {{
-                if (overlayLayers[key] instanceof L.Control.Layers) {{
-                    overlayLayers[key].addOverlay(trackLayerGroup, "Track");
+                if (overlayLayers[key] instanceof L.Control.Layers) {overlayLayers[key].addOverlay(trackLayerGroup, "Track");
                     overlayLayers[key].addOverlay(markerLayerGroup, "Markers");
                     break;
                 }}
@@ -385,28 +362,26 @@ class TrackMapElement(BaseMapElement):
             // マーカーの追加
             if ({str(show_markers).lower()}) {{
                 // スタート・フィニッシュマーカー
-                if ({str(show_start_end_markers).lower()} && trackPoints.length > 1) {{
+                if (str(show_start_end_markers).lower()} && trackPoints.length > 1) {{
                     var startPoint = trackPoints[0];
                     var endPoint = trackPoints[trackPoints.length - 1];
                     
-                    var startIcon = L.divIcon({{
-                        html: '<div style="background-color: green; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);"><i class="fas fa-play-circle"></i></div>',
+                    var startIcon = L.divIcon({html: '<div style="background-color: green; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);"><i class="fas fa-play-circle"></i></div>',
                         className: 'track-start-icon',
                         iconSize: [32, 32],
                         iconAnchor: [16, 16]
                     }});
                     
-                    var endIcon = L.divIcon({{
-                        html: '<div style="background-color: red; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);"><i class="fas fa-flag-checkered"></i></div>',
+                    var endIcon = L.divIcon({html: '<div style="background-color: red; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);"><i class="fas fa-flag-checkered"></i></div>',
                         className: 'track-end-icon',
                         iconSize: [32, 32],
                         iconAnchor: [16, 16]
                     }});
                     
-                    var startMarker = L.marker(startPoint, {{ icon: startIcon }})
+                    var startMarker = L.marker(startPoint, {icon: startIcon }})
                         .bindPopup('<div style="min-width: 200px;"><h4 style="margin: 0 0 8px 0; padding-bottom: 5px; border-bottom: 1px solid #eee;">Start Point</h4><p style="margin: 5px 0;">Starting position of the track</p></div>');
                         
-                    var endMarker = L.marker(endPoint, {{ icon: endIcon }})
+                    var endMarker = L.marker(endPoint, {icon: endIcon }})
                         .bindPopup('<div style="min-width: 200px;"><h4 style="margin: 0 0 8px 0; padding-bottom: 5px; border-bottom: 1px solid #eee;">End Point</h4><p style="margin: 5px 0;">Ending position of the track</p></div>');
                     
                     startMarker.addTo(markerLayerGroup);
@@ -424,8 +399,7 @@ class TrackMapElement(BaseMapElement):
                         var markerTitle = markerData.title || '';
                         var markerDesc = markerData.description || '';
                         
-                        var customIcon = L.divIcon({{
-                            html: '<div style="background-color: ' + markerColor + '; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);"><i class="fas fa-' + markerIcon + '"></i></div>',
+                        var customIcon = L.divIcon({html: '<div style="background-color: ' + markerColor + '; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; color: white; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);"><i class="fas fa-' + markerIcon + '"></i></div>',
                             className: 'custom-marker-icon',
                             iconSize: [32, 32],
                             iconAnchor: [16, 16]
@@ -436,7 +410,7 @@ class TrackMapElement(BaseMapElement):
                         if (markerDesc) popupContent += '<p style="margin: 5px 0;">' + markerDesc + '</p>';
                         popupContent += '</div>';
                         
-                        var marker = L.marker(markerLatLng, {{ icon: customIcon }})
+                        var marker = L.marker(markerLatLng, {icon: customIcon }})
                             .bindPopup(popupContent);
                         
                         marker.addTo(markerLayerGroup);
@@ -446,7 +420,7 @@ class TrackMapElement(BaseMapElement):
             
             // 自動中心設定
             if ({str(self.center_auto).lower()}) {{
-                {map_var}.fitBounds(trackLine.getBounds());
+                map_var}.fitBounds(trackLine.getBounds());
             }}
             
             // グローバル変数として保存（外部からアクセス用）

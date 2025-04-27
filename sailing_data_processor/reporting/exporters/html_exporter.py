@@ -39,7 +39,7 @@ class HTMLExporter(BaseExporter):
         super().__init__(**options)
         
         # HTMLデフォルトオプション
-        html_defaults = {
+        html_defaults = {}
             "theme": "default",
             "include_interactive": True,
             "include_print_css": True,
@@ -277,7 +277,7 @@ class HTMLExporter(BaseExporter):
             'title': 'セーリングデータ分析レポート',
             'generated_date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             'options': self.options,
-            'metadata': {},
+            'metadata': },
             'data': None,
             'summary_stats': {},
             'charts_data': [],
@@ -430,8 +430,7 @@ class HTMLExporter(BaseExporter):
                 'y_label': '速度',
                 'data': {
                     'labels': df['timestamp'].dt.strftime('%H:%M:%S').tolist(),
-                    'datasets': [{
-                        'label': '速度',
+                    'datasets': ['label': '速度',
                         'data': df['speed'].tolist(),
                         'borderColor': 'rgb(75, 192, 192)',
                         'tension': 0.1
@@ -449,8 +448,7 @@ class HTMLExporter(BaseExporter):
                 'y_label': '風速',
                 'data': {
                     'labels': df['timestamp'].dt.strftime('%H:%M:%S').tolist(),
-                    'datasets': [{
-                        'label': '風速',
+                    'datasets': ['label': '風速',
                         'data': df['wind_speed'].tolist(),
                         'borderColor': 'rgb(255, 99, 132)',
                         'tension': 0.1
@@ -472,8 +470,7 @@ class HTMLExporter(BaseExporter):
                 'type': 'pie',
                 'data': {
                     'labels': wind_dir_counts.index.tolist(),
-                    'datasets': [{
-                        'data': wind_dir_counts.values.tolist(),
+                    'datasets': ['data': wind_dir_counts.values.tolist(),
                         'backgroundColor': [
                             'rgb(255, 99, 132)',
                             'rgb(255, 159, 64)',
@@ -603,13 +600,13 @@ class HTMLExporter(BaseExporter):
         # シンプルな置換
         for key, value in context.items():
             if isinstance(value, str):
-                template_content = template_content.replace(f"{{{{ {key} }}}}", value)
+                template_content = template_content.replace(f"{{{{ key} }}}}", value)
         
         # タイトルの置換
-        template_content = template_content.replace("{{title}}", context.get('title', 'セーリングデータ分析レポート'))
+        template_content = template_content.replace("{title}}", context.get('title', 'セーリングデータ分析レポート'))
         
         # 生成日時の置換
-        template_content = template_content.replace("{{generated_date}}", context.get('generated_date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        template_content = template_content.replace("{generated_date}}", context.get('generated_date', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         
         return template_content
     
@@ -702,37 +699,37 @@ class HTMLExporter(BaseExporter):
                 """
                 
                 for chart in charts_data:
-                    chart_id = chart.get('id', f"chart_{len(charts_scripts)}")
+                    chart_id = chart.get('id', f"chart_len(charts_scripts)}")
                     chart_type = chart.get('type', 'line')
                     chart_data = json.dumps(chart.get('data', {}))
                     
                     charts_scripts += f"""
                     // {chart.get('title', 'チャート')}
                     (function() {{
-                        const ctx = document.getElementById('{chart_id}');
+                        const ctx = document.getElementById('chart_id}');
                         if (ctx) {{
                             new Chart(ctx, {{
-                                type: '{chart_type}',
+                                type: 'chart_type}',
                                 data: {chart_data},
                                 options: {{
                                     responsive: true,
                                     plugins: {{
                                         title: {{
                                             display: true,
-                                            text: '{chart.get('title', '')}'
+                                            text: 'chart.get('title', '')}'
                                         }}
                                     }},
                                     scales: {{
                                         x: {{
                                             title: {{
                                                 display: true,
-                                                text: '{chart.get('x_label', '')}'
+                                                text: 'chart.get('x_label', '')}'
                                             }}
                                         }},
                                         y: {{
                                             title: {{
                                                 display: true,
-                                                text: '{chart.get('y_label', '')}'
+                                                text: 'chart.get('y_label', '')}'
                                             }}
                                         }}
                                     }}
@@ -760,7 +757,7 @@ class HTMLExporter(BaseExporter):
                 <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     // マップの初期化
-                    const map = L.map('map').setView([{center_lat}, {center_lng}], 13);
+                    const map = L.map('map').setView([center_lat}, {center_lng}], 13);
                     
                     // タイルレイヤーの追加
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -777,10 +774,10 @@ class HTMLExporter(BaseExporter):
                     // トラックポイントにポップアップを追加
                     trackPoints.forEach(function(point, index) {
                         if (index % 10 === 0) { // 間引いてマーカーを表示
-                            let popupContent = `時刻: ${point.time || 'N/A'}<br>速度: ${point.speed || 'N/A'}`;
+                            let popupContent = `時刻: $point.time || 'N/A'}<br>速度: ${point.speed || 'N/A'}`;
                             
                             if (point.wind_speed) {
-                                popupContent += `<br>風速: ${point.wind_speed}<br>風向: ${point.wind_direction}°`;
+                                popupContent += `<br>風速: $point.wind_speed}<br>風向: ${point.wind_direction}°`;
                             }
                             
                             L.circleMarker([point.lat, point.lng], {radius: 3, color: 'blue', fillOpacity: 0.5})
@@ -792,12 +789,12 @@ class HTMLExporter(BaseExporter):
                     // 戦略ポイントのマーカー追加
                     const strategyPoints = {strategy_points};
                     strategyPoints.forEach(function(point) {
-                        let popupContent = `<strong>${point.type || '戦略ポイント'}</strong><br>
+                        let popupContent = `<strong>$point.type || '戦略ポイント'}</strong><br>
                                            時刻: ${point.time || 'N/A'}<br>
                                            速度: ${point.speed || 'N/A'}`;
                         
                         if (point.description) {
-                            popupContent += `<br>${point.description}`;
+                            popupContent += `<br>$point.description}`;
                         }
                         
                         L.marker([point.lat, point.lng])
@@ -846,17 +843,17 @@ class HTMLExporter(BaseExporter):
     <title>{title}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }}
-        .container {{ max-width: 1200px; margin: 0 auto; }}
-        h1, h2, h3 {{ color: #2c3e50; }}
-        h1 {{ border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
-        h2 {{ border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; }}
+        body {font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }}
+        .container {max-width: 1200px; margin: 0 auto; }}
+        h1, h2, h3 {color: #2c3e50; }}
+        h1 {border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
+        h2 {border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-top: 30px; }}
         
         @media print {{
-            body {{ font-size: 10pt; }}
-            .page-break {{ page-break-before: always; }}
-            table {{ page-break-inside: avoid; }}
-            .no-print {{ display: none; }}
+            body {font-size: 10pt; }}
+            .page-break {page-break-before: always; }}
+            table {page-break-inside: avoid; }}
+            .no-print {display: none; }}
         }}
     </style>
 </head>
@@ -1068,11 +1065,11 @@ class HTMLExporter(BaseExporter):
     <title>{title}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {{ font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }}
-        .container {{ max-width: 1200px; margin: 0 auto; }}
-        h1, h2, h3 {{ color: #2c3e50; }}
-        h1 {{ border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
-        .card {{ margin-bottom: 20px; }}
+        body {font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 20px; }}
+        .container {max-width: 1200px; margin: 0 auto; }}
+        h1, h2, h3 {color: #2c3e50; }}
+        h1 {border-bottom: 2px solid #3498db; padding-bottom: 10px; }}
+        .card {margin-bottom: 20px; }}
     </style>
 </head>
 <body>

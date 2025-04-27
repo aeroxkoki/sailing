@@ -40,20 +40,14 @@ class BaseMapLayer(ABC):
         self.description = description
         
         # 基本プロパティ
-        self._properties = {
+        self._properties = {}
             "visible": kwargs.get("visible", True),
             "opacity": kwargs.get("opacity", 1.0),
             "z_index": kwargs.get("z_index", 0),
             "selectable": kwargs.get("selectable", True),
             "interactive": kwargs.get("interactive", True),
-            "data_source": kwargs.get("data_source", None),
- {
-            "visible": kwargs.get("visible", True),
-            "opacity": kwargs.get("opacity", 1.0),
-            "z_index": kwargs.get("z_index", 0),
-            "selectable": kwargs.get("selectable", True),
-            "interactive": kwargs.get("interactive", True),
-            "data_source": kwargs.get("data_source", None),}
+            "data_source": kwargs.get("data_source", None)
+        }
         
         # スタイル設定
         self._styles = {}
@@ -309,27 +303,7 @@ class BaseMapLayer(ABC):
             "type": self.__class__.__name__,
             "properties": self._properties.copy(),
             "styles": self._styles.copy()
- {
-            "layer_id": self.layer_id,
-            "name": self.name,
-            "description": self.description,
-            "type": self.__class__.__name__,
-            "properties": self._properties.copy(),
-            "styles": self._styles.copy()}
-        return {
-            "layer_id": self.layer_id,
-            "name": self.name,
-            "description": self.description,
-            "type": self.__class__.__name__,
-            "properties": self._properties.copy(),
-            "styles": self._styles.copy()}
- {
-            "layer_id": self.layer_id,
-            "name": self.name,
-            "description": self.description,
-            "type": self.__class__.__name__,
-            "properties": self._properties.copy(),
-            "styles": self._styles.copy()}}
+        }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "BaseMapLayer":

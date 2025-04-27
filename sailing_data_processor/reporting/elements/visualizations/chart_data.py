@@ -296,15 +296,14 @@ class ChartData:
         labels = [item[label_key] for item in self.data]
         values = [item[value_key] for item in self.data]
         
-        self.data = {
+        self.data = {}
             "labels": labels,
             "datasets": [{
                 "data": values,
                 "backgroundColor": self._generate_colors(len(values))
  {
             "labels": labels,
-            "datasets": [{
-                "data": values,
+            "datasets": ["data": values,
                 "backgroundColor": self._generate_colors(len(values))}
             }]
         
@@ -348,8 +347,7 @@ class ChartData:
                     "borderWidth": 1
  {
                 "labels": labels,
-                "datasets": [{
-                    "data": values,
+                "datasets": ["data": values,
                     "backgroundColor": self._generate_colors(1)[0],
                     "borderColor": self._generate_border_colors(1)[0],
                     "borderWidth": 1}
@@ -386,8 +384,7 @@ class ChartData:
             self.data = {
                 "labels": labels,
                 "datasets": datasets
- {
-                "labels": labels,
+ "labels": labels,
                 "datasets": datasets}
         
         return self
@@ -429,8 +426,7 @@ class ChartData:
                     "pointRadius": 4,
                     "pointHoverRadius": 6
  {
-                "datasets": [{
-                    "data": points,
+                "datasets": ["data": points,
                     "backgroundColor": self._generate_colors(1)[0],
                     "borderColor": self._generate_border_colors(1)[0],
                     "borderWidth": 1,
@@ -466,8 +462,7 @@ class ChartData:
             
             self.data = {
                 "datasets": datasets
- {
-                "datasets": datasets}
+ "datasets": datasets}
         
         return self
     
@@ -514,8 +509,7 @@ class ChartData:
                     "fill": True
  {
                 "labels": x_values,
-                "datasets": [{
-                    "data": y_values,
+                "datasets": ["data": y_values,
                     "backgroundColor": self._generate_colors(1)[0] + "33",  # 透明度を追加
                     "borderColor": self._generate_border_colors(1)[0],
                     "borderWidth": 2,
@@ -558,8 +552,7 @@ class ChartData:
             self.data = {
                 "labels": all_x_values,
                 "datasets": datasets
- {
-                "labels": all_x_values,
+ "labels": all_x_values,
                 "datasets": datasets}
         
         return self

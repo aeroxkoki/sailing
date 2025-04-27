@@ -40,10 +40,10 @@ class ShareManager:
         self.permission_manager = permission_manager
         
         # 共有設定ストレージ
-        self._share_settings = {}  # {item_id: {settings}}
+        self._share_settings = {}  # {item_id: settings}}
         
         # 共有リンク管理
-        self._share_links = {}  # {link_id: {settings}}
+        self._share_links = {}  # {link_id: settings}}
         
         # 共有履歴
         self._share_history = {}  # {item_id: [history_entries]}
@@ -141,7 +141,7 @@ class ShareManager:
         now = datetime.datetime.now()
         
         # 共有設定の作成
-        share_setting = {
+        share_setting = {}
             "share_id": share_id,
             "item_id": item_id,
             "user_id": user_id,

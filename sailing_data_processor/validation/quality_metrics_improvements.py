@@ -72,7 +72,7 @@ class QualityMetricsCalculatorExtension:
         # 簡略化した初期化
         self.validation_results = validation_results if validation_results else []
         self.data = data if data is not None else pd.DataFrame()
-        self.problematic_indices = {
+        self.problematic_indices = {}
             "missing_data": [],
             "out_of_range": [],
             "duplicates": [],
@@ -253,14 +253,14 @@ class QualityMetricsCalculatorExtension:
                     quality_score = max(0, 100 - problem_percentage)
                     
                     # 人間が読みやすい時間帯ラベルを作成
-                    label = f"{bin_start.strftime('%H:%M')}-{bin_end.strftime('%H:%M')}"
+                    label = f"bin_start.strftime('%H:%M')}-{bin_end.strftime('%H:%M')}"
                     
                     # 問題タイプごとの分布も計算
                     problem_type_distribution = self._calculate_problem_type_distribution_for_period(bin_indices)
                     
                     # 品質スコアを保存
                     temporal_scores.append({
-                        "period": f"期間{i+1}",
+                        "period": f"期間i+1}",
                         "start_time": bin_start.isoformat(),
                         "end_time": bin_end.isoformat(),
                         "label": label,
@@ -410,7 +410,7 @@ class QualityMetricsCalculatorExtension:
             category_scores[category] = {
                 "score": quality_scores[category],
                 "issues": 0,
-                "details": {},
+                "details": },
                 "impact_level": self._determine_impact_level(quality_scores[category])
             
             # 各ルールの結果を集計
@@ -431,13 +431,13 @@ class QualityMetricsCalculatorExtension:
                                 "count": details["out_of_range_count"],
                                 "percentage": round(details["out_of_range_count"] / len(self.data) * 100, 2),
                                 "severity": result["severity"],
-                                "description": f"{details.get('column', '値')}の{details['out_of_range_count']}件が範囲外"
+                                "description": f"details.get('column', '値')}の{details['out_of_range_count']}件が範囲外"
                         elif "duplicate_count" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "count": details["duplicate_count"],
                                 "percentage": round(details["duplicate_count"] / len(self.data) * 100, 2),
                                 "severity": result["severity"],
-                                "description": f"{details['duplicate_count']}件の重複タイムスタンプ"
+                                "description": f"details['duplicate_count']}件の重複タイムスタンプ"
                         elif "total_null_count" in details:
                             total_fields = len(self.data) * len(details.get("columns", []))
                             percentage = 0 if total_fields == 0 else round(details["total_null_count"] / total_fields * 100, 2)
@@ -446,7 +446,7 @@ class QualityMetricsCalculatorExtension:
                                 "count": details["total_null_count"],
                                 "percentage": percentage,
                                 "severity": result["severity"],
-                                "affected_columns": list(details.get("null_counts", {}).keys()),
+                                "affected_columns": list(details.get("null_counts", }).keys()),
                                 "description": f"{details['total_null_count']}件の欠損値"
                         elif "gap_count" in details:
                             category_scores[category]["details"][rule_key] = {
@@ -455,20 +455,20 @@ class QualityMetricsCalculatorExtension:
                                 "max_gap": details.get("max_actual_gap", 0),
                                 "percentage": round((details["gap_count"] + details.get("reverse_count", 0)) / len(self.data) * 100, 2),
                                 "severity": result["severity"],
-                                "description": f"{details['gap_count']}件のギャップ、{details.get('reverse_count', 0)}件の逆行"
+                                "description": f"details['gap_count']}件のギャップ、{details.get('reverse_count', 0)}件の逆行"
                         elif "missing_columns" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "missing_columns": details["missing_columns"],
                                 "count": len(details["missing_columns"]),
                                 "severity": result["severity"],
-                                "description": f"{len(details['missing_columns'])}個の必須カラムが欠落"
+                                "description": f"len(details['missing_columns'])}個の必須カラムが欠落"
                         elif "anomaly_count" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "count": details["anomaly_count"],
                                 "percentage": round(details["anomaly_count"] / len(self.data) * 100, 2),
                                 "max_speed": details.get("max_calculated_speed", 0),
                                 "severity": result["severity"],
-                                "description": f"{details['anomaly_count']}件の空間的異常"
+                                "description": f"details['anomaly_count']}件の空間的異常"
         
         return category_scores
             
@@ -501,10 +501,10 @@ class QualityMetricsCalculatorExtension:
         gauge_chart = go.Figure(go.Indicator(
             mode="gauge+number",
             value=quality_scores["total"],
-            title={"text": "データ品質スコア", "font": {"size": 24}},
-            number={"font": {"size": 32, "color": self._get_score_color(quality_scores["total"])}},
+            title={"text": "データ品質スコア", "font": "size": 24}},
+            number={"font": "size": 32, "color": self._get_score_color(quality_scores["total"])}},
             gauge={
-                "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
+                "axis": "range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
                 "bar": {"color": self._get_score_color(quality_scores["total"])},
                 "bgcolor": "white",
                 "borderwidth": 2,
@@ -516,7 +516,7 @@ class QualityMetricsCalculatorExtension:
                     {"range": [90, 100], "color": "#AAFFAA"}  # 濃い緑系 - 非常に高品質
                 ],
                 "threshold": {
-                    "line": {"color": "black", "width": 4},
+                    "line": "color": "black", "width": 4},
                     "thickness": 0.75,
                     "value": quality_scores["total"]
         ))
@@ -571,7 +571,7 @@ class QualityMetricsCalculatorExtension:
                 x=display_categories,
                 y=values,
                 marker_color=bar_colors,
-                text=[f"{v:.1f}" for v in values],
+                text=[f"v:.1f}" for v in values],
                 textposition="auto",
                 hoverinfo="text",
                 hovertext=[
@@ -687,8 +687,7 @@ class QualityMetricsCalculatorExtension:
             "accuracy_score": self.quality_scores.get("accuracy", 100.0),
             "consistency_score": self.quality_scores.get("consistency", 100.0),
             "total_issues": total_issues,
-            "issue_counts": {
-                "missing_data": missing_data_count,
+            "issue_counts": "missing_data": missing_data_count,
                 "out_of_range": out_of_range_count,
                 "duplicates": dupes_count,
                 "spatial_anomalies": spatial_count,
@@ -1006,8 +1005,7 @@ class QualityMetricsCalculatorExtension:
             bar_data = []
             for key in problem_types_data:
                 if sum(problem_types_data[key]) > 0:
-                    bar_data.append({
-                        "name": type_names.get(key, key),
+                    bar_data.append("name": type_names.get(key, key),
                         "values": problem_types_data[key],
                         "color": type_colors.get(key, "gray")
                     })

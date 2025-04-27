@@ -228,13 +228,14 @@ class WindFieldLayer(BaseMapLayer):
         time_index = self.get_property("time_index", 0)
         
         # 準備済みデータ
-        prepared_data = {
+        prepared_data = {}
             'type': 'wind_field',
             'points': [],
             'bounds': None,
             'min_speed': float('inf'),
             'max_speed': float('-inf'),
             'timestamp': None
+        }
         
         # データ形式に応じた処理
         if isinstance(data, list) and len(data) > 0:
@@ -388,27 +389,14 @@ class WindFieldLayer(BaseMapLayer):
             "customColors": custom_colors_js,
             "minFilter": min_filter,
             "maxFilter": max_filter
- {
-            "displayType": display_type,
-            "arrowScale": arrow_scale,
-            "arrowDensity": arrow_density,
-            "colorScale": color_scale,
-            "colorBy": color_by,
-            "minSpeed": "null" if min_speed is None else min_speed,
-            "maxSpeed": "null" if max_speed is None else max_speed,
-            "animate": str(animate).lower(),
-            "showLegend": str(show_legend).lower(),
-            "opacity": opacity,
-            "customColors": custom_colors_js,
-            "minFilter": min_filter,
-            "maxFilter": max_filter}
+        }
         
         # JavaScript コード
         code = f"""
             // 風場レイヤーの作成 {layer_id}
             {layer_var} = (function() {{
                 var windFieldConfig = {{
-                    displayType: '{params["displayType"]}',
+                    displayType: 'params["displayType"]}',
                     arrowScale: {params["arrowScale"]},
                     arrowDensity: {params["arrowDensity"]},
                     colorScale: '{params["colorScale"]}',
@@ -428,8 +416,7 @@ class WindFieldLayer(BaseMapLayer):
                     var points = data.points || [];
                     
                     // データが空の場合は空のレイヤーグループを返す
-                    if (!points.length) {{
-                        return L.layerGroup();
+                    if (!points.length) {return L.layerGroup();
                     }}
                     
                     // 風速の範囲設定
@@ -451,8 +438,7 @@ class WindFieldLayer(BaseMapLayer):
                             var color = getWindColor(speed, direction, config);
                             
                             // 矢印アイコン作成
-                            return L.divIcon({{
-                                html: '<div style="' +
+                            return L.divIcon({html: '<div style="' +
                                     'width: ' + size + 'px; ' +
                                     'height: ' + size + 'px; ' +
                                     'background-color: ' + color + '; ' +
@@ -477,13 +463,11 @@ class WindFieldLayer(BaseMapLayer):
                             for (var i = 0; i < gridSize; i += step) {{
                                 for (var j = 0; j < gridSize; j += step) {{
                                     var idx = i * gridSize + j;
-                                    if (idx < points.length) {{
-                                        subset.push(points[idx]);
+                                    if (idx < points.length) {subset.push(points[idx]);
                                     }}
                                 }}
                             }}
-                        }} else {{
-                            subset = points;
+                        }} else {subset = points;
                         }}
                         
                         // 矢印マーカーを追加
@@ -491,35 +475,29 @@ class WindFieldLayer(BaseMapLayer):
                             var point = subset[i];
                             
                             // フィルタリング
-                            if (point.speed < config.minFilter || point.speed > config.maxFilter) {{
-                                continue;
+                            if (point.speed < config.minFilter || point.speed > config.maxFilter) {continue;
                             }}
                             
                             // マーカー作成
-                            var marker = L.marker([point.lat, point.lng], {{
-                                icon: arrowIcon(point.speed, point.direction, config),
+                            var marker = L.marker([point.lat, point.lng], {icon: arrowIcon(point.speed, point.direction, config),
                                 interactive: false
                             }});
                             
                             layerGroup.addLayer(marker);
                         }}
-                    }} else if (config.displayType === 'streamlines') {{
-                        // ストリームライン実装
+                    }} else if (config.displayType === 'streamlines') {// ストリームライン実装
                         // Note: ストリームラインの実装には追加のライブラリや計算が必要
                         console.warn('Streamlines display is not implemented yet');
-                    }} else if (config.displayType === 'barbs') {{
-                        // 風向羽実装
+                    }} else if (config.displayType === 'barbs') {// 風向羽実装
                         // Note: 風向羽表示の実装
                         console.warn('Wind barbs display is not implemented yet');
-                    }} else if (config.displayType === 'grid') {{
-                        // グリッドカラーマップ実装
+                    }} else if (config.displayType === 'grid') {// グリッドカラーマップ実装
                         // Note: 補間とグリッド表示の実装
                         console.warn('Grid display is not implemented yet');
                     }}
                     
                     // 凡例の追加
-                    if (config.showLegend) {{
-                        addWindLegend(layerGroup, minSpeed, maxSpeed, config);
+                    if (config.showLegend) {addWindLegend(layerGroup, minSpeed, maxSpeed, config);
                     }}
                     
                     return layerGroup;
@@ -530,8 +508,7 @@ class WindFieldLayer(BaseMapLayer):
                     var value = config.colorBy === 'speed' ? speed :
                              config.colorBy === 'direction' ? direction : null;
                     
-                    if (value === null) {{
-                        return '#3388ff';  // デフォルト色
+                    if (value === null) {return '#3388ff';  // デフォルト色
                     }}
                     
                     if (config.colorScale === 'custom' && Object.keys(config.customColors).length > 0) {{
@@ -544,8 +521,7 @@ class WindFieldLayer(BaseMapLayer):
                         if (value >= keys[keys.length - 1]) return customColors[keys[keys.length - 1]];
                         
                         for (var i = 0; i < keys.length - 1; i++) {{
-                            if (value >= keys[i] && value < keys[i + 1]) {{
-                                var t = (value - keys[i]) / (keys[i + 1] - keys[i]);
+                            if (value >= keys[i] && value < keys[i + 1]) {var t = (value - keys[i]) / (keys[i + 1] - keys[i]);
                                 return interpolateColor(customColors[keys[i]], customColors[keys[i + 1]], t);
                             }}
                         }}
@@ -563,16 +539,11 @@ class WindFieldLayer(BaseMapLayer):
                     var normalizedValue = Math.max(0, Math.min(1, (value - minValue) / (maxValue - minValue || 1)));
                     
                     // スケールに基づいて色を返す
-                    if (config.colorScale === 'viridis') {{
-                        return interpolateViridis(normalizedValue);
-                    }} else if (config.colorScale === 'plasma') {{
-                        return interpolatePlasma(normalizedValue);
-                    }} else if (config.colorScale === 'inferno') {{
-                        return interpolateInferno(normalizedValue);
-                    }} else if (config.colorScale === 'magma') {{
-                        return interpolateMagma(normalizedValue);
-                    }} else if (config.colorScale === 'blues') {{
-                        return interpolateBlues(normalizedValue);
+                    if (config.colorScale === 'viridis') {return interpolateViridis(normalizedValue);
+                    }} else if (config.colorScale === 'plasma') {return interpolatePlasma(normalizedValue);
+                    }} else if (config.colorScale === 'inferno') {return interpolateInferno(normalizedValue);
+                    }} else if (config.colorScale === 'magma') {return interpolateMagma(normalizedValue);
+                    }} else if (config.colorScale === 'blues') {return interpolateBlues(normalizedValue);
                     }}
                     
                     // デフォルト: 青から赤へのグラデーション
@@ -583,31 +554,28 @@ class WindFieldLayer(BaseMapLayer):
                 function interpolateColor(color1, color2, factor) {{
                     // HTMLカラーコードを変換
                     function hex2rgb(hex) {{
-                        var result = /^#?([a-f\\d]{{2}})([a-f\\d]{{2}})([a-f\\d]{{2}})$/i.exec(hex);
-                        return result ? {{
-                            r: parseInt(result[1], 16),
+                        var result = /^#?([a-f\\d]{2}})([a-f\\d]{2}})([a-f\\d]{2}})$/i.exec(hex);
+                        return result ? {r: parseInt(result[1], 16),
                             g: parseInt(result[2], 16),
                             b: parseInt(result[3], 16)
                         }} : null;
                     }}
                     
-                    function rgb2hex(rgb) {{
-                        return "#" + ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
+                    function rgb2hex(rgb) {return "#" + ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
                     }}
                     
-                    var rgb1 = hex2rgb(color1) || {{ r: 0, g: 0, b: 255 }};
-                    var rgb2 = hex2rgb(color2) || {{ r: 255, g: 0, b: 0 }};
+                    var rgb1 = hex2rgb(color1) || {r: 0, g: 0, b: 255 }};
+                    var rgb2 = hex2rgb(color2) || {r: 255, g: 0, b: 0 }};
                     
                     var r = Math.round(rgb1.r + factor * (rgb2.r - rgb1.r));
                     var g = Math.round(rgb1.g + factor * (rgb2.g - rgb1.g));
                     var b = Math.round(rgb1.b + factor * (rgb2.b - rgb1.b));
                     
-                    return rgb2hex({{ r: r, g: g, b: b }});
+                    return rgb2hex({r: r, g: g, b: b }});
                 }}
                 
                 // カラースケール関数 (Viridis)
-                function interpolateViridis(t) {{
-                    // Viridisの簡略版
+                function interpolateViridis(t) {// Viridisの簡略版
                     var colors = [
                         [68, 1, 84],     // 0.0
                         [65, 68, 135],   // 0.25
@@ -621,8 +589,7 @@ class WindFieldLayer(BaseMapLayer):
                 }}
                 
                 // カラースケール関数 (Plasma)
-                function interpolatePlasma(t) {{
-                    // Plasmaの簡略版
+                function interpolatePlasma(t) {// Plasmaの簡略版
                     var colors = [
                         [13, 8, 135],     // 0.0
                         [126, 3, 168],    // 0.25
@@ -635,8 +602,7 @@ class WindFieldLayer(BaseMapLayer):
                 }}
                 
                 // カラースケール関数 (Inferno)
-                function interpolateInferno(t) {{
-                    // Infernoの簡略版
+                function interpolateInferno(t) {// Infernoの簡略版
                     var colors = [
                         [0, 0, 4],        // 0.0
                         [85, 16, 67],     // 0.25
@@ -649,8 +615,7 @@ class WindFieldLayer(BaseMapLayer):
                 }}
                 
                 // カラースケール関数 (Magma)
-                function interpolateMagma(t) {{
-                    // Magmaの簡略版
+                function interpolateMagma(t) {// Magmaの簡略版
                     var colors = [
                         [0, 0, 4],        // 0.0
                         [81, 18, 124],    // 0.25
@@ -663,8 +628,7 @@ class WindFieldLayer(BaseMapLayer):
                 }}
                 
                 // カラースケール関数 (Blues)
-                function interpolateBlues(t) {{
-                    // Bluesの簡略版
+                function interpolateBlues(t) {// Bluesの簡略版
                     var colors = [
                         [247, 251, 255],  // 0.0
                         [198, 219, 239],  // 0.25
@@ -677,8 +641,7 @@ class WindFieldLayer(BaseMapLayer):
                 }}
                 
                 // カラースケールの補間
-                function interpolateColorScale(t, colors) {{
-                    if (t <= 0) return rgbToHex(colors[0][0], colors[0][1], colors[0][2]);
+                function interpolateColorScale(t, colors) {if (t <= 0) return rgbToHex(colors[0][0], colors[0][1], colors[0][2]);
                     if (t >= 1) return rgbToHex(colors[colors.length-1][0], colors[colors.length-1][1], colors[colors.length-1][2]);
                     
                     var i = Math.floor(t * (colors.length - 1));
@@ -692,13 +655,12 @@ class WindFieldLayer(BaseMapLayer):
                 }}
                 
                 // RGBをHEXに変換
-                function rgbToHex(r, g, b) {{
-                    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+                function rgbToHex(r, g, b) {return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
                 }}
                 
                 // 凡例の追加
                 function addWindLegend(layerGroup, minSpeed, maxSpeed, config) {{
-                    var legend = L.control({{ position: 'bottomright' }});
+                    var legend = L.control({position: 'bottomright' }});
                     
                     legend.onAdd = function(map) {{
                         var div = L.DomUtil.create('div', 'wind-legend');
@@ -720,8 +682,7 @@ class WindFieldLayer(BaseMapLayer):
                             
                             html += '<div style="display: flex; height: 20px; margin-bottom: 5px;">';
                             
-                            for (var i = 0; i <= steps; i++) {{
-                                var value = minSpeed + i * stepSize;
+                            for (var i = 0; i <= steps; i++) {var value = minSpeed + i * stepSize;
                                 var color = getWindColor(value, 0, config);
                                 
                                 html += '<div style="flex: 1; background-color: ' + color + ';"></div>';
@@ -742,8 +703,7 @@ class WindFieldLayer(BaseMapLayer):
                             
                             html += '<div style="display: flex; height: 20px; margin-bottom: 5px;">';
                             
-                            for (var i = 0; i < values.length - 1; i++) {{
-                                var color = getWindColor(values[i], values[i], config);
+                            for (var i = 0; i < values.length - 1; i++) {var color = getWindColor(values[i], values[i], config);
                                 html += '<div style="flex: 1; background-color: ' + color + ';"></div>';
                             }}
                             
@@ -751,8 +711,7 @@ class WindFieldLayer(BaseMapLayer):
                             
                             // ラベル
                             html += '<div style="display: flex; justify-content: space-between; font-size: 10px;">';
-                            for (var i = 0; i < directions.length; i++) {{
-                                html += '<div>' + directions[i] + '</div>';
+                            for (var i = 0; i < directions.length; i++) {html += '<div>' + directions[i] + '</div>';
                             }}
                             html += '</div>';
                         }}
@@ -769,10 +728,10 @@ class WindFieldLayer(BaseMapLayer):
                 var layer = null;
                 
                 if (typeof {data_var} !== 'undefined' && {data_var} && {data_var}.points) {{
-                    layer = createWindLayer({data_var}, windFieldConfig);
+                    layer = createWindLayer(data_var}, windFieldConfig);
                     layer.addTo({map_var});
                 }} else {{
-                    console.warn('No wind field data available for layer {layer_id}');
+                    console.warn('No wind field data available for layer layer_id}');
                     layer = L.layerGroup().addTo({map_var});
                 }}
                 

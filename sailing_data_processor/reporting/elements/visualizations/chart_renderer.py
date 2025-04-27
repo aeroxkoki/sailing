@@ -154,22 +154,19 @@ class PlotlyRenderer(BaseChartRenderer):
             <script>
                 (function() {{
                     function render() {{
-                        var data = {plotly_data};
+                        var data = plotly_data};
                         var layout = {plotly_layout};
                         var config = {plotly_config};
                         
                         Plotly.newPlot('{self.chart_id}', data, layout, config);
                     }}
                     
-                    if (typeof Plotly !== 'undefined') {{
-                        render();
+                    if (typeof Plotly !== 'undefined') {render();
                     }} else {{
                         window.addEventListener('load', function() {{
-                            if (document.querySelector('script[src*="plotly"]')) {{
-                                // Plotlyライブラリがロード済みの場合
+                            if (document.querySelector('script[src*="plotly"]')) {// Plotlyライブラリがロード済みの場合
                                 render();
-                            }} else {{
-                                // Plotlyライブラリをロード
+                            }} else {// Plotlyライブラリをロード
                                 var script = document.createElement('script');
                                 script.src = 'https://cdn.jsdelivr.net/npm/plotly.js@2.27.1/dist/plotly.min.js';
                                 script.onload = render;
@@ -262,20 +259,17 @@ class ChartJSRenderer(BaseChartRenderer):
             <script>
                 (function() {{
                     function render() {{
-                        var ctx = document.getElementById('{self.chart_id}').getContext('2d');
+                        var ctx = document.getElementById('self.chart_id}').getContext('2d');
                         var config = {config_json};
                         new Chart(ctx, config);
                     }}
                     
-                    if (typeof Chart !== 'undefined') {{
-                        render();
+                    if (typeof Chart !== 'undefined') {render();
                     }} else {{
                         window.addEventListener('load', function() {{
-                            if (document.querySelector('script[src*="chart.js"]')) {{
-                                // Chart.jsライブラリがロード済みの場合
+                            if (document.querySelector('script[src*="chart.js"]')) {// Chart.jsライブラリがロード済みの場合
                                 render();
-                            }} else {{
-                                // Chart.jsライブラリをロード
+                            }} else {// Chart.jsライブラリをロード
                                 var script = document.createElement('script');
                                 script.src = 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js';
                                 script.onload = render;

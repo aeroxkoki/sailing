@@ -180,7 +180,7 @@ class WindFieldElement(BaseWindFieldElement):
         terrain_json = json.dumps(terrain_data) if terrain_data else "null"
         
         # ���-��JSON�Wk	�
-        map_config = {
+        map_config = {}
             "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
@@ -203,8 +203,7 @@ class WindFieldElement(BaseWindFieldElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
- {
-            "map_type": map_type,
+ "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
             "zoom_level": zoom_level,
@@ -286,7 +285,7 @@ class WindFieldElement(BaseWindFieldElement):
         
         # ��ׁ n�����
         html_content = f'''
-        <div id="{self.element_id}" class="report-map-container" style="{css_style}">
+        <div id="self.element_id}" class="report-map-container" style="{css_style}">
             <!-- Leaflet CSS -->
             <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-velocity@1.7.0/dist/leaflet-velocity.min.css" />
@@ -298,7 +297,7 @@ class WindFieldElement(BaseWindFieldElement):
             <script>
                 (function() {{
                     // ������
-                    var windData = {data_json};
+                    var windData = data_json};
                     var forecastData = {forecast_json};
                     var terrainData = {terrain_json};
                     var mapConfig = {map_config_json};
@@ -306,24 +305,21 @@ class WindFieldElement(BaseWindFieldElement):
                     // ���
                     window.addEventListener('load', function() {{
                         // ���n\
-                        var map = L.map('{self.map_id}');
+                        var map = L.map('self.map_id}');
                         
                         // ������nx�
                         var tileLayer;
                         switch(mapConfig.map_type) {{
                             case 'satellite':
-                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{{z}}/{{y}}/{{x}}', {{
-                                    attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+                                tileLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}}/{y}}/{x}}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                                 }});
                                 break;
                             case 'nautical':
-                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
+                                tileLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}}/{x}}/{y}}.png', {attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
                                 }});
                                 break;
                             default:  // 'osm'
-                                tileLayer = L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
-                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                tileLayer = L.tileLayer('https://{s}}.tile.openstreetmap.org/{z}}/{x}}/{y}}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                 }});
                         }}
                         
@@ -345,8 +341,7 @@ class WindFieldElement(BaseWindFieldElement):
                         
                         // ���bk�Xf�
                         function processWindData(source) {{
-                            var result = {{
-                                uGrid: null,
+                            var result = {uGrid: null,
                                 vGrid: null,
                                 gridBounds: null,
                                 times: []
@@ -358,8 +353,7 @@ class WindFieldElement(BaseWindFieldElement):
                             var uComponentKey = 'u-wind';
                             var vComponentKey = 'v-wind';
                             
-                            if ('u_component' in source) {{
-                                uComponentKey = 'u_component';
+                            if ('u_component' in source) {uComponentKey = 'u_component';
                                 vComponentKey = 'v_component';
                             }}
                             
@@ -370,27 +364,22 @@ class WindFieldElement(BaseWindFieldElement):
                             var latMin, latMax, lonMin, lonMax;
                             var nx, ny;
                             
-                            if ('lat_min' in source && 'lat_max' in source && 'lon_min' in source && 'lon_max' in source) {{
-                                latMin = source.lat_min;
+                            if ('lat_min' in source && 'lat_max' in source && 'lon_min' in source && 'lon_max' in source) {latMin = source.lat_min;
                                 latMax = source.lat_max;
                                 lonMin = source.lon_min;
                                 lonMax = source.lon_max;
-                            }} else {{
-                                // �թ��$~_o��$
+                            }} else {// �թ��$~_o��$
                                 latMin = mapConfig.center[0] - 0.1;
                                 latMax = mapConfig.center[0] + 0.1;
                                 lonMin = mapConfig.center[1] - 0.1;
                                 lonMax = mapConfig.center[1] + 0.1;
                             }}
                             
-                            if ('nx' in source && 'ny' in source) {{
-                                nx = source.nx;
+                            if ('nx' in source && 'ny' in source) {nx = source.nx;
                                 ny = source.ny;
-                            }} else if (uComponentKey in source && Array.isArray(source[uComponentKey])) {{
-                                nx = source[uComponentKey].length;
+                            }} else if (uComponentKey in source && Array.isArray(source[uComponentKey])) {nx = source[uComponentKey].length;
                                 ny = source[uComponentKey][0] ? source[uComponentKey][0].length : 0;
-                            }} else {{
-                                nx = 10;
+                            }} else {nx = 10;
                                 ny = 10;
                             }}
                             
@@ -407,8 +396,7 @@ class WindFieldElement(BaseWindFieldElement):
                                     var uRow = [];
                                     var vRow = [];
                                     
-                                    for (var j = 0; j < source[uComponentKey][i].length; j++) {{
-                                        uRow.push(source[uComponentKey][i][j] * scale);
+                                    for (var j = 0; j < source[uComponentKey][i].length; j++) {uRow.push(source[uComponentKey][i][j] * scale);
                                         vRow.push(source[vComponentKey][i][j] * scale);
                                     }}
                                     
@@ -417,8 +405,7 @@ class WindFieldElement(BaseWindFieldElement):
                                 }}
                                 
                                 // B����LB�4
-                                if ('times' in source && Array.isArray(source.times)) {{
-                                    result.times = source.times;
+                                if ('times' in source && Array.isArray(source.times)) {result.times = source.times;
                                 }}
                             }}
                             
@@ -429,14 +416,12 @@ class WindFieldElement(BaseWindFieldElement):
                         function extractWindShifts(source) {{
                             var shifts = [];
                             
-                            if (!source || !('wind_shifts' in source) || !Array.isArray(source.wind_shifts)) {{
-                                return shifts;
+                            if (!source || !('wind_shifts' in source) || !Array.isArray(source.wind_shifts)) {return shifts;
                             }}
                             
                             source.wind_shifts.forEach(function(shift) {{
                                 if (shift.lat && shift.lng) {{
-                                    shifts.push({{
-                                        position: [shift.lat, shift.lng],
+                                    shifts.push({position: [shift.lat, shift.lng],
                                         time: shift.time || null,
                                         before_direction: shift.before_direction || 0,
                                         after_direction: shift.after_direction || 0,
@@ -453,8 +438,7 @@ class WindFieldElement(BaseWindFieldElement):
                         function extractWindTrends(source) {{
                             var trends = [];
                             
-                            if (!source || !('wind_trends' in source)) {{
-                                return trends;
+                            if (!source || !('wind_trends' in source)) {return trends;
                             }}
                             
                             if ('wind_trends' in source && Array.isArray(source.wind_trends)) {{
@@ -463,14 +447,12 @@ class WindFieldElement(BaseWindFieldElement):
                                         var points = [];
                                         
                                         trend.points.forEach(function(point) {{
-                                            if (point.lat && point.lng) {{
-                                                points.push([point.lat, point.lng]);
+                                            if (point.lat && point.lng) {points.push([point.lat, point.lng]);
                                             }}
                                         }});
                                         
                                         if (points.length > 1) {{
-                                            trends.push({{
-                                                points: points,
+                                            trends.push({points: points,
                                                 type: trend.type || 'trend',
                                                 value: trend.value || 0
                                             }});
@@ -486,8 +468,7 @@ class WindFieldElement(BaseWindFieldElement):
                         function extractTerrainEffects(source) {{
                             var effects = [];
                             
-                            if (!source || !('effects' in source) || !Array.isArray(source.effects)) {{
-                                return effects;
+                            if (!source || !('effects' in source) || !Array.isArray(source.effects)) {return effects;
                             }}
                             
                             source.effects.forEach(function(effect) {{
@@ -495,14 +476,12 @@ class WindFieldElement(BaseWindFieldElement):
                                     var points = [];
                                     
                                     effect.polygon.forEach(function(point) {{
-                                        if (point.lat && point.lng) {{
-                                            points.push([point.lat, point.lng]);
+                                        if (point.lat && point.lng) {points.push([point.lat, point.lng]);
                                         }}
                                     }});
                                     
                                     if (points.length > 2) {{
-                                        effects.push({{
-                                            polygon: points,
+                                        effects.push({polygon: points,
                                             type: effect.type || 'acceleration',
                                             intensity: effect.intensity || 1
                                         }});
@@ -518,11 +497,9 @@ class WindFieldElement(BaseWindFieldElement):
                             // Mbn4��ïݤ��n��'	
                             if (windData.length > 0 && typeof windData[0] === 'object') {{
                                 // ����y�
-                                if ('latitude' in windData[0] && 'longitude' in windData[0]) {{
-                                    latKey = 'latitude';
+                                if ('latitude' in windData[0] && 'longitude' in windData[0]) {latKey = 'latitude';
                                     lngKey = 'longitude';
-                                }} else if ('lat' in windData[0] && 'lon' in windData[0]) {{
-                                    lngKey = 'lon';
+                                }} else if ('lat' in windData[0] && 'lon' in windData[0]) {lngKey = 'lon';
                                 }}
                                 
                                 // ��ïݤ�Ȓ��
@@ -534,10 +511,8 @@ class WindFieldElement(BaseWindFieldElement):
                                         // ������(nB�$���
                                         if (mapConfig.show_time_dimension && timeKey in point) {{
                                             var time = point[timeKey];
-                                            if (typeof time === 'string') {{
-                                                timeValues.push(new Date(time));
-                                            }} else if (typeof time === 'number') {{
-                                                // Unix��๿��n4�XM	
+                                            if (typeof time === 'string') {timeValues.push(new Date(time));
+                                            }} else if (typeof time === 'number') {// Unix��๿��n4�XM	
                                                 timeValues.push(new Date(time * 1000));
                                             }}
                                         }}
@@ -555,10 +530,8 @@ class WindFieldElement(BaseWindFieldElement):
                                         // ������(nB�$���
                                         if (mapConfig.show_time_dimension && timeKey in point) {{
                                             var time = point[timeKey];
-                                            if (typeof time === 'string') {{
-                                                timeValues.push(new Date(time));
-                                            }} else if (typeof time === 'number') {{
-                                                // Unix��๿��n4�XM	
+                                            if (typeof time === 'string') {timeValues.push(new Date(time));
+                                            }} else if (typeof time === 'number') {// Unix��๿��n4�XM	
                                                 timeValues.push(new Date(time * 1000));
                                             }}
                                         }}
@@ -573,19 +546,16 @@ class WindFieldElement(BaseWindFieldElement):
                             gridBounds = windGridData.gridBounds;
                             
                             // ����n��
-                            if (mapConfig.show_wind_shifts) {{
-                                windShifts = extractWindShifts(windData);
+                            if (mapConfig.show_wind_shifts) {windShifts = extractWindShifts(windData);
                             }}
                             
                             // �����n��
-                            if (mapConfig.show_wind_trends) {{
-                                windTrends = extractWindTrends(windData);
+                            if (mapConfig.show_wind_trends) {windTrends = extractWindTrends(windData);
                             }}
                         }}
                         
                         // 0b��n�
-                        if (mapConfig.show_terrain_effects && terrainData) {{
-                            terrainEffects = extractTerrainEffects(terrainData);
+                        if (mapConfig.show_terrain_effects && terrainData) {terrainEffects = extractTerrainEffects(terrainData);
                         }}
                         
                         // ��ׁ �����Y�_�n����\
@@ -598,12 +568,11 @@ class WindFieldElement(BaseWindFieldElement):
                         var terrainLayer = L.layerGroup();
                         
                         // ���6�n_�n�ָ���
-                        var overlays = {{}};
+                        var overlays = {}};
                         
                         // ��ï��\h:-�L��n4	
                         if (mapConfig.show_track && trackPoints.length > 0) {{
-                            var trackLine = L.polyline(trackPoints, {{
-                                color: mapConfig.track_color,
+                            var trackLine = L.polyline(trackPoints, {color: mapConfig.track_color,
                                 weight: mapConfig.track_width,
                                 opacity: 0.8,
                                 lineJoin: 'round'
@@ -617,15 +586,14 @@ class WindFieldElement(BaseWindFieldElement):
                         if (uGrid && vGrid && gridBounds) {{
                             // D3.js�(Wf�nٯ���;
                             function drawWindVectors(uGrid, vGrid, bounds, targetLayer, options) {{
-                                var defaultOptions = {{
-                                    density: mapConfig.vector_density || 50,
+                                var defaultOptions = {density: mapConfig.vector_density || 50,
                                     scale: mapConfig.arrow_scale || 1.0,
                                     color: 'rgba(0, 0, 128, 0.7)',
                                     width: 1.5
                                 }};
                                 
                                 // �׷��n���
-                                var opts = Object.assign({{}}, defaultOptions, options || {{}});
+                                var opts = Object.assign({}}, defaultOptions, options || {}});
                                 
                                 // ����n��
                                 var latMin = bounds[0][0];
@@ -668,8 +636,7 @@ class WindFieldElement(BaseWindFieldElement):
                                         var arrowSize = 20 * opts.scale * Math.min(1, speed / (mapConfig.max_velocity * 0.1 || 1));
                                         
                                         // ����n\
-                                        var arrowIcon = L.divIcon({{
-                                            html: '<svg width="' + (arrowSize * 2) + '" height="' + (arrowSize * 2) + '" ' +
+                                        var arrowIcon = L.divIcon({html: '<svg width="' + (arrowSize * 2) + '" height="' + (arrowSize * 2) + '" ' +
                                                  'viewBox="-10 -10 20 20" class="wind-arrow">' +
                                                  '<path d="M0,-8 L0,8 M0,-8 L-4,-4 M0,-8 L4,-4" ' +
                                                  'stroke="' + opts.color + '" stroke-width="' + opts.width + '" />' +
@@ -679,8 +646,7 @@ class WindFieldElement(BaseWindFieldElement):
                                             iconAnchor: [arrowSize, arrowSize]
                                         }});
                                         
-                                        var marker = L.marker([lat, lon], {{
-                                            icon: arrowIcon,
+                                        var marker = L.marker([lat, lon], {icon: arrowIcon,
                                             rotationAngle: direction,
                                             rotationOrigin: 'center center'
                                         }}).addTo(targetLayer);
@@ -695,8 +661,7 @@ class WindFieldElement(BaseWindFieldElement):
                             }}
                             
                             // ,��4n�;
-                            drawWindVectors(uGrid, vGrid, gridBounds, windLayer, {{ 
-                                color: 'rgba(0, 0, 128, 0.8)'
+                            drawWindVectors(uGrid, vGrid, gridBounds, windLayer, {color: 'rgba(0, 0, 128, 0.8)'
                             }});
                             
                             overlays["�4"] = windLayer;
@@ -707,8 +672,7 @@ class WindFieldElement(BaseWindFieldElement):
                                 var forecastGridData = processWindData(forecastData);
                                 
                                 if (forecastGridData.uGrid && forecastGridData.vGrid && forecastGridData.gridBounds) {{
-                                    drawWindVectors(forecastGridData.uGrid, forecastGridData.vGrid, forecastGridData.gridBounds, forecastLayer, {{ 
-                                        color: 'rgba(0, 128, 0, 0.8)'
+                                    drawWindVectors(forecastGridData.uGrid, forecastGridData.vGrid, forecastGridData.gridBounds, forecastLayer, {color: 'rgba(0, 128, 0, 0.8)'
                                     }});
                                     
                                     overlays["�,�4"] = forecastLayer;
@@ -719,8 +683,7 @@ class WindFieldElement(BaseWindFieldElement):
                             if (mapConfig.show_wind_shifts && windShifts.length > 0) {{
                                 windShifts.forEach(function(shift) {{
                                     // �������n\
-                                    var shiftMarker = L.circleMarker(shift.position, {{
-                                        radius: 8,
+                                    var shiftMarker = L.circleMarker(shift.position, {radius: 8,
                                         color: 'purple',
                                         weight: 2,
                                         fillColor: 'white',
@@ -745,8 +708,7 @@ class WindFieldElement(BaseWindFieldElement):
                             if (mapConfig.show_wind_trends && windTrends.length > 0) {{
                                 windTrends.forEach(function(trend) {{
                                     // ������n\
-                                    var trendLine = L.polyline(trend.points, {{
-                                        color: 'rgba(255, 165, 0, 0.8)',
+                                    var trendLine = L.polyline(trend.points, {color: 'rgba(255, 165, 0, 0.8)',
                                         weight: 2,
                                         dashArray: '4',
                                         className: 'wind-trend-line'
@@ -771,8 +733,7 @@ class WindFieldElement(BaseWindFieldElement):
                             if (mapConfig.show_terrain_effects && terrainEffects.length > 0) {{
                                 terrainEffects.forEach(function(effect) {{
                                     // �է�����n\
-                                    var effectPolygon = L.polygon(effect.polygon, {{
-                                        color: 'rgba(255, 0, 0, 0.5)',
+                                    var effectPolygon = L.polygon(effect.polygon, {color: 'rgba(255, 0, 0, 0.5)',
                                         weight: 1,
                                         fillColor: 'rgba(255, 0, 0, 0.2)',
                                         fillOpacity: 0.2 * effect.intensity,
@@ -797,10 +758,9 @@ class WindFieldElement(BaseWindFieldElement):
                             L.control.layers(null, overlays).addTo(map);
                             
                             // �nዒ��
-                            var legend = L.control({{ position: 'bottomright' }});
+                            var legend = L.control({position: 'bottomright' }});
                             
-                            legend.onAdd = function(map) {{
-                                var div = L.DomUtil.create('div', 'wind-field-legend');
+                            legend.onAdd = function(map) {var div = L.DomUtil.create('div', 'wind-field-legend');
                                 
                                 var minVel = mapConfig.min_velocity;
                                 var maxVel = mapConfig.max_velocity;
@@ -827,10 +787,8 @@ class WindFieldElement(BaseWindFieldElement):
                             
                             // h:ߒ-�
                             var bounds;
-                            if (trackPoints.length > 0) {{
-                                bounds = L.latLngBounds(trackPoints);
-                            }} else {{
-                                bounds = L.latLngBounds([
+                            if (trackPoints.length > 0) {bounds = L.latLngBounds(trackPoints);
+                            }} else {bounds = L.latLngBounds([
                                     [gridBounds[0][0], gridBounds[0][1]],
                                     [gridBounds[1][0], gridBounds[1][1]]
                                 ]);
@@ -839,8 +797,7 @@ class WindFieldElement(BaseWindFieldElement):
                             // ���ǣ������	�j4	
                             if (mapConfig.show_time_dimension && timeValues.length > 0) {{
                                 // ���ǣ����n-�
-                                var timeDimension = new L.TimeDimension({{
-                                    times: timeValues,
+                                var timeDimension = new L.TimeDimension({times: timeValues,
                                     currentTime: timeValues[0].getTime()
                                 }});
                                 
@@ -848,8 +805,7 @@ class WindFieldElement(BaseWindFieldElement):
                                 
                                 // ���ǣ�����������
                                 var tdControl = new L.Control.TimeDimension({{
-                                    player: {{
-                                        buffer: 1,
+                                    player: {buffer: 1,
                                         minBufferReady: 1,
                                         loop: mapConfig.animation_loop,
                                         transitionTime: mapConfig.animation_duration
@@ -860,10 +816,8 @@ class WindFieldElement(BaseWindFieldElement):
                             }}
                             
                             // �ՄkhSLh:U���Fk���
-                            if (mapConfig.center_auto && bounds) {{
-                                map.fitBounds(bounds);
-                            }} else {{
-                                map.setView(mapConfig.center, mapConfig.zoom_level);
+                            if (mapConfig.center_auto && bounds) {map.fitBounds(bounds);
+                            }} else {map.setView(mapConfig.center, mapConfig.zoom_level);
                             }}
                         }} else {{
                             // �4���L)(gMjD4
@@ -871,7 +825,7 @@ class WindFieldElement(BaseWindFieldElement):
                             message.className = 'report-map-message';
                             message.innerHTML = '<p>�4���nbLcWOB�~[�</p>';
                             
-                            var mapContainer = document.getElementById('{self.map_id}');
+                            var mapContainer = document.getElementById('self.map_id}');
                             mapContainer.appendChild(message);
                             
                             // ���-Ò-�
