@@ -249,7 +249,7 @@ class ListElement(BaseElement):
         
         # リストタイプ（順序付き/順序なし）の取得
         list_type = self.get_property("list_type", "unordered")
-        item_template = self.get_property("item_template", "{item}}")
+        item_template = self.get_property("item_template", "{item}")
         
         # CSSスタイルの取得
         css_style = self.get_css_styles()
@@ -441,10 +441,11 @@ class ChartElement(BaseElement):
         css_style = self.get_css_styles()
         
         # チャート設定のJSON取得
-        chart_config = {}
+        chart_config = {
             "type": chart_type,
             "data": data,
-            "options": "title": chart_title,
+            "options": {
+                "title": chart_title,
                 "responsive": True,
                 "maintainAspectRatio": False
             }
@@ -471,11 +472,11 @@ class ChartElement(BaseElement):
             <script>
                 (function() {{
                     // チャート設定
-                    var config = chart_config_json};
+                    var config = {chart_config_json};
                     
                     // チャート初期化
                     window.addEventListener('load', function() {{
-                        var ctx = document.getElementById('chart_id}').getContext('2d');
+                        var ctx = document.getElementById('{chart_id}').getContext('2d');
                         new Chart(ctx, config);
                     }});
                 }})();
@@ -555,7 +556,8 @@ class MapElement(BaseElement):
         map_config = {
             "type": map_type,
             "data": data,
-            "options": "center_auto": center_auto,
+            "options": {
+                "center_auto": center_auto,
                 "zoom_level": zoom_level,
                 "track_color": track_color
             }
@@ -584,11 +586,11 @@ class MapElement(BaseElement):
             <script>
                 (function() {{
                     // マップ設定
-                    var config = map_config_json};
+                    var config = {map_config_json};
                     
                     // マップ初期化
                     window.addEventListener('load', function() {{
-                        initMap('map_id}', config);
+                        initMap('{map_id}', config);
                     }});
                 }})();
             </script>
@@ -665,7 +667,8 @@ class DiagramElement(BaseElement):
         diagram_config = {
             "type": diagram_type,
             "data": data,
-            "options": "title": diagram_title
+            "options": {
+                "title": diagram_title
             }
         }
         
@@ -682,11 +685,11 @@ class DiagramElement(BaseElement):
             <script>
                 (function() {{
                     // ダイアグラム設定
-                    var config = diagram_config_json};
+                    var config = {diagram_config_json};
                     
                     // ダイアグラム初期化
                     window.addEventListener('load', function() {{
-                        initDiagram('diagram_id}', config);
+                        initDiagram('{diagram_id}', config);
                     }});
                 }})();
             </script>
