@@ -70,7 +70,7 @@ try:
                     self.data = data if data is not None else pd.DataFrame()
                     
                     # カテゴリー別のルール分類
-                    self.rule_categories = {}
+                    self.rule_categories = {
                         "completeness": ["Required Columns Check", "No Null Values Check"],
                         "accuracy": ["Value Range Check", "Spatial Consistency Check"],
                         "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
@@ -309,10 +309,12 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
             "accuracy_score": self.quality_scores.get("accuracy", 100.0),
             "consistency_score": self.quality_scores.get("consistency", 100.0),
             "total_issues": total_issues,
-            "issue_counts": "missing_data": missing_data_count,
+            "issue_counts": {
+                "missing_data": missing_data_count,
                 "out_of_range": out_of_range_count,
                 "duplicates": dupes_count,
                 "spatial_anomalies": spatial_count,
                 "temporal_anomalies": temporal_count
             },
             "impact_level": self._determine_impact_level(self.quality_scores.get("total", 100.0))
+        }

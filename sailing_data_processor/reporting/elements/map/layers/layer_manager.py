@@ -505,7 +505,7 @@ class LayerManager:
         # 変数定義部分
         var_defs = []
         var_defs.append(f"// レイヤー管理用オブジェクト")
-        var_defs.append(f"var layerManager = {}};")
+        var_defs.append(f"var layerManager = {{}};")
         
         for layer in ordered_layers:
             if not layer.visible:
@@ -556,21 +556,10 @@ class LayerManager:
             レイヤーマネージャーの辞書表現
         """
         return {
-            "layers": layer_id: layer.to_dict() for layer_id, layer in self._layers.items()},
+            "layers": {layer_id: layer.to_dict() for layer_id, layer in self._layers.items()},
             "groups": {group_name: group_ids[:] for group_name, group_ids in self._groups.items()},
             "dependencies": {layer_id: list(deps) for layer_id, deps in self._dependencies.items()}
- {
-            "layers": layer_id: layer.to_dict() for layer_id, layer in self._layers.items()},
-            "groups": {group_name: group_ids[:] for group_name, group_ids in self._groups.items()},
-            "dependencies": {layer_id: list(deps) for layer_id, deps in self._dependencies.items()}}
-        return {
-            "layers": layer_id: layer.to_dict() for layer_id, layer in self._layers.items()},
-            "groups": {group_name: group_ids[:] for group_name, group_ids in self._groups.items()},
-            "dependencies": {layer_id: list(deps) for layer_id, deps in self._dependencies.items()}}
- {
-            "layers": layer_id: layer.to_dict() for layer_id, layer in self._layers.items()},
-            "groups": {group_name: group_ids[:] for group_name, group_ids in self._groups.items()},
-            "dependencies": {layer_id: list(deps) for layer_id, deps in self._dependencies.items()}}}
+        }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any], layer_classes: Dict[str, Type[BaseMapLayer]]) -> "LayerManager":

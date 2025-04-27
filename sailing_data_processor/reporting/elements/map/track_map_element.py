@@ -291,6 +291,7 @@ class TrackMapElement(BaseMapElement):
                 trackLine = L.polyline(trackPoints, {{
                     color: 'track_color}',
                     weight: {track_width},
+                    }
                     opacity: 0.8,
                     lineJoin: 'round'
                 }});
@@ -327,11 +328,13 @@ class TrackMapElement(BaseMapElement):
                             
                             // カスタムイベントの発火
                             var event = new CustomEvent('track_deselected', {{ detail: {{ element_id: 'self.element_id}' }} }});
+                            }
                             document.dispatchEvent(event);
                         }} else {{
                             this._selected = true;
                             this.setStyle({{ color: 'selection_color}', weight: {track_width + 2}, opacity: 0.9 }});
                             
+                            }
                             // カスタムイベントの発火
                             var latLng = e.latlng;
                             var event = new CustomEvent('track_selected', {{ 
@@ -352,6 +355,7 @@ class TrackMapElement(BaseMapElement):
             
             // レイヤーコントロールへの追加
             var overlayLayers = {map_var}._layers;
+            }
             for (var key in overlayLayers) {{
                 if (overlayLayers[key] instanceof L.Control.Layers) {overlayLayers[key].addOverlay(trackLayerGroup, "Track");
                     overlayLayers[key].addOverlay(markerLayerGroup, "Markers");
@@ -390,6 +394,7 @@ class TrackMapElement(BaseMapElement):
                 
                 // カスタムマーカーの追加
                 var customMarkers = {custom_markers_json};
+                }
                 if (customMarkers && customMarkers.length > 0) {{
                     for (var i = 0; i < customMarkers.length; i++) {{
                         var markerData = customMarkers[i];
@@ -426,6 +431,7 @@ class TrackMapElement(BaseMapElement):
             // グローバル変数として保存（外部からアクセス用）
             window['{self.map_id}_track'] = trackLine;
             window['{self.map_id}_track_data'] = {data_var};
+            }
         """
     
     def render(self, context: Dict[str, Any]) -> str:
