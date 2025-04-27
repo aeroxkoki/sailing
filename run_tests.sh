@@ -190,18 +190,18 @@ if command -v pytest &> /dev/null; then
     
     if [ "$TEST_MODE" == "unit" ]; then
         echo -e "${YELLOW}単体テストのみ実行します${NC}"
-        pytest -v -m "unit" --no-header -s > "$PYTEST_LOG" 2>&1
+        python3 -m pytest -v -m "unit" --cov=sailing_data_processor --cov-report=term --no-header -s > "$PYTEST_LOG" 2>&1
     elif [ "$TEST_MODE" == "integration" ]; then
         echo -e "${YELLOW}統合テストのみ実行します${NC}"
-        pytest -v -m "integration" --no-header -s > "$PYTEST_LOG" 2>&1
+        python3 -m pytest -v -m "integration" --cov=sailing_data_processor --cov-report=term --no-header -s > "$PYTEST_LOG" 2>&1
     elif [ "$TEST_MODE" == "wind" ]; then
         echo -e "${YELLOW}風関連テストのみ実行します${NC}"
         echo "テスト対象: tests/test_wind_*.py"
-        python3 -m pytest tests/test_wind_*.py -v --no-header -s > "$PYTEST_LOG" 2>&1
+        python3 -m pytest tests/test_wind_*.py -v --cov=sailing_data_processor --cov-report=term --no-header -s > "$PYTEST_LOG" 2>&1
     else
         # すべてのテストを実行
         echo -e "${YELLOW}すべてのテストを実行します${NC}"
-        python3 -m pytest -v --no-header -s > "$PYTEST_LOG" 2>&1
+        python3 -m pytest -v --cov=sailing_data_processor --cov-report=term --cov-config=.coveragerc --no-header -s > "$PYTEST_LOG" 2>&1
     fi
     
     PYTEST_STATUS=$?

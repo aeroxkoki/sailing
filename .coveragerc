@@ -1,0 +1,46 @@
+[run]
+# ソースパッケージの指定
+source = 
+    sailing_data_processor
+    tests
+
+# 対象外にするファイルやディレクトリ
+omit =
+    */__pycache__/*
+    */tests/fixtures/*
+    */venv/*
+    */.venv/*
+    */site-packages/*
+    setup.py
+
+[report]
+# レポートに表示するもの
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    pass
+    raise ImportError
+    raise ValueError
+    except ImportError
+    if self.debug:
+
+# 対象外にするファイルやディレクトリ（レポート用）
+omit =
+    */__pycache__/*
+    */tests/fixtures/*
+    */venv/*
+    */.venv/*
+    */site-packages/*
+    setup.py
+
+# 欠損行の表示
+show_missing = True
+
+# カバレッジ下限値（%）
+fail_under = 70
+
+[html]
+# HTMLレポートディレクトリ
+directory = coverage_html_report
