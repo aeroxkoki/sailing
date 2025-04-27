@@ -2,8 +2,8 @@
 """
 sailing_data_processor.reporting.interaction
 
-���ȁ �n��鯷��_��ЛY��ñ��gY
-������ƭ���1Лգ���jin_��ЛW~Y
+ユーザーインタラクション機能を提供するモジュールです。
+ビューの同期やコンテキスト管理などの機能を実装します。
 """
 
 from sailing_data_processor.reporting.interaction.view_synchronizer import ViewSynchronizer

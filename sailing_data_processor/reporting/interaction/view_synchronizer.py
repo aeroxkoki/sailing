@@ -2,8 +2,8 @@
 """
 sailing_data_processor.reporting.interaction.view_synchronizer
 
-����������鹒ЛY�����gY
-��������������]n�n���������ȓn��W~Y
+ビュー間の同期機能を提供するモジュールです。
+異なるビューやチャート間の連携を実現するクラスを実装します。
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple, Set, Callable
@@ -13,52 +13,53 @@ logger = logging.getLogger(__name__)
 
 class ViewSynchronizer:
     """
-    �����������
+    ビュー同期マネージャー
     
-    ��������������]n�n���������ȓn
-    ��W~Y
+    異なるビューやチャート間の連携を実現するための
+    クラスを実装します。
     """
     
     def __init__(self):
-        """"""
+        """初期化"""
         self._views = {}  # id -> view
         self._contexts = {}  # id -> context
         self._connections = {}  # (source_id, target_id) -> connection_info
         
-        # ��������
+        # イベントハンドラー
         self._event_handlers = {}
     
     def register_view(self, view_id: str, view_object: Any, view_type: Optional[str] = None) -> None:
         """
-        ����{2
+        ビュー登録
         
         Parameters
         ----------
         view_id : str
-            ���nID
+            ビューID
         view_object : Any
-            ����ָ���
+            ビューオブジェクト
         view_type : Optional[str], optional
-            ���n.^, by default None
+            ビュータイプ, by default None
         """
-        self._views[view_id] = "object": view_object,
+        self._views[view_id] = {
+            "object": view_object,
             "type": view_type or view_object.__class__.__name__
         }
         self._contexts[view_id] = {}
     
     def unregister_view(self, view_id: str) -> bool:
         """
-        ���n{2��d
+        ビュー登録解除
         
         Parameters
         ----------
         view_id : str
-            ���nID
+            ビューID
             
         Returns
         -------
         bool
-            �dk�W_4oTrue
+            解除成功時はTrue
         """
         if view_id in self._views:
             del self._views[view_id]
@@ -68,43 +69,43 @@ class ViewSynchronizer:
         if view_id in self._contexts:
             del self._contexts[view_id]
         
-        # �#Y����Jd
-        self._connections = k: v for k, v in self._connections.items() 
+        # 関連する接続を削除
+        self._connections = {k: v for k, v in self._connections.items() 
                             if k[0] != view_id and k[1] != view_id}
         
         return True
     
     def get_registered_views(self) -> List[str]:
         """
-        {2U�fD����nID�Ȓ֗
+        登録済みビューIDリスト取得
         
         Returns
         -------
         List[str]
-            ���IDn��
+            ビューIDのリスト
         """
         return list(self._views.keys())
     
     def connect_views(self, source_id: str, target_id: str, sync_props: Optional[List[str]] = None,
                      bidirectional: bool = False) -> bool:
         """
-        ����n���-�
+        ビュー間の接続
         
         Parameters
         ----------
         source_id : str
-            ������ID
+            ソースビューID
         target_id : str
-            ��������ID
+            ターゲットビューID
         sync_props : Optional[List[str]], optional
-            Y����ƣ��, by default None
+            同期するプロパティ, by default None
         bidirectional : bool, optional
-            ̹Y�KiFK, by default False
+            双方向同期するか, by default False
             
         Returns
         -------
         bool
-            ��k�W_4oTrue
+            接続成功時はTrue
         """
         if source_id not in self._views or target_id not in self._views:
             return False
@@ -112,13 +113,14 @@ class ViewSynchronizer:
         default_props = ["time", "selection", "zoom", "center"]
         sync_properties = sync_props or default_props
         
-        self._connections[(source_id, target_id)] = "sync_properties": sync_properties,
+        self._connections[(source_id, target_id)] = {
+            "sync_properties": sync_properties,
             "active": True
         }
         
-        # ̹n4o�n�����
+        # 双方向の場合は逆方向の接続も設定
         if bidirectional:
-            self._connections[(target_id, source_id)] = {}
+            self._connections[(target_id, source_id)] = {
                 "sync_properties": sync_properties,
                 "active": True
             }
@@ -127,19 +129,19 @@ class ViewSynchronizer:
     
     def disconnect_views(self, source_id: str, target_id: str) -> bool:
         """
-        ����n����d
+        ビュー間の接続解除
         
         Parameters
         ----------
         source_id : str
-            ������ID
+            ソースビューID
         target_id : str
-            ��������ID
+            ターゲットビューID
             
         Returns
         -------
         bool
-            �dk�W_4oTrue
+            解除成功時はTrue
         """
         if (source_id, target_id) in self._connections:
             del self._connections[(source_id, target_id)]
@@ -149,32 +151,32 @@ class ViewSynchronizer:
     
     def get_connections(self) -> Dict[Tuple[str, str], Dict[str, Any]]:
         """
-        Yyfn���1�֗
+        現在の接続情報取得
         
         Returns
         -------
         Dict[Tuple[str, str], Dict[str, Any]]
-            ���1n��
+            接続情報の辞書
         """
         return self._connections.copy()
     
     def set_connection_active(self, source_id: str, target_id: str, active: bool) -> bool:
         """
-        ��n��ƣֶK�-�
+        接続のアクティブ状態設定
         
         Parameters
         ----------
         source_id : str
-            ������ID
+            ソースビューID
         target_id : str
-            ��������ID
+            ターゲットビューID
         active : bool
-            ��ƣ�kY�KiFK
+            アクティブ状態するか
             
         Returns
         -------
         bool
-            -�k�W_4oTrue
+            設定成功時はTrue
         """
         if (source_id, target_id) in self._connections:
             self._connections[(source_id, target_id)]["active"] = active
@@ -184,57 +186,57 @@ class ViewSynchronizer:
     
     def update_view_context(self, view_id: str, context_update: Dict[str, Any]) -> bool:
         """
-        �����ƭ�Ȓ��
+        ビューコンテキスト更新
         
         Parameters
         ----------
         view_id : str
-            ���ID
+            ビューID
         context_update : Dict[str, Any]
-            ��Y���ƭ���1
+            更新するコンテキスト情報
             
         Returns
         -------
         bool
-            ��k�W_4oTrue
+            更新成功時はTrue
         """
         if view_id not in self._contexts:
             return False
         
-        # ��ƭ����
+        # コンテキスト更新
         self._contexts[view_id].update(context_update)
         
-        # ��Hk	���
+        # 他方に変更を伝播
         self._propagate_context_changes(view_id, context_update)
         
         return True
     
     def get_view_context(self, view_id: str) -> Optional[Dict[str, Any]]:
         """
-        �����ƭ�Ȓ֗
+        ビューコンテキスト取得
         
         Parameters
         ----------
         view_id : str
-            ���ID
+            ビューID
             
         Returns
         -------
         Optional[Dict[str, Any]]
-            ��ƭ���1
+            コンテキスト情報
         """
         return self._contexts.get(view_id, {}).copy() if view_id in self._contexts else None
     
     def add_event_handler(self, event_type: str, handler: Callable[[str, Any], None]) -> None:
         """
-        ����������
+        イベントハンドラー追加
         
         Parameters
         ----------
         event_type : str
-            ���ȿ�� ("time_change", "selection_change", etc.)
+            イベント種別 ("time_change", "selection_change", etc.)
         handler : Callable[[str, Any], None]
-            ����p (view_id, value) �pk֋
+            ハンドラ関数 (view_id, value) を受け取る
         """
         if event_type not in self._event_handlers:
             self._event_handlers[event_type] = []
@@ -243,19 +245,19 @@ class ViewSynchronizer:
     
     def remove_event_handler(self, event_type: str, handler: Callable[[str, Any], None]) -> bool:
         """
-        ��������Jd
+        イベントハンドラー削除
         
         Parameters
         ----------
         event_type : str
-            ���ȿ��
+            イベント種別
         handler : Callable[[str, Any], None]
-            JdY�����p
+            削除するハンドラ関数
             
         Returns
         -------
         bool
-            Jdk�W_4oTrue
+            削除成功時はTrue
         """
         if event_type in self._event_handlers and handler in self._event_handlers[event_type]:
             self._event_handlers[event_type].remove(handler)
@@ -265,70 +267,70 @@ class ViewSynchronizer:
     
     def _propagate_context_changes(self, source_id: str, changes: Dict[str, Any]) -> None:
         """
-        ��ƭ��	����Hk�
+        コンテキスト変更を他方に伝播
         
         Parameters
         ----------
         source_id : str
-            ������ID
-        changes : Dict[str, Any]
-            	�
+            ソースビューID
+        changes : Dict[str, Any]]
+            変更情報
         """
-        # 	�n�����g2b	
+        # 変更の循環参照を避ける
         propagated = set()
         self._propagate_to_targets(source_id, changes, propagated)
     
     def _propagate_to_targets(self, source_id: str, changes: Dict[str, Any], 
                              propagated: Set[Tuple[str, str]]) -> None:
         """
-        	����Hk�0�k�
+        変更を対象ビューに再帰的に伝播
         
         Parameters
         ----------
         source_id : str
-            ������ID
+            ソースビューID
         changes : Dict[str, Any]
-            	�
+            変更情報
         propagated : Set[Tuple[str, str]]
-            �k�n��n���
+            既に伝播した接続のセット
         """
         for (src, tgt), conn_info in self._connections.items():
-            # �k�n��o����
+            # 既に処理した接続はスキップ
             if (src, tgt) in propagated:
                 continue
                 
-            # ^��ƣ�~_o�an��o����
+            # 非アクティブまたは異なるソースはスキップ
             if not conn_info["active"] or src != source_id:
                 continue
                 
-            # Y����ƣ�գ���
+            # 同期するプロパティをフィルタリング
             sync_props = conn_info["sync_properties"]
             filtered_changes = {k: v for k, v in changes.items() if k in sync_props}
             
             if filtered_changes:
-                # ����k��
+                # 処理済みに記録
                 propagated.add((src, tgt))
                 
-                # ��������n��ƭ�Ȓ��
+                # ターゲットビューのコンテキスト更新
                 if tgt in self._contexts:
                     self._contexts[tgt].update(filtered_changes)
                 
-                # �����������
+                # ターゲットビュー更新
                 self._update_target_view(tgt, filtered_changes)
                 
-                # 	���0�k�
+                # 変更を再帰的に伝播
                 self._propagate_to_targets(tgt, filtered_changes, propagated)
     
     def _update_target_view(self, target_id: str, changes: Dict[str, Any]) -> None:
         """
-        �����������
+        ターゲットビュー更新
         
         Parameters
         ----------
         target_id : str
-            ��������ID
+            ターゲットビューID
         changes : Dict[str, Any]
-            	�
+            変更情報
         """
         target_view_info = self._views.get(target_id)
         if not target_view_info:
@@ -336,31 +338,31 @@ class ViewSynchronizer:
             
         target_view = target_view_info["object"]
         
-        # ������k�X_���
+        # 各プロパティに対して処理
         try:
             for prop, value in changes.items():
-                # time ���ƣn
+                # time プロパティの処理
                 if prop == "time" and hasattr(target_view, "set_current_time"):
                     target_view.set_current_time(value)
                 
-                # selection ���ƣn
+                # selection プロパティの処理
                 elif prop == "selection" and hasattr(target_view, "set_selection"):
                     target_view.set_selection(value)
                 
-                # zoom ���ƣn
+                # zoom プロパティの処理
                 elif prop == "zoom" and hasattr(target_view, "set_zoom"):
                     target_view.set_zoom(value)
                 
-                # center ���ƣn
+                # center プロパティの処理
                 elif prop == "center" and hasattr(target_view, "set_center"):
                     if isinstance(value, (list, tuple)) and len(value) >= 2:
                         target_view.set_center(value[0], value[1])
                 
-                # ]n�n���ƣn
+                # その他のプロパティの処理
                 elif hasattr(target_view, f"set_{prop}"):
                     getattr(target_view, f"set_{prop}")(value)
                 
-                # ��������n|s�W
+                # イベントハンドラーの実行
                 if prop in self._event_handlers:
                     for handler in self._event_handlers[prop]:
                         try:
@@ -371,7 +373,7 @@ class ViewSynchronizer:
             logger.error(f"Error updating target view {target_id}: {e}")
     
     def reset(self) -> None:
-        """����������"""
+        """全ての状態をリセット"""
         self._views = {}
         self._contexts = {}
         self._connections = {}
@@ -379,21 +381,21 @@ class ViewSynchronizer:
     
     def to_dict(self) -> Dict[str, Any]:
         """
-        ��餺��j��k	�
+        状態を辞書形式に変換
         
         Returns
         -------
         Dict[str, Any]
-            ��餺(n���
+            状態の辞書
         """
-        # ����1�ָ����gdO	
+        # ビュー情報（オブジェクト自体は除外）
         views_info = {}
         for view_id, view_info in self._views.items():
             views_info[view_id] = {
                 "type": view_info["type"]
             }
         
-        # ���1
+        # 接続情報
         connections = {}
         for (src, tgt), conn_info in self._connections.items():
             connections[f"{src}->{tgt}"] = {
@@ -412,24 +414,24 @@ class ViewSynchronizer:
     @classmethod
     def from_dict(cls, data: Dict[str, Any], view_objects: Dict[str, Any]) -> 'ViewSynchronizer':
         """
-        ��K���󹒩C
+        辞書から状態を復元
         
         Parameters
         ----------
         data : Dict[str, Any]
-            ��餺U�_���
+            状態を表す辞書
         view_objects : Dict[str, Any]
-            ���IDh�ָ���n����
+            ビューIDとオブジェクトの対応表
             
         Returns
         -------
         ViewSynchronizer
-            �CU�_���
+            復元されたインスタンス
         """
         instance = cls()
         
-        # ����{2
-        for view_id, view_info in data.get("views", }).items():
+        # ビュー登録
+        for view_id, view_info in data.get("views", {}).items():
             if view_id in view_objects:
                 instance.register_view(
                     view_id=view_id,
@@ -437,12 +439,12 @@ class ViewSynchronizer:
                     view_type=view_info.get("type")
                 )
         
-        # ��ƭ�Ȓ�C
+        # コンテキスト復元
         for view_id, context in data.get("contexts", {}).items():
             if view_id in instance._contexts:
                 instance._contexts[view_id] = context.copy()
         
-        # ����C
+        # 接続復元
         for _, conn_info in data.get("connections", {}).items():
             source_id = conn_info.get("source")
             target_id = conn_info.get("target")
