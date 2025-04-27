@@ -97,7 +97,7 @@ class RequiredColumnsRule(ValidationRule):
         
         is_valid = len(missing_columns) == 0
         
-        details = {}
+        details = {
             "missing_columns": missing_columns,
             "found_columns": [col for col in self.required_columns if col in data.columns],
             "all_columns": list(data.columns)
@@ -160,7 +160,7 @@ class ValueRangeRule(ValidationRule):
             検証結果と詳細情報
         """
         if self.column not in data.columns:
-            return False, {"error": f"カラム self.column} が存在しません"}
+            return False, {"error": f"カラム {self.column} が存在しません"}
         
         out_of_range_indices = []
         
@@ -299,7 +299,7 @@ class DuplicateTimestampRule(ValidationRule):
             検証結果と詳細情報
         """
         if self.timestamp_column not in data.columns:
-            return False, {"error": f"タイムスタンプカラム self.timestamp_column} が存在しません"}
+            return False, {"error": f"タイムスタンプカラム {self.timestamp_column} が存在しません"}
         
         # 重複するタイムスタンプを検出
         duplicate_mask = data[self.timestamp_column].duplicated()
@@ -378,7 +378,7 @@ class SpatialConsistencyRule(ValidationRule):
         missing_columns = [col for col in required_columns if col not in data.columns]
         
         if missing_columns:
-            return False, {"error": f"必要なカラムがありません: ', '.join(missing_columns)}"}
+            return False, {"error": f"必要なカラムがありません: {', '.join(missing_columns)}"}
         
         if len(data) < 2:
             return True, {"message": "データポイントが不足しているため検証をスキップします"}
@@ -505,7 +505,7 @@ class TemporalConsistencyRule(ValidationRule):
             検証結果と詳細情報
         """
         if self.timestamp_column not in data.columns:
-            return False, {"error": f"タイムスタンプカラム self.timestamp_column} が存在しません"}
+            return False, {"error": f"タイムスタンプカラム {self.timestamp_column} が存在しません"}
         
         if len(data) < 2:
             return True, {"message": "データポイントが不足しているため検証をスキップします"}
@@ -713,13 +713,13 @@ class DataValidator:
                             "type": "duplicate_timestamp_fix",
                             "timestamp": ts_str,
                             "affected_indices": duplicates[1:],
-                            "description": f"len(duplicates) - 1}個の重複タイムスタンプを修正しました"
+                            "description": f"{len(duplicates) - 1}個の重複タイムスタンプを修正しました"
                         })
                     except Exception as e:
                         fixes.append({
                             "type": "error",
                             "timestamp": ts_str,
-                            "description": f"重複タイムスタンプの修正に失敗しました: e}"
+                            "description": f"重複タイムスタンプの修正に失敗しました: {e}"
                         })
         
         # 欠損値の修正
@@ -743,7 +743,7 @@ class DataValidator:
                             "column": col,
                             "method": "linear_interpolation",
                             "count": count,
-                            "description": f"カラム 'col}' の欠損値 {count}個を線形補間で修正しました"
+                            "description": f"カラム '{col}' の欠損値 {count}個を線形補間で修正しました"
                         })
                     
                     # その他の数値カラムの欠損値も線形補間
@@ -755,7 +755,7 @@ class DataValidator:
                             "column": col,
                             "method": "linear_interpolation",
                             "count": count,
-                            "description": f"カラム 'col}' の欠損値 {count}個を線形補間で修正しました"
+                            "description": f"カラム '{col}' の欠損値 {count}個を線形補間で修正しました"
                         })
         
         # 空間的整合性の問題（異常な速度）を修正
@@ -775,7 +775,7 @@ class DataValidator:
                         "type": "spatial_anomaly_fix",
                         "method": "remove_anomalies",
                         "removed_count": len(anomaly_indices),
-                        "description": f"空間的に整合性のない len(anomaly_indices)}個のポイントを削除しました"
+                        "description": f"空間的に整合性のない {len(anomaly_indices)}個のポイントを削除しました"
                     })
         
         # 時間的整合性の問題を修正
@@ -795,7 +795,7 @@ class DataValidator:
                         "type": "temporal_anomaly_fix",
                         "method": "remove_reverse_time",
                         "removed_count": len(reverse_indices),
-                        "description": f"時間的に逆行している len(reverse_indices)}個のポイントを削除しました"
+                        "description": f"時間的に逆行している {len(reverse_indices)}個のポイントを削除しました"
                     })
         
         # ソートとインデックスのリセット
