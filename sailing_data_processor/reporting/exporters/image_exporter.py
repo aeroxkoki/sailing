@@ -169,6 +169,7 @@ class ImageExporter(BaseExporter):
                 image_data = self._generate_combined_image(data, **kwargs)
             else:
                 self.add_error(f"未対応のコンテンツタイプ: {content_type}")
+                }
                 return None
             
             if image_data is None:
@@ -188,6 +189,8 @@ class ImageExporter(BaseExporter):
         except Exception as e:
             self.add_error(f"画像生成中にエラーが発生しました: {str(e)}")
             logger.error(f"Image generation failed: {str(e)}", exc_info=True)
+            }
+            }
             return None
     
     def _generate_chart_image(self, data, **kwargs):
@@ -235,8 +238,10 @@ class ImageExporter(BaseExporter):
             if not title and hasattr(data, 'metadata') and isinstance(data.metadata, dict):
                 if 'name' in data.metadata:
                     title = f"セーリングデータ: {data.metadata['name']}"
+                    }
                 elif 'date' in data.metadata:
                     title = f"セーリングデータ: {data.metadata['date']}"
+                    }
             
             # デフォルトタイトル
             if not title:
@@ -263,6 +268,7 @@ class ImageExporter(BaseExporter):
             self._create_pie_chart(df, ax, **kwargs)
         else:
             self.add_error(f"未対応のチャートタイプ: {chart_type}")
+            }
             plt.close(fig)
             return None
         
@@ -274,6 +280,7 @@ class ImageExporter(BaseExporter):
         if self.options.get("include_timestamp", True):
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             plt.figtext(0.01, 0.01, f"生成日時: {timestamp}", fontsize=8, alpha=0.7)
+            }
         
         # 背景の設定
         if self.options.get("transparent", False):
@@ -388,6 +395,7 @@ class ImageExporter(BaseExporter):
         
         if y_column is None or y_column not in df.columns:
             self.add_error(f"棒グラフ作成のためのY軸データが見つかりません: {y_column}")
+            }
             return
         
         # 棒グラフの作成
@@ -445,6 +453,7 @@ class ImageExporter(BaseExporter):
         
         if y_column is None or y_column not in df.columns:
             self.add_error(f"散布図作成のためのY軸データが見つかりません: {y_column}")
+            }
             return
         
         # 散布図の作成
@@ -591,8 +600,10 @@ class ImageExporter(BaseExporter):
             if not title and hasattr(data, 'metadata') and isinstance(data.metadata, dict):
                 if 'name' in data.metadata:
                     title = f"セーリングトラック: {data.metadata['name']}"
+                    }
                 elif 'date' in data.metadata:
                     title = f"セーリングトラック: {data.metadata['date']}"
+                    }
             
             # デフォルトタイトル
             if not title:
@@ -613,6 +624,7 @@ class ImageExporter(BaseExporter):
             self._create_heatmap(df, ax, **kwargs)
         else:
             self.add_error(f"未対応のマップタイプ: {map_type}")
+            }
             plt.close(fig)
             return None
         
@@ -624,6 +636,7 @@ class ImageExporter(BaseExporter):
         if self.options.get("include_timestamp", True):
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             plt.figtext(0.01, 0.01, f"生成日時: {timestamp}", fontsize=8, alpha=0.7)
+            }
         
         # 背景の設定
         if self.options.get("transparent", False):
@@ -714,6 +727,7 @@ class ImageExporter(BaseExporter):
                             fc='red', ec='red', alpha=0.6)
             except Exception as e:
                 self.add_warning(f"風向表示でエラーが発生しました: {str(e)}")
+                }
         
         # カラーマッピング（速度など）
         color_by = kwargs.get("color_by", "speed" if "speed" in df.columns else None)
@@ -738,6 +752,7 @@ class ImageExporter(BaseExporter):
                 ax.lines[0].set_alpha(0.3)
             except Exception as e:
                 self.add_warning(f"カラーマッピングでエラーが発生しました: {str(e)}")
+                }
         
         # 軸ラベルの設定
         ax.set_xlabel('経度', fontsize=self.options.get("axis_font_size", 12))
@@ -767,6 +782,7 @@ class ImageExporter(BaseExporter):
         
         if not value_column or value_column not in df.columns:
             self.add_error(f"ヒートマップ作成のための値列が指定されていません: {value_column}")
+            }
             return
         
         # カラーマップの設定
@@ -914,8 +930,10 @@ class ImageExporter(BaseExporter):
             if not title and hasattr(data, 'metadata') and isinstance(data.metadata, dict):
                 if 'name' in data.metadata:
                     title = f"セーリングデータ分析: {data.metadata['name']}"
+                    }
                 elif 'date' in data.metadata:
                     title = f"セーリングデータ分析: {data.metadata['date']}"
+                    }
             
             # デフォルトタイトル
             if not title:
@@ -927,6 +945,7 @@ class ImageExporter(BaseExporter):
         if self.options.get("include_timestamp", True):
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             plt.figtext(0.01, 0.01, f"生成日時: {timestamp}", fontsize=8, alpha=0.7)
+            }
         
         # 背景の設定
         if self.options.get("transparent", False):
@@ -975,24 +994,28 @@ class ImageExporter(BaseExporter):
         output_format = self.options.get("format", "png")
         if output_format.lower() not in ["png", "jpeg", "jpg", "svg", "pdf"]:
             self.add_warning(f"未対応の画像形式: {output_format}, 'png'を使用します。")
+            }
             self.options["format"] = "png"
         
         # コンテンツタイプの検証
         content_type = self.options.get("content_type", "chart")
         if content_type not in ["chart", "map", "combined"]:
             self.add_warning(f"未対応のコンテンツタイプ: {content_type}, 'chart'を使用します。")
+            }
             self.options["content_type"] = "chart"
         
         # チャートタイプの検証
         chart_type = self.options.get("chart_type", "line")
         if chart_type not in ["line", "bar", "scatter", "pie"]:
             self.add_warning(f"未対応のチャートタイプ: {chart_type}, 'line'を使用します。")
+            }
             self.options["chart_type"] = "line"
         
         # マップタイプの検証
         map_type = self.options.get("map_type", "track")
         if map_type not in ["track", "heatmap"]:
             self.add_warning(f"未対応のマップタイプ: {map_type}, 'track'を使用します。")
+            }
             self.options["map_type"] = "track"
         
         # スタイルの検証
@@ -1001,6 +1024,7 @@ class ImageExporter(BaseExporter):
             available_styles = plt.style.available
             if style != "default" and style not in available_styles:
                 self.add_warning(f"未対応のスタイル: {style}, 'default'を使用します。")
+                }
                 self.options["style"] = "default"
         
         return True

@@ -148,6 +148,8 @@ class BaseChartElement(BaseElement):
                 "title": {
                     "display": bool(self.title),
                     "text": self.title
+                }
+            }
  {
             "type": self.chart_type,
             "data": data,
@@ -175,6 +177,7 @@ class BaseChartElement(BaseElement):
             "title": {
                 "display": bool(self.title),
                 "text": self.title
+            }
  {
             "title": "display": bool(self.title),
                 "text": self.title}
@@ -184,6 +187,7 @@ class BaseChartElement(BaseElement):
             "animation": {
                 "duration": 1000,
                 "easing": "easeOutQuart"
+            }
  "duration": 1000,
                 "easing": "easeOutQuart"}
             },
@@ -191,6 +195,8 @@ class BaseChartElement(BaseElement):
                 "legend": {
                     "display": True,
                     "position": "top"
+                }
+            }
  {
                 "legend": "display": True,
                     "position": "top"}
@@ -199,6 +205,7 @@ class BaseChartElement(BaseElement):
                     "enabled": True,
                     "mode": "index",
                     "intersect": False
+                }
  "enabled": True,
                     "mode": "index",
                     "intersect": False}

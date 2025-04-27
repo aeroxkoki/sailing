@@ -89,6 +89,9 @@ kh:Y������ЛW~Y
             "start": {"color": "#FFC107", "symbol": "�", "label": "����"},
             "finish": {"color": "#9C27B0", "symbol": "�", "label": "գ�÷�"},
             "custom": {"color": "#607D8B", "symbol": "", "label": "����"}
+            }
+            }
+            }
  {
             "tack": "color": "#FF5722", "symbol": "�", "label": "�ï"},
             "jibe": {"color": "#2196F3", "symbol": "�", "label": "���"},
@@ -97,6 +100,9 @@ kh:Y������ЛW~Y
             "finish": {"color": "#9C27B0", "symbol": "�", "label": "գ�÷�"},
             "custom": {"color": "#607D8B", "symbol": "", "label": "����"}}
         }
+            }
+            }
+            }
         
         # ���ȿ��hգ���n��
         self.set_property("event_type_fields", {
@@ -151,6 +157,7 @@ kh:Y������ЛW~Y
                     timestamp = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
                 except (ValueError, TypeError):
                     raise ValueError(f"!�j��๿��b: {timestamp}")
+                    }
         
         if not isinstance(timestamp, datetime):
             raise TypeError("��๿��odatetime�ָ���~_oISObn�WgB�ŁLB�~Y")
@@ -158,6 +165,7 @@ kh:Y������ЛW~Y
         # ���ȿ��n<
         if event_type not in self._event_types and event_type != "custom":
             raise ValueError(f"!�j���ȿ��: {event_type}")
+            }
         
         # �����1�\
         event = {

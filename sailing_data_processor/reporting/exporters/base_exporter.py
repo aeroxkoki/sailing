@@ -130,6 +130,8 @@ class BaseExporter:
             except Exception as e:
                 self.errors.append(f"Item {i+1} export failed: {str(e)}")
                 logger.error(f"Failed to export item {i+1}: {str(e)}", exc_info=True)
+                }
+                }
         
         return output_paths
     

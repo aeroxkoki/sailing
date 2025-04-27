@@ -222,6 +222,7 @@ def simplify_track(track_data: List[Dict[str, Any]], tolerance: float = 5.0,
         step = len(result_indices) / max_points
         new_indices = {0, len(track_data) - 1}  # 始点と終点は保持
         
+        }
         idx = 1
         while len(new_indices) < max_points - 1 and idx < len(result_indices) - 1:
             new_indices.add(result_indices[idx])
@@ -526,6 +527,7 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "min_lat": min_lat if min_lat != float('inf') else 0,
             "min_lng": min_lng if min_lng != float('inf') else 0,
             "max_lat": max_lat if max_lat != float('-inf') else 0,
+        }
  {
         "distance": total_distance,
         "duration": duration,

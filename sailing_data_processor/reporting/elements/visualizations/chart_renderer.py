@@ -146,6 +146,7 @@ class PlotlyRenderer(BaseChartRenderer):
         
         style = f"width:{width} height:{height} {self.options.get('style', '')}"
         
+        }
         # HTMLを生成
         html_content = f"""
         <div id="{self.chart_id}_container" style="{style}">
@@ -251,6 +252,7 @@ class ChartJSRenderer(BaseChartRenderer):
         
         style = f"width:{width} height:{height} {self.options.get('style', '')}"
         
+        }
         # HTMLを生成
         html_content = f"""
         <div id="{self.chart_id}_container" style="{style}">
@@ -261,6 +263,7 @@ class ChartJSRenderer(BaseChartRenderer):
                     function render() {{
                         var ctx = document.getElementById('self.chart_id}').getContext('2d');
                         var config = {config_json};
+                        }
                         new Chart(ctx, config);
                     }}
                     
@@ -377,14 +380,18 @@ class MatplotlibRenderer(BaseChartRenderer):
         if width and width.endswith('%'):
             # パーセンテージ指定の場合は最大幅を設定
             width_style = f"max-width:{width};"
+            }
         else:
             width_style = f"width:{width};"
+            }
         
         if height and height.endswith('%'):
             # パーセンテージ指定の場合は最大高さを設定
             height_style = f"max-height:{height};"
+            }
         else:
             height_style = f"height:{height};"
+            }
         
         style = f"{width_style} {height_style} {self.options.get('style', '')}"
         
@@ -458,3 +465,4 @@ class RendererFactory:
             return MatplotlibRenderer(chart_id, options)
         else:
             raise ValueError(f"サポートされていないレンダラータイプ: {renderer_type}")
+            }

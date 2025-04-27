@@ -328,6 +328,7 @@ class WindShiftPredictor:
             self._model = EnsembleModel(ensemble_params)
         else:
             raise ValueError(f"Unknown model type: {self.model_type}")
+            }
     
     def train(self, historical_data, validation_ratio=0.2):
         """
@@ -357,6 +358,7 @@ class WindShiftPredictor:
         missing_columns = [col for col in required_columns if col not in historical_data.columns]
         if missing_columns:
             raise ValueError(f"Missing required columns: {missing_columns}")
+            }
         
         # モデルのトレーニング
         training_result = self._model.train(historical_data, validation_ratio)
@@ -568,6 +570,7 @@ class WindShiftPredictor:
                             actuals.append(actual)
                 except Exception as e:
                     warnings.warn(f"Prediction failed at index {i}: {str(e)}")
+                    }
                     continue
             
             # 精度評価
@@ -721,6 +724,7 @@ class WindShiftPredictor:
             return True
         except Exception as e:
             warnings.warn(f"Failed to save model: {str(e)}")
+            }
             return False
     
     def load(self, file_path):
@@ -765,4 +769,5 @@ class WindShiftPredictor:
             return True
         except Exception as e:
             warnings.warn(f"Failed to load model: {str(e)}")
+            }
             return False

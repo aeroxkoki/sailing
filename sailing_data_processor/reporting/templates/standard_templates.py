@@ -62,6 +62,7 @@ def create_basic_template() -> Template:
         name="report_date",
         properties={
             "content": "セッション日時: {session_date}}",
+            }
             "content_type": "dynamic"
         },
         styles={
@@ -76,6 +77,7 @@ def create_basic_template() -> Template:
         name="report_location",
         properties={
             "content": "場所: {session_location}}",
+            }
             "content_type": "dynamic"
         },
         styles={
@@ -245,6 +247,7 @@ def create_basic_template() -> Template:
         name="footer_text",
         properties={
             "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {generation_date}}",
+            }
             "content_type": "dynamic"
         },
         styles={
@@ -729,6 +732,7 @@ def create_presentation_template() -> Template:
         properties={
             "data_source": "strategy_highlights",
             "item_template": "<strong>{timestamp}}</strong>: {description}} (スコア: {score}})",
+            }
             "list_type": "ordered"
         },
         styles={
@@ -762,6 +766,7 @@ def create_presentation_template() -> Template:
         name="footer_text",
         properties={
             "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {generation_date}}",
+            }
             "content_type": "dynamic"
         },
         styles={
@@ -843,6 +848,7 @@ def create_coaching_template() -> Template:
         name="report_date",
         properties={
             "content": "セッション日時: {session_date}}",
+            }
             "content_type": "dynamic"
         },
         styles={
@@ -857,6 +863,7 @@ def create_coaching_template() -> Template:
         name="report_location",
         properties={
             "content": "場所: {session_location}}",
+            }
             "content_type": "dynamic"
         },
         styles={
@@ -871,6 +878,7 @@ def create_coaching_template() -> Template:
         name="coach_info",
         properties={
             "content": "コーチ: {coach_name}}",
+            }
             "content_type": "dynamic"
         },
         styles={
@@ -992,6 +1000,7 @@ def create_coaching_template() -> Template:
         properties={
             "data_source": "improvement_items",
             "item_template": "<strong>{title}}</strong>: {description}}",
+            }
             "list_type": "unordered"
         },
         styles={
@@ -1090,6 +1099,7 @@ def create_coaching_template() -> Template:
         name="footer_text",
         properties={
             "content": "このレポートはSailing Strategy Analyzerによって生成されました。生成日時: {generation_date}}",
+            }
             "content_type": "dynamic"
         },
         styles={

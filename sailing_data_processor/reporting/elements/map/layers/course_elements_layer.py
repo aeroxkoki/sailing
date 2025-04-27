@@ -408,6 +408,7 @@ class CourseElementsLayer(BaseMapLayer):
             "coordinates": coordinates,
             "name": name,
             "color": color if color else self.get_property("restricted_color")
+        }
  "coordinates": coordinates,
             "name": name,
             "color": color if color else self.get_property("restricted_color")}
@@ -572,11 +573,24 @@ class CourseElementsLayer(BaseMapLayer):
                     twaDownwind: {twa_downwind},
                     laylineLength: {layline_length}
                 }};
+                    }
+                    }
+                    }
+                    }
+                    }
+                    }
                 
                 // マークとコースデータ
                 var marksData = {marks_json};
                 var restrictedAreas = {restricted_json};
                 
+                    }
+                    }
+                    }
+                    }
+                    }
+                }
+                }
                 // レイヤーグループの作成
                 var layerGroup = L.layerGroup();
                 

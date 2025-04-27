@@ -179,6 +179,7 @@ class EnhancedWindRoseElement(WindRoseElement):
                     "theta": angle_bins,
                     "name": label,
                     "marker": {"line": "color": "white", "width": 0.5}},
+                    }
                     "opacity": 0.8
                 })
             
@@ -186,6 +187,7 @@ class EnhancedWindRoseElement(WindRoseElement):
             aggregation_method = self.get_property("aggregation_method", "frequency")
             title_text = f"風配図 - 集計方法: {self._get_aggregation_method_display(aggregation_method)}"
             
+            }
             # Plotly用のレイアウト設定
             layout = {}
                 "title": title_text,
@@ -249,6 +251,9 @@ class EnhancedWindRoseElement(WindRoseElement):
                 "tooltip": {
                     "callbacks": {
                         "label": f"function(context) {{ return context.label + ': ' + context.raw.toFixed(1) + 'unit_suffix}'; }}"
+                }
+            }
+        }
  {
             "plugins": {
                 "tooltip": {
@@ -258,8 +263,13 @@ class EnhancedWindRoseElement(WindRoseElement):
             "scale": {
                 "ticks": {
                     "callback": f"function(value) {{ return value + 'unit_suffix}'; }}"
+            }
+            }
  {
                 "ticks": {
+            }
+        }
+            }
                     "callback": f"function(value) {{ return value + 'unit_suffix}'; }}"}
         
         # 詳細表示が有効な場合の追加設定
@@ -579,6 +589,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                     "data": {
                         "labels": labels,
                         "datasets": datasets
+                    }
  {
                     "type": "radar",
                     "data": "labels": labels,
@@ -630,6 +641,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "size": 10,
                             "symbol": "star",
                             "color": "green"
+                        }
  "size": 10,
                             "symbol": "star",
                             "color": "green"}
@@ -646,6 +658,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "size": 10,
                             "symbol": "star",
                             "color": "orange"
+                        }
  "size": 10,
                             "symbol": "star",
                             "color": "orange"}
@@ -820,6 +833,9 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "line": {
                             "color": "rgba(100, 100, 100, 0.4)",
                             "width": 1
+                        }
+                    }
+                }
  {
                 "plugins": {
                     "crosshair": {
@@ -834,6 +850,8 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "pan": {
                             "enabled": True,
                             "mode": "xy"
+                        }
+                    }
  {
                         "pan": "enabled": True,
                             "mode": "xy"}
@@ -841,6 +859,8 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         "zoom": {
                             "wheel": {
                                 "enabled": True
+                            }
+                        }
  {
                             "wheel": "enabled": True}
                             },
@@ -868,6 +888,9 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "font": {
                                 "size": 12,
                                 "style": "italic"
+                            }
+                        }
+                    }
  {
                 "plugins": {
                     "title": {
@@ -882,6 +905,9 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                     "tooltip": {
                         "callbacks": {
                             "label": "function(context) { " +
+                        }
+                    }
+                }
  {
                         "callbacks": {
                             "label": "function(context) " +}
@@ -891,6 +917,10 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                                     "if (isOptimal && value !== null) { " +
                                     "   return '最適VMG点: ' + value.toFixed(1) + ' kt'; " +
                                     "} " +
+                        }
+                    }
+                }
+            }
                                     "return label + ': ' + value.toFixed(1) + ' kt'; " +
                                     "}"
             
@@ -912,6 +942,9 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "font": {
                                 "size": 12,
                                 "style": "italic"
+                            }
+                        }
+                    }
  {
                 "plugins": {
                     "title": {
@@ -922,11 +955,18 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "text": "複数風速の性能比較",
                             "font": "size": 12,
                                 "style": "italic"}
+                    }
+                        }
+                    }
+                }
             
+                }
+            }
             # 風速フィルタが設定されている場合はサブタイトルに表示
             wind_speed_filter = self.get_property("wind_speed_filter", None)
             if wind_speed_filter is not None:
                 wind_speed_options["plugins"]["title"]["subtitle"]["text"] = f"表示風速: {wind_speed_filter} kt"
+                }
             
             # オプションを結合
             self._merge_options(options, wind_speed_options)
@@ -983,6 +1023,8 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                 "crosshair": enable_interactive_selection,
                 "zoom": enable_interactive_selection,
                 "annotation": show_vmg_optimization
+            }
+        }
  {
             "plugins": "datalabels": False,
                 "crosshair": enable_interactive_selection,
@@ -1236,6 +1278,8 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "line": {
                                     "color": "rgba(54, 162, 235, 1)",
                                     "width": 1
+                                }
+                            }
  {
                                 "color": "rgba(54, 162, 235, 0.6)",
                                 "line": "color": "rgba(54, 162, 235, 1)",
@@ -1247,6 +1291,8 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "xaxis": {
                             "title": "タッキング角度",
                             "range": [min_angle, max_angle]
+                        }
+                    }
  {
                         "xaxis": "title": "タッキング角度",
                             "range": [min_angle, max_angle]}
@@ -1267,6 +1313,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "line": {
                                     "color": "rgba(75, 192, 192, 1)",
                                     "width": 1
+                                }
                             {
                                 "type": "rect",
                                 "x0": optimal_min,
@@ -1287,6 +1334,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "showarrow": False,
                                 "font": {
                                     "size": 12
+                                }
                             {
                                 "x": (optimal_min + optimal_max) / 2,
                                 "y": 1,
@@ -1340,6 +1388,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                     "data": {
                         "labels": bin_labels,
                         "datasets": datasets
+                    }
  {
                     "type": "bar",
                     "data": "labels": bin_labels,
@@ -1372,6 +1421,8 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "line": {
                                         "color": "rgba(54, 162, 235, 1)",
                                         "width": 1
+                                    }
+                                }
  {
                                     "color": "rgba(54, 162, 235, 0.6)",
                                     "size": 10,
@@ -1384,6 +1435,8 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "xaxis": {
                                 "title": "タッキング角度",
                                 "range": [min_angle, max_angle]
+                            }
+                        }
  {
                             "xaxis": "title": "タッキング角度",
                                 "range": [min_angle, max_angle]}
@@ -1403,6 +1456,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "line": {
                                         "color": "rgba(75, 192, 192, 1)",
                                         "width": 1
+                                    }
                                 {
                                     "type": "rect",
                                     "x0": optimal_min,
@@ -1428,6 +1482,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "type": "scatter",
                         "data": {
                             "datasets": datasets
+                        }
  {
                         "type": "scatter",
                         "data": "datasets": datasets}
@@ -1438,6 +1493,9 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "title": {
                                         "display": True,
                                         "text": "タッキング角度"
+                                    }
+                                }
+                            }
  {
                             "scales": {
                                 "x": {
@@ -1451,10 +1509,13 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "title": {
                                         "display": True,
                                         "text": "効率 (%)"
+                                    }
+                                }
  {
                                     "title": "display": True,
                                         "text": "効率 (%)"}
                                     },
+                        }
                                     "min": 0,
                                     "max": 100
             else:
@@ -1472,12 +1533,14 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "marker": {
                                     "color": "rgba(54, 162, 235, 0.6)",
                                     "size": 8
+                                }
  "color": "rgba(54, 162, 235, 0.6)",
                                     "size": 8}
                                 },
                                 "line": {
                                     "color": "rgba(54, 162, 235, 0.3)",
                                     "width": 1
+                                }
  "color": "rgba(54, 162, 235, 0.3)",
                                     "width": 1}
                                 },
@@ -1486,12 +1549,15 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "layout": {
                             "xaxis": {
                                 "title": "タッキング順序"
+                            }
+                        }
  {
                             "xaxis": "title": "タッキング順序"}
                             },
                             "yaxis": {
                                 "title": "タッキング角度",
                                 "range": [min_angle, max_angle]
+                            }
  "title": "タッキング角度",
                                 "range": [min_angle, max_angle]}
                             },
@@ -1506,6 +1572,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     "line": {
                                         "color": "rgba(75, 192, 192, 1)",
                                         "width": 1
+                                    }
                                 {
                                     "type": "rect",
                                     "x0": 0,
@@ -1534,6 +1601,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "type": "scatter",
                         "data": {
                             "datasets": datasets
+                        }
  {
                         "type": "scatter",
                         "data": "datasets": datasets}
@@ -1564,6 +1632,8 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "yaxis": {
                             "title": "タッキング角度",
                             "range": [min_angle, max_angle]
+                        }
+                    }
  {
                         "yaxis": "title": "タッキング角度",
                             "range": [min_angle, max_angle]}
@@ -1580,6 +1650,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "line": {
                                     "color": "rgba(75, 192, 192, 1)",
                                     "width": 1
+                                }
                             {
                                 "type": "rect",
                                 "x0": 0,
@@ -1622,6 +1693,9 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "pan": {
                             "enabled": True,
                             "mode": "xy"
+                        }
+                    }
+                }
  {
                 "plugins": {
                     "zoom": {
@@ -1631,6 +1705,9 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "zoom": {
                             "wheel": {
                                 "enabled": True
+                            }
+            }
+                        }
  {
                             "wheel": "enabled": True}
                             },
@@ -1638,6 +1715,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                 "enabled": True
  "enabled": True}
                             },
+            }
                             "mode": "xy"
             
             # オプションを結合
@@ -1654,6 +1732,9 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "title": {
                             "display": True,
                             "text": "タッキング角度" if self.get_property("show_efficiency", False) else "タッキング順序"
+                        }
+                    }
+                }
  {
                 "scales": {
                     "x": {
@@ -1666,6 +1747,9 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         "title": {
                             "display": True,
                             "text": "効率 (%)" if self.get_property("show_efficiency", False) else "タッキング角度"
+                        }
+            }
+                    }
  {
                         "title": "display": True,
                             "text": "効率 (%)" if self.get_property("show_efficiency", False) else "タッキング角度"}
@@ -1674,10 +1758,16 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                     "tooltip": {
                         "callbacks": {
                             "label": "function(context) { return `$context.dataset.label}: (${context.parsed.x.toFixed(1)}, ${context.parsed.y.toFixed(1)})`; }"
+                    }
+                }
  {
                     "tooltip": {
                         "callbacks": {
+                }
+            }
                             "label": "function(context) { return `$context.dataset.label}: (${context.parsed.x.toFixed(1)}, ${context.parsed.y.toFixed(1)})`; }"}
+                }
+                    }
             
             # オプションを結合
             self._merge_options(options, scatter_options)
@@ -1697,6 +1787,9 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "font": {
                                 "size": 12,
                                 "style": "italic"
+                            }
+                        }
+                    }
  {
                 "plugins": {
                     "title": {
@@ -1707,6 +1800,12 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "text": self.get_statistics_text(),
                             "font": "size": 12,
                                 "style": "italic"}
+                    }
+                        }
+                    }
+                }
+            }
+                }
             
             # オプションを結合
             self._merge_options(options, stats_options)
@@ -1722,9 +1821,11 @@ class EnhancedTackingAngleElement(TackingAngleElement):
             if time_start:
                 from_str = time_start.split("T")[0] if "T" in time_start else time_start
                 filter_text += f" 開始: {from_str}"
+                }
             if time_end:
                 to_str = time_end.split("T")[0] if "T" in time_end else time_end
                 filter_text += f" 終了: {to_str}"
+                }
             
             filter_options = {
                 "plugins": {
@@ -1737,6 +1838,9 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "font": {
                                 "size": 12,
                                 "style": "italic"
+                            }
+                        }
+                    }
  {
                 "plugins": {
                     "title": {
@@ -1747,6 +1851,12 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             "text": filter_text,
                             "font": "size": 12,
                                 "style": "italic"}
+                    }
+                        }
+                    }
+                }
+            }
+                }
             
             # オプションを結合
             self._merge_options(options, filter_options)
@@ -1801,6 +1911,8 @@ class EnhancedTackingAngleElement(TackingAngleElement):
             "plugins": {
                 "annotation": True,
                 "zoom": enable_interactive_selection
+            }
+        }
  {
             "plugins": "annotation": True,
                 "zoom": enable_interactive_selection}
@@ -1867,5 +1979,6 @@ class EnhancedTackingAngleElement(TackingAngleElement):
             
             # 統計情報テキストを作成
             return f"平均: {avg_angle:.1f}° | 中央値: {median_angle:.1f}° | 最小: {min_angle:.1f}° | 最大: {max_angle:.1f}° | 最適範囲内: {optimal_percentage:.1f}%"
+            }
         
         return ""

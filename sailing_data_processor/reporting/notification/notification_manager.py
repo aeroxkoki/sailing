@@ -72,9 +72,11 @@ class AppNotificationChannel(BaseNotificationChannel):
         """
         try:
             logger.info(f"App notification sent to user {user_id}: {notification['title']}")
+            }
             return True
         except Exception as e:
             logger.error(f"Failed to send app notification: {str(e)}")
+            }
             return False
 
 
@@ -101,9 +103,11 @@ class EmailNotificationChannel(BaseNotificationChannel):
             # 実際のメール送信はここで実装
             # ここではログ出力のみ
             logger.info(f"Email notification would be sent to user {user_id}: {notification['title']}")
+            }
             return True
         except Exception as e:
             logger.error(f"Failed to send email notification: {str(e)}")
+            }
             return False
 
 
@@ -130,9 +134,11 @@ class SlackNotificationChannel(BaseNotificationChannel):
             # 実際のSlack送信はここで実装
             # ここではログ出力のみ
             logger.info(f"Slack notification would be sent to user {user_id}: {notification['title']}")
+            }
             return True
         except Exception as e:
             logger.error(f"Failed to send Slack notification: {str(e)}")
+            }
             return False
 
 
@@ -198,6 +204,7 @@ class NotificationManager:
                     logger.info(f"Loaded {len(subscriptions)} event type subscriptions")
             except Exception as e:
                 logger.error(f"Failed to load notification data: {str(e)}")
+                }
     
     def _save_data(self):
         """通知データの保存"""
@@ -212,6 +219,7 @@ class NotificationManager:
                 logger.info("Notification data saved")
             except Exception as e:
                 logger.error(f"Failed to save notification data: {str(e)}")
+                }
     
     def create_notification(self, event_type: str, event_data: Dict[str, Any], 
                           recipients: List[str] = None, priority: str = "normal",
@@ -467,6 +475,7 @@ class NotificationManager:
                         
                 except Exception as e:
                     logger.error(f"Error sending notification via {channel_name}: {str(e)}")
+                    }
                     results[channel_name] = False
             else:
                 logger.warning(f"Channel {channel_name} not found")
@@ -956,6 +965,7 @@ class NotificationManager:
         self._channels[channel_name] = channel_handler
         
         logger.info(f"Registered notification channel: {channel_name}")
+        }
         return True
     
     def clean_old_notifications(self, max_age_days: int = 30) -> int:

@@ -77,6 +77,7 @@ class NotificationTemplate:
             }
         except Exception as e:
             logger.error(f"Failed to format notification: {str(e)}")
+            }
             return {
                 "title": "通知",
                 "body": "詳細を確認してください。"
@@ -198,6 +199,7 @@ class NotificationTemplateManager:
             "analysis_completed",
             "分析が完了しました",
             "セッション「{session_name}」の分析が完了しました。重要な発見: {findings}",
+            }
             "analysis_completed",
             ["app"]
         )
@@ -261,12 +263,14 @@ class NotificationTemplateManager:
                     logger.info(f"Template {template_id} saved to storage")
                 except Exception as e:
                     logger.error(f"Failed to save template: {str(e)}")
+                    }
             
             logger.info(f"Template '{template_id}' registered for event type '{event_type}'")
             return True
         
         except Exception as e:
             logger.error(f"Failed to register template: {str(e)}")
+            }
             return False
     
     def get_template(self, template_id: str) -> Optional[NotificationTemplate]:
@@ -387,6 +391,7 @@ class NotificationTemplateManager:
                 logger.info(f"Template {template_id} removed from storage")
             except Exception as e:
                 logger.error(f"Failed to delete template: {str(e)}")
+                }
         
         logger.info(f"Template '{template_id}' deleted")
         return True

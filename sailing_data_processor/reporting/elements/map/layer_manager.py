@@ -27,6 +27,8 @@ class MapLayerManager:
         """
         self.base_layers = {}  # ������0��	
         self.overlay_layers = {}  # ��������
+        }
+        }
         self.active_base_layer = None  # ��ƣ�j������
         self.active_overlay_layers = []  # ��ƣ�j��������
     
@@ -90,6 +92,7 @@ class MapLayerManager:
             "type": layer_type,
             "visible": visible,
             "options": options
+        }
  "id": layer_id,
             "name": layer_name,
             "type": layer_type,

@@ -322,7 +322,13 @@ class PlaybackControl:
                 let currentTime = {self._current_time};
                 let playbackSpeed = {self._options["playback_speed"]};
                 let loopEnabled = {str(self._options["loop"]).lower()};
+                }
+                }
+                }
+                }
                 let lastUpdateTime = 0;
+                }
+                }
                 let animationFrameId = null;
                 
                 # 時間表示の更新
@@ -509,6 +515,7 @@ class PlaybackControl:
                 if (index !== '') {
                     const controller = window["self.element_id}_controller"];
                     const keyframes = {json.dumps(self._keyframes)};
+                    }
                     if (controller && keyframes[index]) {
                         controller.setTime(keyframes[index].time);
             });

@@ -410,7 +410,13 @@ class WindFieldLayer(BaseMapLayer):
                     minFilter: {params["minFilter"]},
                     maxFilter: {params["maxFilter"]}
                 }};
+                    }
+                    }
+                    }
+                    }
+                    }
                 
+                    }
                 // 風場レイヤーを作成するヘルパー関数
                 function createWindLayer(data, config) {{
                     var points = data.points || [];

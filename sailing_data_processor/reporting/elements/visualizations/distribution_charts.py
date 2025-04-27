@@ -202,6 +202,7 @@ class DistributionChartElement(BaseChartElement):
                 "data": {
                     "labels": labels,
                     "datasets": datasets
+                }
  {
                 "type": "bar",
                 "data": "labels": labels,
@@ -241,6 +242,7 @@ class DistributionChartElement(BaseChartElement):
                         "backgroundColor": "rgba(54, 162, 235, 0.6)",
                         "borderColor": "rgba(54, 162, 235, 1.0)",
                         "borderWidth": 1
+                }
  {
                 "type": "bar",
                 "data": {
@@ -325,6 +327,7 @@ class DistributionChartElement(BaseChartElement):
                         "borderWidth": 1,
                         "outlierColor": "rgba(255, 99, 132, 0.8)",
                         "outlierRadius": 5
+                }
  {
                 "type": "violin",
                 "data": {
@@ -352,6 +355,7 @@ class DistributionChartElement(BaseChartElement):
                         "borderWidth": 1,
                         "outlierColor": "rgba(255, 99, 132, 0.8)",
                         "outlierRadius": 5
+                }
  {
                 "type": "violin",
                 "data": {
@@ -466,6 +470,7 @@ class DistributionChartElement(BaseChartElement):
                 "data": {
                     "labels": x_vals.tolist(),
                     "datasets": datasets
+                }
  {
                 "type": "line",
                 "data": "labels": x_vals.tolist(),
@@ -508,6 +513,7 @@ class DistributionChartElement(BaseChartElement):
                         "fill": True,
                         "tension": 0.4,
                         "pointRadius": 0
+                }
  {
                 "type": "line",
                 "data": {
@@ -544,6 +550,9 @@ class DistributionChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "頻度" if chart_type == "histogram" else "密度")
+                    }
+                }
+            }
  {
             "scales": {
                 "y": {
@@ -555,6 +564,8 @@ class DistributionChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "値")
+                    }
+                }
  {
                     "title": "display": True,
                         "text": self.get_property("x_axis_title", "値")}
@@ -562,6 +573,8 @@ class DistributionChartElement(BaseChartElement):
             "plugins": {
                 "tooltip": {
                     "mode": "index"
+            }
+                }
  {
                 "tooltip": "mode": "index"}
         
@@ -572,6 +585,9 @@ class DistributionChartElement(BaseChartElement):
                 "plugins": {
                     "legend": {
                         "display": self.get_property("category_key") is not None
+                    }
+                }
+            }
  {
                 "plugins": {
                     "legend": "display": self.get_property("category_key") is not None}
@@ -581,9 +597,15 @@ class DistributionChartElement(BaseChartElement):
                         "offset": True,
                         "grid": {
                             "offset": True
+                        }
+                    }
+                }
  {
                     "x": {
                         "offset": True,
+                    }
+            }
+                }
                         "grid": "offset": True}
             
             # カテゴリがある場合の表示設定
@@ -606,11 +628,18 @@ class DistributionChartElement(BaseChartElement):
                         "ticks": {
                             "min": self.get_property("y_min", None),
                             "max": self.get_property("y_max", None)
+                        }
+                    }
+                }
  {
                 "scales": {
                     "y": {
                         "ticks": "min": self.get_property("y_min", None),
                             "max": self.get_property("y_max", None)}
+                    }
+                }
+            }
+                }
             
             # オプションを結合
             self._merge_options(distribution_options, violin_options)
@@ -623,11 +652,18 @@ class DistributionChartElement(BaseChartElement):
                         "beginAtZero": True,
                         "ticks": {
                             "min": 0
+                        }
+                    }
+                }
  {
                 "scales": {
                     "y": {
                         "beginAtZero": True,
                         "ticks": "min": 0}
+                    }
+                }
+            }
+                }
             
             # オプションを結合
             self._merge_options(distribution_options, kde_options)

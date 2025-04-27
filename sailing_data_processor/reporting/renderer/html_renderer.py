@@ -139,6 +139,7 @@ class HTMLRenderer(BaseRenderer):
             
         except Exception as e:
             self.errors.append(f"HTMLのレンダリング中にエラーが発生しました: {str(e)}")
+            }
             import traceback
             self.errors.append(traceback.format_exc())
             return ""
@@ -184,6 +185,7 @@ class HTMLRenderer(BaseRenderer):
             return True
         except Exception as e:
             self.errors.append(f"HTMLの保存中にエラーが発生しました: {str(e)}")
+            }
             import traceback
             self.errors.append(traceback.format_exc())
             return False
@@ -255,6 +257,11 @@ class HTMLRenderer(BaseRenderer):
                 --font-family: {font_family};
                 --base-font-size: {base_font_size}px;
             }}
+                }
+                }
+                }
+                }
+                }
             
             body {font-family: var(--font-family);
                 font-size: var(--base-font-size);

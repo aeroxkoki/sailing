@@ -139,12 +139,14 @@ class TrackMapElement(BaseChartElement):
             
             <div id="{self.map_id}" style="width: {width}; height: {height};"></div>
             
+            }
             <script>
                 (function() {{
                     // マップデータ
                     var mapData = data_json};
                     var mapConfig = {map_config_json};
                     
+                    }
                     // マップ初期化
                     window.addEventListener('load', function() {{
                         // マップの作成
@@ -445,6 +447,7 @@ class HeatMapLayerElement(BaseChartElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
+        }
  "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
@@ -468,12 +471,14 @@ class HeatMapLayerElement(BaseChartElement):
             
             <div id="{self.map_id}" style="width: {width}; height: {height};"></div>
             
+            }
             <script>
                 (function() {{
                     // マップデータ
                     var mapData = data_json};
                     var mapConfig = {map_config_json};
                     
+                    }
                     // マップ初期化
                     window.addEventListener('load', function() {{
                         // マップの作成
@@ -694,6 +699,8 @@ class StrategyPointLayerElement(BaseChartElement):
             "mark_rounding": {"color": "red", "icon": "flag-checkered"},
             "wind_shift": {"color": "purple", "icon": "wind"},
             "default": {"color": "gray", "icon": "map-marker-alt"}
+            }
+            }
  {
             "tack": "color": "blue", "icon": "exchange-alt"},
             "gybe": {"color": "green", "icon": "random"},
@@ -701,6 +708,7 @@ class StrategyPointLayerElement(BaseChartElement):
             "wind_shift": {"color": "purple", "icon": "wind"},
             "default": {"color": "gray", "icon": "map-marker-alt"}}
         })
+            }
         
         # データをJSON文字列に変換
         data_json = json.dumps(data)
@@ -715,6 +723,7 @@ class StrategyPointLayerElement(BaseChartElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
+        }
  "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
@@ -758,12 +767,14 @@ class StrategyPointLayerElement(BaseChartElement):
             
             <div id="{self.map_id}" style="width: {width}; height: {height};"></div>
             
+            }
             <script>
                 (function() {{
                     // マップデータ
                     var mapData = data_json};
                     var mapConfig = {map_config_json};
                     
+                    }
                     // マップ初期化
                     window.addEventListener('load', function() {{
                         // マップの作成
@@ -1019,6 +1030,7 @@ class WindFieldElement(BaseChartElement):
             "show_track": show_track,
             "track_color": track_color,
             "track_width": track_width
+        }
  "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
@@ -1047,12 +1059,14 @@ class WindFieldElement(BaseChartElement):
             
             <div id="{self.map_id}" style="width: {width}; height: {height};"></div>
             
+            }
             <script>
                 (function() {{
                     // マップデータ
                     var mapData = data_json};
                     var mapConfig = {map_config_json};
                     
+                    }
                     // マップ初期化
                     window.addEventListener('load', function() {{
                         // マップの作成

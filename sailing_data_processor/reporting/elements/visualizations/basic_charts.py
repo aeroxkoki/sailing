@@ -178,6 +178,9 @@ class LineChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "")
+                    }
+                }
+            }
  {
             "scales": {
                 "x": {
@@ -187,6 +190,8 @@ class LineChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+            }
+                    }
  "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                 },
@@ -194,6 +199,8 @@ class LineChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
+                    }
+                }
  {
                     "title": "display": True,
                         "text": self.get_property("y_axis_title", "")}
@@ -201,6 +208,7 @@ class LineChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+                    }
  "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                     },
@@ -210,6 +218,8 @@ class LineChartElement(BaseChartElement):
                 "legend": {
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
+                }
+            }
  {
                 "legend": "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")}
@@ -217,6 +227,7 @@ class LineChartElement(BaseChartElement):
                 "tooltip": {
                     "mode": self.get_property("tooltip_mode", "index"),
                     "intersect": False
+                }
  "mode": self.get_property("tooltip_mode", "index"),
                     "intersect": False}
             },
@@ -224,6 +235,7 @@ class LineChartElement(BaseChartElement):
                 "mode": "nearest",
                 "axis": "x",
                 "intersect": False
+            }
  "mode": "nearest",
                 "axis": "x",
                 "intersect": False}
@@ -235,6 +247,8 @@ class LineChartElement(BaseChartElement):
             "elements": {
                 "line": {
                     "tension": self.get_property("tension", 0.1)
+                }
+            }
  {
                 "line": "tension": self.get_property("tension", 0.1)}
         
@@ -248,6 +262,7 @@ class LineChartElement(BaseChartElement):
                 "formatter": "function(value) return value.toFixed(1); }",
                 "font": {
                     "weight": "bold"
+                }
  {
                 "display": True,
                 "anchor": "end",
@@ -450,6 +465,9 @@ class ScatterChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "")
+                    }
+                }
+            }
  {
             "scales": {
                 "x": {
@@ -459,6 +477,8 @@ class ScatterChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+            }
+                    }
  "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                 },
@@ -466,6 +486,8 @@ class ScatterChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
+                    }
+                }
  {
                     "title": "display": True,
                         "text": self.get_property("y_axis_title", "")}
@@ -473,6 +495,7 @@ class ScatterChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+                    }
  "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                     },
@@ -482,6 +505,8 @@ class ScatterChartElement(BaseChartElement):
                 "legend": {
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
+                }
+            }
  {
                 "legend": "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")}
@@ -489,6 +514,7 @@ class ScatterChartElement(BaseChartElement):
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) { return `($context.parsed.x}, ${context.parsed.y})`; }"
+                }
  {
                     "callbacks": {
                         "label": "function(context) { return `($context.parsed.x}, ${context.parsed.y})`; }"}
@@ -504,6 +530,8 @@ class ScatterChartElement(BaseChartElement):
                 "pan": {
                     "enabled": True,
                     "mode": "xy"
+                }
+            }
  {
                 "pan": "enabled": True,
                     "mode": "xy"}
@@ -511,6 +539,8 @@ class ScatterChartElement(BaseChartElement):
                 "zoom": {
                     "wheel": {
                         "enabled": True
+                    }
+                }
  {
                     "wheel": "enabled": True}
                     },
@@ -584,6 +614,7 @@ class ScatterChartElement(BaseChartElement):
                     "width": 2,
                     "lineStyle": "dotted",
                     "projection": self.get_property("regression_projection", False)
+                }
  "style": dataset["borderColor"].replace("0.7", "1"),
                     "width": 2,
                     "lineStyle": "dotted",
@@ -620,6 +651,7 @@ class ScatterChartElement(BaseChartElement):
                 "plugins": {
                     "zoom": self.get_property("enable_zoom", True),
                     "regression": self.get_property("show_regression_line", False)
+                }
             {
                 "plugins": "zoom": self.get_property("enable_zoom", True),
                     "regression": self.get_property("show_regression_line", False)}
@@ -800,6 +832,9 @@ class BarChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "")
+                    }
+                }
+            }
  {
             "scales": {
                 "x": {
@@ -809,6 +844,8 @@ class BarChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+            }
+                    }
  "display": self.get_property("show_x_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                 },
@@ -816,6 +853,8 @@ class BarChartElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "")
+                    }
+                }
  {
                     "title": "display": True,
                         "text": self.get_property("y_axis_title", "")}
@@ -823,6 +862,7 @@ class BarChartElement(BaseChartElement):
                     "grid": {
                         "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"
+                    }
  "display": self.get_property("show_y_grid", True),
                         "color": "rgba(0, 0, 0, 0.1)"}
                     },
@@ -832,6 +872,8 @@ class BarChartElement(BaseChartElement):
                 "legend": {
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
+                }
+            }
  {
                 "legend": "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")}
@@ -839,6 +881,7 @@ class BarChartElement(BaseChartElement):
                 "tooltip": {
                     "mode": "index",
                     "intersect": False
+                }
  "mode": "index",
                     "intersect": False}
             },
@@ -890,6 +933,7 @@ class BarChartElement(BaseChartElement):
                 "formatter": "function(value) return value.toFixed(1); }",
                 "font": {
                     "weight": "bold"
+                }
  {
                 "display": True,
                 "anchor": "end",
@@ -1109,6 +1153,9 @@ class PieChartElement(BaseChartElement):
                 "legend": {
                     "display": self.get_property("show_legend", True),
                     "position": self.get_property("legend_position", "top")
+                }
+            }
+        }
  {
             "plugins": {
                 "legend": "display": self.get_property("show_legend", True),
@@ -1117,6 +1164,8 @@ class PieChartElement(BaseChartElement):
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) { " +
+                    }
+                }
  {
                     "callbacks": {
                         "label": "function(context) " +}
@@ -1133,6 +1182,7 @@ class PieChartElement(BaseChartElement):
                 "duration": self.get_property("animation_duration", 1000),
                 "animateRotate": True,
                 "animateScale": self.get_property("animate_scale", True)
+            }
  "duration": self.get_property("animation_duration", 1000),
                 "animateRotate": True,
                 "animateScale": self.get_property("animate_scale", True)}
@@ -1152,6 +1202,8 @@ class PieChartElement(BaseChartElement):
                 "color": "#fff",
                 "font": {
                     "weight": "bold"
+                }
+            }
  {
                 "display": True,
                 "color": "#fff",

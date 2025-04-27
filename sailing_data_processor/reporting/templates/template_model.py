@@ -124,6 +124,7 @@ class Condition:
                 self.operator = ConditionOperator(operator)
             except ValueError:
                 raise ValueError(f"Invalid operator: {operator}")
+                }
         else:
             self.operator = operator
             
@@ -209,6 +210,7 @@ class Element:
                 self.element_type = ElementType(element_type)
             except ValueError:
                 raise ValueError(f"Invalid element type: {element_type}")
+                }
         else:
             self.element_type = element_type
         
@@ -315,6 +317,7 @@ class Section:
                 self.section_type = SectionType(section_type)
             except ValueError:
                 raise ValueError(f"Invalid section type: {section_type}")
+                }
         else:
             self.section_type = section_type
         
@@ -448,6 +451,7 @@ class Template:
                 self.output_format = TemplateOutputFormat(output_format)
             except ValueError:
                 raise ValueError(f"Invalid output format: {output_format}")
+                }
         else:
             self.output_format = output_format
         

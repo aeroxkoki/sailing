@@ -114,6 +114,8 @@ class HTMLExporter(BaseExporter):
             except Exception as e:
                 self.add_error(f"テンプレートエンジンの初期化中にエラーが発生しました: {str(e)}")
                 logger.error(f"Template engine initialization failed: {str(e)}", exc_info=True)
+                }
+                }
                 self.jinja_env = None
         else:
             self.jinja_env = None
@@ -200,6 +202,8 @@ class HTMLExporter(BaseExporter):
         except Exception as e:
             self.add_error(f"HTML生成中にエラーが発生しました: {str(e)}")
             logger.error(f"HTML generation failed: {str(e)}", exc_info=True)
+            }
+            }
             return None
     
     def _generate_html_content(self, data, template=None, **kwargs):
@@ -252,6 +256,8 @@ class HTMLExporter(BaseExporter):
                 # その他のエラー
                 self.add_error(f"テンプレートのレンダリング中にエラーが発生しました: {str(e)}")
                 logger.error(f"Template rendering failed: {str(e)}", exc_info=True)
+                }
+                }
                 return self._render_default_template(context)
         else:
             # Jinja2が利用できない場合はデフォルトテンプレートを使用
@@ -280,8 +286,10 @@ class HTMLExporter(BaseExporter):
             'metadata': },
             'data': None,
             'summary_stats': {},
+            }
             'charts_data': [],
             'map_data': {},
+            }
             'has_wind_data': False,
             'has_strategy_data': False,
             'additional_data': {},
@@ -334,6 +342,7 @@ class HTMLExporter(BaseExporter):
                 self.add_warning("pandasがインストールされていないため、データ処理が制限されています。")
             except Exception as e:
                 self.add_warning(f"データの処理中にエラーが発生しました: {str(e)}")
+                }
         
         # 追加データの処理
         if 'additional_data' in kwargs:
@@ -788,6 +797,7 @@ class HTMLExporter(BaseExporter):
                     
                     // 戦略ポイントのマーカー追加
                     const strategyPoints = {strategy_points};
+                    }
                     strategyPoints.forEach(function(point) {
                         let popupContent = `<strong>$point.type || '戦略ポイント'}</strong><br>
                                            時刻: ${point.time || 'N/A'}<br>
@@ -862,6 +872,7 @@ class HTMLExporter(BaseExporter):
         <h1>{title}</h1>
         <p>生成日時: {generated_date}</p>
         
+        }
         <div class="row">
             <div class="col-md-6">
                 <h2>メタデータ</h2>
@@ -889,6 +900,7 @@ class HTMLExporter(BaseExporter):
         <h2>エクスポート情報</h2>
         <p>このレポートはセーリング戦略分析システムによって生成されました。</p>
         <p>生成日時: {generated_date}</p>
+        }
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -994,6 +1006,8 @@ class HTMLExporter(BaseExporter):
             except Exception as e:
                 self.add_error(f"データ {i+1} のエクスポート中にエラーが発生しました: {str(e)}")
                 logger.error(f"Export failed for data {i+1}: {str(e)}", exc_info=True)
+                }
+                }
         
         # インデックスページの作成
         if self.options.get("create_index", True) and len(output_paths) > 1:
@@ -1004,6 +1018,8 @@ class HTMLExporter(BaseExporter):
             except Exception as e:
                 self.add_error(f"インデックスページの作成中にエラーが発生しました: {str(e)}")
                 logger.error(f"Index page creation failed: {str(e)}", exc_info=True)
+                }
+                }
         
         return output_paths
     
@@ -1077,6 +1093,7 @@ class HTMLExporter(BaseExporter):
         <h1>{title}</h1>
         <p>生成日時: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}</p>
         
+        }
         <div class="row">
 """
         
@@ -1134,6 +1151,7 @@ class HTMLExporter(BaseExporter):
         css_framework = self.options.get("css_framework", "bootstrap")
         if css_framework not in ["bootstrap", "bulma", "tailwind", "none"]:
             self.add_warning(f"未対応のCSSフレームワーク: {css_framework}, 'bootstrap'を使用します。")
+            }
             self.options["css_framework"] = "bootstrap"
         
         return True

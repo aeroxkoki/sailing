@@ -294,6 +294,7 @@ class WindFieldElement(BaseWindFieldElement):
             
             <div id="{self.map_id}" style="width: {width}; height: {height};"></div>
             
+            }
             <script>
                 (function() {{
                     // ������
@@ -302,6 +303,9 @@ class WindFieldElement(BaseWindFieldElement):
                     var terrainData = {terrain_json};
                     var mapConfig = {map_config_json};
                     
+                    }
+                    }
+                    }
                     // ���
                     window.addEventListener('load', function() {{
                         // ���n\
@@ -570,6 +574,7 @@ class WindFieldElement(BaseWindFieldElement):
                         // ���6�n_�n�ָ���
                         var overlays = {}};
                         
+                        }
                         // ��ï��\h:-�L��n4	
                         if (mapConfig.show_track && trackPoints.length > 0) {{
                             var trackLine = L.polyline(trackPoints, {color: mapConfig.track_color,

@@ -233,6 +233,8 @@ class TimeSeriesElement(BaseChartElement):
             "data": {
                 "labels": labels,
                 "datasets": datasets
+            }
+        }
  {
             "type": "line",
             "data": "labels": labels,
@@ -265,6 +267,9 @@ class TimeSeriesElement(BaseChartElement):
                             "week": "MM/DD",
                             "month": "YYYY/MM",
                             "year": "YYYY"
+                        }
+                    }
+                }
  {
             "scales": {
                 "x": {
@@ -281,6 +286,9 @@ class TimeSeriesElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "時間")
+                    }
+            }
+            }
  "display": True,
                         "text": self.get_property("x_axis_title", "時間")}
                 },
@@ -289,6 +297,8 @@ class TimeSeriesElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "値")
+                    }
+                }
  {
                     "beginAtZero": self.get_property("begin_at_zero", False),
                     "title": "display": True,
@@ -298,6 +308,8 @@ class TimeSeriesElement(BaseChartElement):
                 "tooltip": {
                     "mode": "index",
                     "intersect": False
+                }
+            }
  {
                 "tooltip": "mode": "index",
                     "intersect": False}
@@ -306,6 +318,8 @@ class TimeSeriesElement(BaseChartElement):
                     "pan": {
                         "enabled": True,
                         "mode": "x"
+                    }
+                }
  {
                     "pan": "enabled": True,
                         "mode": "x"}
@@ -314,6 +328,7 @@ class TimeSeriesElement(BaseChartElement):
                         "enabled": True,
                         "mode": "x",
                         "speed": 0.1
+                    }
  "enabled": True,
                         "mode": "x",
                         "speed": 0.1}
@@ -322,6 +337,7 @@ class TimeSeriesElement(BaseChartElement):
                 "mode": "nearest",
                 "axis": "x",
                 "intersect": False
+            }
  "mode": "nearest",
                 "axis": "x",
                 "intersect": False}
@@ -710,6 +726,8 @@ class BoxPlotElement(BaseChartElement):
             "data": {
                 "labels": labels,
                 "datasets": datasets
+            }
+        }
  {
             "type": "boxplot",
             "data": "labels": labels,
@@ -736,6 +754,9 @@ class BoxPlotElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "値")
+                    }
+                }
+            }
  {
             "scales": {
                 "y": {
@@ -747,6 +768,9 @@ class BoxPlotElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "グループ")
+                    }
+        }
+                }
  {
                     "title": "display": True,
                         "text": self.get_property("x_axis_title", "グループ")}
@@ -756,8 +780,11 @@ class BoxPlotElement(BaseChartElement):
                     "callbacks": {
                         "title": "function(context) return context[0].label; }",
                         "label": "function(context) { return ['最小値: ' + context.raw.min.toFixed(2), '第1四分位: ' + context.raw.q1.toFixed(2), '中央値: ' + context.raw.median.toFixed(2), '第3四分位: ' + context.raw.q3.toFixed(2), '最大値: ' + context.raw.max.toFixed(2)]; }"
+            }
  {
                 "tooltip": {
+            }
+        }
                     "callbacks": {
                         "title": "function(context) return context[0].label; }",
                         "label": "function(context) { return ['最小値: ' + context.raw.min.toFixed(2), '第1四分位: ' + context.raw.q1.toFixed(2), '中央値: ' + context.raw.median.toFixed(2), '第3四分位: ' + context.raw.q3.toFixed(2), '最大値: ' + context.raw.max.toFixed(2)]; }"}
@@ -1029,6 +1056,8 @@ class HeatMapElement(BaseChartElement):
                     "height": self.get_property("cell_height", 30),
                     "borderWidth": 1,
                     "borderColor": "rgba(0, 0, 0, 0.1)"
+            }
+        }
  {
             "type": "matrix",
             "data": {
@@ -1066,6 +1095,9 @@ class HeatMapElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", "X軸")
+                    }
+                }
+            }
  {
             "scales": {
                 "x": {
@@ -1080,6 +1112,9 @@ class HeatMapElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", "Y軸")
+                    }
+        }
+                }
  {
                     "type": "category",
                     "labels": y_labels,
@@ -1089,10 +1124,13 @@ class HeatMapElement(BaseChartElement):
             "plugins": {
                 "legend": {
                     "display": False
+                }
+            }
  {
                 "legend": "display": False}
                 },
                 "tooltip": {
+        }
                     "callbacks": {
                         "title": "function(context) return ''; }",
                         "label": "function(context) { return [context.raw.x + ', ' + context.raw.y, '値: ' + context.raw.v.toFixed(2)]; }"
@@ -1296,6 +1334,7 @@ class CorrelationElement(BaseChartElement):
             regression_points = {
                 "type": regression_type,
                 "data": regression_data
+            }
  "type": regression_type,
                 "data": regression_data}
         
@@ -1337,6 +1376,8 @@ class CorrelationElement(BaseChartElement):
             "type": "scatter",
             "data": {
                 "datasets": datasets
+            }
+        }
  {
             "type": "scatter",
             "data": "datasets": datasets}
@@ -1367,6 +1408,9 @@ class CorrelationElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("x_axis_title", x_param)
+                    }
+                }
+            }
  {
             "scales": {
                 "x": {
@@ -1377,6 +1421,9 @@ class CorrelationElement(BaseChartElement):
                     "title": {
                         "display": True,
                         "text": self.get_property("y_axis_title", y_param)
+                    }
+        }
+                }
  {
                     "title": "display": True,
                         "text": self.get_property("y_axis_title", y_param)}
@@ -1385,10 +1432,16 @@ class CorrelationElement(BaseChartElement):
                 "tooltip": {
                     "callbacks": {
                         "label": "function(context) return context.raw.x.toFixed(2) + ', ' + context.raw.y.toFixed(2); }"
+                }
+            }
  {
                 "tooltip": {
                     "callbacks": {
+            }
                         "label": "function(context) return context.raw.x.toFixed(2) + ', ' + context.raw.y.toFixed(2); }"}
+        }
+            }
+                }
         
         # オプションを結合
         self._merge_options(options, correlation_options)

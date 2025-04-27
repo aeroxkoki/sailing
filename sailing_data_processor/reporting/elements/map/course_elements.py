@@ -285,6 +285,9 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "caution": {"color": "orange", "icon": "exclamation-triangle"},
             "information": {"color": "blue", "icon": "info-circle"},
             "default": {"color": "gray", "icon": "map-marker-alt"}
+            }
+            }
+            }
  {
             "mark": "color": "red", "icon": "map-marker-alt"},
             "start": {"color": "green", "icon": "flag"},
@@ -294,6 +297,11 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "information": {"color": "blue", "icon": "info-circle"},
             "default": {"color": "gray", "icon": "map-marker-alt"}}
         })
+            }
+            }
+            }
+            }
+            }
         
         # データをJSON形式に変換
         data_json = json.dumps(data)
@@ -310,6 +318,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "strategy_points": strategy_points,
             "optimal_route": optimal_route,
             "risk_areas": risk_areas
+        }
  "marks": marks,
             "course_shape": course_shape,
             "start_line": start_line,
@@ -334,6 +343,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             "track_color": track_color,
             "track_width": track_width,
             "point_icons": point_icons
+        }
  "map_type": map_type,
             "center_auto": center_auto,
             "center": [center_lat, center_lng],
@@ -417,6 +427,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
             
             <div id="{self.map_id}" style="width: {width}; height: {height};"></div>
             
+            }
             <script>
                 (function() {{
                     // 基本データ
@@ -424,6 +435,8 @@ class CourseElementsLayer(StrategyPointLayerElement):
                     var courseConfig = {course_config_json};
                     var mapConfig = {map_config_json};
                     
+                    }
+                    }
                     // 初期化関数
                     window.addEventListener('load', function() {{
                         // マップの作成
@@ -499,6 +512,7 @@ class CourseElementsLayer(StrategyPointLayerElement):
                         // オーバーレイのリスト作成
                         var overlays = {}};
                         
+                        }
                         // トラック表示（GPS航跡の場合）
                         if (mapConfig.show_track && trackPoints.length > 0) {{
                             var trackLine = L.polyline(trackPoints, {color: mapConfig.track_color,

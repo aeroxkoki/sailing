@@ -137,6 +137,7 @@ class PDFExporter(BaseExporter):
                 pdf_content = self._generate_weasyprint_pdf(data, template, **kwargs)
             else:
                 self.add_error(f"未対応のレンダリング方法: {render_method}")
+                }
                 return None
             
             # ファイルに書き込む場合
@@ -152,6 +153,8 @@ class PDFExporter(BaseExporter):
         except Exception as e:
             self.add_error(f"PDF生成中にエラーが発生しました: {str(e)}")
             logger.error(f"PDF generation failed: {str(e)}", exc_info=True)
+            }
+            }
             return None
     
     def _generate_reportlab_pdf(self, data, template=None, **kwargs):
@@ -234,6 +237,7 @@ class PDFExporter(BaseExporter):
         # 生成日時
         now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         content.append(Paragraph(f"生成日時: {now}", normal_style))
+        }
         content.append(Spacer(1, 12))
         
         # データの種類に基づいて適切な処理
@@ -536,6 +540,8 @@ class PDFExporter(BaseExporter):
         except Exception as e:
             self.add_error(f"HTML生成中にエラーが発生しました: {str(e)}")
             logger.error(f"HTML generation failed: {str(e)}", exc_info=True)
+            }
+            }
             return self._get_default_html_template()
     
     def _get_default_html_template(self):
@@ -582,6 +588,7 @@ class PDFExporter(BaseExporter):
         <h1>{title}}</h1>
         <p>生成日時: {generated_date}}</p>
         
+        }
         <h2>メタデータ</h2>
         {metadata_table}}
         
@@ -599,6 +606,7 @@ class PDFExporter(BaseExporter):
         <h2>エクスポート情報</h2>
         <p>このレポートはセーリング戦略分析システムによって生成されました。</p>
         <p>生成日時: {generated_date}}</p>
+        }
     </div>
 </body>
 </html>
@@ -622,12 +630,14 @@ class PDFExporter(BaseExporter):
         page_size = self.options.get("page_size", "A4")
         if page_size not in ["A4", "letter"]:
             self.add_warning(f"未対応のページサイズ: {page_size}, 'A4'を使用します。")
+            }
             self.options["page_size"] = "A4"
         
         # 向きの検証
         orientation = self.options.get("orientation", "portrait")
         if orientation not in ["portrait", "landscape"]:
             self.add_warning(f"未対応の向き: {orientation}, 'portrait'を使用します。")
+            }
             self.options["orientation"] = "portrait"
         
         # マージンの検証

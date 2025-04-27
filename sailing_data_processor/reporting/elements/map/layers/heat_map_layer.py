@@ -362,6 +362,10 @@ class HeatMapLayer(BaseMapLayer):
                     intensity: {intensity},
                     metric: '{metric}'
                 }};
+                    }
+                    }
+                    }
+                    }
                 
                 // ヒートマップレイヤーを作成するヘルパー関数
                 function createHeatmapLayer(data, config) {{
@@ -500,6 +504,7 @@ class HeatMapLayer(BaseMapLayer):
                     // 反転フラグが設定されていれば反転
                     if (invert && gradient) {{
                         var inverted = {}};
+                        }
                         var keys = Object.keys(gradient);
                         for (var i = 0; i < keys.length; i++) {var key = keys[i];
                             inverted[(1.0 - parseFloat(key)).toFixed(1)] = gradient[key];

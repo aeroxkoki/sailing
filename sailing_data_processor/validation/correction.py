@@ -72,42 +72,42 @@ class CorrectionProcessor:
             return []
         
         # 問題タイプに対応する修正オプションのマッピング
-        options_mapping = {}
+        options_mapping = {
             "missing_data": [
                 {
                     "id": "interpolate_linear",
                     "name": "線形補間",
                     "description": "前後の値から欠損値を補間します",
                     "fix_type": "interpolate",
-                    "params": "method": "linear"}
+                    "params": {"method": "linear"}
                 },
                 {
                     "id": "interpolate_time",
                     "name": "時間ベース補間",
                     "description": "時間の経過に基づいて補間します",
                     "fix_type": "interpolate",
-                    "params": "method": "time"}
+                    "params": {"method": "time"}
                 },
                 {
                     "id": "fill_forward",
                     "name": "前方向に埋める",
                     "description": "直前の値で欠損値を埋めます",
                     "fix_type": "interpolate",
-                    "params": "method": "ffill"}
+                    "params": {"method": "ffill"}
                 },
                 {
                     "id": "fill_backward",
                     "name": "後方向に埋める",
                     "description": "直後の値で欠損値を埋めます",
                     "fix_type": "interpolate",
-                    "params": "method": "bfill"}
+                    "params": {"method": "bfill"}
                 },
                 {
                     "id": "remove_rows",
                     "name": "行を削除",
                     "description": "欠損値を含む行を削除します",
                     "fix_type": "remove",
-                    "params": }
+                    "params": {}
                 }
             ],
             "out_of_range": [
@@ -130,7 +130,7 @@ class CorrectionProcessor:
                     "name": "行を削除",
                     "description": "範囲外の値を含む行を削除します",
                     "fix_type": "remove",
-                    "params": }
+                    "params": {}
                 }
             ],
             "duplicates": [
@@ -169,7 +169,7 @@ class CorrectionProcessor:
                     "name": "異常ポイントを削除",
                     "description": "空間的に異常なポイントを削除します",
                     "fix_type": "remove",
-                    "params": }
+                    "params": {}
                 }
             ],
             "temporal_anomalies": [
@@ -278,6 +278,7 @@ class CorrectionProcessor:
             return fixed_container
         except Exception as e:
             print(f"修正適用中にエラーが発生しました: {e}")
+            }
             return None
     
     def batch_correct(self, corrections: List[Dict[str, Any]]) -> Optional[GPSDataContainer]:
@@ -329,6 +330,7 @@ class CorrectionProcessor:
                 fixed_container = result
             else:
                 print(f"修正の適用に失敗しました: {problem_type}, {option_id}")
+                }
                 # 続行するが、失敗を記録
                 self.correction_history.append({
                     "problem_type": problem_type,
@@ -911,6 +913,7 @@ class CorrectionSuggester:
                 return fixed_container, meta_info
         except Exception as e:
             print(f"プレビュー生成中にエラーが発生しました: {e}")
+            }
         
         return None, {}
 
@@ -1153,6 +1156,7 @@ class InteractiveCorrectionInterface:
                 return fixed_container
         except Exception as e:
             print(f"自動修正中にエラーが発生しました: {e}")
+            }
         
         return None
     

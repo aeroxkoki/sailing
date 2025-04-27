@@ -96,6 +96,9 @@ class ParameterTimeline(BaseElement):
             "heading": {"color": "#9C27B0", "label": "艇首方位", "unit": "°", "axis": "y-right"},
             "heel": {"color": "#FFC107", "label": "ヒール角", "unit": "°", "axis": "y-left"},
             "vmg": {"color": "#607D8B", "label": "VMG", "unit": "kt", "axis": "y-left"},
+            }
+            }
+            }
  {
             "speed": "color": "#FF5722", "label": "速度", "unit": "kt", "axis": "y-left"},
             "wind_speed": {"color": "#2196F3", "label": "風速", "unit": "kt", "axis": "y-left"},
@@ -103,6 +106,12 @@ class ParameterTimeline(BaseElement):
             "heading": {"color": "#9C27B0", "label": "艇首方位", "unit": "°", "axis": "y-right"},
             "heel": {"color": "#FFC107", "label": "ヒール角", "unit": "°", "axis": "y-left"},
             "vmg": {"color": "#607D8B", "label": "VMG", "unit": "kt", "axis": "y-left"},}
+            }
+            }
+            }
+            }
+            }
+            }
         
         # データソース
         self.set_property("data_source", kwargs.get("data_source", ""))
@@ -181,6 +190,7 @@ class ParameterTimeline(BaseElement):
             "label": label or name,
             "unit": unit,
             "axis": axis
+        }
  "field": field,
             "color": color,
             "label": label or name,
@@ -502,6 +512,8 @@ class ParameterTimeline(BaseElement):
             "type": "line",
             "data": {
                 "datasets": []  # データセットはJavaScriptで追加
+            }
+        }
  {
             "type": "line",
             "data": "datasets": []  # データセットはJavaScriptで追加}
@@ -512,6 +524,8 @@ class ParameterTimeline(BaseElement):
                 "interaction": {
                     "mode": "index",
                     "intersect": False
+                }
+            }
  {
                 "responsive": True,
                 "maintainAspectRatio": False,
@@ -527,6 +541,9 @@ class ParameterTimeline(BaseElement):
                                 "second": time_format,
                                 "minute": time_format,
                                 "hour": time_format
+                            }
+                        }
+                    }
  {
                     "x": {
                         "type": "time",
@@ -539,6 +556,8 @@ class ParameterTimeline(BaseElement):
                         "title": {
                             "display": True,
                             "text": "時間"
+                    }
+                        }
  "display": True,
                             "text": "時間"}
                     },
@@ -548,6 +567,8 @@ class ParameterTimeline(BaseElement):
                         "title": {
                             "display": True,
                             "text": "値"
+                        }
+                    }
  {
                         "type": "linear",
                         "position": "left",
@@ -557,6 +578,7 @@ class ParameterTimeline(BaseElement):
                         "grid": {
                             "display": True,
                             "color": "rgba(0, 0, 0, 0.1)"
+                        }
  "display": True,
                             "color": "rgba(0, 0, 0, 0.1)"}
                     },
@@ -565,6 +587,8 @@ class ParameterTimeline(BaseElement):
                         "position": "right",
                         "grid": {
                             "display": False
+                        }
+                    }
  {
                         "type": "linear",
                         "position": "right",
@@ -573,6 +597,7 @@ class ParameterTimeline(BaseElement):
                         "title": {
                             "display": True,
                             "text": "角度 (°)"
+                        }
  "display": True,
                             "text": "角度 (°)"}
                 },
@@ -580,6 +605,8 @@ class ParameterTimeline(BaseElement):
                     "legend": {
                         "display": True,
                         "position": "top"
+                    }
+                }
  {
                     "legend": "display": True,
                         "position": "top"}
@@ -587,6 +614,7 @@ class ParameterTimeline(BaseElement):
                     "tooltip": {
                         "mode": "index",
                         "intersect": False
+                    }
  "mode": "index",
                         "intersect": False}
         
@@ -596,6 +624,9 @@ class ParameterTimeline(BaseElement):
                 "zoom": {
                     "wheel": {
                         "enabled": True
+                    }
+                }
+            }
  {
                 "zoom": {
                     "wheel": "enabled": True}
@@ -609,6 +640,7 @@ class ParameterTimeline(BaseElement):
                 "pan": {
                     "enabled": True,
                     "mode": "xy"
+                }
  "enabled": True,
                     "mode": "xy"}
         
@@ -634,6 +666,7 @@ class ParameterTimeline(BaseElement):
                     // Chart.jsの設定
                     const config = {chart_config_json};
                     
+                    }
                     // データセットを設定
                     config.data.datasets = datasets;
                     

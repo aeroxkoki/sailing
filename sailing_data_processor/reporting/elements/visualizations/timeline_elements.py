@@ -176,12 +176,14 @@ class EventTimelineElement(BaseChartElement):
             
             <div id="{timeline_id}" style="width: {width}; height: {height};"></div>
             
+            }
             <script>
                 (function() {{
                     // タイムラインデータ
                     var timelineData = data_json};
                     var timelineConfig = {timeline_config_json};
                     
+                    }
                     // タイムライン初期化
                     window.addEventListener('load', function() {{
                         // グループとアイテムのデータを準備
@@ -469,6 +471,7 @@ class ParameterTimelineElement(BaseChartElement):
             "show_points": show_points,
             "point_radius": point_radius,
             "brush_selection": brush_selection
+        }
  "time_key": time_key,
             "parameters": parameters,
             "auto_detect": auto_detect,
@@ -495,6 +498,7 @@ class ParameterTimelineElement(BaseChartElement):
                     var timelineData = data_json};
                     var timelineConfig = {timeline_config_json};
                     
+                    }
                     // チャート初期化
                     window.addEventListener('load', function() {{
                         // Chart.jsのズームプラグインを登録
@@ -538,6 +542,7 @@ class ParameterTimelineElement(BaseChartElement):
                         var timeValues = [];
                         var parameterValues = {}};
                         
+                        }
                         // 各パラメータの配列を初期化
                         parameters.forEach(function(param) {parameterValues[param] = [];
                         }});
@@ -769,6 +774,7 @@ class SegmentComparisonElement(BaseChartElement):
             "stack_data": stack_data,
             "show_average": show_average,
             "normalize_values": normalize_values
+        }
  "segment_key": segment_key,
             "session_key": session_key,
             "value_key": value_key,
@@ -795,6 +801,7 @@ class SegmentComparisonElement(BaseChartElement):
                     var segmentData = data_json};
                     var chartConfig = {chart_config_json};
                     
+                    }
                     // チャート初期化
                     window.addEventListener('load', function() {{
                         // データの準備
@@ -1067,6 +1074,7 @@ class DataViewerElement(BaseChartElement):
             "map_view": map_view,
             "chart_view": chart_view,
             "data_table": data_table
+        }
  "time_key": time_key,
             "parameters": parameters,
             "map_view": map_view,
@@ -1167,6 +1175,7 @@ class DataViewerElement(BaseChartElement):
                     var viewerData = data_json};
                     var viewerConfig = {viewer_config_json};
                     
+                    }
                     // データビューア初期化
                     window.addEventListener('load', function() {{
                         // データの準備
@@ -1188,6 +1197,7 @@ class DataViewerElement(BaseChartElement):
                         var timeValues = [];
                         var parameterData = {}};
                         
+                        }
                         // パラメータが指定されていない場合は自動検出
                         var parameters = viewerConfig.parameters;
                         if (!parameters || parameters.length === 0) {{

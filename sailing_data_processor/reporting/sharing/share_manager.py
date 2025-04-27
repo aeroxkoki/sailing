@@ -76,6 +76,7 @@ class ShareManager:
                     logger.info(f"Loaded share history for {len(share_history)} items")
             except Exception as e:
                 logger.error(f"Failed to load share data: {str(e)}")
+                }
     
     def _save_data(self):
         """共有設定データの保存"""
@@ -93,6 +94,7 @@ class ShareManager:
                 logger.info("Share data saved")
             except Exception as e:
                 logger.error(f"Failed to save share data: {str(e)}")
+                }
     
     def share_item(self, item_id: str, user_id: str = None, group_id: str = None, 
                  permission: str = "view", expiration: datetime.datetime = None, 
@@ -188,6 +190,7 @@ class ShareManager:
         self._save_data()
         
         logger.info(f"Item {item_id} shared with {user_id or group_id}, permission: {permission}")
+        }
         return share_id
     
     def generate_share_link(self, item_id: str, permission: str = "view", 
@@ -265,6 +268,7 @@ class ShareManager:
         self._save_data()
         
         logger.info(f"Share link generated for item {item_id}, permission: {permission}")
+        }
         return link_id
     
     def get_share_link(self, link_id: str) -> Dict[str, Any]:
@@ -358,6 +362,7 @@ class ShareManager:
         # 無効化されているかチェック
         if link_setting.get("disabled", False):
             logger.info(f"Share link {link_id} is disabled: {link_setting.get('disabled_reason')}")
+            }
             return False
         
         # 有効期限チェック
@@ -846,3 +851,4 @@ class ShareManager:
         self._share_history[item_id].append(history_entry)
         
         logger.debug(f"Recorded share history for item {item_id}: {action}")
+        }

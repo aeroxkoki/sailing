@@ -298,6 +298,7 @@ class DataCleaner:
                                     auto_fixable=True,
                                     metadata={
                                         "timestamp": ts
+                                    }
                                 )
                                 proposals.append(proposal)
                 
@@ -316,6 +317,7 @@ class DataCleaner:
                                     auto_fixable=True,
                                     metadata={
                                         "method": "linear"
+                                    }
                                 )
                                 proposals.append(proposal)
                                 
@@ -373,6 +375,7 @@ class DataCleaner:
                                     metadata={
                                         "min_value": min_val,
                                         "max_value": max_val
+                                    }
                                 )
                                 proposals.append(proposal)
                             
@@ -414,6 +417,7 @@ class DataCleaner:
                                 auto_fixable=True,
                                 metadata={
                                     "method": "linear"
+                                }
                             )
                             proposals.append(proposal)
                 
@@ -457,6 +461,7 @@ class DataCleaner:
                                         auto_fixable=True,
                                         metadata={
                                             "replacement": new_ts
+                                        }
                                     )
                                     proposals.append(proposal)
                     
@@ -571,6 +576,7 @@ class DataCleaner:
             "spatial_anomalies": ["Spatial Consistency Check"],
             "temporal_anomalies": ["Temporal Consistency Check"]
         
+        }
         if problem_type in type_mapping:
             rule_prefixes = type_mapping[problem_type]
             

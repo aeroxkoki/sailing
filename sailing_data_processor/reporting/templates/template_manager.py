@@ -77,6 +77,7 @@ class TemplateManager:
                 json.dump(self.metadata, f, ensure_ascii=False, indent=2)
         except Exception as e:
             print(f"メタデータの保存中にエラーが発生しました: {str(e)}")
+            }
     
     def _update_template_metadata(self, template: Template) -> None:
         """
@@ -247,6 +248,7 @@ class TemplateManager:
             return Template.load_from_file(file_path)
         except Exception as e:
             print(f"テンプレートのロード中にエラーが発生しました: {str(e)}")
+            }
             return None
     
     def delete_template(self, template_id: str) -> bool:
@@ -288,6 +290,7 @@ class TemplateManager:
             return True
         except Exception as e:
             print(f"テンプレートの削除中にエラーが発生しました: {str(e)}")
+            }
             return False
     
     def list_templates(self, 
@@ -435,6 +438,7 @@ class TemplateManager:
         
         if not file_path.exists():
             print(f"ファイルが見つかりません: {file_path}")
+            }
             return None
         
         try:
@@ -447,6 +451,7 @@ class TemplateManager:
             return template
         except Exception as e:
             print(f"テンプレートのインポート中にエラーが発生しました: {str(e)}")
+            }
             return None
     
     def export_template(self, template_id: str, export_path: Union[str, Path]) -> bool:
@@ -484,6 +489,7 @@ class TemplateManager:
             return True
         except Exception as e:
             print(f"テンプレートのエクスポート中にエラーが発生しました: {str(e)}")
+            }
             return False
     
     def create_standard_templates(self) -> List[str]:
@@ -707,6 +713,7 @@ class TemplateManager:
                 self._update_template_metadata(template)
             except Exception as e:
                 print(f"テンプレートのロード中にエラーが発生しました: {file_path} - {str(e)}")
+                }
         
         # メタデータを保存
         self._save_metadata()

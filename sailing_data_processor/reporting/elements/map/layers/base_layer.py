@@ -67,6 +67,7 @@ class BaseMapLayer(ABC):
     def __repr__(self) -> str:
         """オブジェクトの文字列表現"""
         return f"<{self.__class__.__name__} {self.layer_id}: {self.name}>"
+        }
     
     @property
     def visible(self) -> bool:

@@ -277,6 +277,7 @@ class QualityMetricsCalculatorExtension:
         except Exception as e:
             # エラーが発生した場合は空のリストを返す
             print(f"時間帯別の品質スコア計算中にエラー: {e}")
+            }
             return []
             
     def calculate_spatial_quality_scores(self) -> List[Dict[str, Any]]:
@@ -386,6 +387,7 @@ class QualityMetricsCalculatorExtension:
         except Exception as e:
             # エラーが発生した場合は空のリストを返す
             print(f"空間的な品質スコア計算中にエラー: {e}")
+            }
             return []
             
     def calculate_category_quality_scores_detailed(self) -> Dict[str, Dict[str, Any]]:
@@ -506,6 +508,7 @@ class QualityMetricsCalculatorExtension:
             gauge={
                 "axis": "range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
                 "bar": {"color": self._get_score_color(quality_scores["total"])},
+                }
                 "bgcolor": "white",
                 "borderwidth": 2,
                 "bordercolor": "gray",
@@ -536,6 +539,7 @@ class QualityMetricsCalculatorExtension:
                 text="高品質",
                 showarrow=False,
                 font={"size": 16, "color": "green"},
+                }
                 align="center"
             )
         elif quality_scores["total"] < 50:
@@ -544,6 +548,7 @@ class QualityMetricsCalculatorExtension:
                 text="要改善",
                 showarrow=False,
                 font={"size": 16, "color": "red"},
+                }
                 align="center"
             )
         
@@ -557,6 +562,7 @@ class QualityMetricsCalculatorExtension:
             "accuracy": "正確性",
             "consistency": "一貫性"
         
+        }
         # カテゴリ別の色設定
         bar_colors = [
             self._get_score_color(values[0]),
@@ -578,6 +584,9 @@ class QualityMetricsCalculatorExtension:
                     f"完全性スコア: {values[0]:.1f}<br>欠損値や必須項目の充足度",
                     f"正確性スコア: {values[1]:.1f}<br>値の範囲や形式の正確さ",
                     f"一貫性スコア: {values[2]:.1f}<br>時間的・空間的な整合性"
+                    }
+                    }
+                    }
                 ]
             )
         ])
@@ -610,6 +619,7 @@ class QualityMetricsCalculatorExtension:
             paper_bgcolor="white",
             plot_bgcolor="white",
             font={"family": "Arial", "size": 12},
+            }
             showlegend=False
         )
         
@@ -763,6 +773,10 @@ class QualityMetricsCalculatorExtension:
                 f"問題数: {grid['problem_count']}<br>" +
                 f"総レコード数: {grid['total_count']}<br>" +
                 f"問題率: {(grid['problem_count'] / grid['total_count'] * 100):.1f}%"
+                }
+                }
+                }
+                }
             )
             
             # 問題タイプの内訳があれば追加
@@ -778,6 +792,7 @@ class QualityMetricsCalculatorExtension:
                             "temporal_anomalies": "時間的異常"
                         }.get(problem_type, problem_type)
                         problem_type_text += f" - {type_name}: {count}件<br>"
+                        }
                 hover_text += problem_type_text
             
             # 各グリッドのポリゴンを追加
@@ -792,6 +807,7 @@ class QualityMetricsCalculatorExtension:
                 text=hover_text,
                 hoverinfo="text",
                 name=f"グリッド（スコア: {quality_score:.1f}）"
+                }
             ))
             
             # グリッドの中心にスコアを表示するマーカーを追加
@@ -936,6 +952,10 @@ class QualityMetricsCalculatorExtension:
                      f"品質スコア: {quality_scores[i]:.1f}<br>" +
                      f"データ量: {total_counts[i]}<br>" +
                      f"問題数: {problem_counts[i]}")
+                     }
+                     }
+                     }
+                    }
                     for i in range(len(labels))
                 ],
                 name="品質スコア"
@@ -963,6 +983,7 @@ class QualityMetricsCalculatorExtension:
                 marker=dict(size=8, color="blue"),
                 hoverinfo="text",
                 hovertext=[f"時間帯: {labels[i]}<br>データ量: {total_counts[i]}" for i in range(len(labels))]
+                }
             ),
             row=2, col=1
         )
@@ -978,6 +999,7 @@ class QualityMetricsCalculatorExtension:
                 marker=dict(size=8, color="red"),
                 hoverinfo="text",
                 hovertext=[f"時間帯: {labels[i]}<br>問題率: {problem_percentages[i]:.1f}%" for i in range(len(labels))],
+                }
                 yaxis="y3"
             ),
             row=2, col=1
@@ -993,6 +1015,7 @@ class QualityMetricsCalculatorExtension:
                 "spatial_anomalies": "purple",
                 "temporal_anomalies": "orange"
             
+            }
             # 問題タイプごとの表示名
             type_names = {
                 "missing_data": "欠損値",
@@ -1001,6 +1024,7 @@ class QualityMetricsCalculatorExtension:
                 "spatial_anomalies": "空間的異常",
                 "temporal_anomalies": "時間的異常"
             
+            }
             # 積み上げバーチャートのデータ準備
             bar_data = []
             for key in problem_types_data:
@@ -1021,6 +1045,7 @@ class QualityMetricsCalculatorExtension:
                         hoverinfo="text",
                         hovertext=[
                             f"時間帯: {labels[i]}<br>{data['name']}: {data['values'][i]}件"
+                            }
                             for i in range(len(labels))
                         ]
                     ),

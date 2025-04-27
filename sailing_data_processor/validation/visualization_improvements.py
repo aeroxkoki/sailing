@@ -67,6 +67,7 @@ class EnhancedValidationVisualization:
             gauge={}
                 "axis": "range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
                 "bar": {"color": self._get_score_color(quality_scores["total"])},
+                }
                 "bgcolor": "white",
                 "borderwidth": 2,
                 "bordercolor": "gray",
@@ -96,6 +97,7 @@ class EnhancedValidationVisualization:
         
         # カテゴリ名の日本語対応
         category_names = {
+        }
 """            "completeness": "完全性","""
 """            "accuracy": "正確性","""
 """            "consistency": "一貫性""""
@@ -130,11 +132,16 @@ class EnhancedValidationVisualization:
             type="line",
             x0=-0.5, y0=90, x1=2.5, y1=90,
             line=dict(color="green", width=2, dash="dash"),
+}
+}
+}
 """            name="品質目標""""
         )
         
         bar_chart.update_layout(
             title={
+}
+            }
 """                "text": "カテゴリ別品質スコア","""
                 "y": 0.9,
                 "x": 0.5,
@@ -142,6 +149,7 @@ class EnhancedValidationVisualization:
                 "yanchor": "top"
             },
             yaxis={
+            }
 """                "title": "品質スコア","""
                 "range": [0, 105],
                 "tickvals": [0, 25, 50, 75, 90, 100],
@@ -153,6 +161,7 @@ class EnhancedValidationVisualization:
             paper_bgcolor="white",
             plot_bgcolor="white",
             font={"family": "Arial", "size": 12},
+            }
             showlegend=False
         )
         
@@ -212,10 +221,18 @@ class EnhancedValidationVisualization:
             
             # 問題タイプの内訳があれば追加
             if "problem_distribution" in grid:
+}
+}
+}
 """                problem_type_text = "<br>問題タイプ内訳:<br>""""
                 for problem_type, count in grid["problem_distribution"].items():
                     if count > 0:
                         type_name = {
+}
+}
+}
+}
+                        }
 """                            "missing_data": "欠損値","""
 """                            "out_of_range": "範囲外の値","""
 """                            "duplicates": "重複データ","""
@@ -648,6 +665,7 @@ class EnhancedValidationVisualization:
             z="problem_percentage",
             radius=20,
             center={"lat": df["lat"].mean(), "lon": df["lon"].mean()},
+            }
             zoom=11,
             mapbox_style="open-street-map",
             color_continuous_scale=[
@@ -663,9 +681,11 @@ class EnhancedValidationVisualization:
                 "problem_count": True,
                 "total_count": True,
                 "problem_percentage": ":.1f"
+            }
         )
         
         # レイアウト設定
+}
         fig.update_layout(
 """title="空間的な問題分布ヒートマップ","""
             height=500,
@@ -695,8 +715,10 @@ class EnhancedValidationVisualization:
             "spatial_anomalies": len(self.quality_metrics.problematic_indices["spatial_anomalies"]),
             "temporal_anomalies": len(self.quality_metrics.problematic_indices["temporal_anomalies"])
         
+        }
         # 問題タイプの日本語名
         problem_type_names = {
+        }
 """"missing_data": "欠損値","""
 """"out_of_range": "範囲外の値","""
 """"duplicates": "重複データ","""
@@ -711,6 +733,7 @@ class EnhancedValidationVisualization:
             "spatial_anomalies": "purple",
             "temporal_anomalies": "orange"
         
+        }
         # データ準備
         labels = []
         values = []
@@ -797,6 +820,7 @@ class EnhancedValidationVisualization:
         
         # 問題タイプの日本語名と色
         problem_type_names = {
+        }
 """"missing_data": "欠損値","""
 """"out_of_range": "範囲外の値","""
 """"duplicates": "重複データ","""
@@ -810,6 +834,7 @@ class EnhancedValidationVisualization:
             "spatial_anomalies": "purple",
             "temporal_anomalies": "orange"
         
+        }
         # チャート作成
         fig = go.Figure()
         
@@ -833,6 +858,7 @@ class EnhancedValidationVisualization:
         
         # レイアウト設定
         fig.update_layout(
+}
 """title="時間帯別の問題タイプ分布","""
 """xaxis=dict(title="時間帯"),"""
 """yaxis=dict(title="問題数"),"""
@@ -871,6 +897,7 @@ class EnhancedValidationVisualization:
         
         # カテゴリの日本語名
         category_names = {
+        }
 """"completeness": "完全性","""
 """"accuracy": "正確性","""
 """"consistency": "一貫性""""
@@ -967,6 +994,7 @@ class EnhancedValidationVisualization:
 """            日本語の影響レベル名"""
         """
         impact_names = {
+        }
 """"low": "低影響","""
 """"medium": "中程度の影響","""
 """"high": "高影響","""
@@ -988,6 +1016,7 @@ class EnhancedValidationVisualization:
 """            カテゴリの説明"""
         """
         descriptions = {
+        }
 """"completeness": "欠損値や必須項目の充足度","""
 """"accuracy": "値の範囲や形式の正確さ","""
 """"consistency": "時間的・空間的な整合性""""

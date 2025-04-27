@@ -128,6 +128,7 @@ class DataExporter(BaseExporter):
                 result = self._export_xml(data, output_path, **kwargs)
             else:
                 self.add_error(f"未対応のデータ形式: {output_format}")
+                }
                 return None
             
             # 圧縮オプションの処理
@@ -139,6 +140,8 @@ class DataExporter(BaseExporter):
         except Exception as e:
             self.add_error(f"データエクスポート中にエラーが発生しました: {str(e)}")
             logger.error(f"Data export failed: {str(e)}", exc_info=True)
+            }
+            }
             return None
     
     def _export_csv(self, data, output_path, **kwargs):
@@ -501,6 +504,7 @@ class DataExporter(BaseExporter):
                 df = pd.DataFrame(data.data)
             except Exception as e:
                 self.add_error(f"データをDataFrameに変換できません: {str(e)}")
+                }
                 return None
         else:
             # コピーして元のデータを変更しない
@@ -588,6 +592,7 @@ class DataExporter(BaseExporter):
                                 df[column] = df[column].apply(lambda_func)
                             except Exception as e:
                                 self.add_warning(f"ラムダ式の評価に失敗しました: {str(e)}")
+                                }
                         else:
                             # 単純な値置換
                             df[column] = transform
@@ -652,10 +657,12 @@ class DataExporter(BaseExporter):
             
             else:
                 self.add_warning(f"未対応の圧縮形式: {compression_format}")
+                }
                 return file_path
                 
         except Exception as e:
             self.add_warning(f"圧縮中にエラーが発生しました: {str(e)}")
+            }
             return file_path
     
     def _json_serializer(self, obj):
@@ -696,6 +703,7 @@ class DataExporter(BaseExporter):
         output_format = self.options.get("format", "csv")
         if output_format not in ["csv", "json", "xml"]:
             self.add_warning(f"未対応のデータ形式: {output_format}, 'csv'を使用します。")
+            }
             self.options["format"] = "csv"
         
         # CSVオプションの検証
@@ -703,6 +711,7 @@ class DataExporter(BaseExporter):
             delimiter = self.options.get("delimiter", ",")
             if len(delimiter) != 1:
                 self.add_warning(f"区切り文字は1文字である必要があります: {delimiter}, ','を使用します。")
+                }
                 self.options["delimiter"] = ","
         
         # JSONオプションの検証
@@ -710,6 +719,7 @@ class DataExporter(BaseExporter):
             json_orient = self.options.get("json_orient", "records")
             if json_orient not in ["records", "columns", "index", "split", "values"]:
                 self.add_warning(f"未対応のJSONフォーマット: {json_orient}, 'records'を使用します。")
+                }
                 self.options["json_orient"] = "records"
         
         # 変換とフィルタリングの検証
@@ -728,6 +738,7 @@ class DataExporter(BaseExporter):
             compression_format = self.options.get("compression_format", "zip")
             if compression_format not in ["zip", "gzip"]:
                 self.add_warning(f"未対応の圧縮形式: {compression_format}, 'zip'を使用します。")
+                }
                 self.options["compression_format"] = "zip"
         
         return True

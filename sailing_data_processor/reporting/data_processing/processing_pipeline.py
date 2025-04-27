@@ -289,7 +289,7 @@ class ProcessingPipeline:
                 duration = (end_time - start_time).total_seconds()
                 
                 # 実行ログに記録
-                log_entry = {}
+                log_entry = {
                     'step_index': i,
                     'step_name': step_name,
                     'step_type': step_type,

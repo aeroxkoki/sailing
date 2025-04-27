@@ -28,7 +28,11 @@ class Permission:
         EDIT: {VIEW, COMMENT, EDIT},
         COMMENT: {VIEW, COMMENT},
         VIEW: {VIEW},
+        }
+        }
+        }
         NONE: set()
+        }
     }
     
     @classmethod
@@ -164,6 +168,7 @@ class PermissionManager:
                 logger.info(f"Role {role_id} saved to storage")
             except Exception as e:
                 logger.error(f"Failed to save role: {str(e)}")
+                }
         
         # 監査ログに記録
         self._record_audit_log("role_defined", role)
@@ -229,6 +234,7 @@ class PermissionManager:
                 logger.info(f"User roles for {user_id} saved to storage")
             except Exception as e:
                 logger.error(f"Failed to save user roles: {str(e)}")
+                }
         
         # 監査ログに記録
         self._record_audit_log("role_assigned", {
@@ -277,6 +283,7 @@ class PermissionManager:
                 logger.info(f"Group {group_id} saved to storage")
             except Exception as e:
                 logger.error(f"Failed to save group: {str(e)}")
+                }
         
         # 監査ログに記録
         self._record_audit_log("group_created", group)
@@ -321,6 +328,7 @@ class PermissionManager:
                 logger.info(f"Group {group_id} updated in storage")
             except Exception as e:
                 logger.error(f"Failed to update group: {str(e)}")
+                }
         
         # 監査ログに記録
         self._record_audit_log("user_added_to_group", {
@@ -368,6 +376,7 @@ class PermissionManager:
                 logger.info(f"Group {group_id} updated in storage")
             except Exception as e:
                 logger.error(f"Failed to update group: {str(e)}")
+                }
         
         # 監査ログに記録
         self._record_audit_log("user_removed_from_group", {
@@ -401,6 +410,7 @@ class PermissionManager:
         # 権限の妥当性チェック
         if permission not in Permission.HIERARCHY:
             logger.warning(f"Invalid permission: {permission}")
+            }
             return False
         
         # ロールの存在チェック
@@ -427,6 +437,7 @@ class PermissionManager:
                 logger.info(f"Permissions for resource {resource_id} saved to storage")
             except Exception as e:
                 logger.error(f"Failed to save permissions: {str(e)}")
+                }
         
         # 監査ログに記録
         self._record_audit_log("permission_set", {
@@ -610,3 +621,4 @@ class PermissionManager:
                 self.storage_manager.save_audit_log(log_entry)
             except Exception as e:
                 logger.error(f"Failed to save audit log: {str(e)}")
+                }

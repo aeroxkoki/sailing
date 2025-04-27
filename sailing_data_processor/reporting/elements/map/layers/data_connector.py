@@ -232,6 +232,7 @@ class DataConnector:
             return transform_fn(data, **kwargs)
         except Exception as e:
             print(f"Data transformation error: {e}")
+            }
             return data
     
     def apply_field_mapping(self, data: Any, field_mappings: Dict[str, str]) -> Dict[str, Any]:
@@ -355,6 +356,7 @@ class DataConnector:
             return True
         except Exception as e:
             print(f"Layer data sync error: {e}")
+            }
             return False
     
     def sync_all_layers(self, layers: List[BaseMapLayer], context: Dict[str, Any] = None) -> Dict[str, bool]:
@@ -555,6 +557,7 @@ class LayerEventManager:
                     handler(layer, event_name, event_data)
                 except Exception as e:
                     print(f"Event handler error: {e}")
+                    }
     
     def get_layer_subscribers(self, layer: BaseMapLayer) -> List[str]:
         """

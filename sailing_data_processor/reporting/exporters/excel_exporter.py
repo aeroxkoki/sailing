@@ -183,6 +183,8 @@ class ExcelExporter(BaseExporter):
         except Exception as e:
             self.add_error(f"Excel生成中にエラーが発生しました: {str(e)}")
             logger.error(f"Excel generation failed: {str(e)}", exc_info=True)
+            }
+            }
             return None
     
     def _export_pandas(self, data, output_path, template=None, **kwargs):
@@ -482,6 +484,7 @@ class ExcelExporter(BaseExporter):
                 workbook = openpyxl.load_workbook(output_path)
             except Exception as e:
                 self.add_warning(f"テンプレートの読み込みに失敗しました: {str(e)}")
+                }
                 workbook = openpyxl.Workbook()
         else:
             # 新規ワークブック作成
@@ -540,6 +543,7 @@ class ExcelExporter(BaseExporter):
             # 自動フィルターの設定
             if self.options.get("auto_filter", True):
                 worksheet.auto_filter.ref = f"A1:{get_column_letter(len(df.columns))}{len(df) + 1}"
+                }
             
             # 枠の固定
             if self.options.get("freeze_panes", True):
@@ -632,6 +636,7 @@ class ExcelExporter(BaseExporter):
             # 自動フィルターの設定
             if self.options.get("auto_filter", True):
                 worksheet.auto_filter.ref = f"A1:{get_column_letter(len(wind_columns))}{len(wind_data) + 1}"
+                }
             
             # 枠の固定
             if self.options.get("freeze_panes", True):
@@ -668,6 +673,7 @@ class ExcelExporter(BaseExporter):
                     chart_sheet.add_chart(chart, "A1")
                 except Exception as e:
                     self.add_warning(f"風チャートの作成に失敗しました: {str(e)}")
+                    }
         
         # 戦略ポイントシートの出力
         if "strategy_points" in sheet_layout and 'strategy_point' in df.columns:
@@ -696,6 +702,7 @@ class ExcelExporter(BaseExporter):
                     # 自動フィルターの設定
                     if self.options.get("auto_filter", True):
                         worksheet.auto_filter.ref = f"A1:{get_column_letter(len(strategy_df.columns))}{len(strategy_df) + 1}"
+                        }
                     
                     # 枠の固定
                     if self.options.get("freeze_panes", True):
@@ -707,6 +714,7 @@ class ExcelExporter(BaseExporter):
                         worksheet.column_dimensions[get_column_letter(col_num)].width = column_width
             except Exception as e:
                 self.add_warning(f"戦略ポイントシートの作成に失敗しました: {str(e)}")
+                }
         
         # 速度チャートシートの出力
         if self.options.get("include_charts", True) and 'timestamp' in df.columns and 'speed' in df.columns:
@@ -750,6 +758,7 @@ class ExcelExporter(BaseExporter):
                 chart_sheet.add_chart(chart, "A1")
             except Exception as e:
                 self.add_warning(f"速度チャートの作成に失敗しました: {str(e)}")
+                }
         
         # シート順序の最適化
         try:
@@ -773,6 +782,7 @@ class ExcelExporter(BaseExporter):
             workbook._sheets = [workbook[sheet_name] for sheet_name, _ in sheet_order]
         except Exception as e:
             self.add_warning(f"シート順序の最適化に失敗しました: {str(e)}")
+            }
         
         # ファイルの保存
         workbook.save(output_path)
