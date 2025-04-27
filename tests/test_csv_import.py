@@ -18,12 +18,31 @@ try:
     print("CSVImporterのインポートに成功しました")
     
     # テスト用ファイルパスを設定（複数の候補を確認）
+    # 現在のファイルからの相対パスを計算するために __file__ を使用
+    current_dir = Path(__file__).parent
+    project_root = Path(os.path.abspath(os.path.join(current_dir, "..")))
+    
     test_file_paths = [
+        # 相対パス（テストファイルからの相対）
+        current_dir / "test_data" / "sample.csv",
+        current_dir / "resources" / "sample.csv",
+        # プロジェクトルートからの相対パス
+        project_root / "tests" / "test_data" / "sample.csv",
+        project_root / "tests" / "resources" / "sample.csv",
+        # 絶対パス（変わらないパス）
         Path("test_data/sample.csv"),
         Path("resources/sample.csv"),
         Path("tests/test_data/sample.csv"),
         Path("tests/resources/sample.csv")
     ]
+    
+    # デバッグ情報の出力
+    print(f"現在のディレクトリ: {os.getcwd()}")
+    print(f"テストファイルのディレクトリ: {current_dir}")
+    print(f"プロジェクトルート: {project_root}")
+    print("検索パス:")
+    for i, path in enumerate(test_file_paths):
+        print(f"  {i+1}. {path} (存在: {path.exists()})")
     
     # 有効なファイルパスを検索
     test_file = None
