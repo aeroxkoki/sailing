@@ -17,11 +17,25 @@ try:
     
     print("CSVImporterのインポートに成功しました")
     
-    # テスト用ファイルパスを設定
-    test_file = Path("test_data/sample.csv")
+    # テスト用ファイルパスを設定（複数の候補を確認）
+    test_file_paths = [
+        Path("test_data/sample.csv"),
+        Path("resources/sample.csv"),
+        Path("tests/test_data/sample.csv"),
+        Path("tests/resources/sample.csv")
+    ]
     
-    if not test_file.exists():
-        print(f"テストファイルが見つかりません: {test_file}")
+    # 有効なファイルパスを検索
+    test_file = None
+    for path in test_file_paths:
+        if path.exists():
+            test_file = path
+            break
+    
+    if test_file is None:
+        print(f"テストファイルが見つかりません: test_data/sample.csv")
+        print("Current directory:", os.getcwd())
+        print("Python path:", sys.path)
         sys.exit(1)
     
     print(f"テストファイル: {test_file}")

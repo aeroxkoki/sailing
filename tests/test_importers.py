@@ -136,18 +136,28 @@ def test_batch_importer(file_paths):
     return summary['successful_count'] > 0
 
 def main():
-    # テスト用ファイルパスを設定
-    test_dir = Path("test_data")
-    if not test_dir.exists():
-        print(f"テストディレクトリが存在しません: {test_dir}")
-        print("サンプルデータを含むテストディレクトリを作成してください")
+    # テスト用ファイルパスを設定（複数の可能性を確認）
+    test_dirs = [Path("test_data"), Path("resources"), Path("tests/test_data"), Path("tests/resources")]
+    
+    # 有効なテストディレクトリを探す
+    valid_test_dir = None
+    for test_dir in test_dirs:
+        if test_dir.exists():
+            valid_test_dir = test_dir
+            print(f"テストディレクトリが見つかりました: {test_dir}")
+            break
+    
+    if valid_test_dir is None:
+        print("テストディレクトリが見つかりません。以下のいずれかのパスにテストデータを配置してください:")
+        for d in test_dirs:
+            print(f"  - {d}")
         return
     
     # 各形式のテストファイルパス
-    csv_file = test_dir / "sample.csv"
-    gpx_file = test_dir / "sample.gpx"
-    tcx_file = test_dir / "sample.tcx"
-    fit_file = test_dir / "sample.fit"
+    csv_file = valid_test_dir / "sample.csv"
+    gpx_file = valid_test_dir / "sample.gpx"
+    tcx_file = valid_test_dir / "sample.tcx"
+    fit_file = valid_test_dir / "sample.fit"
     
     # 存在確認
     test_files = []
