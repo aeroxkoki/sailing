@@ -204,7 +204,7 @@ class CSVImporter(BaseImporter):
                 import pandas as pd
                 import datetime
                 import os
-                from pathlib import Path
+                # Pathクラスはすでにグローバルにインポートされているので再インポート不要
                 
                 # ファイルパスの処理を改善: 複数の場所を試す
                 original_path = Path(file_path)
