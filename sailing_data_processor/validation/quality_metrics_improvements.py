@@ -72,7 +72,7 @@ class QualityMetricsCalculatorExtension:
         # 簡略化した初期化
         self.validation_results = validation_results if validation_results else []
         self.data = data if data is not None else pd.DataFrame()
-        self.problematic_indices = {}
+        self.problematic_indices = {
             "missing_data": [],
             "out_of_range": [],
             "duplicates": [],
@@ -189,12 +189,7 @@ class QualityMetricsCalculatorExtension:
             "completeness": round(completeness_score, 1),
             "accuracy": round(accuracy_score, 1),
             "consistency": round(consistency_score, 1)
-    
-    # 注: このメソッドは次の重複定義と統合されました
-    
-    # 注: このメソッドは次の重複定義と統合されました
-    
-    # このメソッドは重複しているため、コードの後半の定義のみを使用します
+        }
     
     def calculate_temporal_quality_scores(self) -> List[Dict[str, Any]]:
         """
@@ -277,7 +272,6 @@ class QualityMetricsCalculatorExtension:
         except Exception as e:
             # エラーが発生した場合は空のリストを返す
             print(f"時間帯別の品質スコア計算中にエラー: {e}")
-            }
             return []
             
     def calculate_spatial_quality_scores(self) -> List[Dict[str, Any]]:
@@ -387,7 +381,6 @@ class QualityMetricsCalculatorExtension:
         except Exception as e:
             # エラーが発生した場合は空のリストを返す
             print(f"空間的な品質スコア計算中にエラー: {e}")
-            }
             return []
             
     def calculate_category_quality_scores_detailed(self) -> Dict[str, Dict[str, Any]]:
@@ -412,7 +405,7 @@ class QualityMetricsCalculatorExtension:
             category_scores[category] = {
                 "score": quality_scores[category],
                 "issues": 0,
-                "details": },
+                "details": {},
                 "impact_level": self._determine_impact_level(quality_scores[category])
             
             # 各ルールの結果を集計
@@ -448,7 +441,7 @@ class QualityMetricsCalculatorExtension:
                                 "count": details["total_null_count"],
                                 "percentage": percentage,
                                 "severity": result["severity"],
-                                "affected_columns": list(details.get("null_counts", }).keys()),
+                                "affected_columns": list(details.get("null_counts", {}).keys()),
                                 "description": f"{details['total_null_count']}件の欠損値"
                         elif "gap_count" in details:
                             category_scores[category]["details"][rule_key] = {
@@ -697,7 +690,8 @@ class QualityMetricsCalculatorExtension:
             "accuracy_score": self.quality_scores.get("accuracy", 100.0),
             "consistency_score": self.quality_scores.get("consistency", 100.0),
             "total_issues": total_issues,
-            "issue_counts": "missing_data": missing_data_count,
+            "issue_counts": {
+                "missing_data": missing_data_count,
                 "out_of_range": out_of_range_count,
                 "duplicates": dupes_count,
                 "spatial_anomalies": spatial_count,

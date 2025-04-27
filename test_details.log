@@ -1,0 +1,49 @@
+2025-04-28 08:48:55,394 - sailing_test - INFO - ======== テスト環境情報 ========
+2025-04-28 08:48:55,396 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
+2025-04-28 08:48:55,397 - sailing_test - INFO - Python version: 3.9.6
+2025-04-28 08:48:55,397 - sailing_test - INFO - Hostname: MacBook-Air-2.local
+2025-04-28 08:48:55,397 - sailing_test - DEBUG - Python path: [
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload",
+  "/Users/koki_air/Library/Python/3.9/lib/python/site-packages",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
+]
+2025-04-28 08:48:55,401 - sailing_test - DEBUG - Environment variables:
+2025-04-28 08:48:55,402 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
+2025-04-28 08:48:55,402 - sailing_test - INFO - ======== テスト開始 ========
+2025-04-28 08:48:55,403 - sailing_test - INFO - テスト開始: test_initialization
+2025-04-28 08:48:55,422 - sailing_test - INFO - テスト終了: test_initialization
+2025-04-28 08:48:55,425 - sailing_test - INFO - テスト開始: test_calculate_overall_score
+2025-04-28 08:48:55,957 - sailing_test - INFO - テスト終了: test_calculate_overall_score
+2025-04-28 08:48:55,960 - sailing_test - INFO - テスト開始: test_get_problem_distribution
+2025-04-28 08:48:55,990 - sailing_test - INFO - テスト終了: test_get_problem_distribution
+2025-04-28 08:48:55,994 - sailing_test - INFO - テスト開始: test_get_record_issues
+2025-04-28 08:48:56,041 - sailing_test - INFO - テスト終了: test_get_record_issues
+2025-04-28 08:48:56,044 - sailing_test - INFO - テスト開始: test_get_quality_summary
+2025-04-28 08:48:56,074 - sailing_test - INFO - テスト終了: test_get_quality_summary
+2025-04-28 08:48:56,076 - sailing_test - INFO - テスト開始: test_create_sample_data
+2025-04-28 08:48:56,084 - sailing_test - INFO - テスト終了: test_create_sample_data
+2025-04-28 08:48:56,087 - sailing_test - INFO - テスト開始: test_get_quality_report
+2025-04-28 08:48:56,127 - sailing_test - INFO - テスト終了: test_get_quality_report
+2025-04-28 08:48:56,129 - sailing_test - INFO - テスト開始: test_calculate_hierarchical_quality_scores
+2025-04-28 08:48:56,137 - sailing_test - INFO - テスト終了: test_calculate_hierarchical_quality_scores
+2025-04-28 08:48:56,140 - sailing_test - INFO - テスト開始: test_get_data_quality_patterns
+2025-04-28 08:48:56,147 - sailing_test - INFO - テスト終了: test_get_data_quality_patterns
+2025-04-28 08:48:56,150 - sailing_test - INFO - テスト開始: test_precision_and_validity_scores
+2025-04-28 08:48:56,180 - sailing_test - INFO - テスト終了: test_precision_and_validity_scores
+2025-04-28 08:48:56,184 - sailing_test - INFO - テスト開始: test_calculate_uniformity_score
+2025-04-28 08:48:56,216 - sailing_test - INFO - テスト終了: test_calculate_uniformity_score
+2025-04-28 08:48:56,219 - sailing_test - INFO - テスト開始: test_get_comprehensive_quality_metrics
+2025-04-28 08:48:56,226 - sailing_test - INFO - テスト終了: test_get_comprehensive_quality_metrics
+2025-04-28 08:48:56,232 - sailing_test - INFO - テスト開始: test_calculate_spatial_quality_scores
+2025-04-28 08:48:56,276 - sailing_test - INFO - テスト終了: test_calculate_spatial_quality_scores
+2025-04-28 08:48:56,283 - sailing_test - INFO - テスト開始: test_calculate_temporal_quality_scores
+2025-04-28 08:48:56,317 - sailing_test - INFO - テスト終了: test_calculate_temporal_quality_scores
+2025-04-28 08:48:56,318 - sailing_test - INFO - ======== テスト終了 ========
