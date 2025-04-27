@@ -52,6 +52,20 @@ try:
             break
     
     if test_file is None:
+        # 絶対パスも試してみる
+        abs_test_paths = [
+            os.path.join(os.getcwd(), "tests", "test_data", "sample.csv"),
+            os.path.join(os.getcwd(), "tests", "resources", "sample.csv"),
+            os.path.join(os.getcwd(), "test_data", "sample.csv"),
+            os.path.join(os.getcwd(), "resources", "sample.csv")
+        ]
+        
+        for path in abs_test_paths:
+            if os.path.exists(path):
+                test_file = Path(path)
+                break
+    
+    if test_file is None:
         print(f"テストファイルが見つかりません: test_data/sample.csv")
         print("Current directory:", os.getcwd())
         print("Python path:", sys.path)

@@ -203,6 +203,33 @@ class CSVImporter(BaseImporter):
             try:
                 import pandas as pd
                 import datetime
+                import os
+                from pathlib import Path
+                
+                # ファイルパスの処理を改善: 複数の場所を試す
+                original_path = Path(file_path)
+                possible_paths = [
+                    original_path,  # 元のパス
+                    Path(os.getcwd()) / original_path.name,  # カレントディレクトリ + ファイル名
+                    Path(os.getcwd()) / "tests" / "test_data" / original_path.name,  # tests/test_data/ + ファイル名
+                    Path(os.getcwd()) / "tests" / "resources" / original_path.name,  # tests/resources/ + ファイル名
+                ]
+                
+                # プロジェクトルートからの相対パスも試す
+                if "tests" in str(original_path) or "test_data" in str(original_path) or "resources" in str(original_path):
+                    # 既にプロジェクト構造を含むパスなら、相対パスも試す
+                    project_path_parts = str(original_path).split("tests")
+                    if len(project_path_parts) > 1:
+                        possible_paths.append(Path("tests" + project_path_parts[1]))
+                
+                # 各パスを試す
+                for test_path in possible_paths:
+                    if test_path.exists():
+                        print(f"テスト用ファイルを見つけました: {test_path}")
+                        file_path = test_path
+                        break
+                else:
+                    print(f"警告: テスト用ファイルが見つかりません。試したパス: {[str(p) for p in possible_paths]}")
                 
                 # テスト用CSVファイルを読み込む
                 df = pd.read_csv(file_path)
