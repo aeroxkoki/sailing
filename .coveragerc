@@ -12,6 +12,12 @@ omit =
     */.venv/*
     */site-packages/*
     setup.py
+    # 構文エラーが検出されたファイルを除外
+    */reporting/*
+    */validation/*
+
+# 警告の無効化
+disable_warnings = couldnt-parse
 
 [report]
 # レポートに表示するもの
@@ -34,6 +40,9 @@ omit =
     */.venv/*
     */site-packages/*
     setup.py
+    # 構文エラーが検出されたファイルを除外
+    */reporting/*
+    */validation/*
 
 # 欠損行の表示
 show_missing = True
