@@ -147,7 +147,6 @@ class ColumnElement(BaseElement):
         styles = self.styles.copy()
         styles["width"] = width
         css_style = '; '.join([f"{k}: {v}" for k, v in styles.items()])
-        
         # カラム要素のレンダリング
         html_parts = [
             f'<div id="{self.element_id}" class="report-column" style="{css_style}">'
@@ -219,7 +218,6 @@ class GridElement(BaseElement):
         styles["grid-template-columns"] = f"repeat({columns}, 1fr)"
         styles["grid-gap"] = gap
         css_style = '; '.join([f"{k}: {v}" for k, v in styles.items()])
-        
         # グリッド要素のレンダリング
         html_parts = [
             f'<div id="{self.element_id}" class="report-grid" style="{css_style}">'
@@ -300,7 +298,7 @@ class TabElement(BaseElement):
             tab_items = []
             for i, child in enumerate(self.children):
                 tab_items.append({
-                    "id": f"tab_self.element_id}_{i}",
+                    "id": f"tab_{self.element_id}_{i}",
                     "label": child.name or f"タブ {i+1}",
                     "content_index": i
                 })
@@ -375,12 +373,12 @@ class TabElement(BaseElement):
             (function() {{
                 // タブの切り替え機能
                 document.addEventListener('DOMContentLoaded', function() {{
-                    var tabs = document.querySelectorAll('#self.element_id} .report-tab-button');
+                    var tabs = document.querySelectorAll('#{self.element_id} .report-tab-button');
                     
                     for (var i = 0; i < tabs.length; i++) {{
                         tabs[i].addEventListener('click', function() {{
                             // 現在のアクティブタブを非アクティブに
-                            var currentActive = document.querySelector('#self.element_id} .report-tab-active');
+                            var currentActive = document.querySelector('#{self.element_id} .report-tab-active');
                             if (currentActive) {currentActive.classList.remove('report-tab-active');
                                 currentActive.setAttribute('aria-selected', 'false');
                                 document.getElementById(currentActive.getAttribute('aria-controls')).hidden = true;
@@ -457,7 +455,6 @@ class DividerElement(BaseElement):
         styles["margin"] = margin
         styles["width"] = "100%"
         css_style = '; '.join([f"{k}: {v}" for k, v in styles.items()])
-        
         # 区切り線要素のレンダリング
         return f'<hr id="{self.element_id}" class="report-divider" style="{css_style}">'
 
@@ -647,7 +644,6 @@ class BackgroundElement(BaseElement):
             styles["background-repeat"] = self.get_property("background_repeat", "no-repeat")
         
         css_style = '; '.join([f"{k}: {v}" for k, v in styles.items()])
-        
         # 背景要素のレンダリング
         html_parts = [
             f'<div id="{self.element_id}" class="report-background" style="{css_style}">'

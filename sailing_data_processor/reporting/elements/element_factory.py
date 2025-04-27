@@ -25,7 +25,7 @@ from sailing_data_processor.reporting.elements.layout_elements import (
 
 
 # 要素タイプと要素クラスのマッピング
-_ELEMENT_CLASSES: Dict[ElementType, Type[BaseElement]] = {}
+_ELEMENT_CLASSES: Dict[ElementType, Type[BaseElement]] = {
     # コンテンツ要素
     ElementType.TEXT: TextElement,
     ElementType.TABLE: TableElement,
@@ -44,6 +44,7 @@ _ELEMENT_CLASSES: Dict[ElementType, Type[BaseElement]] = {}
     ElementType.DIVIDER: DividerElement,
     ElementType.BOX: BoxElement,
     ElementType.BACKGROUND: BackgroundElement,
+}
 
 
 def create_element(model_or_type: Union[ElementModel, ElementType, str], **kwargs) -> Optional[BaseElement]:
