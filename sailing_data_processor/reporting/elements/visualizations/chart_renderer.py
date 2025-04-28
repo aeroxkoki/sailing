@@ -144,7 +144,6 @@ class PlotlyRenderer(BaseChartRenderer):
         
         style = f"width:{width} height:{height} {self.options.get('style', '')}"
         
-        }
         # HTMLを生成
         html_content = f"""
         <div id="{self.chart_id}_container" style="{style}">
@@ -153,19 +152,22 @@ class PlotlyRenderer(BaseChartRenderer):
             <script>
                 (function() {{
                     function render() {{
-                        var data = plotly_data};
+                        var data = {plotly_data};
                         var layout = {plotly_layout};
                         var config = {plotly_config};
                         
                         Plotly.newPlot('{self.chart_id}', data, layout, config);
                     }}
                     
-                    if (typeof Plotly !== 'undefined') {render();
+                    if (typeof Plotly !== 'undefined') {{
+                        render();
                     }} else {{
                         window.addEventListener('load', function() {{
-                            if (document.querySelector('script[src*="plotly"]')) {// Plotlyライブラリがロード済みの場合
+                            if (document.querySelector('script[src*="plotly"]')) {{
+                                // Plotlyライブラリがロード済みの場合
                                 render();
-                            }} else {// Plotlyライブラリをロード
+                            }} else {{
+                                // Plotlyライブラリをロード
                                 var script = document.createElement('script');
                                 script.src = 'https://cdn.jsdelivr.net/npm/plotly.js@2.27.1/dist/plotly.min.js';
                                 script.onload = render;
@@ -250,7 +252,6 @@ class ChartJSRenderer(BaseChartRenderer):
         
         style = f"width:{width} height:{height} {self.options.get('style', '')}"
         
-        }
         # HTMLを生成
         html_content = f"""
         <div id="{self.chart_id}_container" style="{style}">
@@ -259,18 +260,20 @@ class ChartJSRenderer(BaseChartRenderer):
             <script>
                 (function() {{
                     function render() {{
-                        var ctx = document.getElementById('self.chart_id}').getContext('2d');
+                        var ctx = document.getElementById('{self.chart_id}').getContext('2d');
                         var config = {config_json};
-                        }
                         new Chart(ctx, config);
                     }}
                     
-                    if (typeof Chart !== 'undefined') {render();
+                    if (typeof Chart !== 'undefined') {{
+                        render();
                     }} else {{
                         window.addEventListener('load', function() {{
-                            if (document.querySelector('script[src*="chart.js"]')) {// Chart.jsライブラリがロード済みの場合
+                            if (document.querySelector('script[src*="chart.js"]')) {{
+                                // Chart.jsライブラリがロード済みの場合
                                 render();
-                            }} else {// Chart.jsライブラリをロード
+                            }} else {{
+                                // Chart.jsライブラリをロード
                                 var script = document.createElement('script');
                                 script.src = 'https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js';
                                 script.onload = render;
@@ -378,18 +381,14 @@ class MatplotlibRenderer(BaseChartRenderer):
         if width and width.endswith('%'):
             # パーセンテージ指定の場合は最大幅を設定
             width_style = f"max-width:{width};"
-            }
         else:
             width_style = f"width:{width};"
-            }
         
         if height and height.endswith('%'):
             # パーセンテージ指定の場合は最大高さを設定
             height_style = f"max-height:{height};"
-            }
         else:
             height_style = f"height:{height};"
-            }
         
         style = f"{width_style} {height_style} {self.options.get('style', '')}"
         
@@ -463,4 +462,3 @@ class RendererFactory:
             return MatplotlibRenderer(chart_id, options)
         else:
             raise ValueError(f"サポートされていないレンダラータイプ: {renderer_type}")
-            }
