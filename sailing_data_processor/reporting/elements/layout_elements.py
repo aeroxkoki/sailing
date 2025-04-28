@@ -379,7 +379,8 @@ class TabElement(BaseElement):
                         tabs[i].addEventListener('click', function() {{
                             // 現在のアクティブタブを非アクティブに
                             var currentActive = document.querySelector('#{self.element_id} .report-tab-active');
-                            if (currentActive) {currentActive.classList.remove('report-tab-active');
+                            if (currentActive) {{
+                                currentActive.classList.remove('report-tab-active');
                                 currentActive.setAttribute('aria-selected', 'false');
                                 document.getElementById(currentActive.getAttribute('aria-controls')).hidden = true;
                             }}

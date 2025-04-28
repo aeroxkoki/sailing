@@ -305,7 +305,6 @@ class BaseMapElement(BaseElement):
             
             // グローバル変数として保存（外部からアクセス用）
             window['{self.map_id}_map'] = {map_var};
-            }
         """
     
     def render(self, context: Dict[str, Any]) -> str:
@@ -349,7 +348,7 @@ class BaseMapElement(BaseElement):
             
             <style>
                 #{self.map_id} {{
-                    width: width};
+                    width: {width};
                     height: {height};
                 }}
             </style>
@@ -363,7 +362,7 @@ class BaseMapElement(BaseElement):
                 (function() {{
                     // マップ初期化
                     window.addEventListener('load', function() {{
-                        init_code}
+                        {init_code}
                     }});
                 }})();
             </script>
