@@ -310,7 +310,7 @@ class StrategyDetectorWithPropagation(StrategyDetector):
         
         return filtered_points
     
-        def _normalize_to_timestamp(self, t) -> float:
+    def _normalize_to_timestamp(self, t) -> float:
         """
         様々な時間表現から統一したUNIXタイムスタンプを作成
         
@@ -360,6 +360,7 @@ class StrategyDetectorWithPropagation(StrategyDetector):
             except ValueError:
                 # 変換できない場合は無限大（対応する順序）
                 return float('inf')
+                
     def _get_time_difference_seconds(self, time1, time2) -> float:
         """
         二つの時間表現の差分を秒単位で計算
