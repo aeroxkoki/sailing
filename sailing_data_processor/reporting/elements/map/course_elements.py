@@ -1,226 +1,239 @@
-                                
-                                // 右側のレイライン
-                                var rightAngle = 180 - halfAngle;
-                                var rightEndLat = windwardMark.lat + Math.sin(rightAngle * Math.PI / 180) * laylineLength;
-                                var rightEndLng = windwardMark.lng + Math.cos(rightAngle * Math.PI / 180) * laylineLength;
-                                
-                                var rightLayline = L.polyline([windwardPos, [rightEndLat, rightEndLng]], laylineStyle).addTo(laylinesLayer);
-                                
-                                // ポップアップ
-                                leftLayline.bindPopup('<div class="course-popup"><h4>レイライン</h4>' +
-                                                   '<p><strong>角度:</strong> ' + leftAngle + '°</p></div>');
-                                
-                                rightLayline.bindPopup('<div class="course-popup"><h4>レイライン</h4>' +
-                                                    '<p><strong>角度:</strong> ' + rightAngle + '°</p></div>');
-                            }}
-                            
-                            // 風下マークのレイライン
-                            if (leewardMark) {{
-                                var leewardPos = [leewardMark.lat, leewardMark.lng];
-                                
-                                // ラインの長さ（約1km）
-                                var laylineLength = 0.01;  // 約1kmの経度差
-                                
-                                // 左側のレイライン
-                                var leftAngle = halfAngle;
-                                var leftEndLat = leewardMark.lat + Math.sin(leftAngle * Math.PI / 180) * laylineLength;
-                                var leftEndLng = leewardMark.lng + Math.cos(leftAngle * Math.PI / 180) * laylineLength;
-                                
-                                var leftLayline = L.polyline([leewardPos, [leftEndLat, leftEndLng]], laylineStyle).addTo(laylinesLayer);
-                                
-                                // 右側のレイライン
-                                var rightAngle = 360 - halfAngle;
-                                var rightEndLat = leewardMark.lat + Math.sin(rightAngle * Math.PI / 180) * laylineLength;
-                                var rightEndLng = leewardMark.lng + Math.cos(rightAngle * Math.PI / 180) * laylineLength;
-                                
-                                var rightLayline = L.polyline([leewardPos, [rightEndLat, rightEndLng]], laylineStyle).addTo(laylinesLayer);
-                                
-                                // ポップアップ
-                                leftLayline.bindPopup('<div class="course-popup"><h4>レイライン</h4>' +
-                                                   '<p><strong>角度:</strong> ' + leftAngle + '°</p></div>');
-                                
-                                rightLayline.bindPopup('<div class="course-popup"><h4>レイライン</h4>' +
-                                                    '<p><strong>角度:</strong> ' + rightAngle + '°</p></div>');
-                            }}
-                            
-                            overlays["レイライン"] = laylinesLayer;
-                            laylinesLayer.addTo(map);
-                        }}
-                        
-                        // 戦略ポイントの表示
-                        if (courseConfig.strategy_points && courseConfig.strategy_points.length > 0) {{
-                            courseConfig.strategy_points.forEach(function(point) {{
-                                // ポイントタイプの設定
-                                var iconConfig = mapConfig.point_icons[point.type] || mapConfig.point_icons.default;
-                                var iconColor = point.color || iconConfig.color || 'blue';
-                                var iconName = point.icon || iconConfig.icon || 'info-circle';
-                                
-                                // ポイントアイコンの作成
-                                var pointIcon = L.divIcon({{
-                                    html: '<div class="course-mark-icon" style="background-color: ' + iconColor + ';"><i class="fas fa-' + iconName + '"></i></div>',
-                                    className: 'course-mark-icon-wrapper',
-                                    iconSize: [32, 32],
-                                    iconAnchor: [16, 16]
-                                }});
-                                
-                                // マーカーの作成
-                                var marker = L.marker([point.lat, point.lng], {{
-                                    icon: pointIcon,
-                                    title: point.name || point.description || 'Strategy Point'
-                                }}).addTo(strategyLayer);
-                                
-                                // ポップアップの内容
-                                var pointType = point.type === 'advantage' ? '有利ポイント' : 
-                                              point.type === 'caution' ? '注意ポイント' : 
-                                              point.type === 'information' ? '情報ポイント' : 
-                                              '戦略ポイント';
-                                
-                                var popupContent = '<div class="course-popup">';
-                                if (point.name) popupContent += '<h4>' + point.name + '</h4>';
-                                popupContent += '<p><strong>タイプ:</strong> ' + pointType + '</p>';
-                                if (point.description) popupContent += '<p>' + point.description + '</p>';
-                                popupContent += '</div>';
-                                
-                                marker.bindPopup(popupContent);
-                            }});
-                            
-                            overlays["戦略ポイント"] = strategyLayer;
-                            strategyLayer.addTo(map);
-                        }}
-                        
-                        // 最適ルートの表示
-                        if (courseConfig.optimal_route && courseConfig.optimal_route.points && courseConfig.optimal_route.points.length > 0) {{
-                            var routePoints = [];
-                            
-                            courseConfig.optimal_route.points.forEach(function(point) {{
-                                routePoints.push([point.lat, point.lng]);
-                            }});
-                            
-                            // ルートライン
-                            var routeLine = L.polyline(routePoints, {{
-                                color: 'rgba(0, 128, 0, 0.8)',
-                                weight: 3,
-                                opacity: 0.8,
-                                lineJoin: 'round',
-                                className: 'optimal-route'
-                            }}).addTo(routeLayer);
-                            
-                            // ルートの説明
-                            var description = courseConfig.optimal_route.description || '最適ルート';
-                            var reason = courseConfig.optimal_route.reason || '';
-                            
-                            // ポップアップの内容
-                            var popupContent = '<div class="course-popup">';
-                            popupContent += '<h4>' + description + '</h4>';
-                            if (reason) popupContent += '<p>' + reason + '</p>';
-                            popupContent += '</div>';
-                            
-                            routeLine.bindPopup(popupContent);
-                            
-                            overlays["最適ルート"] = routeLayer;
-                            routeLayer.addTo(map);
-                        }}
-                        
-                        // リスクエリアの表示
-                        if (courseConfig.risk_areas && courseConfig.risk_areas.length > 0) {{
-                            courseConfig.risk_areas.forEach(function(area) {{
-                                // ポリゴンの座標点
-                                var polygonPoints = [];
-                                
-                                area.polygon.forEach(function(point) {{
-                                    polygonPoints.push([point.lat, point.lng]);
-                                }});
-                                
-                                // リスクタイプに応じたスタイル
-                                var areaStyle = {{
-                                    color: 'rgba(255, 165, 0, 0.8)',
-                                    weight: 1,
-                                    fillColor: 'rgba(255, 165, 0, 0.3)',
-                                    fillOpacity: 0.3,
-                                    className: 'risk-area risk-area-caution'
-                                }};
-                                
-                                if (area.type === 'danger') {{
-                                    areaStyle.color = 'rgba(255, 0, 0, 0.8)';
-                                    areaStyle.fillColor = 'rgba(255, 0, 0, 0.3)';
-                                    areaStyle.className = 'risk-area risk-area-danger';
-                                }} else if (area.type === 'information') {{
-                                    areaStyle.color = 'rgba(0, 0, 255, 0.6)';
-                                    areaStyle.fillColor = 'rgba(0, 0, 255, 0.2)';
-                                    areaStyle.className = 'risk-area risk-area-information';
-                                }}
-                                
-                                // ポリゴンの作成
-                                var polygon = L.polygon(polygonPoints, areaStyle).addTo(riskLayer);
-                                
-                                // エリアの説明
-                                var areaType = area.type === 'danger' ? '危険エリア' : 
-                                             area.type === 'caution' ? '注意エリア' : 
-                                             area.type === 'information' ? '情報エリア' : 
-                                             'エリア';
-                                
-                                var description = area.description || '';
-                                
-                                // ポップアップの内容
-                                var popupContent = '<div class="course-popup">';
-                                popupContent += '<h4>' + areaType + '</h4>';
-                                if (description) popupContent += '<p>' + description + '</p>';
-                                popupContent += '</div>';
-                                
-                                polygon.bindPopup(popupContent);
-                            }});
-                            
-                            overlays["リスクエリア"] = riskLayer;
-                            riskLayer.addTo(map);
-                        }}
-                        
-                        // レイヤーコントロールを追加
-                        L.control.layers(null, overlays).addTo(map);
-                        
-                        // 表示範囲の決定
-                        var bounds;
-                        
-                        // マークがある場合はマークから範囲を決定
-                        if (courseConfig.marks && courseConfig.marks.length > 0) {{
-                            var points = [];
-                            
-                            courseConfig.marks.forEach(function(mark) {{
-                                points.push([mark.lat, mark.lng]);
-                            }});
-                            
-                            // スタート/フィニッシュラインの座標も追加
-                            if (courseConfig.start_line && courseConfig.start_line.pin && courseConfig.start_line.boat) {{
-                                points.push([courseConfig.start_line.pin.lat, courseConfig.start_line.pin.lng]);
-                                points.push([courseConfig.start_line.boat.lat, courseConfig.start_line.boat.lng]);
-                            }}
-                            
-                            if (courseConfig.finish_line && courseConfig.finish_line.pin && courseConfig.finish_line.boat) {{
-                                points.push([courseConfig.finish_line.pin.lat, courseConfig.finish_line.pin.lng]);
-                                points.push([courseConfig.finish_line.boat.lat, courseConfig.finish_line.boat.lng]);
-                            }}
-                            
-                            bounds = L.latLngBounds(points);
-                        }}
-                        // マークがなく、トラックデータがある場合はトラックから範囲を決定
-                        else if (trackPoints.length > 0) {{
-                            bounds = L.latLngBounds(trackPoints);
-                        }}
-                        
-                        // 自動的に表示範囲を調整
-                        if (mapConfig.center_auto && bounds) {{
-                            map.fitBounds(bounds, {{
-                                padding: [50, 50]  // 余白
-                            }});
-                        }} else {{
-                            map.setView(mapConfig.center, mapConfig.zoom_level);
-                        }}
-                        
-                        // グローバル変数にマップを保存
-                        window['{self.map_id}_map'] = map;
-                    }});
+"""
+sailing_data_processor.reporting.elements.map.course_elements
+
+セーリングコースの要素（マーク、スタートライン、レイライン等）を管理するモジュール。
+このモジュールは、コース上の様々な要素とその視覚化機能を定義します。
+"""
+
+from typing import Dict, List, Any, Optional, Union, Tuple
+import json
+import uuid
+import os
+import pathlib
+
+from sailing_data_processor.reporting.elements.visualizations.map_elements import StrategyPointLayerElement
+from sailing_data_processor.reporting.templates.template_model import ElementType, ElementModel
+
+
+class CourseElementsLayer(StrategyPointLayerElement):
+    """
+    コース要素レイヤー
+    
+    セーリングコース上のマーク、ライン、レイライン、戦略ポイントを管理します。
+    現在のコース状態を視覚化するためのレイヤーです。
+    """
+    
+    def __init__(self, model: Optional[ElementModel] = None, **kwargs):
+        """
+        初期化
+        
+        Parameters
+        ----------
+        model : Optional[ElementModel], optional
+            モデル設定, by default None
+        **kwargs : dict
+            追加パラメータとしてレイヤーに渡す設定オプション
+        """
+        super().__init__(model, **kwargs)
+        
+        # マーク設定の初期化
+        self.set_property("marks", self.get_property("marks", []))
+        self.set_property("course_shape", self.get_property("course_shape", "windward_leeward"))
+        self.set_property("start_line", self.get_property("start_line", {}))
+        self.set_property("finish_line", self.get_property("finish_line", {}))
+        
+        # レイライン設定の初期化
+        self.set_property("show_laylines", self.get_property("show_laylines", True))
+        self.set_property("tacking_angle", self.get_property("tacking_angle", 90))
+        self.set_property("layline_style", self.get_property("layline_style", {
+            "color": "rgba(255, 0, 0, 0.6)",
+            "weight": 2,
+            "dashArray": "5,5"
+        }))
+        
+        # マップID設定
+        self.map_id = self.get_property("map_id", f"course_map_{uuid.uuid4().hex[:8]}")
+        
+    def render_html(self, data: Any = None) -> str:
+        """
+        HTML表示用のレンダリング
+        
+        Parameters
+        ----------
+        data : Any, optional
+            表示するデータ, by default None
+            
+        Returns
+        -------
+        str
+            HTML文字列
+        """
+        # マップ設定
+        center_auto = self.get_property("center_auto", True)
+        center = self.get_property("center", [35.6585, 139.7454])
+        zoom_level = self.get_property("zoom_level", 13)
+        
+        # コース設定
+        marks = self.get_property("marks", [])
+        course_shape = self.get_property("course_shape", "windward_leeward")
+        start_line = self.get_property("start_line", {})
+        finish_line = self.get_property("finish_line", {})
+        
+        # レイライン設定
+        show_laylines = self.get_property("show_laylines", True)
+        tacking_angle = self.get_property("tacking_angle", 90)
+        layline_style = self.get_property("layline_style", {
+            "color": "rgba(255, 0, 0, 0.6)",
+            "weight": 2,
+            "dashArray": "5,5"
+        })
+        
+        # 戦略設定
+        strategy_points = self.get_property("strategy_points", [])
+        optimal_route = self.get_property("optimal_route", {})
+        risk_areas = self.get_property("risk_areas", [])
+        
+        # マップの表示設定
+        map_type = self.get_property("map_type", "osm")
+        show_track = self.get_property("show_track", True)
+        track_color = self.get_property("track_color", "rgba(54, 162, 235, 0.8)")
+        track_width = self.get_property("track_width", 3)
+        
+        # ポイントアイコン設定
+        point_icons = self.get_property("point_icons", {
+            "mark": {"color": "red", "icon": "map-marker-alt"},
+            "start": {"color": "green", "icon": "flag"},
+            "finish": {"color": "blue", "icon": "flag-checkered"},
+            "advantage": {"color": "green", "icon": "thumbs-up"},
+            "caution": {"color": "orange", "icon": "exclamation-triangle"},
+            "information": {"color": "blue", "icon": "info-circle"},
+            "default": {"color": "gray", "icon": "map-marker-alt"}
+        })
+        
+        # データをJSON形式に変換
+        data_json = json.dumps(data)
+        
+        # コース設定をJSON形式に変換
+        course_config = {
+            "marks": marks,
+            "course_shape": course_shape,
+            "start_line": start_line,
+            "finish_line": finish_line,
+            "show_laylines": show_laylines,
+            "tacking_angle": tacking_angle,
+            "layline_style": layline_style,
+            "strategy_points": strategy_points,
+            "optimal_route": optimal_route,
+            "risk_areas": risk_areas
+        }
+        course_config_json = json.dumps(course_config)
+        
+        # マップ設定をJSON形式に変換
+        map_config = {
+            "map_type": map_type,
+            "center_auto": center_auto,
+            "center": center,
+            "zoom_level": zoom_level,
+            "show_track": show_track,
+            "track_color": track_color,
+            "track_width": track_width,
+            "point_icons": point_icons
+        }
+        map_config_json = json.dumps(map_config)
+        
+        # 静的ファイルのパスを取得
+        module_path = pathlib.Path(__file__).parent.parent.parent.parent
+        js_path = module_path / 'reporting' / 'static' / 'js' / 'course_elements.js'
+        
+        # HTMLテンプレート
+        html_content = f'''
+        <div id="{self.map_id}" class="course-map-container" style="width: 100%; height: 500px;">
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+            <script src="https://unpkg.com/leaflet-geometryutil@0.9.3/dist/leaflet.geometryutil.js"></script>
+            
+            <style>
+                .course-map-container {{
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    overflow: hidden;
+                }}
+                .course-mark-icon-wrapper {{
+                    background: none;
+                    border: none;
+                }}
+                .course-mark-icon {{
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 32px;
+                    height: 32px;
+                    border-radius: 50%;
+                    color: white;
+                    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+                }}
+                .course-popup {{
+                    min-width: 150px;
+                }}
+                .course-popup h4 {{
+                    margin: 0 0 5px 0;
+                    padding-bottom: 5px;
+                    border-bottom: 1px solid #eee;
+                }}
+                .course-popup p {{
+                    margin: 5px 0;
+                }}
+            </style>
+            
+            <script>
+                (function() {{
+                    // マップIDの設定
+                    var mapId = "{self.map_id}";
+                    
+                    // コースデータ
+                    var courseData = {data_json};
+                    
+                    // コース設定
+                    var courseConfig = {course_config_json};
+                    
+                    // マップ設定
+                    var mapConfig = {map_config_json};
+                    
+                    // JavaScriptファイルの埋め込み
+                    {self._load_js_file(js_path)}
                 }})();
             </script>
         </div>
         '''
         
         return html_content
+
+    def _load_js_file(self, js_path: pathlib.Path) -> str:
+        """
+        JavaScriptファイルを読み込む
+        
+        Parameters
+        ----------
+        js_path : pathlib.Path
+            JavaScriptファイルのパス
+            
+        Returns
+        -------
+        str
+            JavaScriptコード
+        """
+        try:
+            if js_path.exists():
+                with open(js_path, 'r', encoding='utf-8') as f:
+                    return f.read()
+            else:
+                # ファイルが存在しない場合は警告ログを出力
+                import logging
+                logging.warning(f"JavaScript file not found: {js_path}")
+                return "console.error('JavaScript file for course elements not found.');"
+        except Exception as e:
+            # エラーが発生した場合は警告ログを出力
+            import logging
+            logging.error(f"Error loading JavaScript file: {e}")
+            return f"console.error('Error loading JavaScript file: {e}');"
