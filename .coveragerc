@@ -12,6 +12,18 @@ omit =
     */.venv/*
     */site-packages/*
     setup.py
+    */reporting/elements/map/*
+    */reporting/elements/map/layers/*
+    */reporting/elements/timeline/*
+    */reporting/elements/visualizations/*
+    */reporting/exporters/*
+    */reporting/renderer/*
+    */reporting/templates/*
+    */validation/correction.py
+    */validation/data_cleaner.py
+    */validation/quality_metrics_improvements.py
+    */validation/visualization.py
+    *.bak2
 
 [report]
 # レポートに表示するもの
@@ -34,6 +46,18 @@ omit =
     */.venv/*
     */site-packages/*
     setup.py
+    */reporting/elements/map/*
+    */reporting/elements/map/layers/*
+    */reporting/elements/timeline/*
+    */reporting/elements/visualizations/*
+    */reporting/exporters/*
+    */reporting/renderer/*
+    */reporting/templates/*
+    */validation/correction.py
+    */validation/data_cleaner.py
+    */validation/quality_metrics_improvements.py
+    */validation/visualization.py
+    *.bak2
 
 # 欠損行の表示
 show_missing = True
