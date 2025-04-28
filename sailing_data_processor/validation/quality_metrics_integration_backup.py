@@ -78,12 +78,13 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
         Dict[str, int]
             問題タイプ別のカウント
         """
-        problem_type_counts = {}
+        problem_type_counts = {
             "missing_data": 0,
             "out_of_range": 0,
             "duplicates": 0,
             "spatial_anomalies": 0,
             "temporal_anomalies": 0
+        }
         
         # 期間内の各問題タイプのカウントを計算
         for problem_type, indices in self.problematic_indices.items():

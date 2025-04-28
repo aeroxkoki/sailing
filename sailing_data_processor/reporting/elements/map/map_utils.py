@@ -222,7 +222,6 @@ def simplify_track(track_data: List[Dict[str, Any]], tolerance: float = 5.0,
         step = len(result_indices) / max_points
         new_indices = {0, len(track_data) - 1}  # 始点と終点は保持
         
-        }
         idx = 1
         while len(new_indices) < max_points - 1 and idx < len(result_indices) - 1:
             new_indices.add(result_indices[idx])
@@ -403,34 +402,13 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "min_speed": 0,
             "median_speed": 0,
             "speed_variance": 0,
-            "bounding_box": "min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}
- {
-            "distance": 0,
-            "duration": 0,
-            "avg_speed": 0,
-            "max_speed": 0,
-            "min_speed": 0,
-            "median_speed": 0,
-            "speed_variance": 0,
-            "bounding_box": "min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}
-        return {
-            "distance": 0,
-            "duration": 0,
-            "avg_speed": 0,
-            "max_speed": 0,
-            "min_speed": 0,
-            "median_speed": 0,
-            "speed_variance": 0,
-            "bounding_box": "min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}
- {
-            "distance": 0,
-            "duration": 0,
-            "avg_speed": 0,
-            "max_speed": 0,
-            "min_speed": 0,
-            "median_speed": 0,
-            "speed_variance": 0,
-            "bounding_box": "min_lat": 0, "min_lng": 0, "max_lat": 0, "max_lng": 0}}}
+            "bounding_box": {
+                "min_lat": 0, 
+                "min_lng": 0, 
+                "max_lat": 0, 
+                "max_lng": 0
+            }
+        }
     
     # データポイント数
     num_points = len(track_data)
@@ -527,19 +505,9 @@ def analyze_track_statistics(track_data: List[Dict[str, Any]],
             "min_lat": min_lat if min_lat != float('inf') else 0,
             "min_lng": min_lng if min_lng != float('inf') else 0,
             "max_lat": max_lat if max_lat != float('-inf') else 0,
-        }
- {
-        "distance": total_distance,
-        "duration": duration,
-        "avg_speed": avg_speed,
-        "max_speed": max_speed,
-        "min_speed": min_speed,
-        "median_speed": median_speed,
-        "speed_variance": speed_variance,
-        "bounding_box": "min_lat": min_lat if min_lat != float('inf') else 0,
-            "min_lng": min_lng if min_lng != float('inf') else 0,
-            "max_lat": max_lat if max_lat != float('-inf') else 0,}
             "max_lng": max_lng if max_lng != float('-inf') else 0
+        }
+    }
 
 
 def detect_significant_points(track_data: List[Dict[str, Any]], 
