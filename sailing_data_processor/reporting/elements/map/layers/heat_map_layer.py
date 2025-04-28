@@ -346,7 +346,7 @@ class HeatMapLayer(BaseMapLayer):
                 js_gradient[str(k)] = v
             gradient_json = json.dumps(js_gradient)
         
-        # JavaScript コード
+        # JavaScript コード - 波括弧を適切にエスケープ
         code = f"""
             // ヒートマップレイヤーの作成 {layer_id}
             {layer_var} = (function() {{
@@ -361,12 +361,13 @@ class HeatMapLayer(BaseMapLayer):
                     showLegend: {str(show_legend).lower()},
                     intensity: {intensity},
                     metric: '{metric}'
-                };
+                }};
                 
                 // ヒートマップレイヤーを作成するヘルパー関数
                 function createHeatmapLayer(data, config) {{
                     // leaflet-heatmap.jsがロードされているか確認
-                    if (typeof L.heatLayer !== 'function') {console.error('leaflet-heatmap.js library is not loaded.');
+                    if (typeof L.heatLayer !== 'function') {{
+                        console.error('leaflet-heatmap.js library is not loaded.');
                         return L.layerGroup();
                     }}
                     
@@ -375,7 +376,8 @@ class HeatMapLayer(BaseMapLayer):
                     var maxValue = data.max_value;
                     
                     // データが空の場合は空のレイヤーグループを返す
-                    if (!points.length) {return L.layerGroup();
+                    if (!points.length) {{
+                        return L.layerGroup();
                     }}
                     
                     // リーフレット用のデータ形式に変換
@@ -390,7 +392,8 @@ class HeatMapLayer(BaseMapLayer):
                             intensity = (point.value - minValue) / (maxValue - minValue);
                             
                             // 必要に応じてスケールを反転
-                            if (config.invertScale) {intensity = 1.0 - intensity;
+                            if (config.invertScale) {{
+                                intensity = 1.0 - intensity;
                             }}
                         }}
                         
@@ -401,15 +404,18 @@ class HeatMapLayer(BaseMapLayer):
                     }}
                     
                     // グラデーションの設定
-                    var heatmapOptions = {radius: config.radius,
+                    var heatmapOptions = {{
+                        radius: config.radius,
                         blur: config.blur,
                         maxZoom: config.maxZoom,
                         minOpacity: config.minOpacity
                     }};
                     
                     // カスタムグラデーションが指定されている場合
-                    if (config.gradient) {heatmapOptions.gradient = config.gradient;
-                    }} else if (config.colorScale !== 'default') {// 組み込みカラースケールの利用
+                    if (config.gradient) {{
+                        heatmapOptions.gradient = config.gradient;
+                    }} else if (config.colorScale !== 'default') {{
+                        // 組み込みカラースケールの利用
                         heatmapOptions.gradient = getColorScale(config.colorScale, config.invertScale);
                     }}
                     
@@ -421,7 +427,8 @@ class HeatMapLayer(BaseMapLayer):
                     heatLayer.addTo(layerGroup);
                     
                     // 凡例の追加
-                    if (config.showLegend && config.metric !== 'density') {addHeatmapLegend(layerGroup, minValue, maxValue, config);
+                    if (config.showLegend && config.metric !== 'density') {{
+                        addHeatmapLegend(layerGroup, minValue, maxValue, config);
                     }}
                     
                     return layerGroup;
@@ -432,7 +439,8 @@ class HeatMapLayer(BaseMapLayer):
                     var gradient = null;
                     
                     if (scaleName === 'viridis') {{
-                        gradient = {0.0: '#440154',
+                        gradient = {{
+                            0.0: '#440154',
                             0.2: '#414487',
                             0.4: '#2a788e',
                             0.6: '#22a884',
@@ -440,7 +448,8 @@ class HeatMapLayer(BaseMapLayer):
                             1.0: '#fde725'
                         }};
                     }} else if (scaleName === 'plasma') {{
-                        gradient = {0.0: '#0d0887',
+                        gradient = {{
+                            0.0: '#0d0887',
                             0.2: '#5402a3',
                             0.4: '#8b0aa5',
                             0.6: '#cc4778',
@@ -448,7 +457,8 @@ class HeatMapLayer(BaseMapLayer):
                             1.0: '#fcfdbf'
                         }};
                     }} else if (scaleName === 'inferno') {{
-                        gradient = {0.0: '#000004',
+                        gradient = {{
+                            0.0: '#000004',
                             0.2: '#420a68',
                             0.4: '#932667',
                             0.6: '#dd513a',
@@ -456,7 +466,8 @@ class HeatMapLayer(BaseMapLayer):
                             1.0: '#fcffa4'
                         }};
                     }} else if (scaleName === 'magma') {{
-                        gradient = {0.0: '#000004',
+                        gradient = {{
+                            0.0: '#000004',
                             0.2: '#3b0f70',
                             0.4: '#8c2981',
                             0.6: '#dd4a69',
@@ -464,7 +475,8 @@ class HeatMapLayer(BaseMapLayer):
                             1.0: '#fcfdbf'
                         }};
                     }} else if (scaleName === 'blues') {{
-                        gradient = {0.0: '#f7fbff',
+                        gradient = {{
+                            0.0: '#f7fbff',
                             0.2: '#d2e3f3',
                             0.4: '#9ecae1',
                             0.6: '#57a0ce',
@@ -472,7 +484,8 @@ class HeatMapLayer(BaseMapLayer):
                             1.0: '#084594'
                         }};
                     }} else if (scaleName === 'greens') {{
-                        gradient = {0.0: '#f7fcf5',
+                        gradient = {{
+                            0.0: '#f7fcf5',
                             0.2: '#c7e9c0',
                             0.4: '#86cc8f',
                             0.6: '#41ab5d',
@@ -480,7 +493,8 @@ class HeatMapLayer(BaseMapLayer):
                             1.0: '#00441b'
                         }};
                     }} else if (scaleName === 'reds') {{
-                        gradient = {0.0: '#fff5f0',
+                        gradient = {{
+                            0.0: '#fff5f0',
                             0.2: '#fdbcaa',
                             0.4: '#fc8e6b',
                             0.6: '#ef563b',
@@ -488,7 +502,8 @@ class HeatMapLayer(BaseMapLayer):
                             1.0: '#7f0000'
                         }};
                     }} else if (scaleName === 'spectral') {{
-                        gradient = {0.0: '#9e0142',
+                        gradient = {{
+                            0.0: '#9e0142',
                             0.2: '#d53e4f',
                             0.4: '#f46d43',
                             0.6: '#fdae61',
@@ -499,7 +514,7 @@ class HeatMapLayer(BaseMapLayer):
                     
                     // 反転フラグが設定されていれば反転
                     if (invert && gradient) {{
-                        var inverted = {};
+                        var inverted = {{}};
                         var keys = Object.keys(gradient);
                         for (var i = 0; i < keys.length; i++) {{
                             var key = keys[i];
@@ -513,7 +528,7 @@ class HeatMapLayer(BaseMapLayer):
                 
                 // 凡例の追加
                 function addHeatmapLegend(layerGroup, minValue, maxValue, config) {{
-                    var legend = L.control({position: 'bottomright' }});
+                    var legend = L.control({{position: 'bottomright' }});
                     
                     legend.onAdd = function(map) {{
                         var div = L.DomUtil.create('div', 'heatmap-legend');
@@ -524,10 +539,14 @@ class HeatMapLayer(BaseMapLayer):
                         div.style.opacity = '0.8';
                         
                         var title = '';
-                        if (config.metric === 'speed') {title = '速度 (kt)';
-                        }} else if (config.metric === 'wind_speed') {title = '風速 (kt)';
-                        }} else if (config.metric === 'heading') {title = '方向 (°)';
-                        }} else if (config.metric === 'custom') {title = 'カスタム値';
+                        if (config.metric === 'speed') {{
+                            title = '速度 (kt)';
+                        }} else if (config.metric === 'wind_speed') {{
+                            title = '風速 (kt)';
+                        }} else if (config.metric === 'heading') {{
+                            title = '方向 (°)';
+                        }} else if (config.metric === 'custom') {{
+                            title = 'カスタム値';
                         }}
                         
                         var html = '<div style="text-align: center; margin-bottom: 5px;"><b>' + title + '</b></div>';
@@ -539,7 +558,8 @@ class HeatMapLayer(BaseMapLayer):
                             
                             // グラデーションの表示
                             var gradient = config.gradient;
-                            if (!gradient && config.colorScale !== 'default') {gradient = getColorScale(config.colorScale, config.invertScale);
+                            if (!gradient && config.colorScale !== 'default') {{
+                                gradient = getColorScale(config.colorScale, config.invertScale);
                             }}
                             
                             if (gradient) {{
@@ -547,12 +567,14 @@ class HeatMapLayer(BaseMapLayer):
                                 var gradientStyle = 'background: linear-gradient(to right, ';
                                 var stops = [];
                                 for (var pos in gradient) {{
-                                    if (gradient.hasOwnProperty(pos)) {stops.push(gradient[pos] + ' ' + (parseFloat(pos) * 100) + '%');
+                                    if (gradient.hasOwnProperty(pos)) {{
+                                        stops.push(gradient[pos] + ' ' + (parseFloat(pos) * 100) + '%');
                                     }}
                                 }}
                                 gradientStyle += stops.join(', ') + ');';
                                 html += '<div style="flex: 1; ' + gradientStyle + '"></div>';
-                            }} else {// デフォルトグラデーション（青→赤）
+                            }} else {{
+                                // デフォルトグラデーション（青→赤）
                                 var invertClass = config.invertScale ? 'rev' : '';
                                 html += '<div style="flex: 1; background: linear-gradient(to right, ' +
                                        (invertClass ? 'red, blue' : 'blue, red') + ');"></div>';
@@ -566,7 +588,8 @@ class HeatMapLayer(BaseMapLayer):
                             html += '<div>' + ((minValue + maxValue) / 2).toFixed(1) + '</div>';
                             html += '<div>' + (config.invertScale ? minValue : maxValue).toFixed(1) + '</div>';
                             html += '</div>';
-                        }} else {html += '<div>データ不足</div>';
+                        }} else {{
+                            html += '<div>データ不足</div>';
                         }}
                         
                         div.innerHTML = html;
@@ -579,16 +602,19 @@ class HeatMapLayer(BaseMapLayer):
                 
                 // leaflet-heatmap.jsの読み込み
                 function loadHeatmapLibrary(callback) {{
-                    if (typeof L.heatLayer === 'function') {// 既にロード済み
+                    if (typeof L.heatLayer === 'function') {{
+                        // 既にロード済み
                         callback();
                         return;
                     }}
                     
                     var script = document.createElement('script');
                     script.src = 'https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js';
-                    script.onload = function() {callback();
+                    script.onload = function() {{
+                        callback();
                     }};
-                    script.onerror = function() {console.error('Failed to load leaflet-heatmap.js');
+                    script.onerror = function() {{
+                        console.error('Failed to load leaflet-heatmap.js');
                     }};
                     document.head.appendChild(script);
                 }}
@@ -602,7 +628,8 @@ class HeatMapLayer(BaseMapLayer):
                         
                         // レイヤーグループの全レイヤーをマップに追加
                         var heatLayers = heatLayer.getLayers();
-                        for (var i = 0; i < heatLayers.length; i++) {layerGroup.addLayer(heatLayers[i]);
+                        for (var i = 0; i < heatLayers.length; i++) {{
+                            layerGroup.addLayer(heatLayers[i]);
                         }}
                         
                         layerGroup.addTo({map_var});
