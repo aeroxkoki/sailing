@@ -1,8 +1,7 @@
 """
-sailing_data_processor.reporting.elements.visualizations.basic_charts
+sailing_data_processor.reporting.elements.visualizations.basic
 
-基本的なチャートタイプ（折れ線グラフ、散布図、棒グラフ、円グラフ）を提供するモジュールです。
-このモジュールは後方互換性のために維持されており、新しいコードでは個別のモジュールを使用することをお勧めします。
+基本的なチャートタイプを提供するパッケージです。
 """
 
 from sailing_data_processor.reporting.elements.visualizations.basic.line_chart import LineChartElement
