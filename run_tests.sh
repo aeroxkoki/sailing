@@ -176,7 +176,7 @@ fi
 # 直接テストモジュールの実行
 show_section "風の移動予測モデルテスト"
 WIND_TEST_LOG="wind_propagation_test.log"
-python3 verify_wind_propagation.py > "$WIND_TEST_LOG" 2>&1
+python3 analysis/wind_propagation_test.py > "$WIND_TEST_LOG" 2>&1
 collect_results $? "風の移動予測モデルテスト" "$WIND_TEST_LOG"
 
 # ログディレクトリの作成
