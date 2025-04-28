@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Module for data connector between map layers and data sources.
-This module provides functions for binding and data transformation between layers and data sources.
+Module for event timeline visualization.
+This module provides a timeline component for displaying sailing events over time.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -15,30 +15,28 @@ from sailing_data_processor.reporting.templates.template_model import ElementTyp
 
 class EventTimeline(BaseElement):
     """
-    ���ȿ�����
+    イベントタイムライン
     
-    ����-n�����ï�������*ji	�
-    B��
-kh:Y������ЛW~Y
+    セーリング中の操船イベント（タック、ジャイブ、マーク回航など）を
+    時系列で表示するためのタイムラインコンポーネント
     """
     
-    def __init__(self, model: Optional[ElementModel] = None, element_id=None, name="���ȿ����", **kwargs):
+    def __init__(self, model: Optional[ElementModel] = None, element_id=None, name="イベントタイムライン", **kwargs):
         """
-        
+        初期化
         
         Parameters
         ----------
         model : Optional[ElementModel], optional
-            � ���, by default None
+            要素モデル, by default None
         element_id : str, optional
-            � ID, by default None (��)
+            要素ID, by default None (自動生成)
         name : str, optional
-            � 
-, by default "���ȿ����"
+            要素名, by default "イベントタイムライン"
         **kwargs : dict
-            ]n�n���ƣ
+            その他のプロパティ
         """
-        # �թ��g����� ��ג-�
+        # デフォルトタイプが設定されていない場合、設定
         if model is None and 'element_type' not in kwargs:
             kwargs['element_type'] = ElementType.TIMELINE
         
@@ -47,11 +45,11 @@ kh:Y������ЛW~Y
         
         super().__init__(model, element_id=element_id, name=name, **kwargs)
         
-        # �������
+        # イベントリスト
         self._events = []
         
-        # h:�׷��
-        self._options = {}
+        # デフォルト設定
+        self._options = {
             "show_tacks": kwargs.get("show_tacks", True),
             "show_jibes": kwargs.get("show_jibes", True),
             "show_marks": kwargs.get("show_marks", True),
@@ -61,91 +59,63 @@ kh:Y������ЛW~Y
             "timeline_height": kwargs.get("timeline_height", 150),
             "handle_overflow": kwargs.get("handle_overflow", True),
             "tooltip_placement": kwargs.get("tooltip_placement", "top"),
-            "time_format": kwargs.get("time_format", "HH:mm:ss"),
- "show_tacks": kwargs.get("show_tacks", True),
-            "show_jibes": kwargs.get("show_jibes", True),
-            "show_marks": kwargs.get("show_marks", True),
-            "show_custom": kwargs.get("show_custom", True),
-            "event_height": kwargs.get("event_height", 20),
-            "group_events": kwargs.get("group_events", True),
-            "timeline_height": kwargs.get("timeline_height", 150),
-            "handle_overflow": kwargs.get("handle_overflow", True),
-            "tooltip_placement": kwargs.get("tooltip_placement", "top"),
-            "time_format": kwargs.get("time_format", "HH:mm:ss"),}
+            "time_format": kwargs.get("time_format", "HH:mm:ss")
         }
         
-        # �׷�����ƣk-�
+        # デフォルトプロパティを設定
         for key, value in self._options.items():
             self.set_property(key, value)
         
-        # ���ȿ��n��hr
+        # イベントタイプの定義
         self._event_types = {
-            "tack": "color": "#FF5722", "symbol": "�", "label": "�ï"},
-            "jibe": {"color": "#2196F3", "symbol": "�", "label": "���"},
-            "mark_rounding": {"color": "#4CAF50", "symbol": "�", "label": "����*"},
-            "start": {"color": "#FFC107", "symbol": "�", "label": "����"},
-            "finish": {"color": "#9C27B0", "symbol": "�", "label": "գ�÷�"},
-            "custom": {"color": "#607D8B", "symbol": "", "label": "����"}
-            }
-            }
-            }
- {
-            "tack": "color": "#FF5722", "symbol": "�", "label": "�ï"},
-            "jibe": {"color": "#2196F3", "symbol": "�", "label": "���"},
-            "mark_rounding": {"color": "#4CAF50", "symbol": "�", "label": "����*"},
-            "start": {"color": "#FFC107", "symbol": "�", "label": "����"},
-            "finish": {"color": "#9C27B0", "symbol": "�", "label": "գ�÷�"},
-            "custom": {"color": "#607D8B", "symbol": "", "label": "����"}}
+            "tack": {"color": "#FF5722", "symbol": "T", "label": "タック"},
+            "jibe": {"color": "#2196F3", "symbol": "J", "label": "ジャイブ"},
+            "mark_rounding": {"color": "#4CAF50", "symbol": "M", "label": "マーク回航"},
+            "start": {"color": "#FFC107", "symbol": "S", "label": "スタート"},
+            "finish": {"color": "#9C27B0", "symbol": "F", "label": "フィニッシュ"},
+            "custom": {"color": "#607D8B", "symbol": "C", "label": "カスタム"}
         }
-            }
-            }
-            }
         
-        # ���ȿ��hգ���n��
+        # イベントタイプとフィールドの対応
         self.set_property("event_type_fields", {
             "tack": "is_tack",
             "jibe": "is_jibe",
             "mark_rounding": "is_mark_rounding",
             "start": "is_start",
             "finish": "is_finish"
- "tack": "is_tack",
-            "jibe": "is_jibe",
-            "mark_rounding": "is_mark_rounding",
-            "start": "is_start",
-            "finish": "is_finish"}
         })
         
-        # s0�1nգ���
+        # 詳細情報のフィールド
         self.set_property("detail_fields", [
             "speed", "wind_speed", "wind_direction", "heading"
         ])
         
-        # ������
+        # データソース
         self.set_property("data_source", kwargs.get("data_source", ""))
     
     def add_event(self, timestamp, event_type, label=None, details=None, **kwargs):
         """
-        ���Ȓ��
+        イベント追加
         
         Parameters
         ----------
         timestamp : str or datetime
-            ����nzB;
+            イベントの時刻
         event_type : str
-            ���ȿ�� ("tack", "jibe", "mark_rounding", "start", "finish", "custom")
+            イベントタイプ ("tack", "jibe", "mark_rounding", "start", "finish", "custom")
         label : str, optional
-            ����n���, by default None
+            イベントのラベル, by default None
         details : dict, optional
-            ����ns0�1, by default None
+            イベントの詳細情報, by default None
         **kwargs : dict
-            ]n�n����^'
+            その他のイベント属性
             
         Returns
         -------
         dict
-            ��U�_�����1
+            追加されたイベント情報
         """
-        # ��๿��nb���ï
+        # タイムスタンプの形式を確認
         if isinstance(timestamp, str):
             try:
                 timestamp = datetime.fromisoformat(timestamp)
@@ -153,18 +123,16 @@ kh:Y������ЛW~Y
                 try:
                     timestamp = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
                 except (ValueError, TypeError):
-                    raise ValueError(f"!�j��๿��b: {timestamp}")
-                    }
+                    raise ValueError(f"無効なタイムスタンプ形式: {timestamp}")
         
         if not isinstance(timestamp, datetime):
-            raise TypeError("��๿��odatetime�ָ���~_oISObn�WgB�ŁLB�~Y")
+            raise TypeError("タイムスタンプはdatetime型である必要があり、または有効なISO形式の文字列である必要があります")
         
-        # ���ȿ��n<
+        # イベントタイプの確認
         if event_type not in self._event_types and event_type != "custom":
-            raise ValueError(f"!�j���ȿ��: {event_type}")
-            }
+            raise ValueError(f"無効なイベントタイプ: {event_type}")
         
-        # �����1�\
+        # イベント情報を作成
         event = {
             "id": str(uuid.uuid4()),
             "timestamp": timestamp.isoformat(),
@@ -172,62 +140,54 @@ kh:Y������ЛW~Y
             "label": label or self._event_types[event_type]["label"],
             "symbol": self._event_types[event_type]["symbol"],
             "color": self._event_types[event_type]["color"],
-            "details": details or }
- {
-            "id": str(uuid.uuid4()),
-            "timestamp": timestamp.isoformat(),
-            "type": event_type,
-            "label": label or self._event_types[event_type]["label"],
-            "symbol": self._event_types[event_type]["symbol"],
-            "color": self._event_types[event_type]["color"],
-            "details": details or }}
+            "details": details or {}
         }
         
-        # ]n�n^'���
+        # その他の属性を追加
         for key, value in kwargs.items():
             if key not in event:
                 event[key] = value
         
-        # ���Ȓ��
+        # イベント追加
         self._events.append(event)
         
         return event
     
     def clear_events(self):
-        """���Ȓ��"""
+        """イベントをクリア"""
         self._events = []
     
     def set_property(self, key: str, value: Any) -> None:
         """
-        ���ƣ�-�
+        プロパティを設定
         
         Parameters
         ----------
         key : str
-            ���ƣ
+            プロパティキー
         value : Any
-            ���ƣ$
+            プロパティ値
         """
         super().set_property(key, value)
         
-        # _options���
+        # _optionsも更新
         if key in self._options:
             self._options[key] = value
     
     def get_property(self, key: str, default: Any = None) -> Any:
         """
-        ���ƣ�֗
+        プロパティを取得
         
         Parameters
         ----------
         key : str
-            ���ƣ
+            プロパティキー
         default : Any, optional
-            �թ��$, by default None
+            デフォルト値, by default None
             
         Returns
         -------
         Any
-            ���ƣ$
+            プロパティ値
         """
         return super().get_property(key, default)
