@@ -116,19 +116,14 @@ class CourseElementsLayer(BaseMapLayer):
         marks = self.get_property("marks", [])
         
         # マークプロパティ
-        mark = {}
+        mark = {
             "lat": lat,
             "lng": lng,
             "name": name,
             "color": color if color else self.get_property("mark_color" if not is_gate else "gate_color"),
             "size": size if size else self.get_property("mark_size"),
             "is_gate": is_gate
- "lat": lat,
-            "lng": lng,
-            "name": name,
-            "color": color if color else self.get_property("mark_color" if not is_gate else "gate_color"),
-            "size": size if size else self.get_property("mark_size"),
-            "is_gate": is_gate}
+        }
         
         # 追加プロパティ
         if properties:
@@ -176,37 +171,23 @@ class CourseElementsLayer(BaseMapLayer):
         left_mark = {
             "lat": lat1,
             "lng": lng1,
-            "name": f"name} (L)",
+            "name": f"{name} (L)",
             "color": gate_color,
             "size": self.get_property("mark_size"),
             "is_gate": True,
             "gate_pair": index + 1
- {
-            "lat": lat1,
-            "lng": lng1,
-            "name": f"name} (L)",
-            "color": gate_color,
-            "size": self.get_property("mark_size"),
-            "is_gate": True,
-            "gate_pair": index + 1}
+        }
         
         # 右マーク
         right_mark = {
             "lat": lat2,
             "lng": lng2,
-            "name": f"name} (R)",
+            "name": f"{name} (R)",
             "color": gate_color,
             "size": self.get_property("mark_size"),
             "is_gate": True,
             "gate_pair": index
- {
-            "lat": lat2,
-            "lng": lng2,
-            "name": f"name} (R)",
-            "color": gate_color,
-            "size": self.get_property("mark_size"),
-            "is_gate": True,
-            "gate_pair": index}
+        }
         
         # 追加プロパティ
         if properties:
@@ -256,37 +237,23 @@ class CourseElementsLayer(BaseMapLayer):
         pin_mark = {
             "lat": lat1,
             "lng": lng1,
-            "name": f"name} (Pin)",
+            "name": f"{name} (Pin)",
             "color": start_color,
             "size": self.get_property("mark_size"),
             "is_start": True,
             "start_pair": index + 1
- {
-            "lat": lat1,
-            "lng": lng1,
-            "name": f"name} (Pin)",
-            "color": start_color,
-            "size": self.get_property("mark_size"),
-            "is_start": True,
-            "start_pair": index + 1}
+        }
         
         # コミッティ側
         committee_mark = {
             "lat": lat2,
             "lng": lng2,
-            "name": f"name} (Committee)",
+            "name": f"{name} (Committee)",
             "color": start_color,
             "size": self.get_property("mark_size"),
             "is_start": True,
             "start_pair": index
- {
-            "lat": lat2,
-            "lng": lng2,
-            "name": f"name} (Committee)",
-            "color": start_color,
-            "size": self.get_property("mark_size"),
-            "is_start": True,
-            "start_pair": index}
+        }
         
         # 追加プロパティ
         if properties:
@@ -336,37 +303,23 @@ class CourseElementsLayer(BaseMapLayer):
         pin_mark = {
             "lat": lat1,
             "lng": lng1,
-            "name": f"name} (Pin)",
+            "name": f"{name} (Pin)",
             "color": finish_color,
             "size": self.get_property("mark_size"),
             "is_finish": True,
             "finish_pair": index + 1
- {
-            "lat": lat1,
-            "lng": lng1,
-            "name": f"name} (Pin)",
-            "color": finish_color,
-            "size": self.get_property("mark_size"),
-            "is_finish": True,
-            "finish_pair": index + 1}
+        }
         
         # コミッティ側
         committee_mark = {
             "lat": lat2,
             "lng": lng2,
-            "name": f"name} (Committee)",
+            "name": f"{name} (Committee)",
             "color": finish_color,
             "size": self.get_property("mark_size"),
             "is_finish": True,
             "finish_pair": index
- {
-            "lat": lat2,
-            "lng": lng2,
-            "name": f"name} (Committee)",
-            "color": finish_color,
-            "size": self.get_property("mark_size"),
-            "is_finish": True,
-            "finish_pair": index}
+        }
         
         # 追加プロパティ
         if properties:

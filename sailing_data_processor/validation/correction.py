@@ -116,14 +116,14 @@ class CorrectionProcessor:
                     "name": "値を制限",
                     "description": "範囲外の値を最小値または最大値に制限します",
                     "fix_type": "replace",
-                    "params": "method": "clip"}
+                    "params": {"method": "clip"}
                 },
                 {
                     "id": "replace_with_null",
                     "name": "NULLに置換",
                     "description": "範囲外の値をNULLに置き換えます",
                     "fix_type": "replace",
-                    "params": "method": "null"}
+                    "params": {"method": "null"}
                 },
                 {
                     "id": "remove_rows",
@@ -139,21 +139,21 @@ class CorrectionProcessor:
                     "name": "タイムスタンプをずらす",
                     "description": "重複するタイムスタンプを少しずつずらします",
                     "fix_type": "adjust",
-                    "params": "method": "offset"}
+                    "params": {"method": "offset"}
                 },
                 {
                     "id": "keep_first",
                     "name": "最初の行を保持",
                     "description": "重複するうち最初の行のみを保持します",
                     "fix_type": "remove",
-                    "params": "method": "keep_first"}
+                    "params": {"method": "keep_first"}
                 },
                 {
                     "id": "remove_all",
                     "name": "すべて削除",
                     "description": "重複するタイムスタンプを持つ行をすべて削除します",
                     "fix_type": "remove",
-                    "params": "method": "remove_all"}
+                    "params": {"method": "remove_all"}
                 }
             ],
             "spatial_anomalies": [
