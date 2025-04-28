@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.map.wind_field
-
-風向風速場を表示するマップ要素を提供するモジュール。
-このモジュールは、風向風速データの視覚化機能を定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

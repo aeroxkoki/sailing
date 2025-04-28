@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.sailing_charts
-
-セーリング分析に特化したチャート要素を提供するモジュールです。
-風配図、コースパフォーマンス、タッキングアングル分析などのセーリング特有の
-可視化要素を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -1476,6 +1473,7 @@ class PolarDiagramElement(BaseChartElement):
                         }
                     }
                 }
+            }
  {
                 "scales": {
                     "r": {
@@ -1572,6 +1570,7 @@ class PolarDiagramElement(BaseChartElement):
                         }
                     }
                 }
+            }
  {
                 "scales": {
                     "r": {
@@ -1611,6 +1610,7 @@ class PolarDiagramElement(BaseChartElement):
                             }
                         }
                     }
+                }
  {
                     "legend": {
                         "position": "right",
@@ -2362,6 +2362,7 @@ class TackingAngleElement(BaseChartElement):
                     }
                 }
             }
+        }
  {
             "scales": {
                 "y": {

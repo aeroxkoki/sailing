@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.element_factory
-
-要素の作成を担当する工場モジュールです。
-要素タイプに応じた適切な要素クラスのインスタンスを作成します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, Optional, Type, Union

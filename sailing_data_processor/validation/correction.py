@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.validation.correction
-
-データ修正操作を実装するモジュール
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Tuple, Union, Callable

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.base_chart
-
-可視化要素の基底クラスを提供するモジュールです。
-すべての可視化要素に共通する機能を定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

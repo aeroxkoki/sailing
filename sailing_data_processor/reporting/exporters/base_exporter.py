@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.exporters.base_exporter
-
-高度なエクスポート機能の基底クラスを提供するモジュール
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from abc import ABC, abstractmethod

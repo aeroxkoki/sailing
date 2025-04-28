@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.enhanced_sailing_charts
-
-セーリング分析に特化したチャート要素の拡張バージョンを提供するモジュールです。
-新しいチャートレンダラーを活用して、より柔軟な可視化を実現します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -836,6 +834,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                         }
                     }
                 }
+            }
  {
                 "plugins": {
                     "crosshair": {
@@ -891,6 +890,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             }
                         }
                     }
+                }
  {
                 "plugins": {
                     "title": {
@@ -907,6 +907,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             "label": "function(context) { " +
                         }
                     }
+            }
                 }
  {
                         "callbacks": {
@@ -945,6 +946,7 @@ class EnhancedCoursePerformanceElement(CoursePerformanceElement):
                             }
                         }
                     }
+                }
  {
                 "plugins": {
                     "title": {
@@ -1496,6 +1498,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                                     }
                                 }
                             }
+                        }
  {
                             "scales": {
                                 "x": {
@@ -1696,6 +1699,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         }
                     }
                 }
+            }
  {
                 "plugins": {
                     "zoom": {
@@ -1735,6 +1739,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                         }
                     }
                 }
+            }
  {
                 "scales": {
                     "x": {
@@ -1790,6 +1795,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             }
                         }
                     }
+                }
  {
                 "plugins": {
                     "title": {
@@ -1841,6 +1847,7 @@ class EnhancedTackingAngleElement(TackingAngleElement):
                             }
                         }
                     }
+                }
  {
                 "plugins": {
                     "title": {

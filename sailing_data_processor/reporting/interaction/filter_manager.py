@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.interaction.filter_manager
-
-データフィルタリング機能を提供するモジュールです。
-レポート要素に適用するフィルタの管理機能を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Callable

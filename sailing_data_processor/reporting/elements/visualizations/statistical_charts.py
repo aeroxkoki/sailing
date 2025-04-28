@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.statistical_charts
-
-統計分析チャート要素を提供するモジュールです。
-時系列分析、ボックスプロット、ヒートマップ、相関分析などの
-統計的な可視化要素を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -270,6 +267,7 @@ class TimeSeriesElement(BaseChartElement):
                         }
                     }
                 }
+            }
  {
             "scales": {
                 "x": {
@@ -757,6 +755,7 @@ class BoxPlotElement(BaseChartElement):
                     }
                 }
             }
+        }
  {
             "scales": {
                 "y": {
@@ -1098,6 +1097,7 @@ class HeatMapElement(BaseChartElement):
                     }
                 }
             }
+        }
  {
             "scales": {
                 "x": {
@@ -1411,6 +1411,7 @@ class CorrelationElement(BaseChartElement):
                     }
                 }
             }
+        }
  {
             "scales": {
                 "x": {

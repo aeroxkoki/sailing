@@ -1,8 +1,6 @@
 """
-sailing_data_processor.reporting.elements.map.track_map
-
-GPSトラック（航跡）の表示と操作を行うマップ要素。
-地図上に航跡データを表示し、ズーム、パン、ハイライトなどの機能を提供します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

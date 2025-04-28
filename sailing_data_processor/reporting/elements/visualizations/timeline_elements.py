@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.timeline_elements
-
-タイムライン要素を提供するモジュールです。
-イベントタイムライン、パラメータタイムライン、セグメント比較、動的データビューアなどの
-時間関連の可視化要素を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

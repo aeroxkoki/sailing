@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations
-
-可視化要素に関連するモジュールを提供するパッケージです。
-チャート、マップ、ダイアグラムなどの高度な可視化要素を定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from sailing_data_processor.reporting.elements.visualizations.base_chart import BaseChartElement

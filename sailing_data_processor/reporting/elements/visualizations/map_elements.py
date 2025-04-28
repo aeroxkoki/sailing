@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.map_elements
-
-マップ要素を提供するモジュールです。
-航路追跡マップ、ヒートマップレイヤー、戦略ポイントレイヤー、風場の可視化などの
-インタラクティブなマップ要素を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

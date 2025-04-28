@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.timeline.event_timeline
-
-���ȿ����鹒ЛY�����gY
-����-n�����ï�������*ji	�B��
-kh:W~Y
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

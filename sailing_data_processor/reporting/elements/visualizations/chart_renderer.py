@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.chart_renderer
-
-チャートレンダラー抽象化レイヤーを提供するモジュールです。
-複数のグラフライブラリ（Plotly、Matplotlib）に対応する一貫したAPIを提供します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

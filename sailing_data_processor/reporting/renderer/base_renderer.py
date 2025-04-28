@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.renderer.base_renderer
-
-レポートのレンダリングを担当する基底クラスを提供するモジュールです。
-テンプレートをHTMLなどの出力形式に変換する機能を定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, BinaryIO, TextIO

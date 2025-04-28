@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.data_processing.aggregators
-
-データ集約機能を提供するモジュールです。
-時間別、空間別、カテゴリ別などの集約処理を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple, Callable

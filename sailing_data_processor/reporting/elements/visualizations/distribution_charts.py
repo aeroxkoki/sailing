@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.distribution_charts
-
-分布図チャート要素を提供するモジュールです。
-ヒストグラム、バイオリンプロット、カーネル密度推定などの分布可視化要素を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -631,6 +629,7 @@ class DistributionChartElement(BaseChartElement):
                         }
                     }
                 }
+            }
  {
                 "scales": {
                     "y": {
@@ -655,6 +654,7 @@ class DistributionChartElement(BaseChartElement):
                         }
                     }
                 }
+            }
  {
                 "scales": {
                     "y": {

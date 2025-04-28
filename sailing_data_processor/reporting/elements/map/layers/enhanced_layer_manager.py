@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.map.layers.enhanced_layer_manager
-
-拡張されたマップレイヤーマネージャークラスを提供するモジュールです。
-このモジュールは、レイヤーの管理に加えて、レイヤー間のデータ連携とイベント管理機能を追加しています。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple, Set, Type, Callable

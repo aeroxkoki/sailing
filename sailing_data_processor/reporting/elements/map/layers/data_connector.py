@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.map.layers.data_connector
-
-マップレイヤーとデータソースの連携機能を提供するモジュールです。
-このモジュールは、レイヤーとデータソース間のバインディングとデータ変換機能を定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple, Set, Callable, Type

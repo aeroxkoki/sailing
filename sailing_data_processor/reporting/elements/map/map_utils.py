@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.map.map_utils
-
-マップ関連のユーティリティ関数を提供するモジュールです。
-GPSデータの処理やマップ表示のためのヘルパー関数を含みます。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

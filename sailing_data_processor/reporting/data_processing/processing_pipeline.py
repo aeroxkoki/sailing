@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.data_processing.processing_pipeline
-
-データ処理パイプラインを提供するモジュールです。
-変換、集計、計算の各処理を組み合わせたパイプラインを構築し、
-一連のデータ処理を実行する機能を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple, Callable

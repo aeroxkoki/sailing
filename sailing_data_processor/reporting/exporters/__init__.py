@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.exporters
-
-高度なエクスポート機能を提供するパッケージ
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """

@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements
-
-レポートを構成する要素のクラスを提供するサブパッケージです。
-コンテンツ要素、レイアウト要素、インタラクティブ要素などが含まれます。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """

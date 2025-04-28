@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.templates.template_manager
-
-レポートテンプレート管理のためのモジュールです。
-テンプレートのロード、保存、検索、タグ付け、カテゴリ分類など、
-テンプレート管理に関する機能を提供します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Set, Tuple

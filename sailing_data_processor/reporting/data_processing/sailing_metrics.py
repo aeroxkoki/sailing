@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.data_processing.sailing_metrics
-
-セーリング特化型の指標計算機能を提供するモジュールです。
-VMG、タッキング効率、ポイント到達時間などのセーリング特有の指標を計算します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple, Callable

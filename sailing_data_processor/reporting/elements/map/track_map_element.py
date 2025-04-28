@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.map.track_map_element
-
-GPSトラック表示マップ要素を提供するモジュールです。
-このモジュールは、セーリングのGPSトラックを表示するマップ要素を定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

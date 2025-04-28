@@ -1,8 +1,6 @@
 """
-sailing_data_processor.reporting.elements.map.course_elements
-
-セーリングコースの要素（マーク、スタートライン、レイライン等）を管理するモジュール。
-このモジュールは、コース上の様々な要素とその視覚化機能を定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple

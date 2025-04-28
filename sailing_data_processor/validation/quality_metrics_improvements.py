@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.validation.quality_metrics_improvements
-
-データ品質メトリクスの計算機能の追加実装
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Tuple, Set
@@ -248,7 +247,7 @@ class QualityMetricsCalculatorExtension:
                     quality_score = max(0, 100 - problem_percentage)
                     
                     # 人間が読みやすい時間帯ラベルを作成
-                    label = f"bin_start.strftime('%H:%M')}-{bin_end.strftime('%H:%M')}"
+                    label = f"{bin_start.strftime('%H:%M')}-{bin_end.strftime('%H:%M')}"
                     
                     # 問題タイプごとの分布も計算
                     problem_type_distribution = self._calculate_problem_type_distribution_for_period(bin_indices)
@@ -407,6 +406,7 @@ class QualityMetricsCalculatorExtension:
                 "issues": 0,
                 "details": {},
                 "impact_level": self._determine_impact_level(quality_scores[category])
+            }
             
             # 各ルールの結果を集計
             for result in self.validation_results:
@@ -426,13 +426,13 @@ class QualityMetricsCalculatorExtension:
                                 "count": details["out_of_range_count"],
                                 "percentage": round(details["out_of_range_count"] / len(self.data) * 100, 2),
                                 "severity": result["severity"],
-                                "description": f"details.get('column', '値')}の{details['out_of_range_count']}件が範囲外"
+                                "description": f"{details.get('column', '値')}の{details['out_of_range_count']}件が範囲外"
                         elif "duplicate_count" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "count": details["duplicate_count"],
                                 "percentage": round(details["duplicate_count"] / len(self.data) * 100, 2),
                                 "severity": result["severity"],
-                                "description": f"details['duplicate_count']}件の重複タイムスタンプ"
+                                "description": f"{details['duplicate_count']}件の重複タイムスタンプ"
                         elif "total_null_count" in details:
                             total_fields = len(self.data) * len(details.get("columns", []))
                             percentage = 0 if total_fields == 0 else round(details["total_null_count"] / total_fields * 100, 2)
@@ -450,13 +450,13 @@ class QualityMetricsCalculatorExtension:
                                 "max_gap": details.get("max_actual_gap", 0),
                                 "percentage": round((details["gap_count"] + details.get("reverse_count", 0)) / len(self.data) * 100, 2),
                                 "severity": result["severity"],
-                                "description": f"details['gap_count']}件のギャップ、{details.get('reverse_count', 0)}件の逆行"
+                                "description": f"{details['gap_count']}件のギャップ、{details.get('reverse_count', 0)}件の逆行"
                         elif "missing_columns" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "missing_columns": details["missing_columns"],
                                 "count": len(details["missing_columns"]),
                                 "severity": result["severity"],
-                                "description": f"len(details['missing_columns'])}個の必須カラムが欠落"
+                                "description": f"{len(details['missing_columns'])}個の必須カラムが欠落"
                         elif "anomaly_count" in details:
                             category_scores[category]["details"][rule_key] = {
                                 "count": details["anomaly_count"],
@@ -698,7 +698,7 @@ class QualityMetricsCalculatorExtension:
                 "temporal_anomalies": temporal_count
             },
             "impact_level": self._determine_impact_level(self.quality_scores.get("total", 100.0))
-            
+            }
     def generate_spatial_quality_map(self):
         """
         空間的な品質分布のマップを生成。

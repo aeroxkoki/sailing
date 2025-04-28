@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.interaction
-
-ユーザーインタラクション機能を提供するモジュールです。
-ビューの同期やコンテキスト管理などの機能を実装します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from sailing_data_processor.reporting.interaction.view_synchronizer import ViewSynchronizer

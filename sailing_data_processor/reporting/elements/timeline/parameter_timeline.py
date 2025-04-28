@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.timeline.parameter_timeline
-
-パラメータタイムラインクラスを提供するモジュールです。
-速度、風向、風速などのパラメータを時間軸上にグラフとして表示します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -96,6 +94,7 @@ class ParameterTimeline(BaseElement):
             "heading": {"color": "#9C27B0", "label": "艇首方位", "unit": "°", "axis": "y-right"},
             "heel": {"color": "#FFC107", "label": "ヒール角", "unit": "°", "axis": "y-left"},
             "vmg": {"color": "#607D8B", "label": "VMG", "unit": "kt", "axis": "y-left"},
+            }
             }
             }
             }
@@ -544,6 +543,7 @@ class ParameterTimeline(BaseElement):
                             }
                         }
                     }
+                }
  {
                     "x": {
                         "type": "time",

@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.map.layers.course_elements_layer
-
-コース要素表示レイヤーを提供するモジュールです。
-このモジュールは、セーリングコースの要素（マーク、ゲート、レイラインなど）を視覚化するレイヤーを定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple, Set, Callable

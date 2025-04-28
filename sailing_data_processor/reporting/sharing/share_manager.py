@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.sharing.share_manager
-
-レポートやデータの共有機能を管理するモジュール
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 import uuid

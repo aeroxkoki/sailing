@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.content_elements
-
-レポートのコンテンツ要素を提供するモジュールです。
-テキスト、テーブル、チャート、マップなどのコンテンツ要素を定義します。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Set

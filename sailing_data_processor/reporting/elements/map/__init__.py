@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.map
-
-マップ関連の要素を提供するパッケージです。
-GPSトラック、コース、風場などの空間データを視覚化するための要素が含まれます。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from sailing_data_processor.reporting.elements.map.base_map_element import BaseMapElement

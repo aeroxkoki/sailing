@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.reporting.elements.visualizations.basic_charts
-
-基本的なチャートタイプ（折れ線グラフ、散布図、棒グラフ、円グラフ）を提供するモジュールです。
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -468,6 +467,7 @@ class ScatterChartElement(BaseChartElement):
                     }
                 }
             }
+        }
  {
             "scales": {
                 "x": {
@@ -835,6 +835,7 @@ class BarChartElement(BaseChartElement):
                     }
                 }
             }
+        }
  {
             "scales": {
                 "x": {
