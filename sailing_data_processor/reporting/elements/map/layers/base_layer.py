@@ -40,7 +40,7 @@ class BaseMapLayer(ABC):
         self.description = description
         
         # 基本プロパティ
-        self._properties = {}
+        self._properties = {
             "visible": kwargs.get("visible", True),
             "opacity": kwargs.get("opacity", 1.0),
             "z_index": kwargs.get("z_index", 0),
@@ -67,7 +67,6 @@ class BaseMapLayer(ABC):
     def __repr__(self) -> str:
         """オブジェクトの文字列表現"""
         return f"<{self.__class__.__name__} {self.layer_id}: {self.name}>"
-        }
     
     @property
     def visible(self) -> bool:
