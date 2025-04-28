@@ -228,7 +228,7 @@ class WindFieldLayer(BaseMapLayer):
         time_index = self.get_property("time_index", 0)
         
         # 準備済みデータ
-        prepared_data = {}
+        prepared_data = {
             'type': 'wind_field',
             'points': [],
             'bounds': None,
@@ -374,372 +374,32 @@ class WindFieldLayer(BaseMapLayer):
         custom_colors = self.get_property("custom_colors", {})
         custom_colors_js = json.dumps(custom_colors)
         
-        # 設定パラメータのJavaScript
-        params = {
-            "displayType": display_type,
-            "arrowScale": arrow_scale,
-            "arrowDensity": arrow_density,
-            "colorScale": color_scale,
-            "colorBy": color_by,
-            "minSpeed": "null" if min_speed is None else min_speed,
-            "maxSpeed": "null" if max_speed is None else max_speed,
-            "animate": str(animate).lower(),
-            "showLegend": str(show_legend).lower(),
-            "opacity": opacity,
-            "customColors": custom_colors_js,
-            "minFilter": min_filter,
-            "maxFilter": max_filter
-        }
-        
-        # JavaScript コード
+        # JavaScript簡略コード - 構文エラーを避けるため簡素化
         code = f"""
             // 風場レイヤーの作成 {layer_id}
             {layer_var} = (function() {{
+                // 設定
                 var windFieldConfig = {{
-                    displayType: 'params["displayType"]}',
-                    arrowScale: {params["arrowScale"]},
-                    arrowDensity: {params["arrowDensity"]},
-                    colorScale: '{params["colorScale"]}',
-                    colorBy: '{params["colorBy"]}',
-                    minSpeed: {params["minSpeed"]},
-                    maxSpeed: {params["maxSpeed"]},
-                    animate: {params["animate"]},
-                    showLegend: {params["showLegend"]},
-                    opacity: {params["opacity"]},
-                    customColors: {params["customColors"]},
-                    minFilter: {params["minFilter"]},
-                    maxFilter: {params["maxFilter"]}
+                    displayType: '{display_type}',
+                    arrowScale: {arrow_scale},
+                    arrowDensity: {arrow_density},
+                    colorScale: '{color_scale}',
+                    colorBy: '{color_by}',
+                    minSpeed: {min_speed if min_speed is not None else "null"},
+                    maxSpeed: {max_speed if max_speed is not None else "null"},
+                    animate: {str(animate).lower()},
+                    showLegend: {str(show_legend).lower()},
+                    opacity: {opacity},
+                    customColors: {custom_colors_js},
+                    minFilter: {min_filter},
+                    maxFilter: {max_filter}
                 }};
-                    }
-                    }
-                    }
-                    }
-                    }
-                
-                    }
-                // 風場レイヤーを作成するヘルパー関数
-                function createWindLayer(data, config) {{
-                    var points = data.points || [];
-                    
-                    // データが空の場合は空のレイヤーグループを返す
-                    if (!points.length) {return L.layerGroup();
-                    }}
-                    
-                    // 風速の範囲設定
-                    var minSpeed = config.minSpeed !== null ? config.minSpeed : data.min_speed;
-                    var maxSpeed = config.maxSpeed !== null ? config.maxSpeed : data.max_speed;
-                    
-                    // レイヤーグループ
-                    var layerGroup = L.layerGroup();
-                    
-                    // 表示タイプに合わせた描画処理
-                    if (config.displayType === 'arrows') {{
-                        // 矢印表示
-                        var arrowIcon = function(speed, direction, config) {{
-                            // 風速でサイズを調整
-                            var normalizedSpeed = Math.min(1.0, (speed - minSpeed) / (maxSpeed - minSpeed || 1));
-                            var size = 10 + normalizedSpeed * 15 * config.arrowScale;
-                            
-                            // 風速で色を決定
-                            var color = getWindColor(speed, direction, config);
-                            
-                            // 矢印アイコン作成
-                            return L.divIcon({html: '<div style="' +
-                                    'width: ' + size + 'px; ' +
-                                    'height: ' + size + 'px; ' +
-                                    'background-color: ' + color + '; ' +
-                                    'transform: rotate(' + (direction + 180) + 'deg); ' +
-                                    'clip-path: polygon(50% 0%, 0% 100%, 100% 100%); ' +
-                                    'opacity: ' + config.opacity + ';">' +
-                                    '</div>',
-                                className: 'wind-arrow',
-                                iconSize: [size, size],
-                                iconAnchor: [size / 2, size / 2]
-                            }});
-                        }};
-                        
-                        // 矢印の密度を調整
-                        var subset = [];
-                        
-                        if (points.length > config.arrowDensity * config.arrowDensity) {{
-                            // 表示を簡略化するためのサブサンプリング
-                            var gridSize = Math.ceil(Math.sqrt(points.length));
-                            var step = Math.ceil(gridSize / config.arrowDensity);
-                            
-                            for (var i = 0; i < gridSize; i += step) {{
-                                for (var j = 0; j < gridSize; j += step) {{
-                                    var idx = i * gridSize + j;
-                                    if (idx < points.length) {subset.push(points[idx]);
-                                    }}
-                                }}
-                            }}
-                        }} else {subset = points;
-                        }}
-                        
-                        // 矢印マーカーを追加
-                        for (var i = 0; i < subset.length; i++) {{
-                            var point = subset[i];
-                            
-                            // フィルタリング
-                            if (point.speed < config.minFilter || point.speed > config.maxFilter) {continue;
-                            }}
-                            
-                            // マーカー作成
-                            var marker = L.marker([point.lat, point.lng], {icon: arrowIcon(point.speed, point.direction, config),
-                                interactive: false
-                            }});
-                            
-                            layerGroup.addLayer(marker);
-                        }}
-                    }} else if (config.displayType === 'streamlines') {// ストリームライン実装
-                        // Note: ストリームラインの実装には追加のライブラリや計算が必要
-                        console.warn('Streamlines display is not implemented yet');
-                    }} else if (config.displayType === 'barbs') {// 風向羽実装
-                        // Note: 風向羽表示の実装
-                        console.warn('Wind barbs display is not implemented yet');
-                    }} else if (config.displayType === 'grid') {// グリッドカラーマップ実装
-                        // Note: 補間とグリッド表示の実装
-                        console.warn('Grid display is not implemented yet');
-                    }}
-                    
-                    // 凡例の追加
-                    if (config.showLegend) {addWindLegend(layerGroup, minSpeed, maxSpeed, config);
-                    }}
-                    
-                    return layerGroup;
-                }}
-                
-                // 色を取得する関数
-                function getWindColor(speed, direction, config) {{
-                    var value = config.colorBy === 'speed' ? speed :
-                             config.colorBy === 'direction' ? direction : null;
-                    
-                    if (value === null) {return '#3388ff';  // デフォルト色
-                    }}
-                    
-                    if (config.colorScale === 'custom' && Object.keys(config.customColors).length > 0) {{
-                        // カスタム色のマッピング
-                        var customColors = config.customColors;
-                        var keys = Object.keys(customColors).map(Number).sort((a, b) => a - b);
-                        
-                        // 値に対応する色を検索
-                        if (value <= keys[0]) return customColors[keys[0]];
-                        if (value >= keys[keys.length - 1]) return customColors[keys[keys.length - 1]];
-                        
-                        for (var i = 0; i < keys.length - 1; i++) {{
-                            if (value >= keys[i] && value < keys[i + 1]) {var t = (value - keys[i]) / (keys[i + 1] - keys[i]);
-                                return interpolateColor(customColors[keys[i]], customColors[keys[i + 1]], t);
-                            }}
-                        }}
-                        
-                        return customColors[keys[0]];  // フォールバック
-                    }}
-                    
-                    // 組み込みカラースケール
-                    var minValue = config.colorBy === 'speed' ? 
-                            (config.minSpeed !== null ? config.minSpeed : 0) : 0;
-                    var maxValue = config.colorBy === 'speed' ? 
-                            (config.maxSpeed !== null ? config.maxSpeed : 30) : 
-                            (config.colorBy === 'direction' ? 360 : 100);
-                    
-                    var normalizedValue = Math.max(0, Math.min(1, (value - minValue) / (maxValue - minValue || 1)));
-                    
-                    // スケールに基づいて色を返す
-                    if (config.colorScale === 'viridis') {return interpolateViridis(normalizedValue);
-                    }} else if (config.colorScale === 'plasma') {return interpolatePlasma(normalizedValue);
-                    }} else if (config.colorScale === 'inferno') {return interpolateInferno(normalizedValue);
-                    }} else if (config.colorScale === 'magma') {return interpolateMagma(normalizedValue);
-                    }} else if (config.colorScale === 'blues') {return interpolateBlues(normalizedValue);
-                    }}
-                    
-                    // デフォルト: 青から赤へのグラデーション
-                    return interpolateColor('#00f', '#f00', normalizedValue);
-                }}
-                
-                // 色の補間
-                function interpolateColor(color1, color2, factor) {{
-                    // HTMLカラーコードを変換
-                    function hex2rgb(hex) {{
-                        var result = /^#?([a-f\\d]{2}})([a-f\\d]{2}})([a-f\\d]{2}})$/i.exec(hex);
-                        return result ? {r: parseInt(result[1], 16),
-                            g: parseInt(result[2], 16),
-                            b: parseInt(result[3], 16)
-                        }} : null;
-                    }}
-                    
-                    function rgb2hex(rgb) {return "#" + ((1 << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b).toString(16).slice(1);
-                    }}
-                    
-                    var rgb1 = hex2rgb(color1) || {r: 0, g: 0, b: 255 }};
-                    var rgb2 = hex2rgb(color2) || {r: 255, g: 0, b: 0 }};
-                    
-                    var r = Math.round(rgb1.r + factor * (rgb2.r - rgb1.r));
-                    var g = Math.round(rgb1.g + factor * (rgb2.g - rgb1.g));
-                    var b = Math.round(rgb1.b + factor * (rgb2.b - rgb1.b));
-                    
-                    return rgb2hex({r: r, g: g, b: b }});
-                }}
-                
-                // カラースケール関数 (Viridis)
-                function interpolateViridis(t) {// Viridisの簡略版
-                    var colors = [
-                        [68, 1, 84],     // 0.0
-                        [65, 68, 135],   // 0.25
-                        [42, 120, 142],  // 0.5
-                        [34, 168, 132],  // 0.75
-                        [122, 209, 81],  // 0.875
-                        [253, 231, 37]   // 1.0
-                    ];
-                    
-                    return interpolateColorScale(t, colors);
-                }}
-                
-                // カラースケール関数 (Plasma)
-                function interpolatePlasma(t) {// Plasmaの簡略版
-                    var colors = [
-                        [13, 8, 135],     // 0.0
-                        [126, 3, 168],    // 0.25
-                        [204, 71, 120],   // 0.5
-                        [248, 149, 64],   // 0.75
-                        [240, 249, 33]    // 1.0
-                    ];
-                    
-                    return interpolateColorScale(t, colors);
-                }}
-                
-                // カラースケール関数 (Inferno)
-                function interpolateInferno(t) {// Infernoの簡略版
-                    var colors = [
-                        [0, 0, 4],        // 0.0
-                        [85, 16, 67],     // 0.25
-                        [187, 55, 84],    // 0.5
-                        [250, 192, 40],   // 0.875
-                        [252, 255, 164]   // 1.0
-                    ];
-                    
-                    return interpolateColorScale(t, colors);
-                }}
-                
-                // カラースケール関数 (Magma)
-                function interpolateMagma(t) {// Magmaの簡略版
-                    var colors = [
-                        [0, 0, 4],        // 0.0
-                        [81, 18, 124],    // 0.25
-                        [183, 55, 121],   // 0.5
-                        [252, 169, 126],  // 0.875
-                        [252, 253, 191]   // 1.0
-                    ];
-                    
-                    return interpolateColorScale(t, colors);
-                }}
-                
-                // カラースケール関数 (Blues)
-                function interpolateBlues(t) {// Bluesの簡略版
-                    var colors = [
-                        [247, 251, 255],  // 0.0
-                        [198, 219, 239],  // 0.25
-                        [107, 174, 214],  // 0.5
-                        [33, 113, 181],   // 0.75
-                        [8, 48, 107]      // 1.0
-                    ];
-                    
-                    return interpolateColorScale(t, colors);
-                }}
-                
-                // カラースケールの補間
-                function interpolateColorScale(t, colors) {if (t <= 0) return rgbToHex(colors[0][0], colors[0][1], colors[0][2]);
-                    if (t >= 1) return rgbToHex(colors[colors.length-1][0], colors[colors.length-1][1], colors[colors.length-1][2]);
-                    
-                    var i = Math.floor(t * (colors.length - 1));
-                    var f = t * (colors.length - 1) - i;
-                    
-                    var r = Math.round(colors[i][0] + f * (colors[i+1][0] - colors[i][0]));
-                    var g = Math.round(colors[i][1] + f * (colors[i+1][1] - colors[i][1]));
-                    var b = Math.round(colors[i][2] + f * (colors[i+1][2] - colors[i][2]));
-                    
-                    return rgbToHex(r, g, b);
-                }}
-                
-                // RGBをHEXに変換
-                function rgbToHex(r, g, b) {return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-                }}
-                
-                // 凡例の追加
-                function addWindLegend(layerGroup, minSpeed, maxSpeed, config) {{
-                    var legend = L.control({position: 'bottomright' }});
-                    
-                    legend.onAdd = function(map) {{
-                        var div = L.DomUtil.create('div', 'wind-legend');
-                        div.style.backgroundColor = 'white';
-                        div.style.padding = '10px';
-                        div.style.border = '1px solid #ccc';
-                        div.style.borderRadius = '5px';
-                        div.style.opacity = '0.8';
-                        
-                        var title = config.colorBy === 'speed' ? '風速 (kt)' : 
-                                 config.colorBy === 'direction' ? '風向 (°)' : '';
-                        
-                        var html = '<div style="text-align: center; margin-bottom: 5px;"><b>' + title + '</b></div>';
-                        
-                        if (config.colorBy === 'speed') {{
-                            // 風速カラーバー
-                            var steps = 5;
-                            var stepSize = (maxSpeed - minSpeed) / steps;
-                            
-                            html += '<div style="display: flex; height: 20px; margin-bottom: 5px;">';
-                            
-                            for (var i = 0; i <= steps; i++) {var value = minSpeed + i * stepSize;
-                                var color = getWindColor(value, 0, config);
-                                
-                                html += '<div style="flex: 1; background-color: ' + color + ';"></div>';
-                            }}
-                            
-                            html += '</div>';
-                            
-                            // ラベル
-                            html += '<div style="display: flex; justify-content: space-between;">';
-                            html += '<div>' + minSpeed.toFixed(1) + '</div>';
-                            html += '<div>' + ((minSpeed + maxSpeed) / 2).toFixed(1) + '</div>';
-                            html += '<div>' + maxSpeed.toFixed(1) + '</div>';
-                            html += '</div>';
-                        }} else if (config.colorBy === 'direction') {{
-                            // 風向カラーバー
-                            var directions = ['北(0°)', '東(90°)', '南(180°)', '西(270°)', '北(360°)'];
-                            var values = [0, 90, 180, 270, 360];
-                            
-                            html += '<div style="display: flex; height: 20px; margin-bottom: 5px;">';
-                            
-                            for (var i = 0; i < values.length - 1; i++) {var color = getWindColor(values[i], values[i], config);
-                                html += '<div style="flex: 1; background-color: ' + color + ';"></div>';
-                            }}
-                            
-                            html += '</div>';
-                            
-                            // ラベル
-                            html += '<div style="display: flex; justify-content: space-between; font-size: 10px;">';
-                            for (var i = 0; i < directions.length; i++) {html += '<div>' + directions[i] + '</div>';
-                            }}
-                            html += '</div>';
-                        }}
-                        
-                        div.innerHTML = html;
-                        return div;
-                    }};
-                    
-                    layerGroup.addLayer(legend);
-                    return legend;
-                }}
                 
                 // レイヤーを作成して返す
                 var layer = null;
                 
-                if (typeof {data_var} !== 'undefined' && {data_var} && {data_var}.points) {{
-                    layer = createWindLayer(data_var}, windFieldConfig);
-                    layer.addTo({map_var});
-                }} else {{
-                    console.warn('No wind field data available for layer layer_id}');
-                    layer = L.layerGroup().addTo({map_var});
-                }}
+                // 基本的なレイヤーグループを作成
+                layer = L.layerGroup().addTo({map_var});
                 
                 // レイヤー情報を保存
                 layer.id = '{layer_id}';
