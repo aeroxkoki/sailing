@@ -91,14 +91,11 @@ class DataConnector:
             return
         
         # バインディング情報を記録
-        self._bindings[layer.layer_id] = {}
+        self._bindings[layer.layer_id] = {
             "source_id": source_id,
-            "field_mappings": field_mappings or },
+            "field_mappings": field_mappings or {},
             "transform": transform
- {
-            "source_id": source_id,
-            "field_mappings": field_mappings or },
-            "transform": transform}
+        }
         
         # レイヤーのデータソースプロパティを更新
         layer.data_source = source_id
@@ -232,7 +229,6 @@ class DataConnector:
             return transform_fn(data, **kwargs)
         except Exception as e:
             print(f"Data transformation error: {e}")
-            }
             return data
     
     def apply_field_mapping(self, data: Any, field_mappings: Dict[str, str]) -> Dict[str, Any]:
@@ -356,7 +352,6 @@ class DataConnector:
             return True
         except Exception as e:
             print(f"Layer data sync error: {e}")
-            }
             return False
     
     def sync_all_layers(self, layers: List[BaseMapLayer], context: Dict[str, Any] = None) -> Dict[str, bool]:
@@ -406,11 +401,7 @@ class DataConnector:
         
         return {
             "bindings": bindings_dict
- "bindings": bindings_dict}
-        return {
-            "bindings": bindings_dict}
- {
-            "bindings": bindings_dict}}
+        }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "DataConnector":
@@ -557,7 +548,6 @@ class LayerEventManager:
                     handler(layer, event_name, event_data)
                 except Exception as e:
                     print(f"Event handler error: {e}")
-                    }
     
     def get_layer_subscribers(self, layer: BaseMapLayer) -> List[str]:
         """
@@ -636,11 +626,9 @@ class DataSynchronizer:
         
         # 同期設定
         sync_config = {
-            "field_mappings": field_mappings or },
+            "field_mappings": field_mappings or {},
             "transform": transform
- {
-            "field_mappings": field_mappings or },
-            "transform": transform}
+        }
         
         # 同期ペアを追加
         self._sync_pairs.append((source_layer.layer_id, target_layer.layer_id, sync_config))
