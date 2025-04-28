@@ -222,7 +222,7 @@ class HeatMapLayer(BaseMapLayer):
         smoothing = self.get_property("smoothing", 0)
         
         # 準備済みデータ
-        prepared_data = {}
+        prepared_data = {
             'type': 'heat_map',
             'points': [],
             'bounds': None,
@@ -230,6 +230,7 @@ class HeatMapLayer(BaseMapLayer):
             'max_value': max_value,
             'metric': metric,
             'custom_field': custom_field
+        }
         
         # データ形式に応じた処理
         if isinstance(data, list) and len(data) > 0:
@@ -264,7 +265,8 @@ class HeatMapLayer(BaseMapLayer):
                     
                     if value is not None:
                         all_values.append(value)
-                        prepared_data['points'].append('lat': lat,
+                        prepared_data['points'].append({
+                            'lat': lat,
                             'lng': lng,
                             'value': value
                         })
@@ -349,7 +351,7 @@ class HeatMapLayer(BaseMapLayer):
             // ヒートマップレイヤーの作成 {layer_id}
             {layer_var} = (function() {{
                 var heatConfig = {{
-                    radius: radius},
+                    radius: {radius},
                     blur: {blur},
                     maxZoom: {max_zoom},
                     minOpacity: {min_opacity},
@@ -359,11 +361,7 @@ class HeatMapLayer(BaseMapLayer):
                     showLegend: {str(show_legend).lower()},
                     intensity: {intensity},
                     metric: '{metric}'
-                }};
-                    }
-                    }
-                    }
-                    }
+                };
                 
                 // ヒートマップレイヤーを作成するヘルパー関数
                 function createHeatmapLayer(data, config) {{
@@ -501,10 +499,10 @@ class HeatMapLayer(BaseMapLayer):
                     
                     // 反転フラグが設定されていれば反転
                     if (invert && gradient) {{
-                        var inverted = {}};
-                        }
+                        var inverted = {};
                         var keys = Object.keys(gradient);
-                        for (var i = 0; i < keys.length; i++) {var key = keys[i];
+                        for (var i = 0; i < keys.length; i++) {{
+                            var key = keys[i];
                             inverted[(1.0 - parseFloat(key)).toFixed(1)] = gradient[key];
                         }}
                         gradient = inverted;
@@ -599,8 +597,8 @@ class HeatMapLayer(BaseMapLayer):
                 var layerGroup = L.layerGroup();
                 
                 loadHeatmapLibrary(function() {{
-                    if (typeof data_var} !== 'undefined' && {data_var} && {data_var}.points) {{
-                        var heatLayer = createHeatmapLayer(data_var}, heatConfig);
+                    if (typeof {data_var} !== 'undefined' && {data_var} && {data_var}.points) {{
+                        var heatLayer = createHeatmapLayer({data_var}, heatConfig);
                         
                         // レイヤーグループの全レイヤーをマップに追加
                         var heatLayers = heatLayer.getLayers();
@@ -609,7 +607,7 @@ class HeatMapLayer(BaseMapLayer):
                         
                         layerGroup.addTo({map_var});
                     }} else {{
-                        console.warn('No heatmap data available for layer layer_id}');
+                        console.warn('No heatmap data available for layer {layer_id}');
                     }}
                 }});
                 
