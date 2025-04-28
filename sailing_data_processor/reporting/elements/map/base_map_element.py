@@ -296,7 +296,7 @@ class BaseMapElement(BaseElement):
             
             // レイヤーコントロールの追加
             if ({str(controls['layer_control']).lower()}) {{
-                var overlayLayers = {}};
+                var overlayLayers = {{}};
                 L.control.layers(baseLayers, overlayLayers).addTo({map_var});
             }}
             

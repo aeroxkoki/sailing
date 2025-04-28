@@ -255,7 +255,7 @@ class QualityMetricsCalculatorExtension:
                     
                     # 品質スコアを保存
                     temporal_scores.append({
-                        "period": f"期間i+1}",
+                        "period": f"期間{i+1}",
                         "start_time": bin_start.isoformat(),
                         "end_time": bin_end.isoformat(),
                         "label": label,
