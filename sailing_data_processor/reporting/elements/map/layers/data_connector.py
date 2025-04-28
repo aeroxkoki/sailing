@@ -21,7 +21,7 @@ class DataConnector:
     
     def __init__(self):
         """初期化"""
-        self._bindings = {}  # {layer_id: source_id, field_mappings, transform_fn}}
+        self._bindings = {}  # {layer_id: {source_id, field_mappings, transform_fn}}
         self._data_cache = {}  # {source_id: data}
         self._transformers = {}  # {transform_name: transform_fn}
         
@@ -434,7 +434,7 @@ class LayerEventManager:
     
     def __init__(self):
         """初期化"""
-        self._event_handlers = {}  # {event_name: [layer_id, handler_fn, target_ids}]}
+        self._event_handlers = {}  # {event_name: [layer_id, handler_fn, target_ids]}
         self._event_targets = {}  # {layer_id: [target_layer_ids]}
     
     def subscribe(self, layer: BaseMapLayer, event_name: str, handler: Callable,
