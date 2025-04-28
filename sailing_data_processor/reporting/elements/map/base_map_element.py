@@ -39,7 +39,7 @@ class BaseMapElement(BaseElement):
         super().__init__(model, **kwargs)
         
         # 一意なマップIDを生成
-        self.map_id = f"map_{self.element_id}_{str(uuid.uuid4())[:8]}"
+        self.map_id = "map_{}_{}".format(self.element_id, str(uuid.uuid4())[:8])
         
         # デフォルトのマップ設定
         self.set_property("center_auto", self.get_property("center_auto", True))
@@ -226,24 +226,24 @@ class BaseMapElement(BaseElement):
         # コントロール設定
         controls = self.get_default_controls()
         
-        return f"""
+        js_code = """
             // マップの初期化
-            var {map_var} = L.map('{self.map_id}', {{
-                fullscreenControl: {str(controls['fullscreen_control']).lower()}
-            }});
+            var MAP_VAR = L.map('MAP_ID', {
+                fullscreenControl: FULLSCREEN_CONTROL
+            });
             
             // ベースレイヤーの定義
             var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }});
+            });
             
             var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
-            }});
+            });
             
             var nauticalLayer = L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png', {attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors'
-            }});
+            });
             
             var topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {attribution: 'Map data: &copy; <a href="https://www.opentopomap.org">OpenTopoMap</a> contributors'
-            }});
+            });
             
             // レイヤーコントロールの設定
             var baseLayers = {
@@ -255,7 +255,7 @@ class BaseMapElement(BaseElement):
             
             // デフォルトベースレイヤーの選択
             var defaultBaseLayer;
-            switch('{base_layer}') {
+            switch('BASE_LAYER') {
                 case 'satellite':
                     defaultBaseLayer = satelliteLayer;
                     break;
@@ -270,18 +270,18 @@ class BaseMapElement(BaseElement):
             }
             
             // デフォルトレイヤーをマップに追加
-            defaultBaseLayer.addTo({map_var});
+            defaultBaseLayer.addTo(MAP_VAR);
             
             // スケールコントロールの追加
-            if ({str(controls['scale_control']).lower()}) {{
-                L.control.scale({{
+            if (SCALE_CONTROL) {
+                L.control.scale({
                     imperial: false,
                     maxWidth: 200
-                }}).addTo({map_var});
-            }}
+                }).addTo(MAP_VAR);
+            }
             
             // 計測ツールの追加
-            if ({str(controls['measure_control']).lower()}) {{
+            if (MEASURE_CONTROL) {
                 var measureControl = new L.Control.Measure({position: 'topleft',
                     primaryLengthUnit: 'meters',
                     secondaryLengthUnit: 'kilometers',
@@ -289,23 +289,37 @@ class BaseMapElement(BaseElement):
                     secondaryAreaUnit: 'hectares',
                     activeColor: '#ff8800',
                     completedColor: '#ff4400'
-                }});
+                });
                 
-                measureControl.addTo({map_var});
-            }}
+                measureControl.addTo(MAP_VAR);
+            }
             
             // レイヤーコントロールの追加
-            if ({str(controls['layer_control']).lower()}) {{
-                var overlayLayers = {{}};
-                L.control.layers(baseLayers, overlayLayers).addTo({map_var});
-            }}
+            if (LAYER_CONTROL) {
+                var overlayLayers = {};
+                L.control.layers(baseLayers, overlayLayers).addTo(MAP_VAR);
+            }
             
             // 初期ビューの設定
-            {map_var}.setView([{center_lat}, {center_lng}], {zoom_level});
+            MAP_VAR.setView([CENTER_LAT, CENTER_LNG], ZOOM_LEVEL);
             
             // グローバル変数として保存（外部からアクセス用）
-            window['{self.map_id}_map'] = {map_var};
+            window['MAP_ID_map'] = MAP_VAR;
         """
+        
+        # 変数を置換
+        js_code = js_code.replace('MAP_VAR', map_var)
+        js_code = js_code.replace('MAP_ID', self.map_id)
+        js_code = js_code.replace('FULLSCREEN_CONTROL', str(controls['fullscreen_control']).lower())
+        js_code = js_code.replace('SCALE_CONTROL', str(controls['scale_control']).lower())
+        js_code = js_code.replace('MEASURE_CONTROL', str(controls['measure_control']).lower())
+        js_code = js_code.replace('LAYER_CONTROL', str(controls['layer_control']).lower())
+        js_code = js_code.replace('BASE_LAYER', base_layer)
+        js_code = js_code.replace('CENTER_LAT', str(center_lat))
+        js_code = js_code.replace('CENTER_LNG', str(center_lng))
+        js_code = js_code.replace('ZOOM_LEVEL', str(zoom_level))
+        
+        return js_code
     
     def render(self, context: Dict[str, Any]) -> str:
         """
@@ -331,42 +345,51 @@ class BaseMapElement(BaseElement):
         
         # 必要なライブラリの取得
         libraries = self.get_map_libraries()
-        library_tags = "\n".join([f'<script src="{lib}"></script>' for lib in libraries])
+        library_tags = "\n".join(['<script src="{}"></script>'.format(lib) for lib in libraries])
         
         # 必要なスタイルシートの取得
         styles = self.get_map_styles()
-        style_tags = "\n".join([f'<link rel="stylesheet" href="{style}" />' for style in styles])
+        style_tags = "\n".join(['<link rel="stylesheet" href="{}" />'.format(style) for style in styles])
         
         # 初期化コード
         init_code = self.get_map_initialization_code()
         
         # マップ要素のレンダリング
-        html_content = f'''
-        <div id="{self.element_id}" class="report-map-container" style="{css_style}">
-            <!-- Leaflet スタイルシート -->
-            {style_tags}
+        html_content = '''
+        <div id="{0}" class="report-map-container" style="{1}">
+            <\!-- Leaflet スタイルシート -->
+            {2}
             
             <style>
-                #{self.map_id} {{
-                    width: {width};
-                    height: {height};
+                #{3} {{
+                    width: {4};
+                    height: {5};
                 }}
             </style>
             
-            <div id="{self.map_id}" class="report-map"></div>
+            <div id="{3}" class="report-map"></div>
             
-            <!-- Leaflet ライブラリ -->
-            {library_tags}
+            <\!-- Leaflet ライブラリ -->
+            {6}
             
             <script>
                 (function() {{
                     // マップ初期化
                     window.addEventListener('load', function() {{
-                        {init_code}
+                        {7}
                     }});
                 }})();
             </script>
         </div>
-        '''
+        '''.format(
+            self.element_id,
+            css_style,
+            style_tags,
+            self.map_id,
+            width,
+            height,
+            library_tags,
+            init_code
+        )
         
         return html_content
