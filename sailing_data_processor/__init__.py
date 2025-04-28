@@ -18,6 +18,17 @@ from .performance_optimizer import PerformanceOptimizer
 from .boat_data_fusion import BoatDataFusionModel
 from .wind_field_interpolator import WindFieldInterpolator
 from .wind_propagation_model import WindPropagationModel
+from .wind_field_fusion_system import WindFieldFusionSystem
+from .prediction_evaluator import PredictionEvaluator
+
+# 戦略検出関連のインポート
+try:
+    from .strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
+except ImportError:
+    # 戦略検出モジュールが見つからない場合は警告を表示
+    import warnings
+    warnings.warn("StrategyDetectorWithPropagation could not be imported")
+    StrategyDetectorWithPropagation = None
 
 # データモデルのインポート
 from .data_model import (
@@ -35,12 +46,17 @@ __all__ = [
     'WindEstimator',
     'PerformanceOptimizer',
     'BoatDataFusionModel',
-    'WindFieldInterpolator',
+    'WindFieldInterpolator', 
     'WindPropagationModel',
+    'WindFieldFusionSystem',
+    'PredictionEvaluator',
+    
+    # 戦略検出
+    'StrategyDetectorWithPropagation',
     
     # データモデル
     'DataContainer',
-    'GPSDataContainer',
+    'GPSDataContainer', 
     'WindDataContainer',
     'StrategyPointContainer',
     
