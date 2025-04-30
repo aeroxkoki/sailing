@@ -132,7 +132,7 @@ class QualityMetricsCalculatorExtension:
         # 重み付けされた問題スコアの計算
         weighted_sum = 0
         for problem_type, indices in self.problematic_indices.items():
-            if problem_type \!= "all":
+            if problem_type != "all":
                 weighted_sum += len(indices) * weights.get(problem_type, 0.1)
         
         # 総合スコアの計算（100点満点）
@@ -215,7 +215,7 @@ class QualityMetricsCalculatorExtension:
         
         # インデックスが問題タイプに含まれているかチェック
         for problem_type, problem_indices in self.problematic_indices.items():
-            if problem_type \!= "all":
+            if problem_type != "all":
                 # 対象期間のインデックスと問題インデックスの積集合
                 problem_indices_in_period = set(indices).intersection(set(problem_indices))
                 problem_counts[problem_type] = len(problem_indices_in_period)

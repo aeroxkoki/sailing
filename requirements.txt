@@ -6,6 +6,7 @@ matplotlib==3.7.2
 folium==0.14.0
 streamlit-folium==0.12.0
 tqdm==4.66.1
+plotly==5.18.0  # 可視化機能用
 
 # 最小限のデータ処理
 scipy>=1.12.0  # Python 3.12互換バージョン

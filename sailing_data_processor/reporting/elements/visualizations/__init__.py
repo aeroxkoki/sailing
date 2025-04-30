@@ -23,8 +23,10 @@ from sailing_data_processor.reporting.elements.visualizations.basic_charts impor
 )
 
 # セーリング特化型グラフ要素
+# 注意: sailing_charts.pyから分割された個別モジュールに移行
+from sailing_data_processor.reporting.elements.visualizations.components.wind_rose_element import WindRoseElement
+# 残りのコンポーネントは後で移行
 from sailing_data_processor.reporting.elements.visualizations.sailing_charts import (
-    WindRoseElement,
     CoursePerformanceElement,
     TackingAngleElement,
     StrategyPointMapElement
