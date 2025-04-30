@@ -36,8 +36,10 @@ class DataConnector:
         self._transformers["to_str"] = lambda x: str(x) if x is not None else ""
         self._transformers["scale"] = lambda x, factor=1.0: x * factor if x is not None else None
         self._transformers["offset"] = lambda x, offset=0.0: x + offset if x is not None else None
-        self._transformers["min_max_normalize"] = lambda x, min_val=0.0, max_val=1.0:
-                                                                (x - min_val) / (max_val - min_val) if x is not None and max_val > min_val else None
+        def min_max_normalize(x, min_val=0.0, max_val=1.0):
+            return (x - min_val) / (max_val - min_val) if x is not None and max_val > min_val else None
+            
+        self._transformers["min_max_normalize"] = min_max_normalize
     
     def register_transformer(self, name: str, transformer_fn: Callable) -> None:
         """

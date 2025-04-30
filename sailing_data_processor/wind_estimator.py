@@ -538,6 +538,255 @@ class WindEstimator:
         
         return round(estimated_wind_speed, 1)  # 小数点以下1桁に丸める
 
+    def calculate_confidence_metrics(self, data_points: List[Dict], estimated_wind: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        風向風速推定の信頼度メトリクスを計算
+        
+        Parameters:
+        -----------
+        data_points : List[Dict]
+            元のGPSデータポイント
+        estimated_wind : Dict
+            推定された風向風速データ
+            
+        Returns:
+        --------
+        Dict[str, Any]
+            信頼度メトリクス
+            - data_quality: データ品質スコア（0-1）
+            - temporal_consistency: 時間的一貫性スコア（0-1）
+            - spatial_coverage: 空間カバレッジスコア（0-1）
+            - validation_score: 検証スコア（0-1）
+            - confidence_level: 総合信頼度（0-1）
+        """
+        # 基本的な信頼度（推定値から取得）
+        base_confidence = estimated_wind.get("confidence", 0.5)
+        
+        # データポイントが少ない場合はデフォルト値を返す
+        if not data_points or len(data_points) < 5:
+            return {
+                "data_quality": 0.3,
+                "temporal_consistency": 0.3,
+                "spatial_coverage": 0.3,
+                "validation_score": 0.3,
+                "confidence_level": base_confidence * 0.6  # 信頼度を下げる
+            }
+        
+        # データ品質スコアの計算
+        # - 速度の分散をチェック（安定した速度は高品質データの可能性）
+        # - 方位の急激な変化をチェック
+        speeds = [point.get('speed', 0) for point in data_points if 'speed' in point]
+        courses = [point.get('course', 0) for point in data_points if 'course' in point]
+        
+        speed_quality = 0.5  # デフォルト
+        course_quality = 0.5  # デフォルト
+        
+        if speeds:
+            mean_speed = np.mean(speeds)
+            if mean_speed > 0:
+                # 変動係数（標準偏差/平均）
+                speed_std = np.std(speeds)
+                variation = speed_std / mean_speed
+                
+                # 変動が小さいほど高品質（0.5〜1.0のスコア）
+                speed_quality = max(0.5, min(1.0, 1.0 - variation))
+        
+        if courses and len(courses) > 1:
+            # 方位の急激な変化をチェック
+            course_changes = []
+            for i in range(1, len(courses)):
+                change = abs(self._calculate_angle_difference(courses[i], courses[i-1]))
+                course_changes.append(change)
+            
+            # 方位変化の中央値（外れ値の影響を減らす）
+            median_change = np.median(course_changes)
+            
+            # 緩やかな方位変化（15度未満）は自然な航行で高品質
+            if median_change < 15:
+                course_quality = 0.8
+            elif median_change > 45:
+                course_quality = 0.4
+            else:
+                # 15〜45度の間は線形に減少
+                course_quality = 0.8 - (median_change - 15) * 0.4 / 30
+        
+        # データ品質の総合スコア
+        data_quality = (speed_quality * 0.5 + course_quality * 0.5)
+        
+        # 時間的一貫性スコアの計算
+        # - データ収集時間の長さをチェック
+        # - データポイントの時間間隔をチェック
+        timestamps = [point.get('timestamp') for point in data_points if 'timestamp' in point]
+        
+        temporal_consistency = 0.5  # デフォルト
+        
+        if timestamps and len(timestamps) > 1:
+            # 時間範囲（秒）
+            sorted_timestamps = sorted(timestamps)
+            time_range = (sorted_timestamps[-1] - sorted_timestamps[0]).total_seconds()
+            
+            # 時間間隔のチェック
+            time_intervals = []
+            for i in range(1, len(sorted_timestamps)):
+                interval = (sorted_timestamps[i] - sorted_timestamps[i-1]).total_seconds()
+                if interval > 0:  # 間隔が有効な場合のみ追加
+                    time_intervals.append(interval)
+            
+            # 時間範囲による評価
+            # - 5分以上あれば高信頼度
+            if time_range >= 300:
+                range_score = 0.9
+            else:
+                # 5分未満は線形に減少（最低0.4）
+                range_score = 0.4 + min(0.5, time_range / 300) * 0.5
+            
+            # 時間間隔の一貫性評価
+            interval_score = 0.5  # デフォルト
+            if time_intervals:
+                # 変動係数を計算
+                mean_interval = np.mean(time_intervals)
+                if mean_interval > 0:
+                    interval_std = np.std(time_intervals)
+                    variation = interval_std / mean_interval
+                    
+                    # 間隔が一定であるほど高信頼度（0.5〜0.9）
+                    interval_score = 0.5 + max(0, min(0.4, 0.4 - variation * 0.4))
+            
+            # 時間的一貫性の総合スコア
+            temporal_consistency = range_score * 0.6 + interval_score * 0.4
+        
+        # 空間カバレッジスコアの計算
+        # - データポイントの空間的分布をチェック
+        lats = [point.get('latitude') for point in data_points if 'latitude' in point]
+        lons = [point.get('longitude') for point in data_points if 'longitude' in point]
+        
+        spatial_coverage = 0.5  # デフォルト
+        
+        if lats and lons and len(lats) == len(lons):
+            # 空間範囲の計算
+            lat_range = max(lats) - min(lats)
+            lon_range = max(lons) - min(lons)
+            
+            # 範囲を距離（km）に変換
+            # 緯度1度は約111km、経度1度は緯度によって変わる
+            lat_km = lat_range * 111.0
+            lon_km = lon_range * 111.0 * np.cos(np.radians(np.mean(lats)))
+            
+            # 対角線距離（km）
+            diagonal_km = np.sqrt(lat_km**2 + lon_km**2)
+            
+            # 距離による評価
+            # - 1km以上あれば高信頼度
+            if diagonal_km >= 1.0:
+                coverage_score = 0.9
+            else:
+                # 1km未満は線形に減少（最低0.3）
+                coverage_score = 0.3 + min(0.6, diagonal_km / 1.0) * 0.6
+            
+            # カバレッジの均一性評価
+            # （四分位範囲を使用した簡易的な分布評価）
+            lat_quartiles = np.percentile(lats, [25, 75])
+            lon_quartiles = np.percentile(lons, [25, 75])
+            
+            lat_iqr = lat_quartiles[1] - lat_quartiles[0]
+            lon_iqr = lon_quartiles[1] - lon_quartiles[0]
+            
+            # IQR/Rangeの比率（0.5が理想的な分布）
+            lat_ratio = lat_iqr / lat_range if lat_range > 0 else 0.5
+            lon_ratio = lon_iqr / lon_range if lon_range > 0 else 0.5
+            
+            # 分布スコア（0.5にどれだけ近いか）
+            distribution_score = 1.0 - min(0.5, abs(lat_ratio - 0.5) + abs(lon_ratio - 0.5))
+            
+            # 空間カバレッジの総合スコア
+            spatial_coverage = coverage_score * 0.7 + distribution_score * 0.3
+        
+        # 検証スコアの計算
+        # - 推定結果と元データのクロスバリデーション
+        validation_score = 0.6  # デフォルト（検証データが少なくても最低限の信頼度）
+        
+        # 推定風向と実際の速度比較（VMG）を使った検証
+        estimated_direction = estimated_wind.get("direction", 0)
+        
+        vmg_consistency = []
+        
+        for point in data_points:
+            if 'course' in point and 'speed' in point:
+                course = point['course']
+                speed = point['speed']
+                
+                # 風向との相対角度
+                relative_angle = abs(self._calculate_angle_difference(course, estimated_direction))
+                
+                # 風上航走か風下航走か判定
+                is_upwind = relative_angle < self.params["upwind_threshold"]
+                is_downwind = relative_angle > self.params["downwind_threshold"]
+                
+                # VMGの一貫性チェック
+                if is_upwind:
+                    # 風上は同じコースなら速度が近いはず
+                    for other in data_points:
+                        if 'course' in other and 'speed' in other:
+                            other_course = other['course']
+                            other_speed = other['speed']
+                            
+                            # コースが近い（20度以内）
+                            if abs(self._calculate_angle_difference(course, other_course)) < 20:
+                                # 速度差が小さいほど高い一貫性
+                                speed_diff = abs(speed - other_speed)
+                                speed_avg = (speed + other_speed) / 2
+                                
+                                if speed_avg > 0:
+                                    # 相対的な差（最大1）
+                                    rel_diff = min(1.0, speed_diff / speed_avg)
+                                    vmg_consistency.append(1.0 - rel_diff)
+                
+                elif is_downwind:
+                    # 風下も同様
+                    for other in data_points:
+                        if 'course' in other and 'speed' in other:
+                            other_course = other['course']
+                            other_speed = other['speed']
+                            
+                            # コースが近い（20度以内）
+                            if abs(self._calculate_angle_difference(course, other_course)) < 20:
+                                # 速度差が小さいほど高い一貫性
+                                speed_diff = abs(speed - other_speed)
+                                speed_avg = (speed + other_speed) / 2
+                                
+                                if speed_avg > 0:
+                                    # 相対的な差（最大1）
+                                    rel_diff = min(1.0, speed_diff / speed_avg)
+                                    vmg_consistency.append(1.0 - rel_diff)
+        
+        # VMG一貫性スコアの計算
+        if vmg_consistency:
+            # 平均値（0〜1）
+            vmg_score = np.mean(vmg_consistency)
+            
+            # 検証スコアの更新
+            validation_score = 0.6 + vmg_score * 0.4  # 最大1.0
+        
+        # 総合信頼度の計算
+        # 各要素に重み付けして総合スコアを算出
+        confidence_level = (
+            data_quality * 0.25 +
+            temporal_consistency * 0.25 +
+            spatial_coverage * 0.25 +
+            validation_score * 0.25
+        )
+        
+        # 元の基本信頼度との調整（より保守的な値を採用）
+        confidence_level = min(confidence_level, base_confidence * 1.2)
+        
+        return {
+            "data_quality": round(data_quality, 3),
+            "temporal_consistency": round(temporal_consistency, 3),
+            "spatial_coverage": round(spatial_coverage, 3),
+            "validation_score": round(validation_score, 3),
+            "confidence_level": round(confidence_level, 3)
+        }
+        
     def _create_wind_result(self, direction: float, speed: float, confidence: float, 
                            method: str, timestamp: Optional[datetime]) -> Dict[str, Any]:
         """
@@ -1352,3 +1601,203 @@ class WindEstimator:
         
         # 風下判定（閾値以上なら風下）
         return rel_angle >= self.params["downwind_threshold"]
+        
+    def detect_wind_shifts(self, wind_data_points: List[Dict], min_shift_angle: float = 10.0, 
+                         time_window: int = 300) -> List[Dict]:
+        """
+        風向シフトを検出
+        
+        Parameters:
+        -----------
+        wind_data_points : List[Dict]
+            風データポイントのリスト
+            必要なキー：
+            - timestamp: 時刻
+            - wind_direction: 風向（度）
+            - wind_speed: 風速（ノット、または m/s)
+        min_shift_angle : float, optional
+            最小風向シフト角度（度）
+        time_window : int, optional
+            時間窓（秒）- この時間内での風向変化を検出
+            
+        Returns:
+        --------
+        List[Dict]
+            検出された風向シフト
+            各シフトは以下のキーを含む:
+            - timestamp: シフト発生時間
+            - before_direction: シフト前の風向
+            - after_direction: シフト後の風向
+            - shift_angle: シフト角度
+            - shift_speed: 変化の速さ（度/分）
+            - persistence: 持続性の評価（0-1）
+            - significance: 重要度評価（0-1）
+        """
+        # データ検証
+        if not wind_data_points or len(wind_data_points) < 5:
+            return []
+        
+        # 時間でソート
+        sorted_data = sorted(wind_data_points, key=lambda x: x['timestamp'])
+        
+        # 移動窓で風向変化を調べる
+        shifts = []
+        
+        for i in range(len(sorted_data)):
+            current_point = sorted_data[i]
+            current_time = current_point['timestamp']
+            
+            # 前の時間窓内のデータポイントを取得
+            before_window = []
+            for j in range(i):
+                if (current_time - sorted_data[j]['timestamp']).total_seconds() <= time_window:
+                    before_window.append(sorted_data[j])
+            
+            # 後の時間窓内のデータポイントを取得
+            after_window = []
+            for j in range(i + 1, len(sorted_data)):
+                if (sorted_data[j]['timestamp'] - current_time).total_seconds() <= time_window:
+                    after_window.append(sorted_data[j])
+            
+            # 十分なデータポイントがある場合のみ
+            if len(before_window) >= 2 and len(after_window) >= 2:
+                # 前後の風向平均を計算
+                before_directions = [p['wind_direction'] for p in before_window]
+                after_directions = [p['wind_direction'] for p in after_window]
+                
+                before_dir = self._calculate_average_direction(before_directions)
+                after_dir = self._calculate_average_direction(after_directions)
+                
+                # 風向変化角度の計算
+                shift_angle = self._calculate_angle_difference(after_dir, before_dir)
+                
+                # 最小角度以上の変化を検出
+                if abs(shift_angle) >= min_shift_angle:
+                    # 変化速度（度/分）を計算
+                    first_after_time = after_window[0]['timestamp']
+                    last_before_time = before_window[-1]['timestamp']
+                    time_span = (first_after_time - last_before_time).total_seconds() / 60  # 分に変換
+                    
+                    if time_span > 0:
+                        shift_speed = abs(shift_angle) / time_span
+                    else:
+                        shift_speed = 0
+                    
+                    # 持続性の評価 (前後の風向標準偏差が小さいほど高評価)
+                    before_std = self._calculate_direction_std(before_directions)
+                    after_std = self._calculate_direction_std(after_directions)
+                    
+                    # 標準偏差の閾値（超えると持続性が低いと判断）
+                    std_threshold = 15.0
+                    persistence = 1.0 - min(1.0, (before_std + after_std) / (2 * std_threshold))
+                    
+                    # 重要度評価 - シフト角度と風速に基づく
+                    # 角度が大きいほど重要
+                    angle_factor = min(1.0, abs(shift_angle) / 45.0)  # 45度以上で最大評価
+                    
+                    # 風速が強いほど重要
+                    avg_wind_speed = np.mean([
+                        p.get('wind_speed', 0) for p in before_window + after_window
+                    ])
+                    speed_factor = min(1.0, avg_wind_speed / 15.0)  # 15ノット以上で最大評価
+                    
+                    # 総合重要度
+                    significance = 0.7 * angle_factor + 0.3 * speed_factor
+                    
+                    # シフトポイントを追加
+                    shifts.append({
+                        'timestamp': current_time,
+                        'before_direction': before_dir,
+                        'after_direction': after_dir,
+                        'shift_angle': shift_angle,
+                        'shift_speed': shift_speed,  # 度/分
+                        'persistence': persistence,
+                        'significance': significance,
+                        'wind_speed': current_point.get('wind_speed', 0)
+                    })
+        
+        # 重複シフトの除去（時間と位置が近いもの）
+        filtered_shifts = []
+        shifts.sort(key=lambda x: x['timestamp'])
+        
+        for shift in shifts:
+            # 既に追加されているシフトと重複チェック
+            is_duplicate = False
+            for existing in filtered_shifts:
+                # 時間が近い（1分以内）
+                time_diff = (shift['timestamp'] - existing['timestamp']).total_seconds()
+                if abs(time_diff) < 60:
+                    # 角度変化も近い
+                    angle_diff = abs(self._calculate_angle_difference(
+                        shift['shift_angle'], existing['shift_angle']
+                    ))
+                    if angle_diff < 15:
+                        # 重複判定
+                        is_duplicate = True
+                        # 重要度が高い方を保持
+                        if shift['significance'] > existing['significance']:
+                            filtered_shifts.remove(existing)
+                            filtered_shifts.append(shift)
+                        break
+            
+            if not is_duplicate:
+                filtered_shifts.append(shift)
+        
+        # 重要度でソート
+        filtered_shifts.sort(key=lambda x: x['significance'], reverse=True)
+        
+        return filtered_shifts
+    
+    def _calculate_average_direction(self, directions: List[float]) -> float:
+        """
+        風向のリストから平均風向を計算
+        
+        Parameters:
+        -----------
+        directions : List[float]
+            風向のリスト（度）
+            
+        Returns:
+        --------
+        float
+            平均風向（度、0-360）
+        """
+        if not directions:
+            return 0.0
+        
+        # 角度をラジアンに変換してからsinとcosの平均を取る
+        sin_sum = sum(np.sin(np.radians(dir)) for dir in directions)
+        cos_sum = sum(np.cos(np.radians(dir)) for dir in directions)
+        
+        # atan2で元の角度に戻し、度に変換して0-360の範囲に正規化
+        return (np.degrees(np.arctan2(sin_sum, cos_sum)) + 360) % 360
+    
+    def _calculate_direction_std(self, directions: List[float]) -> float:
+        """
+        風向のリストから標準偏差を計算
+        
+        Parameters:
+        -----------
+        directions : List[float]
+            風向のリスト（度）
+            
+        Returns:
+        --------
+        float
+            風向の標準偏差（度）
+        """
+        if not directions or len(directions) < 2:
+            return 0.0
+        
+        # 平均方向を計算
+        mean_dir = self._calculate_average_direction(directions)
+        
+        # 各方向と平均方向の差の二乗の合計を計算
+        squared_diffs = []
+        for dir in directions:
+            # 角度の差を計算（-180〜180の範囲）
+            diff = self._calculate_angle_difference(dir, mean_dir)
+            squared_diffs.append(diff ** 2)
+        
+        # 標準偏差を計算
+        return np.sqrt(sum(squared_diffs) / len(directions))

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-Module for enhanced sailing chart visualizations.
-This module provides enhanced chart elements for sailing data visualization.
+Module for enhanced wind rose chart visualization.
+This module provides an enhanced version of the wind rose chart with additional features.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -11,12 +11,7 @@ import math
 import numpy as np
 
 from sailing_data_processor.reporting.elements.visualizations.base_chart import BaseChartElement
-from sailing_data_processor.reporting.elements.visualizations.sailing_charts import (
-    WindRoseElement,
-    CoursePerformanceElement,
-    TackingAngleElement,
-    StrategyPointMapElement
-)
+from sailing_data_processor.reporting.elements.visualizations.sailing_charts import WindRoseElement
 from sailing_data_processor.reporting.elements.visualizations.chart_renderer import RendererFactory
 from sailing_data_processor.reporting.templates.template_model import ElementType, ElementModel
 
@@ -25,15 +20,15 @@ class EnhancedWindRoseElement(WindRoseElement):
     """
     拡張版風配図（Wind Rose）要素
     
-    風向風速データを表示するための拡張された風配図。
-    複数のレンダラー（ChartJS, Plotly）に対応し、詳細な設定が可能。
+    新しいチャートレンダラーを活用した風配図要素です。
+    複数のレンダラー（ChartJS, Plotly）に対応し、より柔軟な可視化を実現します。
     
-    機能：
-    - 角度分割数の調整 (8/16/32/36分割)
-    - 風速カテゴリの詳細設定
-    - レンダラー選択と単位（knot、m/s、km/h）の設定
-    - 詳細な表示オプションの設定
-    - 3D表示機能（Plotlyレンダラー使用時）
+    拡張機能:
+    - よりきめ細かな方位分割 (8/16/32/36分割など)
+    - カスタマイズ可能な風速カテゴリの範囲設定
+    - 複数の表示単位（ノット、m/s、km/h）のサポート
+    - 時間範囲に基づくデータフィルタリング
+    - 3D表示モード（Plotlyレンダラーを使用時）
     """
     
     def __init__(self, model: Optional[ElementModel] = None, **kwargs):
@@ -45,17 +40,17 @@ class EnhancedWindRoseElement(WindRoseElement):
         model : Optional[ElementModel], optional
             要素モデル, by default None
         **kwargs : dict
-            追加のプロパティ（キーと値のペア）
+            モデルが提供されない場合に使用されるプロパティ
         """
-        # レンダラーの初期設定
+        # レンダラー設定
         if model is None and 'renderer' not in kwargs:
             kwargs['renderer'] = "chartjs"  # chartjs, plotly
         
-        # 角度分割数の初期設定
+        # きめ細かな方位分割のデフォルト設定
         if model is None and 'angle_divisions' not in kwargs:
-            kwargs['angle_divisions'] = 16  # 8, 16, 32, 36から選択
+            kwargs['angle_divisions'] = 16  # 8, 16, 32, 36から選択可能
             
-        # 風速カテゴリの初期設定
+        # 風速カテゴリ範囲のデフォルト設定
         if model is None and 'wind_speed_categories' not in kwargs:
             kwargs['wind_speed_categories'] = [
                 {"min": 0, "max": 5, "label": "弱風 (0-5kt)"},
@@ -65,15 +60,15 @@ class EnhancedWindRoseElement(WindRoseElement):
                 {"min": 20, "max": float('inf'), "label": "暴風 (20kt+)"}
             ]
             
-        # 単位の初期設定
+        # 表示単位のデフォルト設定
         if model is None and 'display_unit' not in kwargs:
             kwargs['display_unit'] = "knots"  # knots, m/s, km/h
             
-        # 3D表示設定の初期設定（Plotlyレンダラー用）
+        # 3D表示モードのデフォルト設定（Plotlyレンダラーでのみ有効）
         if model is None and 'enable_3d' not in kwargs:
             kwargs['enable_3d'] = False
             
-        # 集計方法の初期設定
+        # 集計方法のデフォルト設定
         if model is None and 'aggregation_method' not in kwargs:
             kwargs['aggregation_method'] = "frequency"  # frequency, speed_avg, speed_max
         

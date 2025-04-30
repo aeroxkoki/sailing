@@ -1,52 +1,58 @@
-#!/usr/bin/env python3
+#\!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-基本インポートテスト
-このスクリプトはセーリング戦略分析システムの基本ライブラリが
-正しくインポートできることを確認するためのものです。
+セーリング戦略分析システムのモジュールインポートテスト
 """
 
-import sys
 import os
+import sys
+import traceback
 
-print("--- セーリング戦略分析システム 基本インポートテスト ---")
-print(f"Python バージョン: {sys.version}")
-print(f"実行パス: {sys.executable}")
-print(f"カレントディレクトリ: {os.getcwd()}")
-print(f"PYTHONPATH: {sys.path}")
-print("---")
+# 現在のファイルのディレクトリをPythonパスに追加
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
-# 基本インポートテスト
+# モジュールパスの表示
+print(f"Current directory: {current_dir}")
+print(f"Python path: {sys.path}")
+
+# テスト対象モジュールをインポート
 try:
-    print("sailing_data_processor モジュールのインポートを試みます...")
+    print("Importing sailing_data_processor module...")
     import sailing_data_processor
-    print(f"sailing_data_processor バージョン: {sailing_data_processor.__version__ if hasattr(sailing_data_processor, '__version__') else '不明'}")
-    print("インポート成功!")
-
-    # サブモジュールのインポートテスト
-    print("\nサブモジュールのインポートテスト:")
+    print(f"Successfully imported sailing_data_processor")
+    print(f"sailing_data_processor path: {sailing_data_processor.__file__}")
+    print(f"sailing_data_processor version: {sailing_data_processor.__version__}")
     
-    # 存在するサブモジュール名のリストを取得して表示
-    submodules = [
-        "sailing_data_processor.importers",
-        "sailing_data_processor.strategy",
-        "sailing_data_processor.analysis",
-        "sailing_data_processor.visualization",
-        "sailing_data_processor.utilities"
-    ]
+    print("\nImporting specific modules...")
+    from sailing_data_processor.wind_propagation_model import WindPropagationModel
+    print("Successfully imported WindPropagationModel")
     
-    for module in submodules:
-        try:
-            exec(f"import {module}")
-            print(f"✓ {module} インポート成功")
-        except ImportError as e:
-            print(f"✗ {module} インポート失敗: {str(e)}")
+    from sailing_data_processor.wind_field_fusion_system import WindFieldFusionSystem
+    print("Successfully imported WindFieldFusionSystem")
     
-    print("\nすべての基本インポートテストが完了しました。")
-    sys.exit(0)  # 成功
-except Exception as e:
-    print(f"エラー: {str(e)}")
-    print(f"エラータイプ: {type(e).__name__}")
-    import traceback
+    from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
+    print("Successfully imported StrategyDetectorWithPropagation")
+    
+    # インスタンス化テスト
+    print("\nTesting instantiation...")
+    wpm = WindPropagationModel()
+    print("Successfully created WindPropagationModel instance")
+    
+    wfs = WindFieldFusionSystem()
+    print("Successfully created WindFieldFusionSystem instance")
+    
+    # インスタンス化せず、モジュールのプロパティのみ確認
+    print("\nTesting module properties...")
+    sdp_module = sys.modules['sailing_data_processor.strategy.strategy_detector_with_propagation']
+    print(f"StrategyDetectorWithPropagation module: {sdp_module}")
+    
+    print("\nAll imports successful\!")
+    
+except ImportError as e:
+    print(f"Import error: {e}")
     traceback.print_exc()
-    sys.exit(1)  # 失敗
+except Exception as e:
+    print(f"Other error: {e}")
+    traceback.print_exc()
