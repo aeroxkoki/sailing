@@ -163,6 +163,7 @@ class FixProposal:
             'severity': self.severity,
             'auto_fixable': self.auto_fixable,
             'metadata': self.metadata
+        }
     
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'FixProposal':
@@ -186,7 +187,7 @@ class FixProposal:
             description=data['description'],
             severity=data['severity'],
             auto_fixable=data['auto_fixable'],
-            metadata=data.get('metadata', })
+            metadata=data.get('metadata', {})
         )
         
         if 'fix_id' in data:
@@ -281,10 +282,10 @@ class DataCleaner:
                                     description=f"重複しているタイムスタンプ '{ts}' を1ミリ秒ずつずらす",
                                     severity=severity,
                                     auto_fixable=True,
-                                    metadata={}
+                                    metadata={
                                         "adjustment": 0.001,  # 1ミリ秒
                                         "timestamp": ts
-                                )
+                                    })
                                 proposals.append(proposal)
                                 
                                 # 重複を削除する修正提案
@@ -292,7 +293,7 @@ class DataCleaner:
                                     fix_type="remove",
                                     target_indices=indices[1:],  # 最初のものを除く
                                     columns=[],
-                                    description=f"重複しているタイムスタンプ 'ts}' の行を削除",
+                                    description=f"重複しているタイムスタンプ '{ts}' の行を削除",
                                     severity=severity,
                                     auto_fixable=True,
                                     metadata={
@@ -311,7 +312,7 @@ class DataCleaner:
                                     fix_type="interpolate",
                                     target_indices=indices,
                                     columns=[col],
-                                    description=f"カラム 'col}' の欠損値を線形補間で修正",
+                                    description=f"カラム '{col}' の欠損値を線形補間で修正",
                                     severity=severity,
                                     auto_fixable=True,
                                     metadata={
@@ -325,7 +326,7 @@ class DataCleaner:
                                     fix_type="remove",
                                     target_indices=indices,
                                     columns=[],
-                                    description=f"カラム 'col}' に欠損値を含む行を削除",
+                                    description=f"カラム '{col}' に欠損値を含む行を削除",
                                     severity=severity,
                                     auto_fixable=True
                                 )
@@ -383,7 +384,7 @@ class DataCleaner:
                                 fix_type="remove",
                                 target_indices=indices,
                                 columns=[],
-                                description=f"カラム 'col}' に範囲外の値を含む行を削除",
+                                description=f"カラム '{col}' に範囲外の値を含む行を削除",
                                 severity=severity,
                                 auto_fixable=True
                             )
@@ -455,7 +456,7 @@ class DataCleaner:
                                         fix_type="replace",
                                         target_indices=[idx],
                                         columns=["timestamp"],
-                                        description=f"逆行しているタイムスタンプを修正（curr_ts} → {new_ts}）",
+                                        description=f"逆行しているタイムスタンプを修正（{curr_ts} → {new_ts}）",
                                         severity=severity,
                                         auto_fixable=True,
                                         metadata={
@@ -498,7 +499,7 @@ class DataCleaner:
             fix_proposal = next((f for f in self.fix_proposals if f.fix_id == fix_id), None)
             
             if not fix_proposal:
-                raise ValueError(f"修正提案 ID 'fix_id}' が見つかりません")
+                raise ValueError(f"修正提案 ID '{fix_id}' が見つかりません")
         
         # 修正を適用
         fixed_data = fix_proposal.apply(self.container.data)
@@ -574,7 +575,6 @@ class DataCleaner:
             "duplicates": ["No Duplicate Timestamps"],
             "spatial_anomalies": ["Spatial Consistency Check"],
             "temporal_anomalies": ["Temporal Consistency Check"]
-        
         }
         if problem_type in type_mapping:
             rule_prefixes = type_mapping[problem_type]
@@ -676,7 +676,7 @@ class DataCleaner:
         history = self.get_fix_history()
         
         # 修正タイプごとのカウント
-        fix_type_counts = }
+        fix_type_counts = {}
         for fix in history:
             fix_type = fix.get('fix_type', '')
             fix_type_counts[fix_type] = fix_type_counts.get(fix_type, 0) + 1
