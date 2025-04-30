@@ -242,7 +242,7 @@ class WindFieldFusionSystem:
         qhull_options = 'QJ'
         
         # 基本的にデータをスケーリング - このステップにより多くのQhull関連エラーを回避
-        scaled_data = scale_data_points(recent_data)
+        scaled_data = self._scale_data_points(recent_data)
         
         # スケーリングに失敗した場合の対策
         if not scaled_data:
@@ -323,9 +323,40 @@ class WindFieldFusionSystem:
                 self._evaluate_previous_predictions(point['timestamp'], point)
         
         # 元の座標を復元
-        restore_original_coordinates(scaled_data)
+        self._restore_original_coordinates(scaled_data)
         
         return wind_field
+    
+    def _scale_data_points(self, data_points: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        風データポイントを適切にスケーリングして補間処理を安定化
+        
+        Parameters:
+        -----------
+        data_points : List[Dict]
+            風データポイントのリスト
+            
+        Returns:
+        --------
+        List[Dict]
+            スケーリングされたデータポイントのリスト
+        """
+        # wind_field_fusion_utilsモジュールのscale_data_points関数を使用
+        from .wind_field_fusion_utils import scale_data_points
+        return scale_data_points(data_points)
+        
+    def _restore_original_coordinates(self, scaled_data_points: List[Dict[str, Any]]) -> None:
+        """
+        スケーリングされたデータポイントの座標を元に戻す
+        
+        Parameters:
+        -----------
+        scaled_data_points : List[Dict]
+            スケーリングされたデータポイントのリスト
+        """
+        # wind_field_fusion_utilsモジュールのrestore_original_coordinates関数を使用
+        from .wind_field_fusion_utils import restore_original_coordinates
+        return restore_original_coordinates(scaled_data_points)
     
     def _evaluate_previous_predictions(self, current_time: datetime, current_wind_data: Dict[str, Any]):
         """
@@ -410,9 +441,10 @@ class WindFieldFusionSystem:
         """
         from .wind_field_prediction import predict_wind_field_implementation
         
+        # wind_field_dataが属性として存在しない可能性があるため、wind_data_pointsを代わりに使用
         return predict_wind_field_implementation(
             self, target_time, grid_resolution, 
-            self.wind_field_data, self.current_wind_field,
+            self.wind_data_points, self.current_wind_field,
             self.last_fusion_time, self.wind_field_history,
             self.previous_predictions, self.enable_prediction_evaluation,
             self.field_interpolator, self.propagation_model
