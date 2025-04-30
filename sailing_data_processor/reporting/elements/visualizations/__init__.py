@@ -23,14 +23,12 @@ from sailing_data_processor.reporting.elements.visualizations.basic_charts impor
 )
 
 # セーリング特化型グラフ要素
-# 注意: sailing_charts.pyから分割された個別モジュールに移行
-from sailing_data_processor.reporting.elements.visualizations.components.wind_rose_element import WindRoseElement
-# 残りのコンポーネントは後で移行
-from sailing_data_processor.reporting.elements.visualizations.sailing_charts import (
-    CoursePerformanceElement,
-    TackingAngleElement,
-    StrategyPointMapElement
-)
+from sailing_data_processor.reporting.elements.visualizations.wind_rose_element import WindRoseElement
+from sailing_data_processor.reporting.elements.visualizations.polar_diagram_element import PolarDiagramElement
+
+# 統計グラフ要素
+from sailing_data_processor.reporting.elements.visualizations.time_series_element import TimeSeriesElement
+from sailing_data_processor.reporting.elements.visualizations.box_plot_element import BoxPlotElement
 
 # 拡張版セーリング特化型グラフ要素
 from sailing_data_processor.reporting.elements.visualizations.enhanced_sailing_charts import (
@@ -38,18 +36,14 @@ from sailing_data_processor.reporting.elements.visualizations.enhanced_sailing_c
     EnhancedCoursePerformanceElement,
     EnhancedTackingAngleElement
 )
-from sailing_data_processor.reporting.elements.visualizations.statistical_charts import (
-    TimeSeriesElement,
-    BoxPlotElement,
-    HeatMapElement,
-    CorrelationElement
-)
+
 from sailing_data_processor.reporting.elements.visualizations.map_elements import (
     TrackMapElement,
     HeatMapLayerElement,
     StrategyPointLayerElement,
     WindFieldElement
 )
+
 from sailing_data_processor.reporting.elements.visualizations.timeline_elements import (
     EventTimelineElement,
     ParameterTimelineElement,
@@ -75,20 +69,16 @@ __all__ = [
     
     # セーリング特化型グラフ要素
     'WindRoseElement',
-    'CoursePerformanceElement',
-    'TackingAngleElement',
-    'StrategyPointMapElement',
+    'PolarDiagramElement',
+    
+    # 統計グラフ要素
+    'TimeSeriesElement',
+    'BoxPlotElement',
     
     # 拡張版セーリング特化型グラフ要素
     'EnhancedWindRoseElement',
     'EnhancedCoursePerformanceElement',
     'EnhancedTackingAngleElement',
-    
-    # 統計グラフ要素
-    'TimeSeriesElement',
-    'BoxPlotElement',
-    'HeatMapElement',
-    'CorrelationElement',
     
     # マップ要素
     'TrackMapElement',
