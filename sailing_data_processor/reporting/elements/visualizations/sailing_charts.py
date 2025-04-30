@@ -120,7 +120,7 @@ class WindRoseElement(BaseChartElement):
         
         # データがない場合は空のデータを返す
         if not data:
-            return {"type": "polarArea", "data": "labels": [], "datasets": []}}
+            return {"type": "polarArea", "data": {"labels": [], "datasets": []}}
         
         # 角度分割数の取得（デフォルト：16方位）
         angle_divisions = self.get_property("angle_divisions", 16)
@@ -398,16 +398,13 @@ class WindRoseElement(BaseChartElement):
                 })
         
         # 風配図データの作成
-        chart_data = {}
+        chart_data = {
             "type": "polarArea",
             "data": {
                 "labels": direction_labels,
                 "datasets": datasets
             }
- {
-            "type": "polarArea",
-            "data": "labels": direction_labels,
-                "datasets": datasets}
+        }
             
         
         return chart_data
@@ -483,11 +480,8 @@ class WindRoseElement(BaseChartElement):
         # 詳細表示が有効な場合の追加設定
         if self.get_property("show_details", True):
             wind_rose_options["plugins"]["tooltip"]["callbacks"] = {
-                "title": "function(context) return context[0].label; }",
-                "label": "function(context) { var dataIndex = context.dataIndex; var value = context.raw; " +
- {
-                "title": "function(context) return context[0].label; }",
-                "label": "function(context) { var dataIndex = context.dataIndex; var value = context.raw; " +}
+                "title": "function(context) { return context[0].label; }",
+                "label": "function(context) { var dataIndex = context.dataIndex; var value = context.raw; "
                          "return [" +
                          "'値: ' + value.toFixed(1)," +
                          "'全体に対する割合: ' + (value / context.chart.data.datasets[0].data.reduce((a,b) => a + b, 0) * 100).toFixed(1) + '%'" +
@@ -956,7 +950,7 @@ class PolarDiagramElement(BaseChartElement):
                                 "type": "scatterpolar",
                                 "r": speeds,
                                 "theta": angles,
-                                "name": f"ターゲット（wind_speed}kt）",
+                                "name": f"ターゲット（{wind_speed}kt）",
                                 "mode": "lines",
                                 "line": {
                                     "color": self._get_color_for_wind_speed(wind_speed),
@@ -995,7 +989,7 @@ class PolarDiagramElement(BaseChartElement):
                                 "type": "scatterpolar",
                                 "r": speeds,
                                 "theta": angles,
-                                "name": f"実測（wind_speed}kt）",
+                                "name": f"実測（{wind_speed}kt）",
                                 "mode": "markers",
                                 "marker": {
                                     "size": 8,
@@ -1030,7 +1024,7 @@ class PolarDiagramElement(BaseChartElement):
                                 "type": "scatterpolar",
                                 "r": [upwind_speed],
                                 "theta": [upwind_angle],
-                                "name": f"上り最適VMG（wind_speed}kt）",
+                                "name": f"上り最適VMG（{wind_speed}kt）",
                                 "mode": "markers",
                                 "marker": {
                                     "size": 12,
@@ -1798,7 +1792,7 @@ class CoursePerformanceElement(BaseChartElement):
         
         # データがない場合は空のデータを返す
         if not data:
-            return {"type": "radar", "data": "labels": [], "datasets": []}}
+            return {"type": "radar", "data": {"labels": [], "datasets": []}}
         
         # 角度分割数の取得（デフォルト：36方位、10度間隔）
         angle_divisions = self.get_property("angle_divisions", 36)
@@ -2249,7 +2243,7 @@ class TackingAngleElement(BaseChartElement):
         
         # データがない場合は空のデータを返す
         if not data:
-            return {"type": "bar", "data": "labels": [], "datasets": []}}
+            return {"type": "bar", "data": {"labels": [], "datasets": []}}
         
         # ビンの数を取得（角度範囲の分割数）
         num_bins = self.get_property("num_bins", 18)  # デフォルトは10度間隔

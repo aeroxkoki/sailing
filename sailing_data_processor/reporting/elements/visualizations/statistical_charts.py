@@ -61,7 +61,7 @@ class TimeSeriesElement(BaseChartElement):
         
         # データがない場合は空のデータを返す
         if not data:
-            return {"type": "line", "data": "labels": [], "datasets": []}}
+            return {"type": "line", "data": {"labels": [], "datasets": []}}
         
         # 時間キーと値キーを取得
         time_key = self.get_property("time_key", "time")
@@ -268,6 +268,7 @@ class TimeSeriesElement(BaseChartElement):
                     }
                 }
             }
+        }
  {
             "scales": {
                 "x": {

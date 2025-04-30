@@ -1,4 +1,135 @@
-, 0.1)"
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+風配図要素モジュール
+
+このモジュールは風向・風速データを風配図として表示するためのチャートコンポーネントを提供します。
+"""
+
+from typing import Dict, List, Any, Optional
+from datetime import datetime
+
+from ...base_element import BaseElement
+
+class WindRoseElement(BaseElement):
+    """
+    風配図要素クラス
+    
+    風向・風速データを風配図（チャートJS拡張）として表示するためのコンポーネント
+    """
+    
+    def __init__(self, element_id: str, title: str = "風配図"):
+        """
+        コンストラクタ
+        
+        Parameters
+        ----------
+        element_id : str
+            要素ID
+        title : str, optional
+            タイトル, by default "風配図"
+        """
+        super().__init__(element_id, title)
+        self.chart_id = f"wind-rose-{element_id}"
+        self.wind_data = []
+        
+    def add_wind_data(self, direction: float, speed: float, frequency: float = 1.0):
+        """
+        風データを追加
+        
+        Parameters
+        ----------
+        direction : float
+            風向 (度)
+        speed : float
+            風速 (ノット)
+        frequency : float, optional
+            頻度/重み, by default 1.0
+        """
+        self.wind_data.append({
+            "direction": direction,
+            "speed": speed,
+            "frequency": frequency
+        })
+    
+    def get_chart_data(self) -> Dict[str, Any]:
+        """
+        チャートデータを取得
+        
+        Returns
+        -------
+        Dict[str, Any]
+            チャートJSデータ形式
+        """
+        # 方位を16方位に分類
+        direction_bins = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", 
+                         "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
+        bin_values = [0] * len(direction_bins)
+        
+        # データを方位ビンに集約
+        for item in self.wind_data:
+            dir_index = round(item["direction"] / 22.5) % 16
+            bin_values[dir_index] += item["speed"] * item["frequency"]
+        
+        # カラースケール（風速に応じた色）
+        color_scale = [
+            "rgba(200, 230, 255, 0.8)",  # 弱い風
+            "rgba(150, 210, 255, 0.8)",
+            "rgba(100, 180, 255, 0.8)",
+            "rgba(50, 150, 255, 0.8)",
+            "rgba(0, 120, 255, 0.8)"     # 強い風
+        ]
+        
+        # 色を割り当て
+        colors = self._get_colors_for_values(bin_values, color_scale)
+        
+        return {
+            "labels": direction_bins,
+            "datasets": [{
+                "data": bin_values,
+                "backgroundColor": colors,
+                "borderColor": "rgba(0, 0, 0, 0.1)",
+                "borderWidth": 1
+            }]
+        }
+    
+    def get_chart_options(self) -> Dict[str, Any]:
+        """
+        チャートオプションを取得
+        
+        Returns
+        -------
+        Dict[str, Any]
+            チャートJSオプション
+        """
+        options = {
+            "plugins": {
+                "title": {
+                    "display": True,
+                    "text": self.title,
+                    "font": {
+                        "size": 16
+                    }
+                },
+                "legend": {
+                    "display": False
+                },
+                "tooltip": {
+                    "callbacks": {
+                        "label": "function(context) { return context.raw.toFixed(1) + ' knots'; }"
+                    }
+                }
+            },
+            "scales": {
+                "r": {
+                    "beginAtZero": True,
+                    "ticks": {
+                        "display": False
+                    },
+                    "grid": {
+                        "color": "rgba(0, 0, 0, 0.1)"
+                    }
+                }
             }
         }
         
@@ -41,6 +172,19 @@
                 },
                 "color": "rgba(100, 100, 100, 0.8)"
             }
+        
+        # 風配図特有のオプション
+        wind_rose_options = {
+            "type": "polarArea",
+            "options": {
+                "elements": {
+                    "arc": {
+                        "borderWidth": 1,
+                        "borderColor": "rgba(0, 0, 0, 0.1)"
+                    }
+                }
+            }
+        }
         
         # オプションを結合
         self._merge_options(options, wind_rose_options)
