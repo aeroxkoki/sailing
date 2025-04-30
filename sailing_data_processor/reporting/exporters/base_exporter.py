@@ -24,10 +24,11 @@ class BaseExporter:
     
     def __init__(self, **options):
         """初期化"""
-        self.options = {}
+        timestamp = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+        self.options = {
             # デフォルトオプション
             "output_path": "",
-            "filename": f"report_datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            "filename": f"report_{timestamp}",
             "include_metadata": True,
             "include_timestamp": True,
             # 子クラスで上書き/追加されるオプション
@@ -129,8 +130,6 @@ class BaseExporter:
             except Exception as e:
                 self.errors.append(f"Item {i+1} export failed: {str(e)}")
                 logger.error(f"Failed to export item {i+1}: {str(e)}", exc_info=True)
-                }
-                }
         
         return output_paths
     
