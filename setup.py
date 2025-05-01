@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 
 setup(
     name="sailing_strategy_analyzer",
-    version="0.1.0",
-    packages=find_packages(include=['sailing_data_processor', 'sailing_data_processor.*']),
+    version="0.2.0",
+    packages=find_packages(include=['sailing_data_processor', 'sailing_data_processor.*', 'sailing_data_processor.strategy.*']),
     install_requires=[
         "streamlit>=1.38.0",
         "pandas>=2.2.0",

@@ -307,3 +307,70 @@ class StrategyDetectorWithPropagation(StrategyDetector):
         
         # 親クラスの実装を呼び出す（基本実装を使用）
         return super().detect_laylines(course_data, wind_field)
+    
+    def _get_wind_at_position(self, lat: float, lon: float, 
+                            time: datetime, 
+                            wind_field: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """
+        特定の位置と時間での風情報を取得
+        
+        Parameters:
+        -----------
+        lat : float
+            緯度
+        lon : float
+            経度
+        time : datetime
+            時間
+        wind_field : Dict[str, Any]
+            風の場データ
+            
+        Returns:
+        --------
+        Dict[str, Any] or None
+            風情報（方向、速度、信頼度）
+        """
+        # 風の場のグリッドチェック
+        if not all(key in wind_field for key in ['lat_grid', 'lon_grid', 'wind_direction', 'wind_speed']):
+            return None
+            
+        # グリッドデータを取得
+        lat_grid = wind_field['lat_grid']
+        lon_grid = wind_field['lon_grid']
+        dir_grid = wind_field['wind_direction']
+        speed_grid = wind_field['wind_speed']
+        
+        # 信頼度グリッド（オプション）
+        conf_grid = wind_field.get('confidence', np.ones_like(lat_grid) * 0.8)
+        
+        # グリッドの形状チェック
+        if lat_grid.shape != lon_grid.shape or lat_grid.shape != dir_grid.shape:
+            return None
+            
+        # 位置が範囲内かチェック
+        min_lat, max_lat = np.min(lat_grid), np.max(lat_grid)
+        min_lon, max_lon = np.min(lon_grid), np.max(lon_grid)
+        
+        if lat < min_lat or lat > max_lat or lon < min_lon or lon > max_lon:
+            return None
+            
+        # 最近傍のグリッドポイントを検索
+        dist_squared = (lat_grid - lat)**2 + (lon_grid - lon)**2
+        min_idx = np.unravel_index(np.argmin(dist_squared), dist_squared.shape)
+        
+        # 風情報を取得
+        wind_direction = dir_grid[min_idx]
+        wind_speed = speed_grid[min_idx]
+        confidence = conf_grid[min_idx]
+        
+        # 座標との距離に応じて信頼度を調整（近いほど高い）
+        nearest_dist = np.sqrt(dist_squared[min_idx])
+        distance_factor = np.exp(-nearest_dist * 1000)  # 距離が大きいほど減衰
+        adjusted_confidence = confidence * distance_factor
+        
+        return {
+            'direction': float(wind_direction),
+            'speed': float(wind_speed),
+            'confidence': float(adjusted_confidence),
+            'variability': 0.1  # デフォルトの変動性
+        }

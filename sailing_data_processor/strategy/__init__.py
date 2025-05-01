@@ -10,7 +10,15 @@ from .detector import StrategyDetector
 from .evaluator import StrategyEvaluator
 from .visualizer import StrategyVisualizer
 
-__version__ = '1.0.0'
+# 風の移動予測を考慮した戦略検出器をインポート
+try:
+    from .strategy_detector_with_propagation import StrategyDetectorWithPropagation
+except ImportError:
+    import warnings
+    warnings.warn("StrategyDetectorWithPropagation could not be imported")
+    StrategyDetectorWithPropagation = None
+
+__version__ = '1.0.1'
 __all__ = [
     'StrategyPoint',
     'WindShiftPoint',
@@ -19,7 +27,8 @@ __all__ = [
     'StrategyAlternative',
     'StrategyDetector',
     'StrategyEvaluator',
-    'StrategyVisualizer'
+    'StrategyVisualizer',
+    'StrategyDetectorWithPropagation'
 ]
 
 def get_version():
