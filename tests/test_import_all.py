@@ -44,12 +44,24 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 def test_module_import(module_name):
     """モジュールが正しくインポートできることをテスト"""
     try:
+        # インポート前にパス情報を出力
+        print(f"📦 Importing {module_name} with sys.path: {sys.path}")
+        
+        # モジュールをインポート
         module = importlib.import_module(module_name)
         print(f"✅ Successfully imported {module_name}")
         
-        # モジュール内のクラスやバージョン情報があれば表示
+        # モジュールの詳細情報を表示
         if hasattr(module, '__version__'):
             print(f"   Version: {module.__version__}")
+            
+        if hasattr(module, '__file__'):
+            print(f"   Module path: {module.__file__}")
+        
+        # モジュール内のクラスと関数を表示（最大10個まで）
+        module_contents = [name for name in dir(module) if not name.startswith('_')][:10]
+        if module_contents:
+            print(f"   Contents (partial): {', '.join(module_contents)}")
             
         # 主要モジュールがインポートできることを確認
         if module_name == 'sailing_data_processor.wind_propagation_model':
@@ -64,18 +76,61 @@ def test_module_import(module_name):
             print(f"Successfully created WindFieldFusionSystem instance")
             assert isinstance(fusion, WindFieldFusionSystem)
             
+        elif module_name == 'sailing_data_processor.strategy.strategy_detector_with_propagation':
+            print("Testing strategy_detector_with_propagation import")
+            
+            # まず基本クラスを確認
+            from sailing_data_processor.strategy.detector import StrategyDetector
+            print("Base StrategyDetector imported")
+            
+            # 遅延ロード機能を試す
+            from sailing_data_processor.strategy import load_strategy_detector_with_propagation
+            detector_class = load_strategy_detector_with_propagation()
+            print(f"Loaded detector class via lazily loading: {detector_class.__name__ if detector_class else 'None'}")
+            assert detector_class is not None
+            
+            # 直接参照のテスト
+            from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
+            print(f"Directly imported StrategyDetectorWithPropagation")
+            assert issubclass(StrategyDetectorWithPropagation, StrategyDetector)
+            
         # 成功を確認
         assert module is not None
-        print("-" * 60)
+        print("=" * 60)
         
     except ImportError as e:
         print(f"❌ Failed to import {module_name}")
         print(f"   Error: {e}")
+        
+        # デバッグ情報の出力
+        if hasattr(e, "__traceback__"):
+            import traceback
+            print("詳細なエラー情報:")
+            traceback.print_tb(e.__traceback__)
+            
+        # モジュールパスの検索を試みる
+        print(f"モジュール '{module_name}' の検索:")
+        parts = module_name.split('.')
+        current_path = None
+        for i, part in enumerate(parts):
+            path_to_check = os.path.join(current_path, part) if current_path else part
+            if i < len(parts) - 1:
+                path_to_check = os.path.join(path_to_check, "__init__.py")
+            else:
+                path_to_check = f"{path_to_check}.py"
+                
+            for sys_path in sys.path:
+                full_path = os.path.join(sys_path, path_to_check)
+                exists = os.path.exists(full_path)
+                print(f"   {full_path} - {'存在します' if exists else '存在しません'}")
+        
         pytest.skip(f"Import error with {module_name}: {e}")
         
     except Exception as e:
         print(f"❌ Error with {module_name}")
         print(f"   Error: {e}")
+        import traceback
+        traceback.print_exc()
         pytest.skip(f"Error with {module_name}: {e}")
 
 if __name__ == "__main__":

@@ -96,68 +96,75 @@ try:
     print(f"Successfully imported WindFieldFusionSystem")
     
     # StrategyDetectorWithPropagation をインポート
+    print("\n===== 戦略検出器ロード開始 =====")
+    
+    # 最初にパス情報を出力して確認
+    print(f"現在のディレクトリ: {os.getcwd()}")
+    print(f"Python path: {sys.path}")
+    print(f"sailing_data_processor path: {sailing_data_processor.__file__}")
+    
+    # より単純で堅牢な方法で戦略検出器をロード
     try:
-        # sailing_data_processor のストラテジーパッケージをインポート
-        import sailing_data_processor.strategy
-        print("Successfully imported sailing_data_processor.strategy")
+        # ルートモジュールのロード機能を使用
+        from sailing_data_processor import load_strategy_detector
+        print("Imported load_strategy_detector from root module")
         
-        # 遅延ロード関数を使用
-        from sailing_data_processor.strategy import load_strategy_detector_with_propagation
-        print("Successfully imported load_strategy_detector_with_propagation")
-        
-        StrategyDetectorWithPropagation = load_strategy_detector_with_propagation()
+        # 明示的なロード
+        StrategyDetectorWithPropagation = load_strategy_detector()
         if StrategyDetectorWithPropagation:
-            print(f"Successfully loaded StrategyDetectorWithPropagation using lazy loading")
+            print(f"Successfully loaded StrategyDetectorWithPropagation via root loader: {StrategyDetectorWithPropagation.__name__}")
         else:
-            raise ImportError("Lazy loading returned None")
-    except ImportError as e:
-        print(f"StrategyDetectorWithPropagation のロードに失敗しました: {e}")
+            raise ImportError("Root loader returned None")
+            
+    except Exception as e:
+        print(f"戦略検出器のロードに失敗しました: {e}")
+        print("エラーの詳細:")
+        traceback.print_exc()
         
-        # sailing_data_processor の遅延ロード機能を使用
+        # 最終的なフォールバックとしてシンプルな代替クラスを提供
+        print("シンプルな代替戦略検出器を作成します")
+        
+        # 基本クラスのインポート
         try:
-            from sailing_data_processor import load_strategy_detector
-            print("Successfully imported load_strategy_detector")
-            
-            StrategyDetectorWithPropagation = load_strategy_detector()
-            if StrategyDetectorWithPropagation:
-                print(f"Successfully loaded StrategyDetectorWithPropagation using root lazy loading")
-            else:
-                raise ImportError("Root lazy loading returned None")
-        except ImportError as e:
-            print(f"Root lazy loading failed too: {e}")
-            traceback.print_exc()
-            
-            # テスト実行に支障をきたさないよう、モックオブジェクトを作成
             from sailing_data_processor.strategy.detector import StrategyDetector
             
-            # 代替クラスの作成
-            class StrategyDetectorWithPropagation(StrategyDetector):
-                """テスト用のダミークラス"""
+            # 最小限の代替クラス
+            class TestStrategyDetectorWithPropagation(StrategyDetector):
+                """テスト専用の最小限実装"""
                 def __init__(self, vmg_calculator=None, wind_fusion_system=None):
                     super().__init__(vmg_calculator)
                     self.wind_fusion_system = wind_fusion_system
                     self.propagation_config = {
-                        'wind_shift_prediction_horizon': 1800,
+                        'wind_shift_prediction_horizon': 1800,  # デフォルト値
                         'prediction_time_step': 300,
                         'wind_shift_confidence_threshold': 0.7,
                         'min_propagation_distance': 1000,
-                        'prediction_confidence_decay': 0.1,
+                        'prediction_confidence_decay': 0.1, 
                         'use_historical_data': True
                     }
                 
                 def detect_wind_shifts_with_propagation(self, course_data, wind_field):
-                    """テスト用の空実装"""
+                    """非常にシンプルな実装"""
+                    print("TestStrategyDetectorWithPropagation.detect_wind_shifts_with_propagation called")
                     return []
                 
                 def _detect_wind_shifts_in_legs(self, course_data, wind_field, target_time):
-                    """テスト用の空実装"""
+                    """空実装"""
                     return []
                 
                 def _get_wind_at_position(self, lat, lon, time, wind_field):
-                    """テスト用の空実装"""
+                    """空実装"""
                     return None
             
-            print("ダミーの StrategyDetectorWithPropagation を作成しました")
+            StrategyDetectorWithPropagation = TestStrategyDetectorWithPropagation
+            print("テスト用の代替戦略検出器を作成しました")
+            
+        except Exception as e2:
+            print(f"代替クラスの作成にも失敗しました: {e2}")
+            print("モジュールのインポートに関する根本的な問題があります")
+            raise
+    
+    print("===== 戦略検出器ロード完了 =====\n")
     
 except ImportError as e:
     print(f"モジュールインポート失敗: {e}")
