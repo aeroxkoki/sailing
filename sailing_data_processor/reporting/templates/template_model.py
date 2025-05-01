@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Module for data connector between map layers and data sources.
-This module provides functions for binding and data transformation between layers and data sources.
+テンプレートモデル定義
+
+レポートテンプレートのモデル構造を定義するモジュールです。
 """
 
 from typing import Dict, List, Any, Optional, Union, Set
@@ -123,7 +124,6 @@ class Condition:
                 self.operator = ConditionOperator(operator)
             except ValueError:
                 raise ValueError(f"Invalid operator: {operator}")
-                }
         else:
             self.operator = operator
             
@@ -209,7 +209,6 @@ class Element:
                 self.element_type = ElementType(element_type)
             except ValueError:
                 raise ValueError(f"Invalid element type: {element_type}")
-                }
         else:
             self.element_type = element_type
         
@@ -316,7 +315,6 @@ class Section:
                 self.section_type = SectionType(section_type)
             except ValueError:
                 raise ValueError(f"Invalid section type: {section_type}")
-                }
         else:
             self.section_type = section_type
         
@@ -324,7 +322,17 @@ class Section:
         self.title = title
         self.description = description
         self.order = order
-        self.layout = layout or {"columns": 1, "margin": "top": 20, "right": 20, "bottom": 20, "left": 20}}
+        
+        # レイアウト設定
+        default_margin = {"top": 20, "right": 20, "bottom": 20, "left": 20}
+        if layout is None:
+            self.layout = {"columns": 1, "margin": default_margin}
+        else:
+            # marginが辞書でなければデフォルト値を使用
+            if "margin" not in layout or not isinstance(layout["margin"], dict):
+                layout["margin"] = default_margin
+            self.layout = layout
+            
         self.styles = styles or {}
         self.conditions = [Condition.from_dict(c) for c in (conditions or [])]
         self.elements = [Element.from_dict(e) for e in (elements or [])]
@@ -450,7 +458,6 @@ class Template:
                 self.output_format = TemplateOutputFormat(output_format)
             except ValueError:
                 raise ValueError(f"Invalid output format: {output_format}")
-                }
         else:
             self.output_format = output_format
         
@@ -750,7 +757,7 @@ class Template:
         self.updated_at = datetime.now()
 
 
-
+# 簡易版の要素モデル（後方互換性のため）
 class ElementModel:
     """要素モデルクラス"""
     
