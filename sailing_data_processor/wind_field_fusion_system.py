@@ -25,6 +25,9 @@ from .wind_field_fusion_utils import (
     scale_data_points, restore_original_coordinates
 )
 
+# 循環参照を避けるために遅延インポート
+# sailing_data_processor.strategy 関連のモジュールはメソッド内でインポートする
+
 class WindFieldFusionSystem:
     """
     複数の艇からの風データを統合し、風の場を生成するクラス

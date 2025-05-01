@@ -97,30 +97,28 @@ try:
     
     # StrategyDetectorWithPropagation をインポート
     try:
-        # 絶対パスでのインポートを試行
-        from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
-        print(f"Successfully imported StrategyDetectorWithPropagation")
+        # sailing_data_processor の遅延ロード機能を使用
+        from sailing_data_processor import load_strategy_detector
+        StrategyDetectorWithPropagation = load_strategy_detector()
+        if StrategyDetectorWithPropagation:
+            print(f"Successfully loaded StrategyDetectorWithPropagation using lazy loading")
+        else:
+            raise ImportError("Lazy loading returned None")
     except ImportError as e:
-        print(f"StrategyDetectorWithPropagation のインポートに失敗しました: {e}")
+        print(f"StrategyDetectorWithPropagation のロードに失敗しました: {e}")
         traceback.print_exc()
         
-        # 相対パスでのインポートを試行
+        # 直接インポートを試行
         try:
-            import sailing_data_processor.strategy
-            
-            # strategy モジュールのパスを確認
-            strategy_module = sailing_data_processor.strategy
-            print(f"strategy module path: {strategy_module.__file__}")
-            
             # dependency_utils モジュールを使用してパスを追加
             from sailing_data_processor.strategy.dependency_utils import add_project_root_to_path
             add_project_root_to_path()
             
-            # 再度インポートを試行
+            # 直接インポートを試行
             from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
-            print(f"Successfully imported StrategyDetectorWithPropagation using relative path")
+            print(f"Successfully imported StrategyDetectorWithPropagation directly")
         except ImportError as e:
-            print(f"Relative import failed too: {e}")
+            print(f"Direct import failed too: {e}")
             traceback.print_exc()
             
             # テスト実行に支障をきたさないよう、モックオブジェクトを作成
@@ -144,6 +142,14 @@ try:
                 def detect_wind_shifts_with_propagation(self, course_data, wind_field):
                     """テスト用の空実装"""
                     return []
+                
+                def _detect_wind_shifts_in_legs(self, course_data, wind_field, target_time):
+                    """テスト用の空実装"""
+                    return []
+                
+                def _get_wind_at_position(self, lat, lon, time, wind_field):
+                    """テスト用の空実装"""
+                    return None
             
             print("ダミーの StrategyDetectorWithPropagation を作成しました")
     

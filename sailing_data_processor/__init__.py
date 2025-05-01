@@ -21,14 +21,21 @@ from .wind_propagation_model import WindPropagationModel
 from .wind_field_fusion_system import WindFieldFusionSystem
 from .prediction_evaluator import PredictionEvaluator
 
-# 戦略検出関連のインポート
-try:
-    from .strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
-except ImportError:
-    # 戦略検出モジュールが見つからない場合は警告を表示
-    import warnings
-    warnings.warn("StrategyDetectorWithPropagation could not be imported")
-    StrategyDetectorWithPropagation = None
+# 将来的な循環参照を防ぐために、直接importは避け、遅延インポートを使う
+StrategyDetectorWithPropagation = None
+
+def load_strategy_detector():
+    """戦略検出器を遅延ロード"""
+    global StrategyDetectorWithPropagation
+    if StrategyDetectorWithPropagation is None:
+        try:
+            from .strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation as SDwP
+            StrategyDetectorWithPropagation = SDwP
+        except ImportError:
+            import warnings
+            warnings.warn("StrategyDetectorWithPropagation could not be imported")
+            StrategyDetectorWithPropagation = None
+    return StrategyDetectorWithPropagation
 
 # データモデルのインポート
 from .data_model import (
@@ -52,7 +59,7 @@ __all__ = [
     'PredictionEvaluator',
     
     # 戦略検出
-    'StrategyDetectorWithPropagation',
+    'load_strategy_detector',
     
     # データモデル
     'DataContainer',
