@@ -17,42 +17,34 @@ from functools import lru_cache
 # 内部モジュールのインポート
 # 明示的なインポートをシンプルに行い、循環参照の問題を回避
 
-# まず相対インポートを試みる
+# ロガー設定
+logger = logging.getLogger(__name__)
+
+# 優先順位を絶対インポートに変更
 try:
-    from .detector import StrategyDetector
-    from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
-    from .strategy_detector_utils import (
+    # 絶対インポートを優先
+    from sailing_data_processor.strategy.detector import StrategyDetector
+    from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
+    from sailing_data_processor.strategy.strategy_detector_utils import (
         calculate_distance, get_time_difference_seconds, normalize_to_timestamp,
         filter_duplicate_shift_points, filter_duplicate_tack_points, filter_duplicate_laylines,
         calculate_strategic_score, determine_tack_type, angle_difference
     )
-    
-    # ロギング用
-    logger = logging.getLogger(__name__)
-    logger.debug("相対インポートが成功しました")
-    
-# 相対インポートが失敗した場合、絶対インポートを試みる
+    logger.debug("絶対インポートが成功しました")
 except ImportError as e1:
+    # 絶対インポートが失敗した場合は相対インポートを試みる
     try:
-        from sailing_data_processor.strategy.detector import StrategyDetector
-        from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
-        from sailing_data_processor.strategy.strategy_detector_utils import (
+        from .detector import StrategyDetector
+        from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
+        from .strategy_detector_utils import (
             calculate_distance, get_time_difference_seconds, normalize_to_timestamp,
             filter_duplicate_shift_points, filter_duplicate_tack_points, filter_duplicate_laylines,
             calculate_strategic_score, determine_tack_type, angle_difference
         )
-        
-        # ロギング用
-        logger = logging.getLogger(__name__)
-        logger.debug("絶対インポートが成功しました")
-        
-    # 両方のインポート方法が失敗した場合
+        logger.debug("相対インポートが成功しました")
     except ImportError as e2:
-        # ロギング設定
-        logger = logging.getLogger(__name__)
-        logger.error(f"インポートエラー: 相対インポート - {e1}, 絶対インポート - {e2}")
-        
-        # パスの情報をログに記録
+        # 両方のインポート方法が失敗した場合
+        logger.error(f"インポートエラー: 絶対インポート - {e1}, 相対インポート - {e2}")
         logger.error(f"現在のPythonパス: {sys.path}")
         
         # テスト環境専用: 最小限の実装を提供
@@ -106,10 +98,7 @@ except ImportError as e1:
             print("ダミー実装を使用して、テストを継続します")
         else:
             # テスト環境以外では例外を再発生
-            raise ImportError(f"戦略検出モジュールのインポートに失敗しました: {e2}")
-
-# ロガー設定
-logger = logging.getLogger(__name__)
+            raise ImportError(f"戦略検出モジュールのインポートに失敗しました: 両方のインポート方法が失敗しました")
 
 class StrategyDetectorWithPropagation(StrategyDetector):
     """
