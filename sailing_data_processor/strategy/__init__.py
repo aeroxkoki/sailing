@@ -3,6 +3,11 @@
 sailing_data_processor.strategy パッケージ
 
 セーリングレースにおける戦略的判断ポイントの検出、評価、可視化機能を提供します。
+
+モジュール依存関係:
+基本クラス: detector -> evaluator -> visualizer
+戦略ポイント: points
+特殊クラス: strategy_detector_with_propagation
 """
 
 from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint, StrategyAlternative
@@ -20,10 +25,10 @@ def load_strategy_detector_with_propagation():
     if StrategyDetectorWithPropagation is None:
         # パス情報をプリント（デバッグ用）
         import sys
+        import os
         print(f"Strategy detector loading with sys.path: {sys.path}")
         
         # テスト環境の判定
-        import sys
         is_test_environment = 'unittest' in sys.modules or 'pytest' in sys.modules
         
         # インポート試行
@@ -101,8 +106,6 @@ def load_strategy_detector_with_propagation():
             
             StrategyDetectorWithPropagation = SDwP
             print(f"Using dummy implementation of StrategyDetectorWithPropagation for testing")
-    
-    return StrategyDetectorWithPropagation
     
     return StrategyDetectorWithPropagation
 

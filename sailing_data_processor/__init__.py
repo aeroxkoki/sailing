@@ -4,6 +4,15 @@
 セーリング戦略分析システム - データ処理モジュール
 
 GPSデータから風向風速を推定し、セーリングレースの戦略分析を支援するモジュール
+
+モジュール依存関係:
+core -> data_model
+      -> wind_estimator
+      -> performance_optimizer
+      -> boat_data_fusion
+      -> wind_field_interpolator
+      -> wind_propagation_model -> wind_field_fusion_system
+                                -> strategy
 """
 
 # バージョン情報
@@ -38,10 +47,18 @@ def load_strategy_detector():
         # パス情報をログに出力
         import sys
         import logging
+        import os
         logger = logging.getLogger(__name__)
+        logger.debug(f"Current directory: {os.getcwd()}")
         logger.debug(f"Root load_strategy_detector called with sys.path: {sys.path}")
+        logger.debug(f"sailing_data_processor path: {__file__}")
         
         try:
+            print("===== 戦略検出器ロード開始 =====")
+            print(f"現在のディレクトリ: {os.getcwd()}")
+            print(f"Python path: {sys.path}")
+            print(f"sailing_data_processor path: {__file__}")
+            print("Imported load_strategy_detector from root module")
             print("Root trying to load strategy detector with package loader")
             # まず strategy パッケージの遅延ロード関数を使用
             from .strategy import load_strategy_detector_with_propagation
@@ -52,12 +69,15 @@ def load_strategy_detector():
             if detector is not None:
                 StrategyDetectorWithPropagation = detector
                 print(f"Successfully loaded strategy detector: {detector.__name__}")
+                print(f"Successfully loaded StrategyDetectorWithPropagation via root loader: {detector.__name__}")
+                print("===== 戦略検出器ロード完了 =====")
             else:
                 # 失敗した場合はダミー実装を提供
                 import warnings
                 warnings.warn("Strategy package loader returned None, providing root dummy implementation")
                 from .strategy.detector import StrategyDetector
                 StrategyDetectorWithPropagation = create_dummy_strategy_detector(StrategyDetector)
+                print("===== 戦略検出器ロード失敗: ダミー実装を使用 =====")
         except ImportError as e:
             import warnings
             warnings.warn(f"StrategyDetectorWithPropagation could not be imported: {e}")
@@ -66,10 +86,12 @@ def load_strategy_detector():
                 from .strategy.detector import StrategyDetector
                 StrategyDetectorWithPropagation = create_dummy_strategy_detector(StrategyDetector)
                 print("Created root dummy implementation after import error")
+                print("===== 戦略検出器ロード失敗: ダミー実装を使用 =====")
             except ImportError:
                 # 基本クラスのインポートも失敗した場合
                 warnings.warn(f"StrategyDetector base class could not be imported")
                 StrategyDetectorWithPropagation = None
+                print("===== 戦略検出器ロード失敗: 基本クラスのインポート失敗 =====")
     
     return StrategyDetectorWithPropagation
 
