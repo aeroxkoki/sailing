@@ -26,7 +26,18 @@ from .wind_field_fusion_utils import (
 )
 
 # 循環参照を避けるために遅延インポート
-# sailing_data_processor.strategy 関連のモジュールはメソッド内でインポートする
+# sailing_data_processor.strategy 関連のモジュールはメソッド内でインポート
+
+def _load_strategy_detector():
+    """遅延インポートで戦略検出器をロード"""
+    try:
+        # 必要に応じて戦略検出器をインポート
+        from .strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
+        return StrategyDetectorWithPropagation
+    except ImportError:
+        # インポートに失敗した場合はモック実装を返す
+        from .strategy.detector import StrategyDetector
+        return StrategyDetector
 
 class WindFieldFusionSystem:
     """

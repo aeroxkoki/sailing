@@ -1,30 +1,23 @@
-#!/bin/bash
-# GitHubに変更を反映するスクリプト
+#\!/bin/bash
+# Script to push changes to GitHub
 
-# 現在の日時を取得
-current_datetime=$(date "+%Y-%m-%d %H:%M:%S")
+# Set the working directory to the project root
+cd "$(dirname "$0")" || exit
 
-# カレントディレクトリを確認
-echo "現在のディレクトリ: $(pwd)"
+echo "Current directory: $(pwd)"
 
-# リポジトリのルートディレクトリに移動（必要に応じて変更）
-cd /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer || { echo "リポジトリディレクトリが見つかりません"; exit 1; }
-echo "リポジトリディレクトリに移動しました: $(pwd)"
+# Add all changes
+echo "Adding changes..."
+git add sailing_data_processor/strategy/__init__.py
+git add sailing_data_processor/strategy/strategy_detector_with_propagation.py
+git add test_strategy_imports.py
 
-# 変更を確認
-echo "変更されたファイル:"
-git status -s
+# Commit changes with a descriptive message
+echo "Committing changes..."
+git commit -m "Fix encoding issues and circular imports in strategy detector module"
 
-# 変更をステージング
-git add sailing_data_processor/wind_field_fusion_system.py sailing_data_processor/wind_field_prediction.py tests/test_wind_field_fusion_system.py
-echo "変更をステージングしました"
+# Push to GitHub
+echo "Pushing to GitHub..."
+git push
 
-# コミット
-git commit -m "循環参照の問題を修正: wind_field_prediction.py から wind_field_fusion_system.py の依存関係を解消 ($current_datetime)"
-echo "変更をコミットしました"
-
-# プッシュ
-git push origin main
-echo "変更をGitHubにプッシュしました"
-
-echo "完了しました"
+echo "Done\!"
