@@ -20,85 +20,72 @@ from functools import lru_cache
 # ロガー設定
 logger = logging.getLogger(__name__)
 
-# 優先順位を絶対インポートに変更
+# 相対インポートを常に使用する - テスト環境と実行環境の両方で一貫性を保つため
 try:
-    # 絶対インポートを優先
-    from sailing_data_processor.strategy.detector import StrategyDetector
-    from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
-    from sailing_data_processor.strategy.strategy_detector_utils import (
+    from .detector import StrategyDetector
+    from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
+    from .strategy_detector_utils import (
         calculate_distance, get_time_difference_seconds, normalize_to_timestamp,
         filter_duplicate_shift_points, filter_duplicate_tack_points, filter_duplicate_laylines,
         calculate_strategic_score, determine_tack_type, angle_difference
     )
-    logger.debug("絶対インポートが成功しました")
-except ImportError as e1:
-    # 絶対インポートが失敗した場合は相対インポートを試みる
-    try:
-        from .detector import StrategyDetector
-        from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
-        from .strategy_detector_utils import (
-            calculate_distance, get_time_difference_seconds, normalize_to_timestamp,
-            filter_duplicate_shift_points, filter_duplicate_tack_points, filter_duplicate_laylines,
-            calculate_strategic_score, determine_tack_type, angle_difference
-        )
-        logger.debug("相対インポートが成功しました")
-    except ImportError as e2:
-        # 両方のインポート方法が失敗した場合
-        logger.error(f"インポートエラー: 絶対インポート - {e1}, 相対インポート - {e2}")
-        logger.error(f"現在のPythonパス: {sys.path}")
+    logger.debug("相対インポートが成功しました")
+except ImportError as e:
+    logger.error(f"インポートエラー: {e}")
+    logger.error(f"現在のPythonパス: {sys.path}")
+    
+    # テスト環境専用: 最小限の実装を提供
+    if 'unittest' in sys.modules or 'pytest' in sys.modules:
+        logger.warning("テスト環境を検出しました。ダミー実装を使用します。")
         
-        # テスト環境専用: 最小限の実装を提供
-        if 'unittest' in sys.modules or 'pytest' in sys.modules:
-            logger.warning("テスト環境を検出しました。ダミー実装を使用します。")
+        # 基本的なデータ構造だけをエミュレート
+        class StrategyDetector:
+            """テスト用の最小限の実装"""
+            def __init__(self, vmg_calculator=None):
+                self.vmg_calculator = vmg_calculator
+                self.config = {'min_wind_shift_angle': 10}
             
-            # 基本的なデータ構造だけをエミュレート
-            class StrategyDetector:
-                """テスト用の最小限の実装"""
-                def __init__(self, vmg_calculator=None):
-                    self.vmg_calculator = vmg_calculator
-                    self.config = {'min_wind_shift_angle': 10}
+        class StrategyPoint:
+            """テスト用の最小限の実装"""
+            pass
+            
+        class WindShiftPoint(StrategyPoint):
+            """テスト用の最小限の実装"""
+            def __init__(self, position=None, time_estimate=None):
+                self.position = position
+                self.time_estimate = time_estimate
+                self.shift_angle = 0
+                self.before_direction = 0
+                self.after_direction = 0
+                self.wind_speed = 0
+                self.shift_probability = 0
+                self.strategic_score = 0
+                self.note = ""
                 
-            class StrategyPoint:
-                """テスト用の最小限の実装"""
-                pass
-                
-            class WindShiftPoint(StrategyPoint):
-                """テスト用の最小限の実装"""
-                def __init__(self, position=None, time_estimate=None):
-                    self.position = position
-                    self.time_estimate = time_estimate
-                    self.shift_angle = 0
-                    self.before_direction = 0
-                    self.after_direction = 0
-                    self.wind_speed = 0
-                    self.shift_probability = 0
-                    self.strategic_score = 0
-                    self.note = ""
-                    
-            class TackPoint(StrategyPoint):
-                """テスト用の最小限の実装"""
-                pass
-                
-            class LaylinePoint(StrategyPoint):
-                """テスト用の最小限の実装"""
-                pass
-                
-            def angle_difference(a, b):
-                """テスト用の最小限の実装"""
-                return (a - b + 180) % 360 - 180
-                
-            def filter_duplicate_shift_points(points):
-                """テスト用の最小限の実装"""
-                return points
-                
-            def calculate_strategic_score(*args, **kwargs):
-                """テスト用の最小限の実装"""
-                return 0.5, "Test score"
-                
-            print("ダミー実装を使用して、テストを継続します")
-        else:
-            # テスト環境以外では例外を再発生
-            raise ImportError(f"戦略検出モジュールのインポートに失敗しました: 両方のインポート方法が失敗しました")
+        class TackPoint(StrategyPoint):
+            """テスト用の最小限の実装"""
+            pass
+            
+        class LaylinePoint(StrategyPoint):
+            """テスト用の最小限の実装"""
+            pass
+            
+        def angle_difference(a, b):
+            """テスト用の最小限の実装"""
+            return (a - b + 180) % 360 - 180
+            
+        def filter_duplicate_shift_points(points):
+            """テスト用の最小限の実装"""
+            return points
+            
+        def calculate_strategic_score(*args, **kwargs):
+            """テスト用の最小限の実装"""
+            return 0.5, "Test score"
+            
+        logger.info("ダミー実装を使用して、テストを継続します")
+    else:
+        # テスト環境以外では例外を再発生
+        raise ImportError(f"戦略検出モジュールのインポートに失敗しました")
 
 class StrategyDetectorWithPropagation(StrategyDetector):
     """
