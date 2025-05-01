@@ -35,10 +35,19 @@ module_path = os.path.join(project_root, 'sailing_data_processor')
 if module_path not in sys.path:
     sys.path.insert(0, module_path)
 
+# sailing_data_processor の strategy サブパッケージへのパスも追加
+strategy_path = os.path.join(module_path, 'strategy')
+if strategy_path not in sys.path:
+    sys.path.insert(0, strategy_path)
+
 # testsディレクトリへのパスも明示的に追加
 tests_path = os.path.dirname(os.path.abspath(__file__))
 if tests_path not in sys.path:
     sys.path.insert(0, tests_path)
+
+# Python のインポート機構をデバッグモードに設定
+# これにより、インポートエラーの詳細が出力される
+os.environ['PYTHONVERBOSE'] = '1'
 
 # パス設定デバッグ情報
 print(f"プロジェクトルート: {project_root}")

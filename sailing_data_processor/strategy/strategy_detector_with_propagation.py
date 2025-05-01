@@ -14,13 +14,24 @@ from datetime import datetime, timedelta
 from functools import lru_cache
 
 # 内部モジュールのインポート
-from sailing_data_processor.strategy.detector import StrategyDetector
-from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
-from sailing_data_processor.strategy.strategy_detector_utils import (
-    calculate_distance, get_time_difference_seconds, normalize_to_timestamp,
-    filter_duplicate_shift_points, filter_duplicate_tack_points, filter_duplicate_laylines,
-    calculate_strategic_score, determine_tack_type, angle_difference
-)
+try:
+    # 絶対インポートパス試行
+    from sailing_data_processor.strategy.detector import StrategyDetector
+    from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
+    from sailing_data_processor.strategy.strategy_detector_utils import (
+        calculate_distance, get_time_difference_seconds, normalize_to_timestamp,
+        filter_duplicate_shift_points, filter_duplicate_tack_points, filter_duplicate_laylines,
+        calculate_strategic_score, determine_tack_type, angle_difference
+    )
+except ImportError:
+    # 相対インポートパス試行
+    from .detector import StrategyDetector
+    from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
+    from .strategy_detector_utils import (
+        calculate_distance, get_time_difference_seconds, normalize_to_timestamp,
+        filter_duplicate_shift_points, filter_duplicate_tack_points, filter_duplicate_laylines,
+        calculate_strategic_score, determine_tack_type, angle_difference
+    )
 
 # ロガー設定
 logger = logging.getLogger(__name__)
