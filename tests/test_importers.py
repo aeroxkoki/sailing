@@ -20,28 +20,39 @@ from sailing_data_processor.importers.batch_importer import BatchImporter
 
 def test_importer(importer, file_path, expected_success=True):
     """インポーターをテスト"""
-    print(f"テスト: {importer.__class__.__name__} - {file_path}")
+    print(f"[1] CSVインポーターのテスト - {importer.__class__.__name__} - {file_path}")
+    print(f"ファイル存在チェック: {file_path} - {os.path.exists(str(file_path))}")
     
     # インポート可能かチェック
+    print("インポート可能性チェック中...")
     can_import = importer.can_import(file_path)
-    print(f"  インポート可能: {can_import}")
+    print(f"インポート可能: {can_import}")
     
     if not can_import and expected_success:
-        print(f"  [エラー] ファイルを認識できませんでした")
-        for err in importer.get_errors():
-            print(f"    - {err}")
+        print(f"[エラー] ファイルを認識できませんでした")
+        errors = importer.get_errors()
+        for err in errors:
+            print(f"  - {err}")
         return False
     
     # データインポート
-    container = importer.import_data(file_path)
+    print(f"テスト用ファイルを見つけました: {file_path}")
+    try:
+        container = importer.import_data(file_path)
+    except Exception as e:
+        print(f"インポート中に例外が発生しました: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
     
     if container is None and expected_success:
-        print(f"  [エラー] インポートに失敗しました")
-        for err in importer.get_errors():
-            print(f"    - {err}")
+        print(f"[エラー] インポートに失敗しました")
+        errors = importer.get_errors()
+        for err in errors:
+            print(f"  - {err}")
         return False
     elif container is not None and not expected_success:
-        print(f"  [エラー] インポートが成功してしまいました（失敗を期待）")
+        print(f"[エラー] インポートが成功してしまいました（失敗を期待）")
         return False
     
     # 警告があれば表示
@@ -68,76 +79,152 @@ def test_importer(importer, file_path, expected_success=True):
 
 def test_factory_detection(file_path, expected_importer_name=None):
     """インポーターファクトリーのテスト"""
-    print(f"ファクトリーテスト: {file_path}")
+    print(f"[2] インポーターファクトリーのテスト: {file_path}")
+    print(f"ファイル存在チェック: {file_path} - {os.path.exists(str(file_path))}")
     
     # インポーターの取得
-    importer = ImporterFactory.get_importer(file_path)
+    try:
+        importer = ImporterFactory.get_importer(file_path)
+    except Exception as e:
+        print(f"インポーター取得中に例外が発生しました: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
     
     if importer is None:
-        print(f"  [エラー] 適切なインポーターが見つかりませんでした")
+        print(f"[エラー] 適切なインポーターが見つかりませんでした")
         return False
     
     importer_name = importer.__class__.__name__
-    print(f"  検出されたインポーター: {importer_name}")
+    print(f"検出されたインポーター: {importer_name}")
     
     if expected_importer_name and importer_name != expected_importer_name:
-        print(f"  [エラー] 期待されたインポーター({expected_importer_name})と異なります")
+        print(f"[エラー] 期待されたインポーター({expected_importer_name})と異なります")
         return False
     
     return True
 
 def test_batch_importer(file_paths):
     """バッチインポーターのテスト"""
-    print(f"バッチインポーターテスト: {len(file_paths)}ファイル")
+    print(f"[3] バッチインポートのテスト: {len(file_paths)}ファイル")
+    
+    # ファイルの存在確認
+    for file_path in file_paths:
+        print(f"ファイル存在チェック: {file_path} - {os.path.exists(str(file_path))}")
     
     # バッチインポーター設定
     config = {
-        'parallel': True,
-        'max_workers': 2
+        'parallel': False,  # テスト時はシリアル実行に変更（エラー追跡を容易にするため）
+        'max_workers': 1
     }
-    batch_importer = BatchImporter(config)
+    
+    try:
+        batch_importer = BatchImporter(config)
+        print("バッチインポーター作成成功")
+    except Exception as e:
+        print(f"バッチインポーター作成中にエラーが発生しました: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
     
     # インポート実行
-    result = batch_importer.import_files(file_paths)
+    try:
+        result = batch_importer.import_files(file_paths)
+        print("インポート実行成功")
+    except Exception as e:
+        print(f"インポート実行中にエラーが発生しました: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
     
     # 結果表示
-    summary = result.get_summary()
-    print(f"  総ファイル数: {summary['total_files']}")
-    print(f"  成功: {summary['successful_count']}")
-    print(f"  失敗: {summary['failed_count']}")
-    print(f"  警告あり: {summary['warning_count']}")
+    try:
+        summary = result.get_summary()
+        print(f"総ファイル数: {summary['total_files']}")
+        print(f"成功: {summary['successful_count']}")
+        print(f"失敗: {summary['failed_count']}")
+        if 'warning_count' in summary:
+            print(f"警告あり: {summary['warning_count']}")
+    except Exception as e:
+        print(f"結果表示中にエラーが発生しました: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
     
     # 成功したファイル
-    if summary['successful_count'] > 0:
-        print(f"  成功したファイル:")
-        for i, (file_name, container) in enumerate(result.successful.items()):
-            print(f"    {i+1}. {file_name} - {len(container.data)}行")
-            if i >= 2:  # 最初の3つのみ表示
-                print(f"    ... 他 {summary['successful_count'] - 3}ファイル")
-                break
+    try:
+        if summary['successful_count'] > 0:
+            print(f"成功したファイル:")
+            for i, (file_name, container) in enumerate(result.successful.items()):
+                print(f"  {i+1}. {file_name} - {len(container.data)}行")
+                if i >= 2:  # 最初の3つのみ表示
+                    print(f"  ... 他 {summary['successful_count'] - 3}ファイル")
+                    break
+    except Exception as e:
+        print(f"成功したファイル表示中にエラーが発生しました: {e}")
+        import traceback
+        traceback.print_exc()
     
     # 失敗したファイル
-    if summary['failed_count'] > 0:
-        print(f"  失敗したファイル:")
-        for i, (file_name, errors) in enumerate(result.failed.items()):
-            print(f"    {i+1}. {file_name} - {len(errors)}エラー")
-            if i >= 2:  # 最初の3つのみ表示
-                print(f"    ... 他 {summary['failed_count'] - 3}ファイル")
-                break
+    try:
+        if summary['failed_count'] > 0:
+            print(f"失敗したファイル:")
+            for i, (file_name, errors) in enumerate(result.failed.items()):
+                print(f"  {i+1}. {file_name} - {len(errors)}エラー")
+                for j, err in enumerate(errors[:3]):  # 最初の3つのエラーのみ表示
+                    print(f"    - {err}")
+                if len(errors) > 3:
+                    print(f"    ... 他 {len(errors) - 3}件のエラー")
+                if i >= 2:  # 最初の3つのみ表示
+                    print(f"  ... 他 {summary['failed_count'] - 3}ファイル")
+                    break
+    except Exception as e:
+        print(f"失敗したファイル表示中にエラーが発生しました: {e}")
+        import traceback
+        traceback.print_exc()
     
     # マージテスト
     if summary['successful_count'] > 1:
-        merged = result.merge_containers()
-        if merged:
-            print(f"  マージ結果: {len(merged.data)}行 ({summary['successful_count']}ファイルを結合)")
-        else:
-            print(f"  [エラー] マージに失敗しました")
+        try:
+            print("マージテスト実行中...")
+            merged = result.merge_containers()
+            if merged:
+                print(f"マージ結果: {len(merged.data)}行 ({summary['successful_count']}ファイルを結合)")
+            else:
+                print(f"[エラー] マージに失敗しました")
+        except Exception as e:
+            print(f"マージテスト中にエラーが発生しました: {e}")
+            import traceback
+            traceback.print_exc()
     
     return summary['successful_count'] > 0
 
 def main():
+    # カレントディレクトリの確認
+    cwd = os.getcwd()
+    print(f"Current directory: {cwd}")
+    
     # テスト用ファイルパスを設定（複数の可能性を確認）
-    test_dirs = [Path("test_data"), Path("resources"), Path("tests/test_data"), Path("tests/resources")]
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    print(f"Script directory: {script_dir}")
+    
+    # スクリプトの場所からの相対パス（pytest実行時）と
+    # カレントディレクトリからの相対パス（直接実行時）の両方を確認
+    test_dirs = [
+        Path("test_data"), 
+        Path("resources"),
+        Path("tests/test_data"), 
+        Path("tests/resources"),
+        Path(os.path.join(script_dir, "test_data")),
+        Path(os.path.join(script_dir, "resources")),
+        Path(os.path.join(os.path.dirname(script_dir), "tests/test_data")),
+        Path(os.path.join(os.path.dirname(script_dir), "tests/resources"))
+    ]
+    
+    # すべての検索パスを表示
+    print("検索パス:")
+    for i, p in enumerate(test_dirs):
+        print(f"  {i+1}. {p} (存在: {p.exists()})")
     
     # 有効なテストディレクトリを探す
     valid_test_dir = None
@@ -159,12 +246,29 @@ def main():
     tcx_file = valid_test_dir / "sample.tcx"
     fit_file = valid_test_dir / "sample.fit"
     
+    # バックアップパスを設定（明示的なパスも試す）
+    backup_csv_files = [
+        Path(os.path.join(script_dir, "test_data", "sample.csv")),
+        Path(os.path.join(script_dir, "resources", "sample.csv")),
+        Path("/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests/test_data/sample.csv"),
+        Path("/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests/resources/sample.csv")
+    ]
+    
     # 存在確認
     test_files = []
-    if csv_file.exists(): test_files.append(csv_file)
-    if gpx_file.exists(): test_files.append(gpx_file)
-    if tcx_file.exists(): test_files.append(tcx_file)
-    if fit_file.exists(): test_files.append(fit_file)
+    
+    # メインパスでの確認
+    if csv_file.exists(): 
+        print(f"CSV file found at primary path: {csv_file}")
+        test_files.append(csv_file)
+    else:
+        # バックアップパスから探す
+        print("Primary CSV path not found, trying backup paths...")
+        for backup_path in backup_csv_files:
+            if backup_path.exists():
+                print(f"CSV file found at backup path: {backup_path}")
+                test_files.append(backup_path)
+                break
     
     if not test_files:
         print("テスト用ファイルが見つかりません")

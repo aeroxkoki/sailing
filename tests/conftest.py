@@ -59,42 +59,93 @@ TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
 
 # モジュールのインポートパス問題を解決するための事前処理
 try:
+    print("Current directory:", os.getcwd())
+    print("Python path:", sys.path)
+    
+    # 必要なパスがすべて追加されていることを確認
+    for path in [project_root, module_path, strategy_path, tests_path]:
+        if path not in sys.path:
+            sys.path.insert(0, path)
+            print(f"Added missing path: {path}")
+    
+    # sailing_data_processor モジュールをインポート
+    import sailing_data_processor
+    print(f"sailing_data_processor path: {sailing_data_processor.__file__}")
+    print(f"sailing_data_processor version: {sailing_data_processor.__version__}")
+    
+    # モジュールの初期化を保証するために明示的にインポート
+    import sailing_data_processor.wind_field_interpolator
+    import sailing_data_processor.wind_propagation_model
+    import sailing_data_processor.wind_field_fusion_system
+    import sailing_data_processor.strategy
+    
     # 実際に各モジュールが正しくロードできるか確認
     from sailing_data_processor.wind_propagation_model import WindPropagationModel
-    print(f"WindPropagationModel を正常にインポートしました")
+    print(f"Successfully imported WindPropagationModel")
     
+    # インスタンス化もテスト
+    model = WindPropagationModel()
+    print(f"Successfully created WindPropagationModel instance")
+    
+    # 風のインターポレーターをインポート
+    from sailing_data_processor.wind_field_interpolator import WindFieldInterpolator
+    interpolator = WindFieldInterpolator()
+    
+    # 風の場統合システムをインポート
     from sailing_data_processor.wind_field_fusion_system import WindFieldFusionSystem
-    print(f"WindFieldFusionSystem を正常にインポートしました")
+    print(f"Successfully imported WindFieldFusionSystem")
     
-    # StrategyDetectorWithPropagation のインポートを試みる
+    # StrategyDetectorWithPropagation をインポート
     try:
+        # 絶対パスでのインポートを試行
         from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
-        print(f"StrategyDetectorWithPropagation を正常にインポートしました")
+        print(f"Successfully imported StrategyDetectorWithPropagation")
     except ImportError as e:
         print(f"StrategyDetectorWithPropagation のインポートに失敗しました: {e}")
-        # テスト実行に支障をきたさないよう、モックオブジェクトを作成
-        from sailing_data_processor.strategy.detector import StrategyDetector
+        traceback.print_exc()
         
-        # 代替クラスの作成
-        class StrategyDetectorWithPropagation(StrategyDetector):
-            """テスト用のダミークラス"""
-            def __init__(self, vmg_calculator=None, wind_fusion_system=None):
-                super().__init__(vmg_calculator)
-                self.wind_fusion_system = wind_fusion_system
-                self.propagation_config = {
-                    'wind_shift_prediction_horizon': 1800,
-                    'prediction_time_step': 300,
-                    'wind_shift_confidence_threshold': 0.7,
-                    'min_propagation_distance': 1000,
-                    'prediction_confidence_decay': 0.1,
-                    'use_historical_data': True
-                }
+        # 相対パスでのインポートを試行
+        try:
+            import sailing_data_processor.strategy
             
-            def detect_wind_shifts_with_propagation(self, course_data, wind_field):
-                """テスト用の空実装"""
-                return []
-        
-        print("ダミーの StrategyDetectorWithPropagation を作成しました")
+            # strategy モジュールのパスを確認
+            strategy_module = sailing_data_processor.strategy
+            print(f"strategy module path: {strategy_module.__file__}")
+            
+            # dependency_utils モジュールを使用してパスを追加
+            from sailing_data_processor.strategy.dependency_utils import add_project_root_to_path
+            add_project_root_to_path()
+            
+            # 再度インポートを試行
+            from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
+            print(f"Successfully imported StrategyDetectorWithPropagation using relative path")
+        except ImportError as e:
+            print(f"Relative import failed too: {e}")
+            traceback.print_exc()
+            
+            # テスト実行に支障をきたさないよう、モックオブジェクトを作成
+            from sailing_data_processor.strategy.detector import StrategyDetector
+            
+            # 代替クラスの作成
+            class StrategyDetectorWithPropagation(StrategyDetector):
+                """テスト用のダミークラス"""
+                def __init__(self, vmg_calculator=None, wind_fusion_system=None):
+                    super().__init__(vmg_calculator)
+                    self.wind_fusion_system = wind_fusion_system
+                    self.propagation_config = {
+                        'wind_shift_prediction_horizon': 1800,
+                        'prediction_time_step': 300,
+                        'wind_shift_confidence_threshold': 0.7,
+                        'min_propagation_distance': 1000,
+                        'prediction_confidence_decay': 0.1,
+                        'use_historical_data': True
+                    }
+                
+                def detect_wind_shifts_with_propagation(self, course_data, wind_field):
+                    """テスト用の空実装"""
+                    return []
+            
+            print("ダミーの StrategyDetectorWithPropagation を作成しました")
     
 except ImportError as e:
     print(f"モジュールインポート失敗: {e}")

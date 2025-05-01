@@ -51,6 +51,8 @@ class WindFieldFusionSystem:
         
         # 補間器
         self.field_interpolator = WindFieldInterpolator()
+        # テスト時に下位互換性を保つためのエイリアス
+        self.interpolator = self.field_interpolator
         
         # 風の移動モデル
         self.propagation_model = WindPropagationModel()
