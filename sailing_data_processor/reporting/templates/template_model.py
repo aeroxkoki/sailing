@@ -322,17 +322,7 @@ class Section:
         self.title = title
         self.description = description
         self.order = order
-        
-        # レイアウト設定
-        default_margin = {"top": 20, "right": 20, "bottom": 20, "left": 20}
-        if layout is None:
-            self.layout = {"columns": 1, "margin": default_margin}
-        else:
-            # marginが辞書でなければデフォルト値を使用
-            if "margin" not in layout or not isinstance(layout["margin"], dict):
-                layout["margin"] = default_margin
-            self.layout = layout
-            
+        self.layout = layout or {"columns": 1, "margin": {"top": 20, "right": 20, "bottom": 20, "left": 20}}
         self.styles = styles or {}
         self.conditions = [Condition.from_dict(c) for c in (conditions or [])]
         self.elements = [Element.from_dict(e) for e in (elements or [])]
@@ -757,7 +747,6 @@ class Template:
         self.updated_at = datetime.now()
 
 
-# 簡易版の要素モデル（後方互換性のため）
 class ElementModel:
     """要素モデルクラス"""
     
