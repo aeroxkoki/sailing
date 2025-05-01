@@ -30,15 +30,19 @@ project_root = os.path.dirname(os.path.dirname(current_file))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-# sailing_data_processor へのパスも明示的に追加
+# sailing_data_processor へのパスを明示的に追加
 module_path = os.path.join(project_root, 'sailing_data_processor')
 if module_path not in sys.path:
     sys.path.insert(0, module_path)
 
-# sailing_data_processor の strategy サブパッケージへのパスも追加
+# sailing_data_processor の strategy サブパッケージへのパスを追加
 strategy_path = os.path.join(module_path, 'strategy')
 if strategy_path not in sys.path:
     sys.path.insert(0, strategy_path)
+
+# 環境変数にもパスを設定
+os.environ['PYTHONPATH'] = os.pathsep.join([project_root, module_path, strategy_path, 
+                                           os.environ.get('PYTHONPATH', '')])
 
 # testsディレクトリへのパスも明示的に追加
 tests_path = os.path.dirname(os.path.abspath(__file__))
