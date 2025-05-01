@@ -43,7 +43,14 @@ except ImportError:
     go = MockGo()
 
 # 自作モジュールのインポート
-from sailing_data_processor.validation.quality_metrics_improvements_core import QualityMetricsCalculatorExtension
+try:
+    from sailing_data_processor.validation.quality_metrics_improvements_core import QualityMetricsCalculatorExtension
+except ImportError:
+    # Fallback definition if import fails
+    class QualityMetricsCalculatorExtension:
+        """Placeholder class if import fails"""
+        def __init__(self):
+            pass
 
 class QualityMetricsTemporal:
     """

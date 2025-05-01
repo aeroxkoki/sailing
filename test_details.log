@@ -1,0 +1,32 @@
+2025-05-01 15:23:58,428 - sailing_test - INFO - ======== テスト環境情報 ========
+2025-05-01 15:23:58,430 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
+2025-05-01 15:23:58,430 - sailing_test - INFO - Python version: 3.9.6
+2025-05-01 15:23:58,430 - sailing_test - INFO - Hostname: MacBook-Air-2.local
+2025-05-01 15:23:58,431 - sailing_test - DEBUG - Python path: [
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload",
+  "/Users/koki_air/Library/Python/3.9/lib/python/site-packages",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests"
+]
+2025-05-01 15:23:58,431 - sailing_test - DEBUG - Environment variables:
+2025-05-01 15:23:58,431 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
+2025-05-01 15:23:58,431 - sailing_test - INFO - ======== テスト開始 ========
+2025-05-01 15:23:58,433 - sailing_test - INFO - テスト開始: test_csv_importer
+2025-05-01 15:23:58,436 - sailing_test - INFO - テスト終了: test_csv_importer
+2025-05-01 15:23:58,438 - sailing_test - INFO - テスト開始: test_importer_factory
+2025-05-01 15:23:58,440 - sailing_test - INFO - テスト終了: test_importer_factory
+2025-05-01 15:23:58,444 - sailing_test - INFO - テスト開始: test_column_mapping
+2025-05-01 15:23:58,448 - sailing_test - INFO - テスト終了: test_column_mapping
+2025-05-01 15:23:58,451 - sailing_test - INFO - テスト開始: test_batch_importer
+2025-05-01 15:23:58,454 - sailing_test - INFO - テスト終了: test_batch_importer
+2025-05-01 15:23:58,460 - sailing_test - INFO - テスト開始: test_validation
+2025-05-01 15:23:58,462 - sailing_test - INFO - テスト終了: test_validation
+2025-05-01 15:23:58,463 - sailing_test - INFO - ======== テスト終了 ========

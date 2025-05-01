@@ -80,6 +80,10 @@ class QualityMetricsCalculatorExtension:
             "all": []
         }
         
+        # 検証結果から問題レコードのインデックスを抽出
+        if validation_results:
+            self._process_validation_results()
+        
         # ルールカテゴリーの定義
         self.rule_categories = {
             "completeness": ["Required Columns Check", "No Null Values Check"],
@@ -190,6 +194,79 @@ class QualityMetricsCalculatorExtension:
             "consistency": round(consistency_score, 1)
         }
     
+    def _process_validation_results(self):
+        """
+        検証結果から問題のあるレコードのインデックスを抽出する
+        
+        validation_resultsを解析して、各問題タイプに対応するインデックスを抽出し、
+        problematic_indicesディクショナリを更新します。
+        """
+        # 問題インデックスをリセット
+        self.problematic_indices = {
+            "missing_data": [],
+            "out_of_range": [],
+            "duplicates": [],
+            "spatial_anomalies": [],
+            "temporal_anomalies": [],
+            "all": []
+        }
+        
+        # 各検証結果を処理
+        for result in self.validation_results:
+            if not result.get("is_valid", True):
+                rule_name = result.get("rule_name", "")
+                details = result.get("details", {})
+                
+                # ルールタイプに基づいて問題インデックスを抽出
+                if "No Null Values Check" in rule_name:
+                    # Null値のインデックスを抽出
+                    null_indices = []
+                    for col, indices in details.get("null_indices", {}).items():
+                        if indices:
+                            null_indices.extend(indices)
+                    
+                    if null_indices:
+                        self.problematic_indices["missing_data"].extend(null_indices)
+                        self.problematic_indices["all"].extend(null_indices)
+                
+                elif "Value Range Check" in rule_name:
+                    # 範囲外の値のインデックスを抽出
+                    out_indices = details.get("out_of_range_indices", [])
+                    if out_indices:
+                        self.problematic_indices["out_of_range"].extend(out_indices)
+                        self.problematic_indices["all"].extend(out_indices)
+                
+                elif "No Duplicate Timestamps" in rule_name:
+                    # 重複タイムスタンプのインデックスを抽出
+                    dup_indices = []
+                    for ts, indices in details.get("duplicate_indices", {}).items():
+                        if indices:
+                            dup_indices.extend(indices)
+                    
+                    if dup_indices:
+                        self.problematic_indices["duplicates"].extend(dup_indices)
+                        self.problematic_indices["all"].extend(dup_indices)
+                
+                elif "Spatial Consistency Check" in rule_name:
+                    # 空間的異常のインデックスを抽出
+                    spatial_indices = details.get("anomaly_indices", [])
+                    if spatial_indices:
+                        self.problematic_indices["spatial_anomalies"].extend(spatial_indices)
+                        self.problematic_indices["all"].extend(spatial_indices)
+                
+                elif "Temporal Consistency Check" in rule_name:
+                    # 時間的異常のインデックスを抽出
+                    gap_indices = details.get("gap_indices", [])
+                    reverse_indices = details.get("reverse_indices", [])
+                    temporal_indices = gap_indices + reverse_indices
+                    
+                    if temporal_indices:
+                        self.problematic_indices["temporal_anomalies"].extend(temporal_indices)
+                        self.problematic_indices["all"].extend(temporal_indices)
+        
+        # 重複を除去し、ソート
+        for key in self.problematic_indices:
+            self.problematic_indices[key] = sorted(list(set(self.problematic_indices[key])))
     def _calculate_problem_type_distribution_for_period(self, indices):
         """
         特定期間の問題タイプ分布を計算
