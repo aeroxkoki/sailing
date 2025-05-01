@@ -1,91 +1,53 @@
 # -*- coding: utf-8 -*-
 """
-画像エクスポーター用ユーティリティ
+Utility functions for image exporters
 
-画像生成に必要なライブラリのチェックや共通機能を提供します。
+This module provides utility functions for use with the image exporter
 """
 
-import logging
+from typing import List, Dict, Any, Optional, Tuple, Union
 
-# 画像処理ライブラリのインポートとフラグ設定
-try:
-    from PIL import Image, ImageDraw, ImageFont
-    PIL_AVAILABLE = True
-except ImportError:
-    PIL_AVAILABLE = False
-
-try:
-    import matplotlib
-    matplotlib.use('Agg')  # バックエンドの設定（GUIなし）
-    import matplotlib.pyplot as plt
-    from matplotlib.figure import Figure
-    import matplotlib.dates as mdates
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
-
-try:
-    import numpy as np
-    NUMPY_AVAILABLE = True
-except ImportError:
-    NUMPY_AVAILABLE = False
-
-try:
-    import pandas as pd
-    PANDAS_AVAILABLE = True
-except ImportError:
-    PANDAS_AVAILABLE = False
-
-logger = logging.getLogger(__name__)
-
-def check_image_libraries(options=None, exporter=None):
+def calculate_color_scale(values: List[float], 
+                        min_value: Optional[float] = None, 
+                        max_value: Optional[float] = None,
+                        cmap_name: str = "viridis") -> List[str]:
     """
-    画像生成ライブラリのチェック
+    値に基づいたカラースケールを計算
     
     Parameters
     ----------
-    options : dict
-        オプション設定
-    exporter : BaseExporter
-        エクスポーターオブジェクト
+    values : List[float]
+        色分けする値のリスト
+    min_value : Optional[float], optional
+        最小値, by default None
+    max_value : Optional[float], optional
+        最大値, by default None
+    cmap_name : str, optional
+        カラーマップ名, by default "viridis"
     
     Returns
     -------
-    bool
-        必要なライブラリが揃っているかどうか
+    List[str]
+        色コードのリスト
     """
-    all_available = True
+    # スタブ実装
+    return ["#000000"] * len(values)
+
+def format_timestamp(timestamp, format_str="%Y-%m-%d %H:%M:%S"):
+    """
+    タイムスタンプを指定形式でフォーマット
     
-    # 必要なライブラリのチェック
-    if not MATPLOTLIB_AVAILABLE:
-        if exporter:
-            exporter.add_warning("Matplotlibがインストールされていないため、一部の画像生成機能が制限されます。pip install matplotlib を実行してください。")
-        all_available = False
+    Parameters
+    ----------
+    timestamp : datetime or str
+        フォーマットするタイムスタンプ
+    format_str : str, optional
+        フォーマット文字列, by default "%Y-%m-%d %H:%M:%S"
     
-    if not PIL_AVAILABLE:
-        if exporter:
-            exporter.add_warning("PILがインストールされていないため、一部の画像処理機能が制限されます。pip install pillow を実行してください。")
-        all_available = False
-    
-    if not NUMPY_AVAILABLE:
-        if exporter:
-            exporter.add_warning("NumPyがインストールされていないため、一部の機能が制限されます。pip install numpy を実行してください。")
-        all_available = False
-    
-    if not PANDAS_AVAILABLE:
-        if exporter:
-            exporter.add_warning("pandasがインストールされていないため、一部の機能が制限されます。pip install pandas を実行してください。")
-        all_available = False
-    
-    # スタイルの設定
-    if MATPLOTLIB_AVAILABLE and options and 'style' in options:
-        style = options.get("style", "default")
-        if style \!= "default":
-            try:
-                plt.style.use(style)
-            except:
-                if exporter:
-                    exporter.add_warning(f"指定されたスタイル '{style}' が見つかりません。デフォルトスタイルを使用します。")
-                plt.style.use("default")
-    
-    return all_available
+    Returns
+    -------
+    str
+        フォーマットされたタイムスタンプ
+    """
+    # スタブ実装
+    return str(timestamp)
