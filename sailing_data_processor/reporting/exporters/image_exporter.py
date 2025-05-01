@@ -59,7 +59,7 @@ class ImageExporter(BaseExporter):
         super().__init__(**options)
         
         # 画像デフォルトオプション
-        image_defaults = {}
+        image_defaults = {
             "format": "png",  # 'png', 'jpeg', 'svg'
             "dpi": 300,
             "width": 1200,
@@ -80,7 +80,8 @@ class ImageExporter(BaseExporter):
             "tick_font_size": 10,
             "legend_font_size": 10,
             "color_scheme": "default",  # 'default', 'viridis', 'plasma', 'inferno', 'magma', 'cividis'
-            "style": "default",  # 'default', 'seaborn', 'ggplot', 'bmh', 'dark_background', 'fivethirtyeight'
+            "style": "default"  # 'default', 'seaborn', 'ggplot', 'bmh', 'dark_background', 'fivethirtyeight'
+        }
         }
         
         self.options.update(image_defaults)
@@ -168,7 +169,6 @@ class ImageExporter(BaseExporter):
                 image_data = self._generate_combined_image(data, **kwargs)
             else:
                 self.add_error(f"未対応のコンテンツタイプ: {content_type}")
-                }
                 return None
             
             if image_data is None:
@@ -188,8 +188,6 @@ class ImageExporter(BaseExporter):
         except Exception as e:
             self.add_error(f"画像生成中にエラーが発生しました: {str(e)}")
             logger.error(f"Image generation failed: {str(e)}", exc_info=True)
-            }
-            }
             return None
     
     def _generate_chart_image(self, data, **kwargs):
@@ -237,10 +235,8 @@ class ImageExporter(BaseExporter):
             if not title and hasattr(data, 'metadata') and isinstance(data.metadata, dict):
                 if 'name' in data.metadata:
                     title = f"セーリングデータ: {data.metadata['name']}"
-                    }
                 elif 'date' in data.metadata:
                     title = f"セーリングデータ: {data.metadata['date']}"
-                    }
             
             # デフォルトタイトル
             if not title:
@@ -267,7 +263,6 @@ class ImageExporter(BaseExporter):
             self._create_pie_chart(df, ax, **kwargs)
         else:
             self.add_error(f"未対応のチャートタイプ: {chart_type}")
-            }
             plt.close(fig)
             return None
         
@@ -279,7 +274,6 @@ class ImageExporter(BaseExporter):
         if self.options.get("include_timestamp", True):
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             plt.figtext(0.01, 0.01, f"生成日時: {timestamp}", fontsize=8, alpha=0.7)
-            }
         
         # 背景の設定
         if self.options.get("transparent", False):
@@ -394,7 +388,6 @@ class ImageExporter(BaseExporter):
         
         if y_column is None or y_column not in df.columns:
             self.add_error(f"棒グラフ作成のためのY軸データが見つかりません: {y_column}")
-            }
             return
         
         # 棒グラフの作成
