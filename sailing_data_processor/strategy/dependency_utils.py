@@ -96,10 +96,30 @@ def add_project_root_to_path():
     # プロジェクトルート
     project_root = os.path.dirname(module_dir)
     
-    # PYTHONPATHに追加
-    if project_root not in sys.path:
-        sys.path.insert(0, project_root)
+    # strategy ディレクトリも明示的に追加
+    if current_dir not in sys.path:
+        sys.path.insert(0, current_dir)
+        print(f"Added strategy directory to path: {current_dir}")
     
-    # モジュールディレクトリも追加
+    # モジュールディレクトリを追加
     if module_dir not in sys.path:
         sys.path.insert(0, module_dir)
+        print(f"Added module directory to path: {module_dir}")
+    
+    # PYTHONPATHにプロジェクトルートを追加
+    if project_root not in sys.path:
+        sys.path.insert(0, project_root)
+        print(f"Added project root to path: {project_root}")
+    
+    # tests ディレクトリがあれば追加
+    tests_dir = os.path.join(project_root, 'tests')
+    if os.path.exists(tests_dir) and tests_dir not in sys.path:
+        sys.path.insert(0, tests_dir)
+        print(f"Added tests directory to path: {tests_dir}")
+    
+    return {
+        'current_dir': current_dir,
+        'module_dir': module_dir,
+        'project_root': project_root,
+        'sys_path': sys.path[:5]  # 最初の5項目のみ表示
+    }

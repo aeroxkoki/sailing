@@ -29,11 +29,12 @@ def load_strategy_detector():
     global StrategyDetectorWithPropagation
     if StrategyDetectorWithPropagation is None:
         try:
-            from .strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation as SDwP
-            StrategyDetectorWithPropagation = SDwP
-        except ImportError:
+            # まず strategy パッケージの遅延ロード関数を使用
+            from .strategy import load_strategy_detector_with_propagation
+            StrategyDetectorWithPropagation = load_strategy_detector_with_propagation()
+        except ImportError as e:
             import warnings
-            warnings.warn("StrategyDetectorWithPropagation could not be imported")
+            warnings.warn(f"StrategyDetectorWithPropagation could not be imported: {e}")
             StrategyDetectorWithPropagation = None
     return StrategyDetectorWithPropagation
 

@@ -97,28 +97,34 @@ try:
     
     # StrategyDetectorWithPropagation をインポート
     try:
-        # sailing_data_processor の遅延ロード機能を使用
-        from sailing_data_processor import load_strategy_detector
-        StrategyDetectorWithPropagation = load_strategy_detector()
+        # sailing_data_processor のストラテジーパッケージをインポート
+        import sailing_data_processor.strategy
+        print("Successfully imported sailing_data_processor.strategy")
+        
+        # 遅延ロード関数を使用
+        from sailing_data_processor.strategy import load_strategy_detector_with_propagation
+        print("Successfully imported load_strategy_detector_with_propagation")
+        
+        StrategyDetectorWithPropagation = load_strategy_detector_with_propagation()
         if StrategyDetectorWithPropagation:
             print(f"Successfully loaded StrategyDetectorWithPropagation using lazy loading")
         else:
             raise ImportError("Lazy loading returned None")
     except ImportError as e:
         print(f"StrategyDetectorWithPropagation のロードに失敗しました: {e}")
-        traceback.print_exc()
         
-        # 直接インポートを試行
+        # sailing_data_processor の遅延ロード機能を使用
         try:
-            # dependency_utils モジュールを使用してパスを追加
-            from sailing_data_processor.strategy.dependency_utils import add_project_root_to_path
-            add_project_root_to_path()
+            from sailing_data_processor import load_strategy_detector
+            print("Successfully imported load_strategy_detector")
             
-            # 直接インポートを試行
-            from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
-            print(f"Successfully imported StrategyDetectorWithPropagation directly")
+            StrategyDetectorWithPropagation = load_strategy_detector()
+            if StrategyDetectorWithPropagation:
+                print(f"Successfully loaded StrategyDetectorWithPropagation using root lazy loading")
+            else:
+                raise ImportError("Root lazy loading returned None")
         except ImportError as e:
-            print(f"Direct import failed too: {e}")
+            print(f"Root lazy loading failed too: {e}")
             traceback.print_exc()
             
             # テスト実行に支障をきたさないよう、モックオブジェクトを作成
