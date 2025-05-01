@@ -312,53 +312,53 @@ class StrategyDetectorWithPropagation(StrategyDetector):
     
     def _normalize_to_timestamp(self, t) -> float:
         """
-        様々な時間表現から統一したUNIXタイムスタンプを作成
+        Normalize various time representations to a UNIX timestamp
         
         Parameters:
         -----------
         t : any
-            様々な時間表現(datetime, timedelta, int, float等)
+            Various time representations (datetime, timedelta, int, float, etc.)
             
         Returns:
         --------
         float
-            UNIXタイムスタンプ形式の値
+            Value in UNIX timestamp format
         """
         if isinstance(t, datetime):
-            # datetimeをUNIXタイムスタンプに変換
+            # Convert datetime to UNIX timestamp
             return t.timestamp()
         elif isinstance(t, timedelta):
-            # timedeltaを秒に変換
+            # Convert timedelta to seconds
             return t.total_seconds()
         elif isinstance(t, (int, float)):
-            # 数値はそのままfloatで返す
+            # Return numeric values as float
             return float(t)
         elif isinstance(t, dict):
-            # 辞書型の場合
+            # Handle dictionary type
             if 'timestamp' in t:
-                # timestampキーを持つ辞書の場合
+                # Dictionary with timestamp key
                 return float(t['timestamp'])
             else:
-                # timestampキーがない辞書の場合はエラー防止のため無限大を返す
+                # Return infinity for dictionaries without timestamp to prevent errors
                 return float('inf')
         elif isinstance(t, str):
             try:
-                # 数値文字列の場合は数値に変換
+                # Convert numeric string to float
                 return float(t)
             except ValueError:
                 try:
-                    # ISO形式の日時文字列
+                    # Parse ISO format datetime string
                     dt = datetime.fromisoformat(t.replace('Z', '+00:00'))
                     return dt.timestamp()
                 except ValueError:
-                    # 変換できない場合は無限大
+                    # Return infinity if conversion fails
                     return float('inf')
         else:
-            # その他の型は文字列に変換してから数値化
+            # For other types, convert to string first, then to float
             try:
                 return float(str(t))
             except ValueError:
-                # 変換できない場合は無限大（対応する順序）
+                # Return infinity if conversion fails (maintaining order)
                 return float('inf')
     
     def _get_time_difference_seconds(self, time1, time2) -> float:

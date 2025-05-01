@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.strategy パッケージ
+sailing_data_processor.strategy package
 
-セーリングレースにおける戦略的判断ポイントの検出、評価、可視化機能を提供します。
+Provides detection, evaluation, and visualization of strategic decision points in sailing races.
 
-モジュール依存関係:
-基本クラス: detector -> evaluator -> visualizer
-戦略ポイント: points
-特殊クラス: strategy_detector_with_propagation
+Module dependencies:
+Base classes: detector -> evaluator -> visualizer
+Strategy points: points
+Special classes: strategy_detector_with_propagation
 """
 
 import os
@@ -18,33 +18,33 @@ from typing import Optional, Type
 
 logger = logging.getLogger(__name__)
 
-# 基本クラスをインポート
+# Import base classes
 from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint, StrategyAlternative
 from .detector import StrategyDetector
 from .evaluator import StrategyEvaluator
 from .visualizer import StrategyVisualizer
 
-# StrategyDetectorWithPropagation は遅延インポートを使用
-# 循環参照を避けるため、直接インポートしない
+# Use lazy loading for StrategyDetectorWithPropagation
+# Avoid direct import to prevent circular references
 StrategyDetectorWithPropagation = None
 
 def load_strategy_detector_with_propagation() -> Optional[Type]:
-    """戦略検出器を遅延ロード
+    """Lazy-load the strategy detector class
     
     Returns:
-        StrategyDetectorWithPropagation: 戦略検出器クラス
+        StrategyDetectorWithPropagation: Strategy detector class
     """
     global StrategyDetectorWithPropagation
     
-    # すでにロード済みならそれを返す
+    # Return already loaded class if available
     if StrategyDetectorWithPropagation is not None:
         return StrategyDetectorWithPropagation
     
-    # パス情報をログ出力（デバッグ用）
+    # Log path information for debugging
     logger.debug(f"Strategy detector loading with sys.path: {sys.path}")
     
     try:
-        # 常に相対パスでのインポートを試行
+        # Try to import using relative path
         logger.debug("Loading StrategyDetectorWithPropagation with relative import")
         from .strategy_detector_with_propagation import StrategyDetectorWithPropagation as SDwP
         
@@ -54,21 +54,21 @@ def load_strategy_detector_with_propagation() -> Optional[Type]:
             return StrategyDetectorWithPropagation
         else:
             logger.warning("Module loaded but StrategyDetectorWithPropagation is None")
-            # 例外を投げないで続行
+            # Continue without raising exception
             
     except ImportError as e:
         logger.error(f"Import error: {e}")
     
-    # テスト環境の判定
+    # Detect test environment
     is_test_environment = any(module in sys.modules for module in ['unittest', 'pytest', 'conftest'])
     logger.debug(f"Test environment detection: {is_test_environment}")
     
-    # ダミー実装の提供
+    # Provide fallback implementation
     logger.info("Creating fallback implementation")
     
-    # ダミークラス定義
+    # Define fallback class
     class FallbackSDwP(StrategyDetector):
-        """フォールバック用のクラス - StrategyDetectorWithPropagation"""
+        """Fallback class for StrategyDetectorWithPropagation"""
         def __init__(self, vmg_calculator=None, wind_fusion_system=None):
             super().__init__(vmg_calculator)
             self.wind_fusion_system = wind_fusion_system
@@ -82,27 +82,27 @@ def load_strategy_detector_with_propagation() -> Optional[Type]:
             }
         
         def detect_wind_shifts_with_propagation(self, course_data, wind_field):
-            """フォールバック実装 - 風向シフト検出"""
+            """Fallback implementation - wind shift detection"""
             logger.debug("FallbackSDwP.detect_wind_shifts_with_propagation called")
             return []
             
         def _detect_wind_shifts_in_legs(self, course_data, wind_field, target_time):
-            """フォールバック実装 - レグ内風向シフト検出"""
+            """Fallback implementation - leg-based wind shift detection"""
             return []
             
         def _get_wind_at_position(self, lat, lon, time, wind_field):
-            """フォールバック実装 - 位置風情報取得"""
+            """Fallback implementation - get wind at position"""
             return None
         
         def detect_optimal_tacks(self, course_data, wind_field):
-            """フォールバック実装 - 最適タック検出"""
+            """Fallback implementation - optimal tack detection"""
             return []
             
         def detect_laylines(self, course_data, wind_field):
-            """フォールバック実装 - レイライン検出"""
+            """Fallback implementation - layline detection"""
             return []
     
-    # クラス名を適切に設定
+    # Set appropriate class name
     FallbackSDwP.__name__ = "StrategyDetectorWithPropagation"
     StrategyDetectorWithPropagation = FallbackSDwP
     logger.info("Using fallback StrategyDetectorWithPropagation implementation")
@@ -123,5 +123,5 @@ __all__ = [
 ]
 
 def get_version():
-    """パッケージのバージョンを返します"""
+    """Returns the package version"""
     return __version__

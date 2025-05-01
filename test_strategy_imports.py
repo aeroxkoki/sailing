@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-戦略モジュールインポートテスト
+Strategy Module Import Test
 
-このスクリプトは循環参照問題の修正を検証するためのものです。
+This script verifies the fixes for circular reference issues.
 """
 
 import os
@@ -11,33 +11,33 @@ import sys
 import traceback
 import importlib
 
-# カレントディレクトリの確認
+# Check current directory
 print(f"Current directory: {os.getcwd()}")
 print(f"Python path: {sys.path}")
 
-# 必要なパスを追加
+# Add necessary paths
 project_root = os.path.dirname(os.path.abspath(__file__))
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
     print(f"Added project root to path: {project_root}")
 
-# sailingモジュールのパスも明示的に追加
+# Explicitly add sailing module path
 module_path = os.path.join(project_root, 'sailing_data_processor')
 if module_path not in sys.path:
     sys.path.insert(0, module_path)
     print(f"Added module path to path: {module_path}")
 
-# strategyモジュールのパスも明示的に追加
+# Explicitly add strategy module path
 strategy_path = os.path.join(module_path, 'strategy')
 if strategy_path not in sys.path:
     sys.path.insert(0, strategy_path)
     print(f"Added strategy path to path: {strategy_path}")
 
-# テスト結果を格納するリスト
+# List to store test results
 results = []
 
 def test_import(module_name, expected_attr=None):
-    """モジュールのインポートをテスト"""
+    """Test the import of a module"""
     print(f"\nTesting import of {module_name}...")
     try:
         module = importlib.import_module(module_name)
@@ -60,36 +60,36 @@ def test_import(module_name, expected_attr=None):
         return False, None, None
 
 def run_tests():
-    """すべてのテストを実行"""
-    # sailing_data_processor本体のインポート
+    """Run all tests"""
+    # Import sailing_data_processor base
     success, sdp, _ = test_import('sailing_data_processor')
     results.append(('sailing_data_processor base', success))
     
     if not success:
         return results
     
-    # sailing_data_processor.strategyのインポート
+    # Import sailing_data_processor.strategy
     success, strategy, _ = test_import('sailing_data_processor.strategy')
     results.append(('sailing_data_processor.strategy', success))
     
     if not success:
         return results
     
-    # 遅延ロード関数のテスト
+    # Test the lazy loading function
     success, _, load_func = test_import('sailing_data_processor.strategy', 'load_strategy_detector_with_propagation')
     results.append(('strategy.load_strategy_detector_with_propagation', success))
     
     if not success:
         return results
     
-    # ルートの遅延ロード関数をテスト
+    # Test the root lazy loading function
     success, _, root_load_func = test_import('sailing_data_processor', 'load_strategy_detector')
     results.append(('load_strategy_detector', success))
     
     if not success:
         return results
     
-    # 遅延ロード関数を使用して実際にクラスをロード
+    # Use the lazy loading function to load the class
     try:
         detector_class = load_func()
         print(f"Successfully loaded detector_class using strategy.load_strategy_detector_with_propagation")
@@ -100,7 +100,7 @@ def run_tests():
         traceback.print_exc()
         results.append(('strategy lazy loading', False))
     
-    # ルートの遅延ロード関数を使用
+    # Use the root lazy loading function
     try:
         root_detector_class = root_load_func()
         print(f"Successfully loaded detector_class using root load_strategy_detector")
@@ -114,7 +114,7 @@ def run_tests():
     return results
 
 def print_summary(results):
-    """テスト結果のサマリを表示"""
+    """Display the test results summary"""
     print("\n" + "="*50)
     print("IMPORT TEST SUMMARY")
     print("="*50)
