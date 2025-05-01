@@ -313,34 +313,34 @@ class StrategyDetectorWithPropagation(StrategyDetector):
     
     def _normalize_to_timestamp(self, t) -> float:
         """
-        様々な時間形式をUNIXタイムスタンプに変換
+        様々な時間表現から統一したUNIXタイムスタンプを作成
         
         Parameters:
         -----------
         t : any
-            様々な時間形式（datetime, timedelta, int, float等）
+            様々な時間表現(datetime, timedelta, int, float等)
             
         Returns:
         --------
         float
-            UNIXタイムスタンプ（秒単位）
+            UNIXタイムスタンプ形式の値
         """
         if isinstance(t, datetime):
             # datetimeをUNIXタイムスタンプに変換
             return t.timestamp()
         elif isinstance(t, timedelta):
-            # timedelataを秒に変換
+            # timedeltaを秒に変換
             return t.total_seconds()
         elif isinstance(t, (int, float)):
-            # 数値そのままfloatで返す
+            # 数値はそのままfloatで返す
             return float(t)
         elif isinstance(t, dict):
-            # 辞書の場合
+            # 辞書型の場合
             if 'timestamp' in t:
-                # timestampキーがある辞書
+                # timestampキーを持つ辞書の場合
                 return float(t['timestamp'])
             else:
-                # timestampキーがない辞書の場合は無限大として扱う
+                # timestampキーがない辞書の場合はエラー防止のため無限大を返す
                 return float('inf')
         elif isinstance(t, str):
             try:
@@ -348,19 +348,20 @@ class StrategyDetectorWithPropagation(StrategyDetector):
                 return float(t)
             except ValueError:
                 try:
-                    # ISO形式の時間文字列
+                    # ISO形式の日時文字列
                     dt = datetime.fromisoformat(t.replace('Z', '+00:00'))
                     return dt.timestamp()
                 except ValueError:
                     # 変換できない場合は無限大
                     return float('inf')
         else:
-            # その他の形式は文字列化してから数値変換
+            # その他の型は文字列に変換してから数値化
             try:
                 return float(str(t))
             except ValueError:
-                # 変換できない場合は無限大（最新とみなす）
+                # 変換できない場合は無限大（対応する順序）
                 return float('inf')
+                
     def _get_time_difference_seconds(self, time1, time2) -> float:
         """
         二つの時間形式の差分を秒で取得
