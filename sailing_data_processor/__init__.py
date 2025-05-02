@@ -39,6 +39,8 @@ from .wind_estimator import WindEstimator
 from .performance_optimizer import PerformanceOptimizer
 from .boat_data_fusion import BoatDataFusionModel
 from .wind_field_interpolator import WindFieldInterpolator
+
+# 遅延ロードする必要があるクラスのインポート
 try:
     from .wind_propagation_model import WindPropagationModel
     logger.debug("Successfully imported WindPropagationModel")
@@ -83,36 +85,31 @@ def load_strategy_detector() -> Optional[Type]:
     logger.debug(f"Python path: {sys.path}")
     logger.debug(f"sailing_data_processor path: {__file__}")
     
-    # まず strategy モジュールをインポート
+    # 1. 直接インポート試行 - もっとも単純で堅牢な方法
     try:
-        logger.debug("Imported load_strategy_detector from root module")
+        from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation as SDwP
+        if SDwP is not None:
+            StrategyDetectorWithPropagation = SDwP
+            logger.info(f"Successfully loaded StrategyDetectorWithPropagation via direct import")
+            logger.info("===== 戦略検出器ロード完了 =====")
+            return StrategyDetectorWithPropagation
+    except ImportError as e:
+        logger.warning(f"直接インポートに失敗: {e}")
+    
+    # 2. 戦略モジュールを経由したインポート試行
+    try:
         import sailing_data_processor.strategy
-        
-        # 遅延ロード関数呼び出し
         if hasattr(sailing_data_processor.strategy, 'load_strategy_detector_with_propagation'):
             detector = sailing_data_processor.strategy.load_strategy_detector_with_propagation()
-            
             if detector is not None:
                 StrategyDetectorWithPropagation = detector
                 logger.info(f"Successfully loaded StrategyDetectorWithPropagation via root loader: {detector.__name__}")
                 logger.info("===== 戦略検出器ロード完了 =====")
                 return StrategyDetectorWithPropagation
     except Exception as e:
-        logger.error(f"Error in strategy module loading: {e}")
+        logger.warning(f"戦略モジュールを経由したインポートに失敗: {e}")
     
-    # 代替方法：直接インポート
-    try:
-        import sailing_data_processor.strategy.strategy_detector_with_propagation
-        StrategyDetectorWithPropagation = sailing_data_processor.strategy.strategy_detector_with_propagation.StrategyDetectorWithPropagation
-        
-        if StrategyDetectorWithPropagation is not None:
-            logger.info(f"Successfully loaded StrategyDetectorWithPropagation via direct import")
-            logger.info("===== 戦略検出器ロード完了 =====")
-            return StrategyDetectorWithPropagation
-    except Exception as e:
-        logger.error(f"Error in direct import: {e}")
-    
-    # 最後の手段：フォールバック実装
+    # 3. 最後の手段：フォールバック実装
     try:
         # 基本クラスをインポート
         from sailing_data_processor.strategy.detector import StrategyDetector

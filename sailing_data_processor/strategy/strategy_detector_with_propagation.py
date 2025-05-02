@@ -16,6 +16,11 @@ from functools import lru_cache
 # 戦略検出関連モジュール - 親クラスと戦略ポイント定義
 from sailing_data_processor.strategy.detector import StrategyDetector
 from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
+# 共通ユーティリティ関数をインポート
+from sailing_data_processor.strategy.strategy_detector_utils import (
+    normalize_to_timestamp, get_time_difference_seconds, 
+    angle_difference, calculate_distance
+)
 
 # ロガー設定
 logger = logging.getLogger(__name__)
@@ -193,7 +198,7 @@ class StrategyDetectorWithPropagation(StrategyDetector):
                 # 前の地点での風場と比較して風向変化検出
                 if prev_wind:
                     # 風向の差
-                    dir_diff = self._angle_difference(
+                    dir_diff = angle_difference(
                         wind['direction'], prev_wind['direction']
                     )
                     
@@ -272,26 +277,26 @@ class StrategyDetectorWithPropagation(StrategyDetector):
         
         filtered_points = []
         sorted_points = sorted(shift_points, 
-                              key=lambda p: self._normalize_to_timestamp(p.time_estimate))
+                              key=lambda p: normalize_to_timestamp(p.time_estimate))
         
         for point in sorted_points:
             is_duplicate = False
             
             for existing in filtered_points:
                 # 位置が近い（300m以内）
-                position_close = self._calculate_distance(
+                position_close = calculate_distance(
                     point.position[0], point.position[1],
                     existing.position[0], existing.position[1]
                 ) < 300
                 
                 # 時間が近い（5分以内）
-                time_diff = self._get_time_difference_seconds(
+                time_diff = get_time_difference_seconds(
                     point.time_estimate, existing.time_estimate
                 )
                 time_close = time_diff < 300
                 
                 # 角度が類似（15度以内）
-                angle_similar = abs(self._angle_difference(
+                angle_similar = abs(angle_difference(
                     point.shift_angle, existing.shift_angle
                 )) < 15
                 
@@ -311,85 +316,98 @@ class StrategyDetectorWithPropagation(StrategyDetector):
         
         return filtered_points
     
-    def _normalize_to_timestamp(self, t) -> float:
+    def _calculate_strategic_score(self, maneuver_type: str, 
+                                 before_tack_type: str, 
+                                 after_tack_type: str,
+                                 position: Tuple[float, float], 
+                                 time_point, 
+                                 wind_field: Dict[str, Any]) -> Tuple[float, str]:
         """
-        様々な時間表現から統一したUNIXタイムスタンプを作成
+        戦略的重要度の計算
         
         Parameters:
         -----------
-        t : any
-            様々な時間表現(datetime, timedelta, int, float等)
+        maneuver_type : str
+            操作の種別 ('tack', 'gybe', 'wind_shift'等)
+        before_tack_type : str
+            操作前のタック種別 ('port'または'starboard')
+        after_tack_type : str
+            操作後のタック種別 ('port'または'starboard')
+        position : Tuple[float, float]
+            操作の位置（緯度, 経度）
+        time_point : any
+            操作の時刻
+        wind_field : Dict[str, Any]
+            風場データ
             
         Returns:
         --------
-        float
-            UNIXタイムスタンプ形式の値
+        Tuple[float, str]
+            (戦略スコア（0-1）, 評価メモ)
         """
-        if isinstance(t, datetime):
-            # datetimeをUNIXタイムスタンプに変換
-            return t.timestamp()
-        elif isinstance(t, timedelta):
-            # timedeltaを秒に変換
-            return t.total_seconds()
-        elif isinstance(t, (int, float)):
-            # 数値はそのままfloatで返す
-            return float(t)
-        elif isinstance(t, dict):
-            # 辞書型の場合
-            if 'timestamp' in t:
-                # timestampキーを持つ辞書の場合
-                return float(t['timestamp'])
+        score = 0.5  # デフォルト値
+        note = "標準的な戦略判断"
+        
+        # 風場取得
+        wind = self._get_wind_at_position(position[0], position[1], time_point, wind_field)
+        
+        if not wind:
+            return score, note
+        
+        # 操作タイプに応じた評価
+        if maneuver_type == 'tack':
+            # タックの場合
+            wind_shift_probability = wind.get('variability', 0.2)
+            
+            # タック種別
+            if before_tack_type != after_tack_type:
+                # タックが風向変化に合わせている場合
+                if wind_shift_probability > 0.6:
+                    # 変動性の高い中での適切なタック
+                    score = 0.8
+                    note = "風の変動に合わせた適切なタック"
+                elif wind.get('confidence', 0.5) < 0.4:
+                    # 風の不確実性が高い中でのタック
+                    score = 0.3
+                    note = "風の予測が不確実な中でのタック（リスク）"
+                else:
+                    # 標準的なタック
+                    score = 0.5
+                    note = "標準的なタック"
+            
+        elif maneuver_type == 'wind_shift':
+            # 風向変化の場合
+            shift_angle = abs(angle_difference(
+                wind.get('direction', 0), 
+                wind.get('before_direction', wind.get('direction', 0))
+            ))
+            
+            if shift_angle > 20:
+                # 大きな風向変化
+                score = 0.9
+                note = "大きな風向変化ポイント"
+            elif shift_angle > 10:
+                # 中程度の風向変化
+                score = 0.7
+                note = "中程度の風向変化"
             else:
-                # timestampキーがない辞書の場合はエラー防止のため無限大を返す
-                return float('inf')
-        elif isinstance(t, str):
-            try:
-                # 数値文字列の場合は数値に変換
-                return float(t)
-            except ValueError:
-                try:
-                    # ISO形式の日時文字列
-                    dt = datetime.fromisoformat(t.replace('Z', '+00:00'))
-                    return dt.timestamp()
-                except ValueError:
-                    # 変換できない場合は無限大
-                    return float('inf')
-        else:
-            # その他の型は文字列に変換してから数値化
-            try:
-                return float(str(t))
-            except ValueError:
-                # 変換できない場合は無限大（対応する順序）
-                return float('inf')
-                
-    def _get_time_difference_seconds(self, time1, time2) -> float:
-        """
-        二つの時間形式の差分を秒で取得
+                # 小さな風向変化
+                score = 0.5
+                note = "小さな風向変化"
+            
+            # 風速の変化も考慮
+            if 'before_speed' in wind and 'speed' in wind:
+                speed_change = abs(wind['speed'] - wind['before_speed'])
+                if speed_change > 5:
+                    score += 0.1
+                    note += "（風速も大きく変化）"
         
-        Parameters:
-        -----------
-        time1, time2 : any
-            様々な時間形式（datetime, timedelta, int, float, etc）
-            
-        Returns:
-        --------
-        float
-            時間差（秒）、変換できない場合は無限大
-        """
-        # いずれの時間形式も標準化して差分を計算
-        try:
-            ts1 = self._normalize_to_timestamp(time1)
-            ts2 = self._normalize_to_timestamp(time2)
-            
-            # いずれかが無限大の場合は無限大を返す
-            if ts1 == float('inf') or ts2 == float('inf'):
-                return float('inf')
-                
-            return abs(ts1 - ts2)
-        except Exception as e:
-            logger.error(f"時間差計算エラー: {e}")
-            # エラーが発生した場合は無限大を返す
-            return float('inf')
+        # 後の非線形評価は別途具現化が必要な場合は実施
+        if 'lat_grid' in wind_field and 'lon_grid' in wind_field:
+            # 将来的な拡張
+            pass
+        
+        return min(1.0, score), note
     
     def detect_optimal_tacks(self, course_data: Dict[str, Any], 
                           wind_field: Dict[str, Any]) -> List[TackPoint]:
@@ -458,103 +476,10 @@ class StrategyDetectorWithPropagation(StrategyDetector):
             タック種別 ('port'または'starboard')
         """
         # 艇と風の相対角度
-        relative_angle = self._angle_difference(bearing, wind_direction)
+        relative_angle = angle_difference(bearing, wind_direction)
         
         # 角度から判定（負の角度はポートタック、正の角度はスターボードタック）
         return 'port' if relative_angle < 0 else 'starboard'
-    
-    def _calculate_strategic_score(self, maneuver_type: str, 
-                                 before_tack_type: str, 
-                                 after_tack_type: str,
-                                 position: Tuple[float, float], 
-                                 time_point, 
-                                 wind_field: Dict[str, Any]) -> Tuple[float, str]:
-        """
-        戦略的重要度の計算
-        
-        Parameters:
-        -----------
-        maneuver_type : str
-            操作の種別 ('tack', 'gybe', 'wind_shift'等)
-        before_tack_type : str
-            操作前のタック種別 ('port'または'starboard')
-        after_tack_type : str
-            操作後のタック種別 ('port'または'starboard')
-        position : Tuple[float, float]
-            操作の位置（緯度, 経度）
-        time_point : any
-            操作の時刻
-        wind_field : Dict[str, Any]
-            風場データ
-            
-        Returns:
-        --------
-        Tuple[float, str]
-            (戦略スコア（0-1）, 評価メモ)
-        """
-        score = 0.5  # デフォルト値
-        note = "標準的な戦略判断"
-        
-        # 風場取得
-        wind = self._get_wind_at_position(position[0], position[1], time_point, wind_field)
-        
-        if not wind:
-            return score, note
-        
-        # 操作タイプに応じた評価
-        if maneuver_type == 'tack':
-            # タックの場合
-            wind_shift_probability = wind.get('variability', 0.2)
-            
-            # タック種別
-            if before_tack_type != after_tack_type:
-                # タックが風向変化に合わせている場合
-                if wind_shift_probability > 0.6:
-                    # 変動性の高い中での適切なタック
-                    score = 0.8
-                    note = "風の変動に合わせた適切なタック"
-                elif wind.get('confidence', 0.5) < 0.4:
-                    # 風の不確実性が高い中でのタック
-                    score = 0.3
-                    note = "風の予測が不確実な中でのタック（リスク）"
-                else:
-                    # 標準的なタック
-                    score = 0.5
-                    note = "標準的なタック"
-            
-        elif maneuver_type == 'wind_shift':
-            # 風向変化の場合
-            shift_angle = abs(self._angle_difference(
-                wind.get('direction', 0), 
-                wind.get('before_direction', wind.get('direction', 0))
-            ))
-            
-            if shift_angle > 20:
-                # 大きな風向変化
-                score = 0.9
-                note = "大きな風向変化ポイント"
-            elif shift_angle > 10:
-                # 中程度の風向変化
-                score = 0.7
-                note = "中程度の風向変化"
-            else:
-                # 小さな風向変化
-                score = 0.5
-                note = "小さな風向変化"
-            
-            # 風速の変化も考慮
-            if 'before_speed' in wind and 'speed' in wind:
-                speed_change = abs(wind['speed'] - wind['before_speed'])
-                if speed_change > 5:
-                    score += 0.1
-                    note += "（風速も大きく変化）"
-        
-        # 後の非線形評価は別途具現化が必要な場合は実施
-        if 'lat_grid' in wind_field and 'lon_grid' in wind_field:
-            # 将来的な拡張
-            pass
-        
-        return min(1.0, score), note
     
     def _filter_duplicate_tack_points(self, tack_points: List[TackPoint]) -> List[TackPoint]:
         """
@@ -580,7 +505,7 @@ class StrategyDetectorWithPropagation(StrategyDetector):
             
             for existing in filtered_points:
                 # 位置が近い
-                position_close = self._calculate_distance(
+                position_close = calculate_distance(
                     point.position[0], point.position[1],
                     existing.position[0], existing.position[1]
                 ) < 200  # タックはより詳細に
@@ -629,7 +554,7 @@ class StrategyDetectorWithPropagation(StrategyDetector):
                 same_mark = point.mark_id == existing.mark_id
                 
                 # 位置が近い
-                position_close = self._calculate_distance(
+                position_close = calculate_distance(
                     point.position[0], point.position[1],
                     existing.position[0], existing.position[1]
                 ) < 300
@@ -647,39 +572,3 @@ class StrategyDetectorWithPropagation(StrategyDetector):
                 filtered_points.append(point)
         
         return filtered_points
-    
-    def _calculate_distance(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
-        """
-        2点間の距離計算
-        
-        Parameters:
-        -----------
-        lat1, lon1 : float
-            始点の緯度経度
-        lat2, lon2 : float
-            終点の緯度経度
-            
-        Returns:
-        --------
-        float
-            距離（メートル）
-        """
-        # 地球の半径（メートル）
-        R = 6371000
-        
-        # 緯度経度をラジアンに変換
-        lat1_rad = math.radians(lat1)
-        lon1_rad = math.radians(lon1)
-        lat2_rad = math.radians(lat2)
-        lon2_rad = math.radians(lon2)
-        
-        # 差分
-        dlat = lat2_rad - lat1_rad
-        dlon = lon2_rad - lon1_rad
-        
-        # Haversineの公式
-        a = math.sin(dlat/2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon/2)**2
-        c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
-        distance = R * c
-        
-        return distance
