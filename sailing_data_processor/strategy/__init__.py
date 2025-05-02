@@ -20,10 +20,10 @@ from typing import Optional, Type
 logger = logging.getLogger(__name__)
 
 # Import base classes first to avoid circular dependencies
-from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint, StrategyAlternative
-from .detector import StrategyDetector
-from .evaluator import StrategyEvaluator
-from .visualizer import StrategyVisualizer
+from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint, StrategyAlternative
+from sailing_data_processor.strategy.detector import StrategyDetector
+from sailing_data_processor.strategy.evaluator import StrategyEvaluator
+from sailing_data_processor.strategy.visualizer import StrategyVisualizer
 
 # Avoid eager loading to prevent circular references
 StrategyDetectorWithPropagation = None
@@ -69,18 +69,18 @@ def load_strategy_detector_with_propagation() -> Optional[Type]:
     # インポート試行の多段階アプローチ
     success = False
     
-    # アプローチ1: 相対パスでインポート
+    # アプローチ1: 絶対パスでインポート
     try:
-        logger.debug("アプローチ1: 相対パスでインポート")
-        from .strategy_detector_with_propagation import StrategyDetectorWithPropagation as SDwP
+        logger.debug("アプローチ1: 絶対パスでインポート")
+        from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation as SDwP
         if SDwP is not None:
             StrategyDetectorWithPropagation = SDwP
-            logger.info("相対パスでのインポートに成功")
+            logger.info("絶対パスでのインポートに成功")
             success = True
         else:
             logger.warning("モジュールはロードされましたがStrategyDetectorWithPropagationがNoneです")
     except ImportError as e:
-        logger.warning(f"相対パスインポートエラー: {e}")
+        logger.warning(f"絶対パスインポートエラー: {e}")
     
     # アプローチ2: 絶対パスからインポート
     if not success:

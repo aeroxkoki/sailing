@@ -14,8 +14,8 @@ from datetime import datetime, timedelta
 from functools import lru_cache
 
 # 戦略検出関連モジュール - 親クラスと戦略ポイント定義
-from .detector import StrategyDetector
-from .points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
+from sailing_data_processor.strategy.detector import StrategyDetector
+from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint
 
 # ロガー設定
 logger = logging.getLogger(__name__)

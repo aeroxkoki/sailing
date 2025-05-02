@@ -83,141 +83,80 @@ def load_strategy_detector() -> Optional[Type]:
     logger.debug(f"Python path: {sys.path}")
     logger.debug(f"sailing_data_processor path: {__file__}")
     
-    # 複数のインポート方法を試す
-    success = False
-    error_messages = []
-    
-    # 各インポート方法を試す
-    # 戦略1: 遅延ロード関数を利用
+    # まず strategy モジュールをインポート
     try:
-        from . import strategy
+        logger.debug("Imported load_strategy_detector from root module")
+        import sailing_data_processor.strategy
         
-        logger.debug("戦略1: strategy.load_strategy_detector_with_propagation を試行")
-        
-        # 遅延ロード関数の存在を確認
-        if hasattr(strategy, 'load_strategy_detector_with_propagation'):
-            # 遅延ロード関数を呼び出し
-            logger.debug("load_strategy_detector_with_propagation関数を呼び出し")
-            detector = strategy.load_strategy_detector_with_propagation()
+        # 遅延ロード関数呼び出し
+        if hasattr(sailing_data_processor.strategy, 'load_strategy_detector_with_propagation'):
+            detector = sailing_data_processor.strategy.load_strategy_detector_with_propagation()
             
             if detector is not None:
                 StrategyDetectorWithPropagation = detector
-                logger.info(f"成功: 戦略1でStrategyDetectorWithPropagationをロード")
-                success = True
-            else:
-                error_messages.append("戦略1: detector is None")
-        else:
-            error_messages.append("戦略1: load_strategy_detector_with_propagation関数が見つかりません")
+                logger.info(f"Successfully loaded StrategyDetectorWithPropagation via root loader: {detector.__name__}")
+                logger.info("===== 戦略検出器ロード完了 =====")
+                return StrategyDetectorWithPropagation
     except Exception as e:
-        error_messages.append(f"戦略1エラー: {str(e)}")
+        logger.error(f"Error in strategy module loading: {e}")
     
-    # 戦略2: 直接インポート
-    if not success:
-        try:
-            logger.debug("戦略2: 直接インポートを試行")
-            
-            # モジュールパスを確認
-            strategy_module_path = os.path.join(os.path.dirname(__file__), 'strategy')
-            if strategy_module_path not in sys.path:
-                sys.path.insert(0, strategy_module_path)
-                logger.debug(f"戦略モジュールパスを追加: {strategy_module_path}")
-            
-            # 直接インポート
-            from .strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation as SDwP
-            
-            if SDwP is not None:
-                StrategyDetectorWithPropagation = SDwP
-                logger.info("成功: 戦略2で戦略検出器をロード")
-                success = True
-            else:
-                error_messages.append("戦略2: SDwP is None")
-        except Exception as e:
-            error_messages.append(f"戦略2エラー: {str(e)}")
-    
-    # 戦略3: 絶対パスでの動的インポート
-    if not success:
-        try:
-            logger.debug("戦略3: 絶対パスでの動的インポートを試行")
-            
-            # ファイルの絶対パスを取得
-            module_path = os.path.join(os.path.dirname(__file__), 
-                                      'strategy', 
-                                      'strategy_detector_with_propagation.py')
-            
-            if os.path.exists(module_path):
-                logger.debug(f"モジュールファイルの存在を確認: {module_path}")
-                
-                # モジュール名を作成
-                module_name = "sailing_data_processor.strategy.strategy_detector_with_propagation"
-                spec = importlib.util.spec_from_file_location(module_name, module_path)
-                
-                if spec:
-                    module = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(module)
-                    
-                    if hasattr(module, "StrategyDetectorWithPropagation"):
-                        StrategyDetectorWithPropagation = getattr(module, "StrategyDetectorWithPropagation")
-                        logger.info("成功: 戦略3で戦略検出器をロード")
-                        success = True
-                    else:
-                        error_messages.append("戦略3: モジュールにStrategyDetectorWithPropagationクラスがありません")
-                else:
-                    error_messages.append("戦略3: spec is None")
-            else:
-                error_messages.append(f"戦略3: モジュールファイルが存在しません: {module_path}")
-        except Exception as e:
-            error_messages.append(f"戦略3エラー: {str(e)}")
-    
-    # どの方法も失敗した場合はフォールバックを使用
-    if not success:
-        logger.warning("すべてのインポート方法が失敗しました。フォールバック実装を作成します")
-        logger.debug(f"エラーメッセージ: {'; '.join(error_messages)}")
+    # 代替方法：直接インポート
+    try:
+        import sailing_data_processor.strategy.strategy_detector_with_propagation
+        StrategyDetectorWithPropagation = sailing_data_processor.strategy.strategy_detector_with_propagation.StrategyDetectorWithPropagation
         
-        try:
-            # 基本クラスをインポート
-            from .strategy.detector import StrategyDetector
-            
-            # 最小限の実装
-            class SimpleStrategyDetector(StrategyDetector):
-                """テスト環境用の最小限実装"""
-                def __init__(self, vmg_calculator=None, wind_fusion_system=None):
-                    super().__init__(vmg_calculator)
-                    self.wind_fusion_system = wind_fusion_system
-                    self.propagation_config = {
-                        'wind_shift_prediction_horizon': 1800,
-                        'prediction_time_step': 300,
-                        'wind_shift_confidence_threshold': 0.7,
-                        'min_propagation_distance': 1000,
-                        'prediction_confidence_decay': 0.1,
-                        'use_historical_data': True
-                    }
-                    logger.info("root: フォールバック戦略検出器が初期化されました")
-                
-                def detect_wind_shifts_with_propagation(self, course_data, wind_field):
-                    """最小限の実装"""
-                    logger.debug("SimpleStrategyDetector.detect_wind_shifts_with_propagation called")
-                    return []
-                    
-                def _detect_wind_shifts_in_legs(self, course_data, wind_field, target_time):
-                    """最小限の実装"""
-                    return []
-                    
-                def _get_wind_at_position(self, lat, lon, time, wind_field):
-                    """最小限の実装"""
-                    return None
-                
-                def __str__(self):
-                    return "StrategyDetectorWithPropagation(RootFallback)"
-            
-            # クラス名を設定
-            SimpleStrategyDetector.__name__ = "StrategyDetectorWithPropagation"
-            StrategyDetectorWithPropagation = SimpleStrategyDetector
-            logger.info("フォールバックの戦略検出器を作成しました")
-            success = True
+        if StrategyDetectorWithPropagation is not None:
+            logger.info(f"Successfully loaded StrategyDetectorWithPropagation via direct import")
+            logger.info("===== 戦略検出器ロード完了 =====")
+            return StrategyDetectorWithPropagation
+    except Exception as e:
+        logger.error(f"Error in direct import: {e}")
+    
+    # 最後の手段：フォールバック実装
+    try:
+        # 基本クラスをインポート
+        from sailing_data_processor.strategy.detector import StrategyDetector
         
-        except Exception as e:
-            logger.error(f"フォールバック作成にも失敗: {e}")
-            StrategyDetectorWithPropagation = None
+        # 最小限の実装
+        class SimpleStrategyDetector(StrategyDetector):
+            """テスト環境用の最小限実装"""
+            def __init__(self, vmg_calculator=None, wind_fusion_system=None):
+                super().__init__(vmg_calculator)
+                self.wind_fusion_system = wind_fusion_system
+                self.propagation_config = {
+                    'wind_shift_prediction_horizon': 1800,
+                    'prediction_time_step': 300,
+                    'wind_shift_confidence_threshold': 0.7,
+                    'min_propagation_distance': 1000,
+                    'prediction_confidence_decay': 0.1,
+                    'use_historical_data': True
+                }
+                logger.info("Fallback strategy detector initialized")
+            
+            def detect_wind_shifts_with_propagation(self, course_data, wind_field):
+                """最小限の実装"""
+                logger.debug("SimpleStrategyDetector.detect_wind_shifts_with_propagation called")
+                return []
+                
+            def _detect_wind_shifts_in_legs(self, course_data, wind_field, target_time):
+                """最小限の実装"""
+                return []
+                
+            def _get_wind_at_position(self, lat, lon, time, wind_field):
+                """最小限の実装"""
+                return None
+            
+            def __str__(self):
+                return "StrategyDetectorWithPropagation(Fallback)"
+        
+        # クラス名を設定
+        SimpleStrategyDetector.__name__ = "StrategyDetectorWithPropagation"
+        StrategyDetectorWithPropagation = SimpleStrategyDetector
+        logger.info("Created fallback implementation for strategy detector")
+    
+    except Exception as e:
+        logger.error(f"Fallback creation also failed: {e}")
+        StrategyDetectorWithPropagation = None
     
     logger.info("===== 戦略検出器ロード完了 =====")
     return StrategyDetectorWithPropagation
