@@ -38,13 +38,25 @@ jobs:
         python -c "import sailing_data_processor"
         echo "Import successful"
         
-    - name: Test with pytest (collect only)
+    - name: Test with pytest (collect only - detailed)
       run: |
-        python -m pytest --collect-only tests/ --ignore=tests/project/ -v --tb=long
+        echo "=== Detailed pytest collection with error information ==="
+        python -m pytest --collect-only tests/ --ignore=tests/project/ -vv --tb=full -r A --capture=no --show-capture=no --maxfail=10 || echo "Test collection failed"
+        
+    - name: Show test collection errors with alternative approach
+      if: failure()
+      run: |
+        echo "=== Collecting errors from individual test files ==="
+        for test_file in tests/test_*.py; do
+          if [[ -f "$test_file" ]]; then
+            echo "Checking $test_file ..."
+            python -m pytest --collect-only "$test_file" -vv --tb=full || echo "Error in $test_file"
+          fi
+        done
 
     - name: Test with pytest
       run: |
-        python -m pytest --cov=sailing_data_processor tests/ -v --ignore=tests/project/ --tb=long
+        python -m pytest --cov=sailing_data_processor tests/ -vv --ignore=tests/project/ --tb=full -r A --capture=no
     
     - name: Upload coverage report
       uses: codecov/codecov-action@v3
