@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-#\!/usr/bin/env python3
 """
 WindEstimatorクラスの改良部分をテストするスクリプト
 """
@@ -10,6 +9,7 @@ from datetime import datetime, timedelta
 import math
 import os
 import sys
+import pytest
 
 # プロジェクトルートをパスに追加
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -17,72 +17,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # テスト対象のクラスをインポート
 from sailing_data_processor.wind_estimator import WindEstimator
 
-def test_categorize_maneuver():
-    """マニューバー分類機能のテスト"""
-    estimator = WindEstimator()
-    
-    # テストシナリオの設定
-    test_cases = [
-        # (before_bearing, after_bearing, wind_direction, boat_type, expected_type)
-        # タックのテスト
-        (30, 330, 0, 'laser', 'tack'),
-        (330, 30, 0, 'laser', 'tack'),
-        # ジャイブのテスト
-        (150, 210, 0, 'laser', 'jibe'),
-        (210, 150, 0, 'laser', 'jibe'),
-        # ベアアウェイのテスト
-        (30, 150, 0, 'laser', 'bear_away'),
-        # ヘッドアップのテスト
-        (150, 30, 0, 'laser', 'head_up'),
-    ]
-    
-    for i, (before, after, wind_dir, boat, expected) in enumerate(test_cases):
-        result = estimator._categorize_maneuver(before, after, wind_dir, boat)
-        if result['maneuver_type'] \!= expected:
-            print(f"❌ テスト{i+1}失敗: 期待されるマニューバタイプ（{expected}）と実際の結果（{result['maneuver_type']}）が一致しません")
-        else:
-            print(f"✅ テスト{i+1}成功: マニューバタイプ {result['maneuver_type']}")
-        
-        # 信頼度が0-1の範囲内にあることを確認
-        if not (0 <= result['confidence'] <= 1):
-            print(f"❌ テスト{i+1}失敗: 信頼度（{result['confidence']}）が範囲外です")
-        
-        # 状態情報も出力
-        print(f"   状態: {result['before_state']} → {result['after_state']}, 信頼度: {result['confidence']:.2f}")
-        print(f"   角度変化: {result['angle_change']:.1f}°")
-        print()
+@pytest.fixture
+def estimator():
+    """テスト用のWindEstimatorインスタンスを返す"""
+    return WindEstimator()
 
-def test_determine_point_state():
-    """風に対する状態判定のテスト"""
-    estimator = WindEstimator()
-    
-    # テストケース
-    test_cases = [
-        # (相対角度, upwind_range, downwind_range, 期待される状態)
-        (0, 80, 100, 'upwind'),
-        (80, 80, 100, 'upwind'),
-        (359, 80, 100, 'upwind'),
-        (100, 80, 100, 'downwind'),
-        (180, 80, 100, 'downwind'),
-        (260, 80, 100, 'downwind'),
-        (85, 80, 100, 'reaching'),
-        (95, 80, 100, 'reaching'),
-        (275, 80, 100, 'reaching'),
-    ]
-    
-    for i, (rel_angle, upwind, downwind, expected) in enumerate(test_cases):
-        result = estimator._determine_point_state(rel_angle, upwind, downwind)
-        if result \!= expected:
-            print(f"❌ テスト{i+1}失敗: 相対角度{rel_angle}°の期待される状態（{expected}）と実際の結果（{result}）が一致しません")
-        else:
-            print(f"✅ テスト{i+1}成功: 相対角度{rel_angle}°が正しく {result} と判定されました")
-
-def _create_simple_tack_data():
-    """明確なタックを含むシンプルなGPSデータを作成"""
-    # 基準時刻
+@pytest.fixture
+def test_data():
+    """シンプルなタックを含むテストデータを返す"""
     base_time = datetime(2024, 3, 1, 10, 0, 0)
-    
-    # 100ポイントのデータ生成
     points = 100
     timestamps = [base_time + timedelta(seconds=i*5) for i in range(points)]
     
@@ -122,33 +65,75 @@ def _create_simple_tack_data():
     
     return df
 
-def test_detect_maneuvers():
-    """マニューバー検出機能のテスト"""
-    estimator = WindEstimator()
+class TestWindEstimatorImproved:
+    """WindEstimatorクラスの改良部分をテスト"""
     
-    # テストデータ作成
-    test_data = _create_simple_tack_data()
+    def test_categorize_maneuver(self, estimator):
+        """マニューバー分類機能のテスト"""
+        
+        # テストシナリオの設定
+        test_cases = [
+            # (before_bearing, after_bearing, wind_direction, boat_type, expected_type)
+            # タックのテスト
+            (30, 330, 0, 'laser', 'tack'),
+            (330, 30, 0, 'laser', 'tack'),
+            # ジャイブのテスト
+            (150, 210, 0, 'laser', 'jibe'),
+            (210, 150, 0, 'laser', 'jibe'),
+            # ベアアウェイのテスト
+            (30, 150, 0, 'laser', 'bear_away'),
+            # ヘッドアップのテスト
+            (150, 30, 0, 'laser', 'head_up'),
+        ]
+        
+        for i, (before, after, wind_dir, boat, expected) in enumerate(test_cases):
+            result = estimator._categorize_maneuver(before, after, wind_dir, boat)
+            assert result['maneuver_type'] == expected, f"テスト{i+1}失敗: 期待されるマニューバタイプ（{expected}）と実際の結果（{result['maneuver_type']}）が一致しません"
+            
+            # 信頼度が0-1の範囲内にあることを確認
+            assert 0 <= result['confidence'] <= 1, f"テスト{i+1}失敗: 信頼度（{result['confidence']}）が範囲外です"
+            
+            # 状態が正しく設定されていることを確認
+            assert result['before_state'] in ['upwind', 'downwind', 'reaching'], f"転換前の状態（{result['before_state']}）が無効です"
+            assert result['after_state'] in ['upwind', 'downwind', 'reaching'], f"転換後の状態（{result['after_state']}）が無効です"
     
-    # 風向を設定（テストデータでは風向0度を想定）
-    wind_direction = 0.0
+    def test_determine_point_state(self, estimator):
+        """風に対する状態判定のテスト"""
+        
+        # テストケース
+        test_cases = [
+            # (相対角度, upwind_range, downwind_range, 期待される状態)
+            (0, 80, 100, 'upwind'),
+            (80, 80, 100, 'upwind'),
+            (359, 80, 100, 'upwind'),
+            (100, 80, 100, 'downwind'),
+            (180, 80, 100, 'downwind'),
+            (260, 80, 100, 'downwind'),
+            (85, 80, 100, 'reaching'),
+            (95, 80, 100, 'reaching'),
+            (275, 80, 100, 'reaching'),
+        ]
+        
+        for i, (rel_angle, upwind, downwind, expected) in enumerate(test_cases):
+            result = estimator._determine_point_state(rel_angle, upwind, downwind)
+            assert result == expected, f"テスト{i+1}失敗: 相対角度{rel_angle}°の期待される状態（{expected}）と実際の結果（{result}）が一致しません"
     
-    # マニューバー検出
-    maneuvers = estimator.detect_maneuvers(test_data, wind_direction)
-    
-    # 検出結果の表示
-    if len(maneuvers) == 0:
-        print("❌ テスト失敗: マニューバが検出されていません")
-    else:
-        print(f"✅ テスト成功: {len(maneuvers)}個のマニューバが検出されました")
-        for i, maneuver in maneuvers.iterrows():
-            print(f"マニューバ{i+1}: {maneuver['maneuver_type']}, 信頼度: {maneuver['maneuver_confidence']:.2f}")
-            print(f"  角度変化: {maneuver['angle_change']:.1f}°, 方位: {maneuver['before_bearing']:.1f}° → {maneuver['after_bearing']:.1f}°")
-            print(f"  状態変化: {maneuver['before_state']} → {maneuver['after_state']}")
-
-if __name__ == "__main__":
-    print("=== マニューバー分類テスト ===")
-    test_categorize_maneuver()
-    print("\n=== 状態判定テスト ===")
-    test_determine_point_state()
-    print("\n=== マニューバー検出テスト ===")
-    test_detect_maneuvers()
+    def test_detect_maneuvers(self, estimator, test_data):
+        """マニューバー検出機能のテスト"""
+        
+        # 風向を設定（テストデータでは風向0度を想定）
+        wind_direction = 0.0
+        
+        # マニューバー検出
+        maneuvers = estimator.detect_maneuvers(test_data, wind_direction)
+        
+        # 検出結果の確認
+        assert len(maneuvers) > 0, "マニューバが検出されていません"
+        
+        # 検出されたマニューバーの内容を確認
+        first_maneuver = maneuvers.iloc[0]
+        assert first_maneuver['maneuver_type'] in ['tack', 'jibe', 'bear_away', 'head_up'], "検出されたマニューバタイプが無効です"
+        assert 0 <= first_maneuver['maneuver_confidence'] <= 1, "信頼度が範囲外です"
+        assert 'angle_change' in first_maneuver, "角度変化が含まれていません"
+        assert 'before_bearing' in first_maneuver and 'after_bearing' in first_maneuver, "方位情報が不足しています"
+        assert 'before_state' in first_maneuver and 'after_state' in first_maneuver, "状態情報が不足しています"

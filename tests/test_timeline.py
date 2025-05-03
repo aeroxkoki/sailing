@@ -11,8 +11,13 @@ import datetime
 import json
 import re
 import math
+import sys
+import os
 from typing import Dict, Any
 import numpy as np
+
+# プロジェクトルートをパスに追加
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sailing_data_processor.reporting.elements.timeline.event_timeline import EventTimeline
 from sailing_data_processor.reporting.elements.timeline.parameter_timeline import ParameterTimeline

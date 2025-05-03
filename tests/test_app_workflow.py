@@ -20,13 +20,13 @@ import json
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # モジュールのインポート
-from sailing_data_processor.project.project import Project
-from sailing_data_processor.project.session import Session
-from sailing_data_processor.storage.local_storage import LocalStorageManager
+from sailing_data_processor.project.project_model import Project
+from sailing_data_processor.project.session_model import Session
+from sailing_data_processor.project.project_storage import LocalStorageManager
 from sailing_data_processor.importers.csv_importer import CSVImporter
 from sailing_data_processor.importers.gpx_importer import GPXImporter
-from sailing_data_processor.analysis.wind_estimator import WindEstimator
-from sailing_data_processor.analysis.strategy_detector import StrategyDetector
+from sailing_data_processor.wind_estimator import WindEstimator
+from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
 from sailing_data_processor.exporters.csv_exporter import CSVExporter
 from sailing_data_processor.exporters.json_exporter import JSONExporter
 
@@ -120,7 +120,7 @@ class TestAppWorkflow:
         wind_data = wind_estimator.estimate_wind(sample_session.get_data())
         
         # 8. 戦略検出実行
-        strategy_detector = StrategyDetector()
+        strategy_detector = StrategyDetectorWithPropagation()
         strategy_points = strategy_detector.detect_strategy_points(wind_data)
         
         # 9. 分析結果のセッションへの保存
