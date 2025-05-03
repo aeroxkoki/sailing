@@ -41,20 +41,40 @@ jobs:
     - name: Test with pytest (collect only - detailed)
       run: |
         echo "=== Detailed pytest collection with error information ==="
-        python -m pytest --collect-only tests/ --ignore=tests/project/ -vv --tb=long -r A --capture=no --show-capture=no --maxfail=10 || echo "Test collection failed"
+        python -m pytest --collect-only tests/ --ignore=tests/project/ -vv --tb=long -r A --capture=no --show-capture=no --maxfail=10 || echo "Test collection failed with exit code $?"
         
     - name: Show test collection errors with alternative approach
-      if: failure()
+      if: always()
       run: |
         echo "=== Collecting errors from individual test files ==="
         for test_file in tests/test_*.py; do
           if [[ -f "$test_file" ]]; then
-            echo "Checking $test_file ..."
-            python -m pytest --collect-only "$test_file" -vv --tb=long || echo "Error in $test_file"
+            echo "=== Testing $test_file ==="
+            python -m pytest --collect-only "$test_file" -vv --tb=long || echo "Error in $test_file with exit code $?"
+            echo "----------------------------------------"
           fi
         done
+        
+    - name: Run pytest with more verbose logging
+      if: always()
+      run: |
+        echo "=== Try collecting test with logging ==="
+        PYTHONPATH=. python -m pytest --collect-only tests/ --ignore=tests/project/ -vv --tb=long --log-cli-level=DEBUG --log-cli-format='%(asctime)s [%(levelname)s] %(message)s' || echo "Exit code: $?"
 
+    - name: Add additional debugging for test errors
+      if: always()
+      run: |
+        echo "=== Directly check import of problematic modules ==="
+        echo "*** Checking validation module ***"
+        PYTHONPATH=. python -c "from sailing_data_processor import validation; print('Validation module imported successfully')" || echo "Failed to import validation module"
+        echo "*** Checking validation submodules ***"
+        PYTHONPATH=. python -c "from sailing_data_processor.validation import quality_metrics; print('quality_metrics imported successfully')" || echo "Failed to import quality_metrics"
+        PYTHONPATH=. python -c "from sailing_data_processor.validation import visualization; print('visualization imported successfully')" || echo "Failed to import visualization"
+        echo "*** Checking test_validation_dashboard_integration ***"
+        PYTHONPATH=. python -c "import tests.validation.test_validation_dashboard_integration; print('test_validation_dashboard_integration imported successfully')" || echo "Failed to import test_validation_dashboard_integration"
+    
     - name: Test with pytest
+      if: always()
       run: |
         python -m pytest --cov=sailing_data_processor tests/ -vv --ignore=tests/project/ --tb=long -r A --capture=no
     
