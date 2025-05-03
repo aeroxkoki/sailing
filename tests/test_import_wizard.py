@@ -1,12 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-インポートウィザードのテスト用モジュール
-
-このモジュールでは：
-1. サンプルのGPSデータを生成してCSVとGPXに保存
-2. インポートウィザードでデータをインポート
-3. インポート結果を表示
+インポートウィザードのテスト
 """
 
 import os
@@ -14,33 +9,17 @@ import sys
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-import streamlit as st
 import tempfile
 import xml.etree.ElementTree as ET
 from pathlib import Path
+import pytest
 
 # プロジェクトのルートディレクトリを追加
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
-from ui.components.forms.import_wizard import ImportWizard, EnhancedImportWizard, BatchImportUI
-from sailing_data_processor.data_model.container import GPSDataContainer
-
-
 def generate_sample_gps_csv(file_path, num_points=100):
     """
     サンプルのGPSデータを生成してCSVに保存
-    
-    Parameters
-    ----------
-    file_path : str
-        保存先のファイルパス
-    num_points : int, optional
-        生成するデータポイント数, by default 100
-        
-    Returns
-    -------
-    pd.DataFrame
-        生成したGPSデータのDataFrame
     """
     # 基準位置
     base_lat = 35.6234
@@ -72,26 +51,12 @@ def generate_sample_gps_csv(file_path, num_points=100):
     
     # CSVに保存
     df.to_csv(file_path, index=False)
-    print(f"サンプル用{file_path}に保存しました（{num_points}ポイント）")
     
     return df
-
 
 def generate_sample_gpx(file_path, num_points=100):
     """
     サンプルのGPSデータをGPXに保存
-    
-    Parameters
-    ----------
-    file_path : str
-        保存先のファイルパス
-    num_points : int, optional
-        生成するデータポイント数, by default 100
-        
-    Returns
-    -------
-    pd.DataFrame
-        生成したGPSデータのDataFrame
     """
     # DataFrame生成
     df = generate_sample_gps_csv(file_path + ".temp.csv", num_points)
@@ -128,7 +93,6 @@ def generate_sample_gpx(file_path, num_points=100):
     # XMLツリーの作成と保存
     tree = ET.ElementTree(gpx)
     tree.write(file_path, encoding='utf-8', xml_declaration=True)
-    print(f"GPXファイル{file_path}に保存しました（{num_points}ポイント）")
     
     # 一時ファイルの削除
     if os.path.exists(file_path + ".temp.csv"):
@@ -136,130 +100,112 @@ def generate_sample_gpx(file_path, num_points=100):
     
     return df
 
+@pytest.fixture
+def sample_files():
+    """サンプルファイルのフィクスチャ"""
+    files = {}
+    
+    # CSVファイル生成
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp:
+        csv_path = tmp.name
+        generate_sample_gps_csv(csv_path, 200)
+        files['csv'] = csv_path
+    
+    # GPXファイル生成
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.gpx') as tmp:
+        gpx_path = tmp.name
+        generate_sample_gpx(gpx_path, 200)
+        files['gpx'] = gpx_path
+    
+    yield files
+    
+    # クリーンアップ
+    for filepath in files.values():
+        if os.path.exists(filepath):
+            os.remove(filepath)
 
-def import_wizard_test_app():
-    """
-    インポートウィザードのテスト用Streamlitアプリ
-    """
-    # アプリ設定
-    st.set_page_config(
-        page_title="インポートウィザードテスト",
-        page_icon="⛵",
-        layout="wide",
-    )
+def test_sample_csv_generation(sample_files):
+    """CSVサンプルデータ生成のテスト"""
+    csv_path = sample_files.get('csv')
     
-    # タイトル
-    st.title("インポートウィザードテスト")
+    assert csv_path is not None, "CSVファイルパスが存在しません"
+    assert os.path.exists(csv_path), "CSVファイルが生成されていません"
     
-    # サンプルデータ生成
-    if 'sample_files' not in st.session_state:
-        st.session_state['sample_files'] = {}
-        
-        # CSVファイル生成
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.csv') as tmp:
-            csv_path = tmp.name
-            generate_sample_gps_csv(csv_path, 200)
-            st.session_state['sample_files']['csv'] = csv_path
-        
-        # GPXファイル生成
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.gpx') as tmp:
-            gpx_path = tmp.name
-            generate_sample_gpx(gpx_path, 200)
-            st.session_state['sample_files']['gpx'] = gpx_path
+    # CSVファイルの読み込み
+    df = pd.read_csv(csv_path)
     
-    # サンプルデータ表示
-    st.write("### サンプルデータの生成")
-    
-    csv_path = st.session_state['sample_files'].get('csv')
-    gpx_path = st.session_state['sample_files'].get('gpx')
-    
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        if csv_path and os.path.exists(csv_path):
-            st.success(f"CSVサンプルデータを生成しました: {csv_path}")
-            
-            # サンプルデータの中身を表示
-            try:
-                sample_df = pd.read_csv(csv_path)
-                st.write("CSVプレビュー")
-                st.dataframe(sample_df.head())
-            except Exception as e:
-                st.error(f"CSVの読み込みに失敗しました: {e}")
-        else:
-            st.error("CSVサンプルデータの生成に失敗しました。")
-    
-    with col2:
-        if gpx_path and os.path.exists(gpx_path):
-            st.success(f"GPXサンプルデータを生成しました: {gpx_path}")
-            
-            # GPXファイルの中身を表示
-            try:
-                with open(gpx_path, 'r') as f:
-                    gpx_content = f.read(1000)  # 最初の1000文字だけ表示
-                
-                st.write("GPXプレビュー")
-                st.code(gpx_content + "...", language="xml")
-            except Exception as e:
-                st.error(f"GPXの読み込みに失敗しました: {e}")
-        else:
-            st.error("GPXサンプルデータの生成に失敗しました。")
-    
-    # 各種インポートウィザード表示
-    tab1, tab2, tab3 = st.tabs(["基本インポートウィザード", "拡張インポートウィザード", "バッチインポート"])
-    
-    def on_import_complete(container):
-        """インポート完了時のコールバック"""
-        st.session_state["imported_data"] = container
-        st.success("データのインポートが完了しました！")
-    
-    with tab1:
-        st.header("基本インポートウィザード")
-        wizard = ImportWizard(
-            key="test_import_wizard",
-            on_import_complete=on_import_complete
-        )
-        wizard.render()
-    
-    with tab2:
-        st.header("拡張インポートウィザード")
-        enhanced_wizard = EnhancedImportWizard(
-            key="test_enhanced_wizard",
-            on_import_complete=on_import_complete
-        )
-        enhanced_wizard.render()
-    
-    with tab3:
-        st.header("バッチインポート")
-        batch_import = BatchImportUI(
-            key="test_batch_import",
-            on_import_complete=on_import_complete
-        )
-        batch_import.render()
-    
-    # インポート結果データの表示
-    if "imported_data" in st.session_state and st.session_state["imported_data"]:
-        st.write("---")
-        st.header("インポート結果データ")
-        
-        container = st.session_state["imported_data"]
-        
-        if isinstance(container, GPSDataContainer):
-            # メタデータ表示
-            st.write("### メタデータ")
-            st.json(container.metadata)
-            
-            # データ表示
-            st.write("### データ")
-            st.dataframe(container.data)
-            
-            # 地図表示
-            st.write("### 位置データマップ")
-            map_data = container.data[["latitude", "longitude"]]
-            st.map(map_data)
-        else:
-            st.write("インポート結果データの型が不明です。")
+    assert len(df) == 200, "生成されたデータポイントの数が正しくありません"
+    assert 'timestamp' in df.columns, "timestamp列が存在しません"
+    assert 'latitude' in df.columns, "latitude列が存在しません"
+    assert 'longitude' in df.columns, "longitude列が存在しません"
+    assert 'speed' in df.columns, "speed列が存在しません"
+    assert 'course' in df.columns, "course列が存在しません"
 
+def test_sample_gpx_generation(sample_files):
+    """GPXサンプルデータ生成のテスト"""
+    gpx_path = sample_files.get('gpx')
+    
+    assert gpx_path is not None, "GPXファイルパスが存在しません"
+    assert os.path.exists(gpx_path), "GPXファイルが生成されていません"
+    
+    # GPXファイルのXML解析
+    tree = ET.parse(gpx_path)
+    root = tree.getroot()
+    
+    assert root.tag.endswith('gpx'), "ルート要素がgpxではありません"
+    
+    # メタデータの確認
+    metadata = root.find('.//{http://www.topografix.com/GPX/1/1}metadata')
+    assert metadata is not None, "メタデータ要素が見つかりません"
+    
+    # トラックの確認
+    trk = root.find('.//{http://www.topografix.com/GPX/1/1}trk')
+    assert trk is not None, "トラック要素が見つかりません"
+    
+    # トラックポイントの数を確認
+    trkpts = root.findall('.//{http://www.topografix.com/GPX/1/1}trkpt')
+    assert len(trkpts) == 200, "トラックポイントの数が正しくありません"
 
-if __name__ == "__main__":
-    import_wizard_test_app()
+def test_import_wizard_components():
+    """インポートウィザードコンポーネントのテスト"""
+    try:
+        from ui.components.forms.import_wizard import ImportWizard, EnhancedImportWizard, BatchImportUI
+        from sailing_data_processor.data_model.container import GPSDataContainer
+        
+        assert ImportWizard is not None, "ImportWizardクラスがインポートできません"
+        assert EnhancedImportWizard is not None, "EnhancedImportWizardクラスがインポートできません"
+        assert BatchImportUI is not None, "BatchImportUIクラスがインポートできません"
+        assert GPSDataContainer is not None, "GPSDataContainerクラスがインポートできません"
+    except ImportError as e:
+        pytest.fail(f"インポートウィザードコンポーネントのインポートに失敗: {e}")
+
+@pytest.mark.parametrize("wizard_class", [
+    "ImportWizard",
+    "EnhancedImportWizard",
+    "BatchImportUI"
+])
+def test_wizard_initialization(wizard_class):
+    """各ウィザードクラスの初期化テスト"""
+    try:
+        # モジュールのインポート
+        from ui.components.forms.import_wizard import ImportWizard, EnhancedImportWizard, BatchImportUI
+        
+        # クラスの動的取得
+        wizard_cls = eval(wizard_class)
+        
+        # ダミーのコールバック関数
+        def dummy_callback(container):
+            pass
+        
+        # インスタンス化（Streamlitがない環境でもテスト可能なようにtry-catch）
+        try:
+            wizard = wizard_cls(
+                key=f"test_{wizard_class.lower()}",
+                on_import_complete=dummy_callback
+            )
+            assert wizard is not None, f"{wizard_class}のインスタンス化に失敗しました"
+        except ImportError:
+            # Streamlitが必要な場合はスキップ
+            pytest.skip(f"{wizard_class}はStreamlitが必要です")
+    except ImportError as e:
+        pytest.fail(f"{wizard_class}のインポートに失敗: {e}")

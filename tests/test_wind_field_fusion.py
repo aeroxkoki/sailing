@@ -2,11 +2,6 @@
 # -*- coding: utf-8 -*-
 """
 WindFieldFusionSystem の機能検証テスト
-
-このテストは特に以下の点を検証します：
-1. Qhull precision error の解決
-2. データスケーリングの改善
-3. パフォーマンスの最適化
 """
 
 import sys
@@ -14,6 +9,7 @@ import time
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
+import pytest
 
 # 計測用デコレータ
 def time_it(func):
@@ -25,8 +21,9 @@ def time_it(func):
         return result
     return wrapper
 
-# テスト用の風データ生成クラス
 class WindDataGenerator:
+    """テスト用の風データ生成クラス"""
+    
     @staticmethod
     def create_random_points(num_points=20, base_lat=35.45, base_lon=139.65, 
                             time_interval=5, spread=0.01):
@@ -140,161 +137,118 @@ class WindDataGenerator:
         
         return boats_data
 
-class WindFieldFusionTest:
-    """WindFieldFusionSystemのテストクラス"""
+def test_qhull_precision_error():
+    """Qhull precision errorの対策テスト"""
+    from sailing_data_processor.wind_field_fusion_system import WindFieldFusionSystem
     
-    def __init__(self):
-        try:
-            from sailing_data_processor.wind_field_fusion_system import WindFieldFusionSystem
-            self.fusion_system = WindFieldFusionSystem()
-            print("WindFieldFusionSystem 初期化成功")
-        except Exception as e:
-            print(f"WindFieldFusionSystem 初期化エラー: {e}")
-            sys.exit(1)
+    fusion_system = WindFieldFusionSystem()
     
-    @time_it
-    def test_qhull_precision_error(self):
-        """Qhull precision errorの対策テスト"""
-        print("\n===== Qhull精度エラー対策テスト =====")
-        
-        # 問題を引き起こしやすいデータ
-        pathological_points = WindDataGenerator.create_pathological_points()
-        
-        success = True
-        # 各ポイントを追加
-        for point in pathological_points:
-            try:
-                self.fusion_system.add_wind_data_point(point)
-            except Exception as e:
-                print(f"エラー発生: {e}")
-                success = False
-        
-        # 風の場生成が成功したか確認
-        if self.fusion_system.current_wind_field is not None:
-            print("✓ 問題のあるデータでも風の場生成に成功しました")
-        else:
-            print("✗ 風の場生成に失敗しました")
-            success = False
-        
-        return success
+    # 問題を引き起こしやすいデータ
+    pathological_points = WindDataGenerator.create_pathological_points()
     
-    @time_it
-    def test_data_scaling(self):
-        """データスケーリング機能のテスト"""
-        print("\n===== データスケーリング機能テスト =====")
-        
-        # テストケース1: 単一位置のデータポイント（極小範囲）
-        single_point_data = [
-            {'latitude': 35.45, 'longitude': 139.65, 'wind_speed': 10, 'wind_direction': 90},
-            {'latitude': 35.45, 'longitude': 139.65, 'wind_speed': 12, 'wind_direction': 95}
-        ]
-        
-        scaled_points = self.fusion_system._scale_data_points(single_point_data)
-        
-        if len(scaled_points) == len(single_point_data):
-            # スケーリング結果の検証
-            has_scaled_values = all('scaled_latitude' in p and 'scaled_longitude' in p for p in scaled_points)
-            if has_scaled_values:
-                print("✓ 極小範囲データのスケーリング成功")
-            else:
-                print("✗ スケーリング結果にscaled_latitudeなどが含まれていません")
-                return False
-        else:
-            print("✗ スケーリング後のデータ数が一致しません")
-            return False
-        
-        # テストケース2: 広範囲のデータポイント
-        wide_range_data = [
-            {'latitude': 35.0, 'longitude': 139.0, 'wind_speed': 10, 'wind_direction': 90},
-            {'latitude': 36.0, 'longitude': 140.0, 'wind_speed': 15, 'wind_direction': 180}
-        ]
-        
-        scaled_points_wide = self.fusion_system._scale_data_points(wide_range_data)
-        
-        if len(scaled_points_wide) == len(wide_range_data):
-            print("✓ 広範囲データのスケーリング成功")
-            
-            # スケーリングの具体的な動作確認
-            p0 = scaled_points_wide[0]
-            p1 = scaled_points_wide[1]
-            
-            if 0 <= p0['scaled_latitude'] <= 1 and 0 <= p1['scaled_latitude'] <= 1:
-                print("✓ 位置データは0-1の範囲にスケーリングされています")
-            else:
-                print("✗ 位置データのスケーリング範囲が不適切です")
-                return False
-        else:
-            print("✗ スケーリング後のデータ数が一致しません")
-            return False
-        
-        return True
+    # 各ポイントを追加
+    for point in pathological_points:
+        fusion_system.add_wind_data_point(point)
     
-    @time_it
-    def test_performance_large_dataset(self):
-        """大規模データセットでのパフォーマンステスト"""
-        print("\n===== 大規模データセットのパフォーマンステスト =====")
-        
-        # 大量のボートデータを生成
-        num_boats = 5
-        points_per_boat = 50
-        print(f"テストデータ: {num_boats}隻 x {points_per_boat}ポイント = {num_boats * points_per_boat}ポイント")
-        
-        large_boat_data = WindDataGenerator.create_boat_data(
-            num_boats=num_boats, 
-            points_per_boat=points_per_boat,
-            spread=0.2  # より広い範囲に分散
-        )
-        
-        # 処理時間を計測
-        start_time = time.time()
-        result = self.fusion_system.update_with_boat_data(large_boat_data)
-        end_time = time.time()
-        
-        elapsed_time = end_time - start_time
-        print(f"処理時間: {elapsed_time:.4f}秒")
-        
-        # 処理時間の目標： 5秒以内
-        if elapsed_time < 5.0:
-            print(f"✓ パフォーマンス目標達成: {elapsed_time:.4f}秒 < 5.0秒")
-            performance_ok = True
-        else:
-            print(f"✗ パフォーマンス目標未達: {elapsed_time:.4f}秒 > 5.0秒")
-            performance_ok = False
-        
-        # 結果の検証
-        if result:
-            wind_field = self.fusion_system.current_wind_field
-            grid_shape = wind_field['wind_direction'].shape
-            print(f"生成された風の場グリッド: {grid_shape}")
-            result_ok = True
-        else:
-            print("✗ 風の場生成に失敗しました")
-            result_ok = False
-        
-        return performance_ok and result_ok
-    
-    def run_all_tests(self):
-        """すべてのテストを実行"""
-        print("\n===== WindFieldFusionSystem 機能検証テスト =====\n")
-        
-        test_results = {
-            "Qhull精度エラー対策": self.test_qhull_precision_error(),
-            "データスケーリング": self.test_data_scaling(),
-            "大規模データパフォーマンス": self.test_performance_large_dataset()
-        }
-        
-        print("\n===== テスト結果サマリー =====")
-        all_passed = True
-        
-        for test_name, result in test_results.items():
-            status = "成功" if result else "失敗"
-            print(f"{test_name}: {status}")
-            all_passed = all_passed and result
-        
-        print(f"\n総合結果: {'全テスト成功' if all_passed else '一部テスト失敗'}")
-        return all_passed
+    # 風の場生成が成功したか確認
+    assert fusion_system.current_wind_field is not None, "風の場生成に失敗しました"
 
-if __name__ == "__main__":
-    test = WindFieldFusionTest()
-    success = test.run_all_tests()
-    sys.exit(0 if success else 1)
+def test_data_scaling():
+    """データスケーリング機能のテスト"""
+    from sailing_data_processor.wind_field_fusion_system import WindFieldFusionSystem
+    
+    fusion_system = WindFieldFusionSystem()
+    
+    # テストケース1: 単一位置のデータポイント（極小範囲）
+    single_point_data = [
+        {'latitude': 35.45, 'longitude': 139.65, 'wind_speed': 10, 'wind_direction': 90},
+        {'latitude': 35.45, 'longitude': 139.65, 'wind_speed': 12, 'wind_direction': 95}
+    ]
+    
+    scaled_points = fusion_system._scale_data_points(single_point_data)
+    
+    assert len(scaled_points) == len(single_point_data), "スケーリング後のデータ数が一致しません"
+    
+    # スケーリング結果の検証
+    has_scaled_values = all('scaled_latitude' in p and 'scaled_longitude' in p for p in scaled_points)
+    assert has_scaled_values, "スケーリング結果にscaled_latitudeなどが含まれていません"
+    
+    # テストケース2: 広範囲のデータポイント
+    wide_range_data = [
+        {'latitude': 35.0, 'longitude': 139.0, 'wind_speed': 10, 'wind_direction': 90},
+        {'latitude': 36.0, 'longitude': 140.0, 'wind_speed': 15, 'wind_direction': 180}
+    ]
+    
+    scaled_points_wide = fusion_system._scale_data_points(wide_range_data)
+    
+    assert len(scaled_points_wide) == len(wide_range_data), "スケーリング後のデータ数が一致しません"
+    
+    # スケーリングの具体的な動作確認
+    p0 = scaled_points_wide[0]
+    p1 = scaled_points_wide[1]
+    
+    assert 0 <= p0['scaled_latitude'] <= 1 and 0 <= p1['scaled_latitude'] <= 1, \
+           "位置データは0-1の範囲にスケーリングされています"
+
+@time_it
+def test_performance_large_dataset():
+    """大規模データセットでのパフォーマンステスト"""
+    from sailing_data_processor.wind_field_fusion_system import WindFieldFusionSystem
+    
+    fusion_system = WindFieldFusionSystem()
+    
+    # 大量のボートデータを生成
+    num_boats = 5
+    points_per_boat = 50
+    
+    large_boat_data = WindDataGenerator.create_boat_data(
+        num_boats=num_boats, 
+        points_per_boat=points_per_boat,
+        spread=0.2  # より広い範囲に分散
+    )
+    
+    # 処理時間を計測
+    start_time = time.time()
+    result = fusion_system.update_with_boat_data(large_boat_data)
+    end_time = time.time()
+    
+    elapsed_time = end_time - start_time
+    
+    # 処理時間の目標： 5秒以内
+    assert elapsed_time < 5.0, f"パフォーマンス目標未達: {elapsed_time:.4f}秒 > 5.0秒"
+    
+    # 結果の検証
+    assert result, "風の場生成に失敗しました"
+    
+    wind_field = fusion_system.current_wind_field
+    assert wind_field is not None, "風の場が生成されていません"
+    assert 'wind_direction' in wind_field, "風向データが見つかりません"
+    assert 'wind_speed' in wind_field, "風速データが見つかりません"
+
+def test_create_random_points():
+    """ランダムポイント生成のテスト"""
+    points = WindDataGenerator.create_random_points()
+    
+    assert len(points) == 20, "生成されたポイント数が正しくありません"
+    
+    first_point = points[0]
+    assert 'timestamp' in first_point, "タイムスタンプが見つかりません"
+    assert 'latitude' in first_point, "緯度が見つかりません"
+    assert 'longitude' in first_point, "経度が見つかりません"
+    assert 'wind_direction' in first_point, "風向が見つかりません"
+    assert 'wind_speed' in first_point, "風速が見つかりません"
+
+def test_create_boat_data():
+    """ボートデータ生成のテスト"""
+    boat_data = WindDataGenerator.create_boat_data()
+    
+    assert len(boat_data) == 3, "生成されたボート数が正しくありません"
+    
+    for boat_id, data in boat_data.items():
+        assert isinstance(data, pd.DataFrame), "データがDataFrameではありません"
+        assert len(data) == 20, "ポイント数が正しくありません"
+        assert 'timestamp' in data.columns, "タイムスタンプ列が見つかりません"
+        assert 'latitude' in data.columns, "緯度列が見つかりません"
+        assert 'longitude' in data.columns, "経度列が見つかりません"
+        assert 'wind_direction' in data.columns, "風向列が見つかりません"
+        assert 'wind_speed_knots' in data.columns, "風速列が見つかりません"
