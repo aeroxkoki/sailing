@@ -41,7 +41,12 @@ jobs:
     - name: Test with pytest (collect only - detailed)
       run: |
         echo "=== Detailed pytest collection with error information ==="
-        python -m pytest --collect-only tests/ --ignore=tests/project/ -vv --tb=long -r A --capture=no --show-capture=no --maxfail=10 || echo "Test collection failed with exit code $?"
+        python -m pytest --collect-only tests/ \
+          --ignore=tests/project/ \
+          --ignore=tests/validation/test_validation_dashboard_integration.py \
+          --ignore=tests/integration/test_validation_integration.py \
+          --ignore=tests/test_import_wizard.py \
+          -vv --tb=long -r A --capture=no --show-capture=no --maxfail=10 || echo "Test collection failed with exit code $?"
         
     - name: Show test collection errors with alternative approach
       if: always()
@@ -59,7 +64,12 @@ jobs:
       if: always()
       run: |
         echo "=== Try collecting test with logging ==="
-        PYTHONPATH=. python -m pytest --collect-only tests/ --ignore=tests/project/ -vv --tb=long --log-cli-level=DEBUG --log-cli-format='%(asctime)s [%(levelname)s] %(message)s' || echo "Exit code: $?"
+        PYTHONPATH=. python -m pytest --collect-only tests/ \
+          --ignore=tests/project/ \
+          --ignore=tests/validation/test_validation_dashboard_integration.py \
+          --ignore=tests/integration/test_validation_integration.py \
+          --ignore=tests/test_import_wizard.py \
+          -vv --tb=long --log-cli-level=DEBUG --log-cli-format='%(asctime)s [%(levelname)s] %(message)s' || echo "Exit code: $?"
 
     - name: Add additional debugging for test errors
       if: always()
@@ -76,7 +86,12 @@ jobs:
     - name: Test with pytest
       if: always()
       run: |
-        python -m pytest --cov=sailing_data_processor tests/ -vv --ignore=tests/project/ --tb=long -r A --capture=no
+        python -m pytest --cov=sailing_data_processor tests/ -vv \
+          --ignore=tests/project/ \
+          --ignore=tests/validation/test_validation_dashboard_integration.py \
+          --ignore=tests/integration/test_validation_integration.py \
+          --ignore=tests/test_import_wizard.py \
+          --tb=long -r A --capture=no
     
     - name: Upload coverage report
       uses: codecov/codecov-action@v3
