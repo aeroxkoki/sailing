@@ -54,7 +54,10 @@ class DecisionPointsAnalyzer:
                 "performance_change_threshold": 0.2,
                 "window_size": 10,
                 "min_impact_score": 3.0,
-                "max_points": 10
+                "max_points": 10,
+                "vmg_change_threshold": 0.3,
+                "speed_change_threshold": 0.25,
+                "wind_shift_threshold": 10.0
             }
         elif self.analysis_level == "intermediate":
             self.detection_params = {
@@ -62,7 +65,10 @@ class DecisionPointsAnalyzer:
                 "performance_change_threshold": 0.15,
                 "window_size": 8,
                 "min_impact_score": 2.5,
-                "max_points": 15
+                "max_points": 15,
+                "vmg_change_threshold": 0.2,
+                "speed_change_threshold": 0.2,
+                "wind_shift_threshold": 8.0
             }
         elif self.analysis_level == "professional":
             self.detection_params = {
@@ -70,7 +76,10 @@ class DecisionPointsAnalyzer:
                 "performance_change_threshold": 0.05,
                 "window_size": 5,
                 "min_impact_score": 1.5,
-                "max_points": 30
+                "max_points": 30,
+                "vmg_change_threshold": 0.1,
+                "speed_change_threshold": 0.1,
+                "wind_shift_threshold": 5.0
             }
         else:  # "advanced" (default)
             self.detection_params = {
@@ -78,13 +87,19 @@ class DecisionPointsAnalyzer:
                 "performance_change_threshold": 0.1,
                 "window_size": 6,
                 "min_impact_score": 2.0,
-                "max_points": 20
+                "max_points": 20,
+                "vmg_change_threshold": 0.15,
+                "speed_change_threshold": 0.15,
+                "wind_shift_threshold": 6.0
             }
         
         # 感度に応じた閾値の調整
         self.detection_params["strategic_decision_threshold"] *= (2 - self.sensitivity)
         self.detection_params["performance_change_threshold"] *= (2 - self.sensitivity)
         self.detection_params["min_impact_score"] *= (2 - self.sensitivity)
+        self.detection_params["vmg_change_threshold"] *= (2 - self.sensitivity)
+        self.detection_params["speed_change_threshold"] *= (2 - self.sensitivity)
+        self.detection_params["wind_shift_threshold"] *= (2 - self.sensitivity)
         
         logger.debug(f"Detection parameters configured: {self.detection_params}")
     

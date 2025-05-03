@@ -1,0 +1,30 @@
+INFO     sailing_test:conftest.py:230 ======== テスト環境情報 ========
+INFO     sailing_test:conftest.py:231 Platform: macOS-14.7.4-x86_64-i386-64bit
+INFO     sailing_test:conftest.py:232 Python version: 3.9.6
+INFO     sailing_test:conftest.py:233 Hostname: MacBook-Air-2.local
+DEBUG    sailing_test:conftest.py:234 Python path: [
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload",
+  "/Users/koki_air/Library/Python/3.9/lib/python/site-packages",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
+]
+DEBUG    sailing_test:conftest.py:237 Environment variables:
+DEBUG    sailing_test:conftest.py:239   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
+DEBUG    sailing_test:conftest.py:239   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
+DEBUG    sailing_test:conftest.py:239   PYTHONVERBOSE: 1
+INFO     sailing_test:conftest.py:241 ======== テスト開始 ========
+INFO     sailing_test:conftest.py:248 テスト開始: test_importer
+INFO     sailing_test:conftest.py:262 テスト終了: test_importer
+INFO     sailing_test:conftest.py:248 テスト開始: test_factory_detection
+INFO     sailing_test:conftest.py:262 テスト終了: test_factory_detection
+INFO     sailing_test:conftest.py:248 テスト開始: test_batch_importer
+INFO     sailing_test:conftest.py:262 テスト終了: test_batch_importer
+INFO     sailing_test:conftest.py:243 ======== テスト終了 ========

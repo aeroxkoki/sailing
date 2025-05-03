@@ -12,7 +12,8 @@ from sailing_data_processor.data_model.container import GPSDataContainer
 from sailing_data_processor.validation.data_validator import DataValidator
 from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
 from sailing_data_processor.validation.visualization import ValidationVisualizer
-from sailing_data_processor.validation.correction import CorrectionProcessor, InteractiveCorrectionInterface
+from sailing_data_processor.validation.correction import CorrectionProcessor
+from sailing_data_processor.validation.correction_interface import InteractiveCorrectionInterface
 
 def create_test_data():
     """テスト用のデータを作成"""
