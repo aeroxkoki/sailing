@@ -24,9 +24,27 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
     
+    - name: Debug - Check imports and modules
+      run: |
+        echo "=== Current working directory ==="
+        pwd
+        echo "=== Python path ==="
+        python -c "import sys; print(sys.path)"
+        echo "=== Test directory contents ==="
+        ls -la tests/
+        echo "=== sailing_data_processor directory contents ==="
+        ls -la sailing_data_processor/
+        echo "=== Check module imports ==="
+        python -c "import sailing_data_processor"
+        echo "Import successful"
+        
+    - name: Test with pytest (collect only)
+      run: |
+        python -m pytest --collect-only tests/ --ignore=tests/project/ -v --tb=long
+
     - name: Test with pytest
       run: |
-        python -m pytest --cov=sailing_data_processor tests/ -v --ignore=tests/project/
+        python -m pytest --cov=sailing_data_processor tests/ -v --ignore=tests/project/ --tb=long
     
     - name: Upload coverage report
       uses: codecov/codecov-action@v3
