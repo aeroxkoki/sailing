@@ -132,8 +132,9 @@ class QualityMetricsCalculator:
         spatial_count = len(self.problematic_indices.get("spatial_anomalies", []))
         temporal_count = len(self.problematic_indices.get("temporal_anomalies", []))
         
-        # 品質サマリーを構築
+        # 品質サマリーを構築 (テストが期待するキー名にも対応)
         return {
+            "quality_score": self.quality_scores.get("total", 100.0),  # テスト用のキー
             "overall_score": self.quality_scores.get("total", 100.0),
             "completeness_score": self.quality_scores.get("completeness", 100.0),
             "accuracy_score": self.quality_scores.get("accuracy", 100.0),
@@ -148,6 +149,18 @@ class QualityMetricsCalculator:
             },
             "impact_level": self._determine_impact_level(self.quality_scores.get("total", 100.0))
         }
+    
+    def calculate_quality_scores(self) -> Dict[str, float]:
+        """
+        品質スコアを計算する（テスト用メソッド）
+        
+        Returns
+        -------
+        Dict[str, float]
+            品質スコア
+        """
+        # すでに初期化時に計算されているので、そのまま返す
+        return self.quality_scores
     
     @staticmethod
     def create_sample_data(rows=20, with_problems=True):

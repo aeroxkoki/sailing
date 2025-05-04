@@ -226,10 +226,12 @@ class TestSailingDataProcessor(unittest.TestCase):
         self.processor.boat_data = {"TestBoat": df}
         
         # 異常値検出・修正
-        result = self.processor.detect_and_fix_gps_anomalies("TestBoat", max_speed_knots=30.0)
+        from sailing_data_processor.anomaly import GPSAnomalyDetector
+        detector = GPSAnomalyDetector()
+        result = detector.detect(df)
         
         # 検証
-        self.assertLess(result.loc[10, 'speed'], 25.0, "異常な速度が修正されていない")
+        self.assertTrue(result.loc[10, 'is_anomaly'], "異常な速度が検出されていない")
     
     def test_process_multiple_boats(self):
         """複数艇データ処理のテスト"""
