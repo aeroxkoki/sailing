@@ -67,13 +67,11 @@ def create_test_data(size=20, with_problems=True):
             data.loc[18, 'latitude'] = 36.0
     
     # GPSDataContainerの作成
-    container = GPSDataContainer()
-    container.data = data
-    container.metadata = {
+    container = GPSDataContainer(data=data, metadata={
         'boat_id': 'test_boat',
         'data_source': 'integration_test',
         'created_at': datetime.now().isoformat()
-    }
+    })
     
     return container
 

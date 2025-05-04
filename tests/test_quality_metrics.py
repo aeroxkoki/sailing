@@ -71,9 +71,8 @@ def test_quality_metrics():
     df = create_sample_data(rows=500, error_rate=0.15)
     print(f"生成データ: {len(df)}行, 欠損値: {df.isna().sum().sum()}個")
     
-    # GPSDataContainerを作成
-    container = GPSDataContainer()
-    container.data = df
+    # GPSDataContainerを作成（dataパラメータを渡す）
+    container = GPSDataContainer(data=df)
     
     # データ検証
     validator = DataValidator()
@@ -171,8 +170,7 @@ if __name__ == "__main__":
     
     # GPSDataContainerを作成
     print("GPSDataContainer作成中...")
-    container = GPSDataContainer()
-    container.data = df
+    container = GPSDataContainer(data=df)
     
     # データ検証
     print("データ検証中...")

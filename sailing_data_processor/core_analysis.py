@@ -359,3 +359,114 @@ class SailingDataAnalyzer:
             raise ValueError("No common time frame found")
         
         return common_start, common_end
+    
+    def detect_and_fix_gps_anomalies(self, boat_id: str, 
+                                    max_speed_knots: float = 20.0,
+                                    max_acceleration: float = 5.0,
+                                    method: str = 'linear') -> pd.DataFrame:
+        """
+        GPS異常値を検出して修正する
+        
+        Parameters:
+        -----------
+        boat_id : str
+            艇の識別ID
+        max_speed_knots : float
+            最大速度（ノット）
+        max_acceleration : float
+            最大加速度（m/s^2）
+        method : str
+            修正方法 ('linear' or 'kalman')
+        
+        Returns:
+        --------
+        pd.DataFrame
+            修正されたデータ
+        """
+        if boat_id not in self.boat_data:
+            raise ValueError(f"Boat ID '{boat_id}' not found")
+        
+        df = self.boat_data[boat_id].copy()
+        
+        # 異常値検出と修正のためのモジュール
+        from .anomaly_detector import GPSAnomalyDetector
+        
+        detector = GPSAnomalyDetector()
+        
+        # 異常値検出
+        result = detector.detect_anomalies(df)
+        
+        # 異常値修正
+        fixed_df = detector.fix_anomalies(result, method=method)
+        
+        # データを更新
+        self.boat_data[boat_id] = fixed_df
+        
+        return fixed_df
+    
+    def process_multiple_boats(self) -> Dict[str, Any]:
+        """
+        複数艇のデータを処理する
+        
+        Returns:
+        --------
+        Dict[str, Any]
+            処理結果
+        """
+        result = {
+            'data': {},
+            'stats': {}
+        }
+        
+        for boat_id, df in self.boat_data.items():
+            # データ処理
+            processed_df = self._preprocess_data(df)
+            
+            # 統計情報計算
+            stats = {
+                'total_points': len(processed_df),
+                'avg_speed': processed_df['speed'].mean() if 'speed' in processed_df.columns else None,
+                'max_speed': processed_df['speed'].max() if 'speed' in processed_df.columns else None,
+                'time_range': {
+                    'start': processed_df['timestamp'].min() if 'timestamp' in processed_df.columns else None,
+                    'end': processed_df['timestamp'].max() if 'timestamp' in processed_df.columns else None
+                }
+            }
+            
+            result['data'][boat_id] = processed_df
+            result['stats'][boat_id] = stats
+        
+        return result
+    
+    def _preprocess_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        データの前処理
+        
+        Parameters:
+        -----------
+        df : pd.DataFrame
+            入力データ
+        
+        Returns:
+        --------
+        pd.DataFrame
+            処理されたデータ
+        """
+        processed_df = df.copy()
+        
+        # 必要な列がない場合は計算
+        if 'speed' not in processed_df.columns and 'latitude' in processed_df.columns and 'longitude' in processed_df.columns:
+            # 速度計算
+            from scipy.spatial.distance import cdist
+            
+            coords = processed_df[['latitude', 'longitude']].values
+            if len(coords) > 1:
+                dists = np.concatenate(([0], np.sqrt(np.sum(np.diff(coords, axis=0)**2, axis=1))))
+                times = processed_df['timestamp'].diff().dt.total_seconds().fillna(0).values
+                speeds = np.divide(dists, times, where=times!=0)
+                speeds = np.nan_to_num(speeds, 0)
+                processed_df['speed'] = speeds * 60 * 60 / 1852  # m/s to knots
+            else:
+                processed_df['speed'] = 0
+        
+        return processed_df
