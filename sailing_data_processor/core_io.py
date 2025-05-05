@@ -97,14 +97,14 @@ class SailingDataIO:
         
         return df
     
-    def load_multiple_files(self, file_contents: List[Tuple[str, Union[str, io.BytesIO], str]], 
+    def load_multiple_files(self, file_contents: List[Tuple[str, Union[str, bytes, io.BytesIO, io.StringIO], str]], 
                           auto_id: bool = True, manual_ids: Optional[List[str]] = None) -> Dict[str, pd.DataFrame]:
         """
         複数のファイルを同時に読み込む
         
         Parameters:
         -----------
-        file_contents : List[Tuple[str, Union[str, io.BytesIO], str]]
+        file_contents : List[Tuple[str, Union[str, bytes, io.BytesIO, io.StringIO], str]]
             (ファイル名, コンテンツ, タイプ)のリスト
         auto_id : bool
             自動でIDを生成するかどうか
@@ -130,26 +130,93 @@ class SailingDataIO:
             
             # コンテンツからDataFrameを作成
             if file_type == 'csv':
-                if isinstance(content, str):
-                    df = pd.read_csv(io.StringIO(content))
-                elif isinstance(content, bytes):
-                    # バイト型データを文字列に変換してから読み込み
-                    df = pd.read_csv(io.StringIO(content.decode('utf-8')))
-                else:
-                    # それ以外のケース（file-like objectなど）
-                    df = pd.read_csv(content)
+                try:
+                    # コンテンツの種類に応じた処理
+                    if isinstance(content, str):
+                        # 文字列の場合
+                        df = pd.read_csv(io.StringIO(content))
+                    elif isinstance(content, bytes):
+                        # バイト型データの場合
+                        try:
+                            # UTF-8でデコードを試みる
+                            text_content = content.decode('utf-8')
+                            df = pd.read_csv(io.StringIO(text_content))
+                        except UnicodeDecodeError:
+                            # UTF-8以外のエンコーディングを試す
+                            encodings = ['latin1', 'shift-jis', 'cp932', 'iso-8859-1']
+                            for encoding in encodings:
+                                try:
+                                    text_content = content.decode(encoding)
+                                    df = pd.read_csv(io.StringIO(text_content))
+                                    break
+                                except UnicodeDecodeError:
+                                    continue
+                            else:
+                                # バイナリとして直接読み込みを試みる
+                                df = pd.read_csv(io.BytesIO(content))
+                    elif hasattr(content, 'read'):
+                        # file-like objectの場合
+                        # 現在位置を保存
+                        if hasattr(content, 'tell') and hasattr(content, 'seek'):
+                            pos = content.tell()
+                            content.seek(0)
+                        
+                        try:
+                            # そのまま読み込みを試みる
+                            df = pd.read_csv(content)
+                        except Exception as e:
+                            # 例外が発生した場合の処理（バイナリモードなど）
+                            if hasattr(content, 'seek'):
+                                content.seek(0)
+                                data = content.read()
+                                
+                                if isinstance(data, bytes):
+                                    # バイナリデータを文字列に変換
+                                    try:
+                                        text_data = data.decode('utf-8')
+                                        df = pd.read_csv(io.StringIO(text_data))
+                                    except UnicodeDecodeError:
+                                        # バイナリとして処理
+                                        content.seek(0)
+                                        df = pd.read_csv(io.BytesIO(data))
+                                else:
+                                    # 文字列として処理
+                                    df = pd.read_csv(io.StringIO(data))
+                            else:
+                                # seekできない場合はそのまま例外を再発生
+                                raise e
+                        
+                        # 位置を元に戻す
+                        if hasattr(content, 'seek'):
+                            content.seek(pos)
+                    else:
+                        # その他の型（未対応）
+                        raise ValueError(f"Unsupported content type: {type(content)}")
+                    
+                    # 必須カラムのチェック
+                    required_columns = ['timestamp', 'latitude', 'longitude']
+                    missing_columns = [col for col in required_columns if col not in df.columns]
+                    if missing_columns:
+                        missing_cols_str = ', '.join(missing_columns)
+                        raise ValueError(f"Required columns not found in file {filename}: {missing_cols_str}")
+                    
+                    # speedカラムがなければ空の値で作成
+                    if 'speed' not in df.columns:
+                        df['speed'] = float('nan')
+                    
+                    # timestampを正しい型に変換
+                    df['timestamp'] = pd.to_datetime(df['timestamp'], errors='coerce')
+                    
+                    # 変換に失敗したタイムスタンプの処理
+                    if df['timestamp'].isnull().any():
+                        # NULL値を含む行を削除
+                        df = df.dropna(subset=['timestamp']).reset_index(drop=True)
+                    
+                    result[boat_id] = df
+                    self.boat_data[boat_id] = df
                 
-                # 必須カラムのチェック
-                required_columns = ['timestamp', 'latitude', 'longitude', 'speed']
-                for col in required_columns:
-                    if col not in df.columns:
-                        raise ValueError(f"Required column '{col}' not found in file {filename}")
-                
-                # timestampを正しい型に変換
-                df['timestamp'] = pd.to_datetime(df['timestamp'])
-                
-                result[boat_id] = df
-                self.boat_data[boat_id] = df
+                except Exception as e:
+                    raise ValueError(f"Failed to parse CSV file {filename}: {str(e)}")
             else:
                 raise ValueError(f"Unsupported file type: {file_type}")
         
@@ -336,9 +403,11 @@ class SailingDataIO:
         time_ranges = []
         for boat_id, df in self.boat_data.items():
             if 'timestamp' in df.columns:
-                time_ranges.append((df['timestamp'].min(), df['timestamp'].max()))
+                if not df['timestamp'].empty:
+                    time_ranges.append((df['timestamp'].min(), df['timestamp'].max()))
             elif 'time' in df.columns:
-                time_ranges.append((df['time'].min(), df['time'].max()))
+                if not df['time'].empty:
+                    time_ranges.append((df['time'].min(), df['time'].max()))
         
         if not time_ranges:
             return {}
@@ -352,37 +421,93 @@ class SailingDataIO:
         
         synced_data = {}
         for boat_id, df in self.boat_data.items():
-            df_copy = df.copy()
-            
-            # timestampまたはtimeカラムを使用
-            time_col = 'timestamp' if 'timestamp' in df.columns else 'time'
-            df_copy = df_copy.set_index(time_col)
-            
-            # オブジェクト型の列を特定
-            object_columns = df_copy.select_dtypes(include=['object']).columns
-            
-            # 数値列だけをリサンプリングして同期
-            numeric_df = df_copy.select_dtypes(include=['number'])
-            if not numeric_df.empty:
-                synced_df = numeric_df.resample(target_freq).mean()
-                synced_df = synced_df.reindex(time_index)
-            else:
-                # 数値列がない場合は空のDataFrameを作成
+            try:
+                df_copy = df.copy()
+                
+                # timestampまたはtimeカラムを使用
+                time_col = 'timestamp' if 'timestamp' in df.columns else 'time'
+                
+                # カラムの存在と値のチェック
+                if time_col not in df_copy.columns or df_copy[time_col].empty:
+                    print(f"警告: {boat_id}のデータに時間列がありません")
+                    continue
+                
+                # インデックス設定前にデータ型を確認し、必要に応じて修正
+                if not pd.api.types.is_datetime64_dtype(df_copy[time_col]):
+                    try:
+                        df_copy[time_col] = pd.to_datetime(df_copy[time_col], errors='coerce')
+                        # NaN値を含む行は除外
+                        df_copy = df_copy.dropna(subset=[time_col])
+                    except Exception as e:
+                        print(f"警告: {boat_id}の時間データ変換に失敗しました: {e}")
+                        continue
+                
+                # データが空になってしまった場合はスキップ
+                if df_copy.empty:
+                    print(f"警告: {boat_id}の有効なデータがありません")
+                    continue
+                
+                df_copy = df_copy.set_index(time_col)
+                
+                # 列タイプごとに処理
                 synced_df = pd.DataFrame(index=time_index)
                 
-            # オブジェクト型の列は最初の値を使用
-            for col in object_columns:
-                try:
-                    synced_df[col] = df_copy[col].resample(target_freq).first().reindex(time_index)
-                except:
-                    # エラーが発生した場合はその列をスキップ
-                    pass
+                # 数値列のリサンプリング
+                numeric_cols = df_copy.select_dtypes(include=['number']).columns
+                for col in numeric_cols:
+                    try:
+                        # 安全なリサンプリング
+                        resampled = df_copy[col].resample(target_freq).mean()
+                        synced_df[col] = resampled.reindex(time_index)
+                    except Exception as e:
+                        print(f"警告: 数値列 {col} のリサンプリングに失敗しました: {e}")
+                
+                # 日時列のリサンプリング
+                datetime_cols = df_copy.select_dtypes(include=['datetime']).columns
+                for col in datetime_cols:
+                    try:
+                        # 安全なリサンプリング
+                        resampled = df_copy[col].resample(target_freq).first()
+                        synced_df[col] = resampled.reindex(time_index)
+                    except Exception as e:
+                        print(f"警告: 日時列 {col} のリサンプリングに失敗しました: {e}")
+                
+                # その他のカラム（オブジェクト型など）
+                other_cols = [col for col in df_copy.columns 
+                             if col not in numeric_cols.tolist() + datetime_cols.tolist()]
+                
+                for col in other_cols:
+                    try:
+                        # オブジェクト型カラムは最初の値を使用
+                        # 一度Seriesに変換してから処理（DataFrameのリサンプリングエラー回避）
+                        series = df_copy[col]
+                        resampled = series.resample(target_freq).first()
+                        synced_df[col] = resampled.reindex(time_index)
+                    except Exception as e:
+                        print(f"警告: 列 {col} のリサンプリングに失敗しました: {e}")
+                        
+                        # 失敗した場合は、その列の最頻値で埋める
+                        try:
+                            most_common = df_copy[col].mode().iloc[0] if not df_copy[col].empty else None
+                            synced_df[col] = most_common
+                        except:
+                            # それでも失敗する場合はスキップ
+                            pass
+                
+                # インデックスを列に戻す
+                synced_df.reset_index(inplace=True)
+                synced_df.rename(columns={'index': 'timestamp'}, inplace=True)
+                
+                # 元のデータに存在しなかった列は削除（同期時に追加されたNaN列など）
+                original_cols = ['timestamp'] + [col for col in df.columns if col != time_col]
+                synced_df = synced_df[[col for col in synced_df.columns if col in original_cols]]
+                
+                synced_data[boat_id] = synced_df
             
-            # インデックスを列に戻す
-            synced_df.reset_index(inplace=True)
-            synced_df.rename(columns={'index': 'timestamp'}, inplace=True)
-            
-            synced_data[boat_id] = synced_df
+            except Exception as e:
+                print(f"警告: {boat_id}の時間同期に失敗しました: {e}")
+                # エラーが発生した場合は元のデータを使用
+                synced_data[boat_id] = df.copy()
         
         self.synced_data = synced_data
         return synced_data

@@ -39,6 +39,25 @@ class AnomalyDetector:
         self.detection_config = self._detector.detection_config
         self.interpolation_config = self._detector.interpolation_config
     
+    def detect(self, df: pd.DataFrame, methods: Optional[List[str]] = None) -> pd.DataFrame:
+        """
+        後方互換性のための新しいメソッド - detect_anomaliesの別名
+        
+        Parameters:
+        -----------
+        df : pd.DataFrame
+            検出対象のGPSデータフレーム
+            必要なカラム: latitude, longitude, timestamp
+        methods : List[str], optional
+            使用する検出方法のリスト
+            
+        Returns:
+        --------
+        pd.DataFrame
+            異常値フラグを追加したデータフレーム
+        """
+        return self.detect_anomalies(df, methods)
+    
     def detect_anomalies(self, df: pd.DataFrame, methods: Optional[List[str]] = None) -> pd.DataFrame:
         """
         複数の方法を組み合わせて異常値を検出
