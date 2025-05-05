@@ -281,11 +281,30 @@ class QualityMetricsCalculator:
             精度スコア (0-100)
         """
         # 範囲外の値などの精度に関わる問題をカウント
-        precision_issues = len(self.problematic_indices.get("out_of_range", []))
+        out_of_range_issues = 0
+        spatial_anomalies = 0
+        
+        # バリデーション結果から範囲外問題と空間的異常をカウント
+        for result in self.validation_results:
+            if not result.get("is_valid", True):
+                details = result.get("details", {})
+                if result.get("rule_name") == "Value Range Check":
+                    out_of_range_issues += details.get("out_of_range_count", 0)
+                elif result.get("rule_name") == "Spatial Consistency Check":
+                    spatial_anomalies += details.get("anomaly_count", 0)
+        
+        # 問題の総数を計算
+        precision_issues = out_of_range_issues + spatial_anomalies
         
         # データ全体に対する問題の割合を計算
         total_records = len(self.data) if not self.data.empty else 1
         precision_score = 100.0 * (1 - (precision_issues / total_records))
+        
+        # 問題件数に基づくペナルティを適用
+        if precision_issues > 0:
+            # 問題が多いほどペナルティが大きくなる
+            penalty = min(30.0, precision_issues * 2.0)
+            precision_score = max(0.0, precision_score - penalty)
         
         # スコアの範囲を0-100に調整
         return max(0.0, min(100.0, precision_score))
@@ -300,11 +319,30 @@ class QualityMetricsCalculator:
             妥当性スコア (0-100)
         """
         # 時間的異常などの妥当性に関わる問題をカウント
-        validity_issues = len(self.problematic_indices.get("temporal_anomalies", []))
+        temporal_anomalies = 0
+        duplication_issues = 0
+        
+        # バリデーション結果から時間的異常と重複問題をカウント
+        for result in self.validation_results:
+            if not result.get("is_valid", True):
+                details = result.get("details", {})
+                if result.get("rule_name") == "Temporal Consistency Check":
+                    temporal_anomalies += details.get("reverse_count", 0)
+                elif result.get("rule_name") == "No Duplicate Timestamps":
+                    duplication_issues += details.get("duplicate_count", 0)
+        
+        # 問題の総数を計算
+        validity_issues = temporal_anomalies + duplication_issues
         
         # データ全体に対する問題の割合を計算
         total_records = len(self.data) if not self.data.empty else 1
         validity_score = 100.0 * (1 - (validity_issues / total_records))
+        
+        # 問題件数に基づくペナルティを適用
+        if validity_issues > 0:
+            # 時間的整合性は重要なので、より大きなペナルティを適用
+            penalty = min(40.0, validity_issues * 3.0)
+            validity_score = max(0.0, validity_score - penalty)
         
         # スコアの範囲を0-100に調整
         return max(0.0, min(100.0, validity_score))
@@ -326,16 +364,34 @@ class QualityMetricsCalculator:
         if not intervals or len(intervals) <= 1:
             return 100.0
         
+        # 空のリストや無効な値をフィルタリング
+        valid_intervals = [interval for interval in intervals if interval is not None and not np.isnan(interval) and interval > 0]
+        
+        # 有効な間隔が少なすぎる場合
+        if len(valid_intervals) <= 1:
+            return 95.0  # 判断できないが、1つだけならほぼ均一と見なす
+        
         # 間隔の標準偏差を計算
-        mean_interval = np.mean(intervals)
-        std_interval = np.std(intervals)
+        mean_interval = np.mean(valid_intervals)
+        std_interval = np.std(valid_intervals)
         
         # 変動係数（標準偏差/平均）を計算
         cv = std_interval / mean_interval if mean_interval > 0 else 0
         
+        # 極端な値の検出（平均から標準偏差の3倍以上外れた値）
+        outlier_count = 0
+        for interval in valid_intervals:
+            if abs(interval - mean_interval) > 3 * std_interval:
+                outlier_count += 1
+        
         # 変動係数からスコアを計算（変動係数が小さいほど均一）
         # 変動係数0は完全に均一、経験的に0.5以上は非常に不均一と仮定
         uniformity_score = 100.0 * (1 - min(1.0, cv / 0.5))
+        
+        # 極端な値によるペナルティを適用
+        if outlier_count > 0:
+            outlier_penalty = min(20.0, outlier_count * 5.0)
+            uniformity_score = max(0.0, uniformity_score - outlier_penalty)
         
         return max(0.0, min(100.0, uniformity_score))
         
@@ -599,16 +655,27 @@ class QualityMetricsCalculator:
         if self.data.empty or "latitude" not in self.data.columns or "longitude" not in self.data.columns:
             return []
         
+        # データからNaNを除外して計算
+        valid_data = self.data.dropna(subset=["latitude", "longitude"])
+        if valid_data.empty:
+            return []
+            
         # 緯度・経度の範囲を取得
-        lat_min, lat_max = self.data["latitude"].min(), self.data["latitude"].max()
-        lon_min, lon_max = self.data["longitude"].min(), self.data["longitude"].max()
+        lat_min, lat_max = valid_data["latitude"].min(), valid_data["latitude"].max()
+        lon_min, lon_max = valid_data["longitude"].min(), valid_data["longitude"].max()
         
-        # グリッド分割数（簡易的に固定値）
-        grid_count = 3
+        # グリッド分割数（データ量によって調整）
+        data_size = len(valid_data)
+        if data_size <= 10:
+            grid_count = 2
+        elif data_size <= 100:
+            grid_count = 3
+        else:
+            grid_count = 4
         
         # グリッドの作成
-        lat_step = (lat_max - lat_min) / grid_count
-        lon_step = (lon_max - lon_min) / grid_count
+        lat_step = (lat_max - lat_min) / grid_count if lat_max > lat_min else 0.01
+        lon_step = (lon_max - lon_min) / grid_count if lon_max > lon_min else 0.01
         
         grids = []
         for i in range(grid_count):
@@ -619,11 +686,11 @@ class QualityMetricsCalculator:
                 grid_lon_max = lon_min + (j + 1) * lon_step
                 
                 # グリッド内のデータポイントをフィルタリング
-                grid_data = self.data[
-                    (self.data["latitude"] >= grid_lat_min) & 
-                    (self.data["latitude"] < grid_lat_max) & 
-                    (self.data["longitude"] >= grid_lon_min) & 
-                    (self.data["longitude"] < grid_lon_max)
+                grid_data = valid_data[
+                    (valid_data["latitude"] >= grid_lat_min) & 
+                    (valid_data["latitude"] < grid_lat_max) & 
+                    (valid_data["longitude"] >= grid_lon_min) & 
+                    (valid_data["longitude"] < grid_lon_max)
                 ]
                 
                 # グリッド内のデータがなければスキップ
@@ -644,24 +711,47 @@ class QualityMetricsCalculator:
                 # グリッド情報の作成
                 grid_info = {
                     "grid_id": f"grid_{i}_{j}",
-                    "center": {
-                        "latitude": (grid_lat_min + grid_lat_max) / 2,
-                        "longitude": (grid_lon_min + grid_lon_max) / 2
-                    },
-                    "bounds": {
-                        "lat_min": grid_lat_min,
-                        "lat_max": grid_lat_max,
-                        "lon_min": grid_lon_min,
-                        "lon_max": grid_lon_max
-                    },
+                    "center": [(grid_lat_min + grid_lat_max) / 2, (grid_lon_min + grid_lon_max) / 2],
+                    "lat_range": [grid_lat_min, grid_lat_max],
+                    "lon_range": [grid_lon_min, grid_lon_max],
                     "quality_score": quality_score,
                     "problem_count": problem_count,
                     "total_count": len(grid_data),
                     "problem_percentage": 100.0 * problem_count / len(grid_data) if len(grid_data) > 0 else 0.0,
-                    "impact_level": self._determine_impact_level(quality_score)
+                    "impact_level": self._determine_impact_level(quality_score),
+                    "bounds": {
+                        "min_lat": grid_lat_min,
+                        "max_lat": grid_lat_max,
+                        "min_lon": grid_lon_min,
+                        "max_lon": grid_lon_max
+                    }
                 }
                 
                 grids.append(grid_info)
+        
+        # グリッドがない場合のフォールバック（データが1点だけの場合など）
+        if not grids and not valid_data.empty:
+            center_lat = (lat_min + lat_max) / 2
+            center_lon = (lon_min + lon_max) / 2
+            
+            # 少なくとも1つのグリッドを作成
+            grids.append({
+                "grid_id": "grid_single",
+                "center": [center_lat, center_lon],
+                "lat_range": [lat_min - 0.001, lat_max + 0.001],
+                "lon_range": [lon_min - 0.001, lon_max + 0.001],
+                "quality_score": 100.0,  # データが1点だけなら問題がなさそう
+                "problem_count": 0,
+                "total_count": len(valid_data),
+                "problem_percentage": 0.0,
+                "impact_level": "low",
+                "bounds": {
+                    "min_lat": lat_min - 0.001,
+                    "max_lat": lat_max + 0.001,
+                    "min_lon": lon_min - 0.001,
+                    "max_lon": lon_max + 0.001
+                }
+            })
         
         return grids
         
@@ -687,7 +777,27 @@ class QualityMetricsCalculator:
         # 期間が短すぎる場合は一つの時間帯として扱う
         time_range = (end_time - start_time).total_seconds()
         if time_range < 60:  # 1分未満
-            return []
+            # 最低1つは返す
+            problem_count = 0
+            for idx in self.data.index:
+                if idx in self.problematic_indices.get("all", []):
+                    problem_count += 1
+            
+            quality_score = 100.0
+            if len(self.data) > 0:
+                quality_score = 100.0 * (1 - (problem_count / len(self.data)))
+                
+            return [{
+                "period": 0,
+                "start_time": start_time.isoformat(),
+                "end_time": end_time.isoformat(),
+                "label": f"{start_time.strftime('%H:%M')} - {end_time.strftime('%H:%M')}",
+                "quality_score": quality_score,
+                "problem_count": problem_count,
+                "total_count": len(self.data),
+                "problem_percentage": 100.0 * problem_count / len(self.data) if len(self.data) > 0 else 0.0,
+                "impact_level": self._determine_impact_level(quality_score)
+            }]
         
         # 時間帯の数（簡易的に固定値）
         period_count = min(5, max(1, int(time_range / 600)))  # 10分ごとに区切る（最大5区間）

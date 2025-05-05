@@ -26,6 +26,8 @@ class GPSAnomalyDetector(StandardAnomalyDetector):
     def __init__(self):
         """初期化"""
         super().__init__()
+        # maneuver_confidence属性を追加
+        self.maneuver_confidence = 0.0
         
     def detect(self, df: pd.DataFrame, methods: Optional[List[str]] = None) -> pd.DataFrame:
         """

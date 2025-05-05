@@ -175,6 +175,8 @@ class CacheManager:
                     if ttl is not None and time.time() - entry['timestamp'] > ttl:
                         del cache[key]
                         self._stats[cache_name]['size'] -= 1
+                        # TTLが切れたのでミスとしてカウント
+                        self._stats[cache_name]['misses'] += 1
                     else:
                         self._stats[cache_name]['hits'] += 1
                         return entry['result']
@@ -186,7 +188,8 @@ class CacheManager:
                 # キャッシュサイズ管理（LRU方式）
                 if len(cache) >= max_size:
                     # 最も古いアイテムを削除
-                    oldest_key = next(iter(cache))
+                    # 注意: これはシンプルなLRU実装です。本格的なLRUにはOrderedDictを使用するべき
+                    oldest_key = min(cache.keys(), key=lambda k: cache[k]['timestamp'] if 'timestamp' in cache[k] else 0)
                     del cache[oldest_key]
                     self._stats[cache_name]['size'] -= 1
                 

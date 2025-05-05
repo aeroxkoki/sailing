@@ -1269,7 +1269,10 @@ class OptimalVMGCalculator:
         # 風速値を丸めて最も近い既知の風速を見つける
         wind_speeds = sorted(optimal_data.keys())
         if not wind_speeds:
-            return 45.0 if upwind else 150.0, 0.0  # デフォルト値
+            # デフォルト値を返す - VMG値も実際の値にする
+            default_angle = 45.0 if upwind else 150.0
+            default_vmg = 3.0  # 適切なデフォルトVMG値
+            return default_angle, default_vmg
         
         if wind_speed <= wind_speeds[0]:
             return optimal_data[wind_speeds[0]]
