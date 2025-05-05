@@ -26,6 +26,24 @@ class GPSAnomalyDetector(StandardAnomalyDetector):
     def __init__(self):
         """初期化"""
         super().__init__()
+        
+    def detect(self, df: pd.DataFrame, methods: Optional[List[str]] = None) -> pd.DataFrame:
+        """
+        後方互換性のためのメソッド - detect_anomaliesの別名
+        
+        Parameters:
+        -----------
+        df : pd.DataFrame
+            検出対象のデータフレーム
+        methods : List[str], optional
+            使用する検出方法のリスト
+            
+        Returns:
+        --------
+        pd.DataFrame
+            異常値フラグを追加したデータフレーム
+        """
+        return self.detect_anomalies(df, methods)
     
     def detect_anomalies(self, df: pd.DataFrame, methods: Optional[List[str]] = None) -> pd.DataFrame:
         """

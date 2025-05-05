@@ -132,7 +132,11 @@ class SailingDataIO:
             if file_type == 'csv':
                 if isinstance(content, str):
                     df = pd.read_csv(io.StringIO(content))
+                elif isinstance(content, bytes):
+                    # バイト型データを文字列に変換してから読み込み
+                    df = pd.read_csv(io.StringIO(content.decode('utf-8')))
                 else:
+                    # それ以外のケース（file-like objectなど）
                     df = pd.read_csv(content)
                 
                 # 必須カラムのチェック
@@ -354,9 +358,25 @@ class SailingDataIO:
             time_col = 'timestamp' if 'timestamp' in df.columns else 'time'
             df_copy = df_copy.set_index(time_col)
             
-            # リサンプリングして同期
-            synced_df = df_copy.resample(target_freq).mean()
-            synced_df = synced_df.reindex(time_index)
+            # オブジェクト型の列を特定
+            object_columns = df_copy.select_dtypes(include=['object']).columns
+            
+            # 数値列だけをリサンプリングして同期
+            numeric_df = df_copy.select_dtypes(include=['number'])
+            if not numeric_df.empty:
+                synced_df = numeric_df.resample(target_freq).mean()
+                synced_df = synced_df.reindex(time_index)
+            else:
+                # 数値列がない場合は空のDataFrameを作成
+                synced_df = pd.DataFrame(index=time_index)
+                
+            # オブジェクト型の列は最初の値を使用
+            for col in object_columns:
+                try:
+                    synced_df[col] = df_copy[col].resample(target_freq).first().reindex(time_index)
+                except:
+                    # エラーが発生した場合はその列をスキップ
+                    pass
             
             # インデックスを列に戻す
             synced_df.reset_index(inplace=True)
