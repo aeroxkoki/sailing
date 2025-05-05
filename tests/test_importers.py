@@ -19,6 +19,14 @@ from sailing_data_processor.importers.fit_importer import FITImporter
 from sailing_data_processor.importers.batch_importer import BatchImporter
 
 def test_importer(importer, file_path, expected_success=True):
+    """
+    インポーターをテスト
+    
+    Parameters:
+        importer: テスト対象のインポーターインスタンス
+        file_path: テスト用ファイルのパス
+        expected_success: インポート成功を期待するかどうか
+    """
     """インポーターをテスト"""
     print(f"[1] CSVインポーターのテスト - {importer.__class__.__name__} - {file_path}")
     print(f"ファイル存在チェック: {file_path} - {os.path.exists(str(file_path))}")
@@ -78,7 +86,13 @@ def test_importer(importer, file_path, expected_success=True):
     return True
 
 def test_factory_detection(file_path, expected_importer_name=None):
-    """インポーターファクトリーのテスト"""
+    """
+    インポーターファクトリーのテスト
+    
+    Parameters:
+        file_path: テスト用ファイルのパス
+        expected_importer_name: 期待されるインポーター名（省略可）
+    """
     print(f"[2] インポーターファクトリーのテスト: {file_path}")
     print(f"ファイル存在チェック: {file_path} - {os.path.exists(str(file_path))}")
     
@@ -105,7 +119,12 @@ def test_factory_detection(file_path, expected_importer_name=None):
     return True
 
 def test_batch_importer(file_paths):
-    """バッチインポーターのテスト"""
+    """
+    バッチインポーターのテスト
+    
+    Parameters:
+        file_paths: テスト用ファイルパスのリスト
+    """
     print(f"[3] バッチインポートのテスト: {len(file_paths)}ファイル")
     
     # ファイルの存在確認

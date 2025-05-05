@@ -110,11 +110,13 @@ def test_quality_metrics():
     print("\n品質メトリクス計算テスト完了")
     return metrics, df
 
-def test_visualization(metrics, df):
+def test_visualization(metrics):
     print("\n視覚化機能のテスト")
+    # メトリクスから必要なデータを抽出
+    metrics_obj, df = metrics
     
     # 視覚化クラスを初期化
-    visualizer = EnhancedValidationVisualizer(metrics, df)
+    visualizer = EnhancedValidationVisualizer(metrics_obj, df)
     
     # 品質スコアの視覚化をテスト
     gauge_chart, bar_chart = visualizer.generate_quality_score_visualization()

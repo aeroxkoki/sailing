@@ -18,6 +18,7 @@ import platform
 import socket
 import json
 import warnings
+from pathlib import Path
 
 # 警告を記録するためのセットアップ
 warnings.simplefilter('always', UserWarning)
@@ -60,6 +61,7 @@ print(f"テストパス: {tests_path}")
 
 # テスト用データディレクトリへのパス
 TEST_DATA_DIR = os.path.join(os.path.dirname(__file__), 'test_data')
+RESOURCES_DIR = os.path.join(os.path.dirname(__file__), 'resources')
 
 # モジュールのインポートパス問題を解決するための事前処理
 try:
@@ -390,6 +392,149 @@ def sample_wind_field():
     }
     
     return wind_field
+
+# ====== インポーターテスト用フィクスチャ ======
+
+@pytest.fixture
+def importer(request):
+    """指定されたインポーターのインスタンスを作成して返す"""
+    from sailing_data_processor.importers.csv_importer import CSVImporter
+    from sailing_data_processor.importers.gpx_importer import GPXImporter
+    from sailing_data_processor.importers.tcx_importer import TCXImporter
+    from sailing_data_processor.importers.fit_importer import FITImporter
+    
+    importers = {
+        'csv': CSVImporter,
+        'gpx': GPXImporter,
+        'tcx': TCXImporter,
+        'fit': FITImporter
+    }
+    
+    # デフォルトはCSVインポーター
+    importer_type = getattr(request, "param", "csv")
+    
+    if importer_type not in importers:
+        raise ValueError(f"不明なインポータータイプ: {importer_type}")
+    
+    return importers[importer_type]()
+
+@pytest.fixture
+def file_path(request):
+    """テストファイルのパスを返す"""
+    # デフォルトはCSVファイルのパス
+    file_type = getattr(request, "param", "csv")
+    
+    # テスト用ディレクトリの検索
+    test_dirs = [
+        Path(TEST_DATA_DIR),
+        Path(RESOURCES_DIR),
+        Path(os.path.join(project_root, "tests/test_data")),
+        Path(os.path.join(project_root, "tests/resources")),
+    ]
+    
+    # 有効なディレクトリを探す
+    sample_file = f"sample.{file_type}"
+    for test_dir in test_dirs:
+        if test_dir.exists():
+            file_path = test_dir / sample_file
+            if file_path.exists():
+                return file_path
+    
+    # ファイルが見つからない場合は明示的にパスを返す
+    return Path(os.path.join(project_root, "tests/resources", sample_file))
+
+@pytest.fixture
+def file_paths(request):
+    """テストファイルのパスのリストを返す"""
+    # デフォルトはすべてのファイルタイプ
+    file_types = getattr(request, "param", ["csv", "gpx"])
+    
+    # テスト用ディレクトリの検索
+    test_dirs = [
+        Path(TEST_DATA_DIR),
+        Path(RESOURCES_DIR),
+        Path(os.path.join(project_root, "tests/test_data")),
+        Path(os.path.join(project_root, "tests/resources")),
+    ]
+    
+    paths = []
+    
+    # 有効なファイルを収集
+    for file_type in file_types:
+        sample_file = f"sample.{file_type}"
+        for test_dir in test_dirs:
+            if test_dir.exists():
+                file_path = test_dir / sample_file
+                if file_path.exists():
+                    paths.append(file_path)
+                    break
+    
+    return paths
+
+# ====== 品質メトリクスのテスト用フィクスチャ ======
+
+@pytest.fixture
+def metrics():
+    """テスト用の品質メトリクス計算器を返す"""
+    # サンプルデータ生成
+    df = create_sample_data(rows=500, error_rate=0.15)
+    
+    from sailing_data_processor.data_model.container import GPSDataContainer
+    from sailing_data_processor.validation.data_validator import DataValidator
+    from sailing_data_processor.validation.quality_metrics_integration import EnhancedQualityMetricsCalculator
+    
+    # GPSDataContainerを作成
+    container = GPSDataContainer(data=df)
+    
+    # データ検証
+    validator = DataValidator()
+    validation_results = validator.validate(container)
+    
+    # 拡張品質メトリクス計算
+    metrics = EnhancedQualityMetricsCalculator(validation_results, df)
+    
+    return metrics, df
+
+def create_sample_data(rows=1000, error_rate=0.1):
+    """サンプルデータを生成する"""
+    # 現在時刻から24時間のデータを生成
+    base_time = datetime.now()
+    timestamps = [base_time + timedelta(seconds=i*10) for i in range(rows)]
+    
+    # 基準となる緯度・経度
+    base_lat, base_lon = 35.6, 139.7
+    
+    # 正常データの作成
+    data = {
+        "timestamp": timestamps,
+        "latitude": [base_lat + (np.sin(i/100) * 0.01) for i in range(rows)],
+        "longitude": [base_lon + (np.cos(i/100) * 0.01) for i in range(rows)],
+        "speed": [np.abs(10 + np.sin(i/50) * 5) for i in range(rows)],
+        "heading": [np.abs((i * 5) % 360) for i in range(rows)]
+    }
+    
+    # エラーの導入
+    error_indices = np.random.choice(rows, int(rows * error_rate), replace=False)
+    
+    # 欠損値の追加
+    for idx in error_indices[:int(len(error_indices) * 0.3)]:
+        col = np.random.choice(["latitude", "longitude", "speed", "heading"])
+        data[col][idx] = np.nan
+    
+    # 異常値の追加
+    for idx in error_indices[int(len(error_indices) * 0.3):int(len(error_indices) * 0.6)]:
+        col = np.random.choice(["speed", "heading"])
+        if col == "speed":
+            data[col][idx] = np.random.choice([-10, 100])  # 負の速度または極端に大きい速度
+        else:
+            data[col][idx] = np.random.choice([-30, 400])  # 範囲外の方位
+    
+    # 重複タイムスタンプの追加
+    for idx in error_indices[int(len(error_indices) * 0.6):]:
+        duplicate_idx = np.random.choice(rows)
+        data["timestamp"][idx] = data["timestamp"][duplicate_idx]
+    
+    return pd.DataFrame(data)
 
 # ====== 風の移動モデル用フィクスチャ ======
 
