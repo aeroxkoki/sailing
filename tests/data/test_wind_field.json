@@ -1,0 +1,16 @@
+{
+  "bounds": {
+    "min_lat": 35.1,
+    "max_lat": 35.3,
+    "min_lon": 139.5,
+    "max_lon": 139.7
+  },
+  "grid_size": [10, 10],
+  "timestamp": "2025-04-15T10:00:00",
+  "data_points": [
+    {"lat": 35.15, "lon": 139.55, "wind_direction": 220, "wind_speed": 8.5, "confidence": 0.9},
+    {"lat": 35.18, "lon": 139.58, "wind_direction": 225, "wind_speed": 9.0, "confidence": 0.85},
+    {"lat": 35.20, "lon": 139.60, "wind_direction": 230, "wind_speed": 9.5, "confidence": 0.8},
+    {"lat": 35.25, "lon": 139.65, "wind_direction": 235, "wind_speed": 10.0, "confidence": 0.9}
+  ]
+}

@@ -3,13 +3,14 @@
 
 import unittest
 import sys
+import os
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 import folium
 
-# プロジェクトのルートディレクトリをパスに追加
-sys.path.insert(0, '/content/drive/MyDrive/sailing-project')
+# プロジェクトのルートディレクトリをパスに追加（相対パスで設定）
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from visualization.map_display import SailingMapDisplay
 

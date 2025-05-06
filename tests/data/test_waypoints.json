@@ -1,0 +1,10 @@
+{
+  "course": [
+    {"name": "Start", "lat": 35.15, "lon": 139.55},
+    {"name": "Mark1", "lat": 35.2, "lon": 139.6},
+    {"name": "Mark2", "lat": 35.25, "lon": 139.65},
+    {"name": "Finish", "lat": 35.18, "lon": 139.58}
+  ],
+  "course_type": "Windward/Leeward",
+  "date": "2025-04-15"
+}
