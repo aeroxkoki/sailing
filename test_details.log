@@ -1,8 +1,8 @@
-2025-05-06 00:00:19,861 - sailing_test - INFO - ======== テスト環境情報 ========
-2025-05-06 00:00:19,864 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
-2025-05-06 00:00:19,865 - sailing_test - INFO - Python version: 3.9.6
-2025-05-06 00:00:19,865 - sailing_test - INFO - Hostname: MacBook-Air-2.local
-2025-05-06 00:00:19,866 - sailing_test - DEBUG - Python path: [
+2025-05-06 22:20:14,629 - sailing_test - INFO - ======== テスト環境情報 ========
+2025-05-06 22:20:14,631 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
+2025-05-06 22:20:14,631 - sailing_test - INFO - Python version: 3.9.6
+2025-05-06 22:20:14,631 - sailing_test - INFO - Hostname: MacBook-Air-2.local
+2025-05-06 22:20:14,632 - sailing_test - DEBUG - Python path: [
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy",
@@ -16,17 +16,11 @@
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
 ]
-2025-05-06 00:00:19,866 - sailing_test - DEBUG - Environment variables:
-2025-05-06 00:00:19,866 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
-2025-05-06 00:00:19,867 - sailing_test - DEBUG -   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
-2025-05-06 00:00:19,867 - sailing_test - DEBUG -   PYTHONVERBOSE: 1
-2025-05-06 00:00:19,867 - sailing_test - INFO - ======== テスト開始 ========
-2025-05-06 00:00:19,868 - sailing_test - INFO - テスト開始: test_precision_and_validity_scores
-2025-05-06 00:00:20,454 - sailing_test - INFO - テスト終了: test_precision_and_validity_scores
-2025-05-06 00:00:20,457 - sailing_test - INFO - テスト開始: test_calculate_uniformity_score
-2025-05-06 00:00:20,532 - sailing_test - INFO - テスト終了: test_calculate_uniformity_score
-2025-05-06 00:00:20,541 - sailing_test - INFO - テスト開始: test_calculate_spatial_quality_scores
-2025-05-06 00:00:20,652 - sailing_test - INFO - テスト終了: test_calculate_spatial_quality_scores
-2025-05-06 00:00:20,656 - sailing_test - INFO - テスト開始: test_calculate_temporal_quality_scores
-2025-05-06 00:00:20,708 - sailing_test - INFO - テスト終了: test_calculate_temporal_quality_scores
-2025-05-06 00:00:20,711 - sailing_test - INFO - ======== テスト終了 ========
+2025-05-06 22:20:14,633 - sailing_test - DEBUG - Environment variables:
+2025-05-06 22:20:14,633 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
+2025-05-06 22:20:14,633 - sailing_test - DEBUG -   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
+2025-05-06 22:20:14,634 - sailing_test - DEBUG -   PYTHONVERBOSE: 1
+2025-05-06 22:20:14,634 - sailing_test - INFO - ======== テスト開始 ========
+2025-05-06 22:20:14,635 - sailing_test - INFO - テスト開始: test_precision_and_validity_scores
+2025-05-06 22:20:15,008 - sailing_test - INFO - テスト終了: test_precision_and_validity_scores
+2025-05-06 22:20:15,009 - sailing_test - INFO - ======== テスト終了 ========
