@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-Module for data connector between map layers and data sources.
-This module provides functions for binding and data transformation between layers and data sources.
+データ品質メトリクス計算モジュール
+This module provides functionality for calculating quality metrics of GPS data.
 """
 
 from typing import Dict, List, Any, Optional, Tuple, Set
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
+import uuid
 
 # データモデルインポートエラーのリスクを回避するため、直接インポートは行わない
 # 代わりに動的インポートまたはタイプヒントのみの参照を使用
@@ -20,7 +21,7 @@ except ImportError:
 
 class QualityMetricsCalculator:
     """
-    データ品質メトリクスの計算クラス - 簡略化バージョン
+    データ品質メトリクスの計算クラス
     
     Parameters
     ----------
@@ -51,8 +52,35 @@ class QualityMetricsCalculator:
             "consistency": ["No Duplicate Timestamps", "Temporal Consistency Check"]
         }
         
-        # 問題のあるレコードのインデックスを収集 - 簡略化
-        self.problematic_indices = {
+        # 問題のあるレコードのインデックスを収集
+        self.problematic_indices = self._collect_problematic_indices()
+        
+        # 品質スコアを計算
+        self.quality_scores = self._calculate_quality_scores()
+        
+        # カテゴリ別スコアを計算
+        self.category_scores = self._calculate_category_scores()
+        
+        # 問題分布
+        self.problem_distribution = {}
+        
+        # レコードごとの問題情報
+        self.record_issues = {}
+        
+        # 時間的・空間的メトリクス
+        self.temporal_metrics = {}
+        self.spatial_metrics = {}
+        
+    def _collect_problematic_indices(self) -> Dict[str, List[int]]:
+        """
+        バリデーション結果から問題のあるレコードインデックスを収集
+        
+        Returns
+        -------
+        Dict[str, List[int]]
+            カテゴリごとの問題インデックス
+        """
+        indices = {
             "missing_data": [],
             "out_of_range": [],
             "duplicates": [],
@@ -61,36 +89,134 @@ class QualityMetricsCalculator:
             "all": []
         }
         
-        # 品質スコアを簡略化
-        self.quality_scores = {
+        for result in self.validation_results:
+            if not result.get('is_valid', True):
+                details = result.get('details', {})
+                rule_name = result.get('rule_name', '')
+                
+                # 欠損値の問題
+                if rule_name == "No Null Values Check":
+                    null_indices = []
+                    for col, idxs in details.get('null_indices', {}).items():
+                        null_indices.extend(idxs)
+                    indices["missing_data"].extend(null_indices)
+                    indices["all"].extend(null_indices)
+                
+                # 範囲外の値の問題
+                elif rule_name == "Value Range Check":
+                    out_indices = details.get('out_of_range_indices', [])
+                    indices["out_of_range"].extend(out_indices)
+                    indices["all"].extend(out_indices)
+                
+                # 重複タイムスタンプの問題
+                elif rule_name == "No Duplicate Timestamps":
+                    dup_indices = []
+                    for ts, idxs in details.get('duplicate_indices', {}).items():
+                        dup_indices.extend(idxs)
+                    indices["duplicates"].extend(dup_indices)
+                    indices["all"].extend(dup_indices)
+                
+                # 空間的異常の問題
+                elif rule_name == "Spatial Consistency Check":
+                    spatial_indices = details.get('anomaly_indices', [])
+                    indices["spatial_anomalies"].extend(spatial_indices)
+                    indices["all"].extend(spatial_indices)
+                
+                # 時間的異常の問題
+                elif rule_name == "Temporal Consistency Check":
+                    temporal_indices = details.get('reverse_indices', [])
+                    indices["temporal_anomalies"].extend(temporal_indices)
+                    indices["all"].extend(temporal_indices)
+        
+        # 重複を除去
+        for key in indices:
+            indices[key] = sorted(list(set(indices[key])))
+        
+        return indices
+    
+    def _calculate_quality_scores(self) -> Dict[str, float]:
+        """
+        全体的な品質スコアを計算
+        
+        Returns
+        -------
+        Dict[str, float]
+            品質スコア
+        """
+        scores = {
             "completeness": 100.0,
             "accuracy": 100.0,
             "consistency": 100.0,
             "total": 100.0
         }
         
-        # カテゴリ別スコアを簡略化
-        self.category_scores = {}
+        # データサイズを取得
+        data_size = len(self.data) if not self.data.empty else 1
+        
+        # 完全性スコア計算
+        missing_count = len(self.problematic_indices["missing_data"])
+        if missing_count > 0:
+            # 欠損値が多いほどスコアを下げる
+            completeness_score = 100.0 * (1 - (missing_count / data_size))
+            penalty = min(50.0, missing_count * 2.0)  # 多すぎると50ポイント以上下がる
+            scores["completeness"] = max(0.0, completeness_score - penalty)
+        
+        # 精度スコア計算
+        accuracy_issues = len(self.problematic_indices["out_of_range"]) + len(self.problematic_indices["spatial_anomalies"])
+        if accuracy_issues > 0:
+            # 精度問題が多いほどスコアを下げる
+            accuracy_score = 100.0 * (1 - (accuracy_issues / data_size))
+            penalty = min(40.0, accuracy_issues * 3.0)  # 多すぎると40ポイント以上下がる
+            scores["accuracy"] = max(0.0, accuracy_score - penalty)
+        
+        # 一貫性スコア計算
+        consistency_issues = len(self.problematic_indices["duplicates"]) + len(self.problematic_indices["temporal_anomalies"])
+        if consistency_issues > 0:
+            # 一貫性問題が多いほどスコアを下げる
+            consistency_score = 100.0 * (1 - (consistency_issues / data_size))
+            penalty = min(60.0, consistency_issues * 5.0)  # 多すぎると60ポイント以上下がる
+            scores["consistency"] = max(0.0, consistency_score - penalty)
+        
+        # 総合スコア計算 - 各カテゴリのスコアの加重平均
+        # 一貫性は特に重要なので、より重みを高く
+        weights = {"completeness": 0.3, "accuracy": 0.3, "consistency": 0.4}
+        weighted_sum = sum(scores[cat] * weight for cat, weight in weights.items())
+        scores["total"] = weighted_sum / sum(weights.values())
+        
+        return scores
+    
+    def _calculate_category_scores(self) -> Dict[str, Dict[str, Any]]:
+        """
+        カテゴリ別の詳細スコアを計算
+        
+        Returns
+        -------
+        Dict[str, Dict[str, Any]]
+            カテゴリ別スコア情報
+        """
+        category_scores = {}
+        
         for category in self.rule_categories:
-            self.category_scores[category] = {
-                "score": 100.0,
-                "issues": 0,
-                "details": {}
+            # そのカテゴリに関連する問題数をカウント
+            issue_count = 0
+            details = {}
+            
+            for result in self.validation_results:
+                rule_name = result.get('rule_name', '')
+                if rule_name in self.rule_categories[category] and not result.get('is_valid', True):
+                    issue_count += 1
+                    # ルールごとの問題カウントを保存
+                    rule_key = rule_name.lower().replace(' ', '_')
+                    details[rule_key] = result.get('details', {})
+            
+            # カテゴリスコアを設定
+            category_scores[category] = {
+                "score": self.quality_scores[category],
+                "issues": issue_count,
+                "details": details
             }
         
-        # 問題分布を簡略化
-        self.problem_distribution = {
-            "temporal": {"has_data": False},
-            "spatial": {"has_data": False},
-            "problem_type": {"has_data": False}
-        }
-        
-        # レコードごとの問題情報を簡略化
-        self.record_issues = {}
-        
-        # 時間的・空間的メトリクスを簡略化
-        self.temporal_metrics = {"has_data": False}
-        self.spatial_metrics = {"has_data": False}
+        return category_scores
     
     def _determine_impact_level(self, score: float) -> str:
         """
@@ -135,9 +261,16 @@ class QualityMetricsCalculator:
         # 重要度別の問題数をカウント
         severity_counts = self.get_problem_severity_distribution()
         
-        # 品質サマリーを構築 (テストが期待するキー名にも対応)
+        # 修正可能な問題数をカウント（簡易版）
+        fixable_counts = {
+            "auto": missing_data_count + dupes_count,  # 自動修正可能
+            "manual": out_of_range_count,              # 手動修正推奨
+            "unfixable": spatial_count + temporal_count # 再測定必要
+        }
+        
+        # 品質サマリーを構築
         return {
-            "quality_score": self.quality_scores.get("total", 100.0),  # テスト用のキー
+            "quality_score": self.quality_scores.get("total", 100.0),
             "overall_score": self.quality_scores.get("total", 100.0),
             "completeness_score": self.quality_scores.get("completeness", 100.0),
             "accuracy_score": self.quality_scores.get("accuracy", 100.0),
@@ -151,14 +284,14 @@ class QualityMetricsCalculator:
                 "temporal_anomalies": temporal_count
             },
             "severity_counts": severity_counts,
-            "fixable_counts": {"auto": 0, "manual": 0, "unfixable": 0},
+            "fixable_counts": fixable_counts,
             "impact_level": self._determine_impact_level(self.quality_scores.get("total", 100.0))
         }
         
     @property
     def quality_summary(self):
         """
-        品質サマリーのプロパティ - テストケース対応
+        品質サマリーのプロパティ
         
         Returns
         -------
@@ -176,8 +309,7 @@ class QualityMetricsCalculator:
         Dict[str, float]
             品質スコア
         """
-        # すでに初期化時に計算されているので、そのまま返す
-        return self.quality_scores
+        return self._calculate_quality_scores()
     
     @staticmethod
     def create_sample_data(rows=20, with_problems=True):
@@ -263,6 +395,41 @@ class QualityMetricsCalculator:
                     'out_of_range_indices': [8]
                 }
             })
+            
+            if rows > 12:
+                validation_results.append({
+                    'rule_name': 'No Duplicate Timestamps',
+                    'is_valid': False,
+                    'severity': 'warning',
+                    'details': {
+                        'duplicate_count': 2,
+                        'duplicate_timestamps': [data.loc[11, 'timestamp']],
+                        'duplicate_indices': {str(data.loc[11, 'timestamp']): [11, 12]}
+                    }
+                })
+            
+            if rows > 15:
+                validation_results.append({
+                    'rule_name': 'Temporal Consistency Check',
+                    'is_valid': False,
+                    'severity': 'warning',
+                    'details': {
+                        'reverse_count': 1,
+                        'reverse_indices': [15]
+                    }
+                })
+            
+            if rows > 18:
+                validation_results.append({
+                    'rule_name': 'Spatial Consistency Check',
+                    'is_valid': False,
+                    'severity': 'warning',
+                    'details': {
+                        'anomaly_count': 1,
+                        'max_calculated_speed': 50.0,
+                        'anomaly_indices': [18]
+                    }
+                })
         
         return data, validation_results
     
@@ -284,29 +451,65 @@ class QualityMetricsCalculator:
             "temporal_anomalies": len(self.problematic_indices.get("temporal_anomalies", []))
         }
         
-        # テスト対応のため、真偽値を設定
-        has_data = sum(problem_type_counts.values()) > 0
+        # 時間的な分布情報を構築
+        temporal_metrics = {
+            "has_data": len(self.problematic_indices.get("all", [])) > 0,
+            "problematic_periods": []
+        }
+        
+        if not self.data.empty and "timestamp" in self.data.columns:
+            # タイムスタンプごとに問題が発生した時間帯を特定
+            try:
+                timestamps = pd.to_datetime(self.data["timestamp"])
+                min_time = timestamps.min()
+                max_time = timestamps.max()
+                
+                # 時間帯ごとの問題数をカウント
+                for i, idx in enumerate(self.problematic_indices.get("all", [])):
+                    if idx < len(self.data):
+                        row = self.data.iloc[idx]
+                        if "timestamp" in row:
+                            ts = row["timestamp"]
+                            temporal_metrics["problematic_periods"].append({
+                                "timestamp": ts.isoformat() if hasattr(ts, "isoformat") else str(ts),
+                                "count": 1
+                            })
+            except Exception:
+                # 時間情報の解析エラー
+                pass
+        
+        # 空間的な分布情報を構築
+        spatial_metrics = {
+            "has_data": len(self.problematic_indices.get("all", [])) > 0,
+            "problematic_areas": []
+        }
+        
+        if not self.data.empty and "latitude" in self.data.columns and "longitude" in self.data.columns:
+            # 問題のある場所のクラスタリング
+            for i, idx in enumerate(self.problematic_indices.get("all", [])):
+                if idx < len(self.data):
+                    row = self.data.iloc[idx]
+                    if not pd.isna(row.get("latitude")) and not pd.isna(row.get("longitude")):
+                        spatial_metrics["problematic_areas"].append({
+                            "latitude": row["latitude"],
+                            "longitude": row["longitude"],
+                            "count": 1
+                        })
         
         # 問題タイプの分布情報を構築
         problem_type_distribution = {
-            "has_data": has_data,
+            "has_data": sum(problem_type_counts.values()) > 0,
             "problem_counts": problem_type_counts
         }
         
-        # 時間的な分布情報を構築（テスト対応）
-        if not hasattr(self, "temporal_metrics") or not self.temporal_metrics:
-            self.temporal_metrics = {"has_data": False}
-        
-        # 空間的な分布情報を構築（テスト対応）
-        if not hasattr(self, "spatial_metrics") or not self.spatial_metrics:
-            self.spatial_metrics = {"has_data": False}
-        
-        # 問題分布情報を構築
-        return {
-            "temporal": self.temporal_metrics,
-            "spatial": self.spatial_metrics,
+        # 問題分布情報を構築し保存
+        self.problem_distribution = {
+            "temporal": temporal_metrics,
+            "spatial": spatial_metrics,
             "problem_type": problem_type_distribution
         }
+        
+        return self.problem_distribution
     
     def get_record_issues(self):
         """
@@ -339,11 +542,7 @@ class QualityMetricsCalculator:
                             "issue_count": 0,
                             "severity": "info",
                             "quality_score": {"total": 100.0},
-                            "fix_options": [{
-                                "id": f"fix_{category}_{idx}",
-                                "name": f"{issue_categories.get(category, category)}の修正",
-                                "type": "auto"
-                            }],
+                            "fix_options": [],
                             "description": ""
                         }
                     
@@ -352,6 +551,14 @@ class QualityMetricsCalculator:
                     if issue_description not in record_issues[idx]["issues"]:
                         record_issues[idx]["issues"].append(issue_description)
                         record_issues[idx]["issue_count"] += 1
+                        
+                        # 修正オプションを追加
+                        fix_option = {
+                            "id": f"fix_{category}_{idx}",
+                            "name": f"{issue_description}の修正",
+                            "type": "auto" if category in ["missing_data", "duplicates"] else "manual"
+                        }
+                        record_issues[idx]["fix_options"].append(fix_option)
         
         # 問題の重要度を設定
         for result in self.validation_results:
@@ -391,7 +598,7 @@ class QualityMetricsCalculator:
         
         # 各レコードに追加情報を設定
         for idx, issue_data in record_issues.items():
-            # 品質スコアの更新 - 問題数に応じて減少
+            # 品質スコアの更新 - 問題数と重要度に応じて減少
             issue_count = issue_data["issue_count"]
             severity_penalty = 10 if issue_data["severity"] == "warning" else 20 if issue_data["severity"] == "error" else 5
             quality_score = max(0, 100 - (issue_count * severity_penalty))
@@ -411,6 +618,7 @@ class QualityMetricsCalculator:
                 if "latitude" in row and "longitude" in row:
                     issue_data["position"] = [row["latitude"], row["longitude"]]
         
+        self.record_issues = record_issues
         return record_issues
         
     def get_problem_severity_distribution(self) -> Dict[str, int]:
@@ -523,21 +731,21 @@ class QualityMetricsCalculator:
             均一性スコア (0-100)
         """
         if not intervals or len(intervals) <= 1:
-            return 100.0
+            return 0.0  # 間隔データが不十分な場合はスコア0
         
         # 空のリストや無効な値をフィルタリング
         valid_intervals = [interval for interval in intervals if interval is not None and not np.isnan(interval) and interval > 0]
         
         # 有効な間隔が少なすぎる場合
         if len(valid_intervals) <= 1:
-            return 95.0  # 判断できないが、1つだけならほぼ均一と見なす
+            return 0.0  # 判断できない場合もスコア0
         
         # 間隔の標準偏差を計算
         mean_interval = np.mean(valid_intervals)
         std_interval = np.std(valid_intervals)
         
         # 変動係数（標準偏差/平均）を計算
-        cv = std_interval / mean_interval if mean_interval > 0 else 0
+        cv = std_interval / mean_interval if mean_interval > 0 else float('inf')
         
         # 極端な値の検出（平均から標準偏差の3倍以上外れた値）
         outlier_count = 0
@@ -873,19 +1081,17 @@ class QualityMetricsCalculator:
                 grid_info = {
                     "grid_id": f"grid_{i}_{j}",
                     "center": [(grid_lat_min + grid_lat_max) / 2, (grid_lon_min + grid_lon_max) / 2],
-                    "lat_range": [grid_lat_min, grid_lat_max],
-                    "lon_range": [grid_lon_min, grid_lon_max],
-                    "quality_score": quality_score,
-                    "problem_count": problem_count,
-                    "total_count": len(grid_data),
-                    "problem_percentage": 100.0 * problem_count / len(grid_data) if len(grid_data) > 0 else 0.0,
-                    "impact_level": self._determine_impact_level(quality_score),
                     "bounds": {
                         "min_lat": grid_lat_min,
                         "max_lat": grid_lat_max,
                         "min_lon": grid_lon_min,
                         "max_lon": grid_lon_max
-                    }
+                    },
+                    "quality_score": quality_score,
+                    "problem_count": problem_count,
+                    "total_count": len(grid_data),
+                    "problem_percentage": 100.0 * problem_count / len(grid_data) if len(grid_data) > 0 else 0.0,
+                    "impact_level": self._determine_impact_level(quality_score)
                 }
                 
                 grids.append(grid_info)
@@ -899,19 +1105,17 @@ class QualityMetricsCalculator:
             grids.append({
                 "grid_id": "grid_single",
                 "center": [center_lat, center_lon],
-                "lat_range": [lat_min - 0.001, lat_max + 0.001],
-                "lon_range": [lon_min - 0.001, lon_max + 0.001],
-                "quality_score": 100.0,  # データが1点だけなら問題がなさそう
-                "problem_count": 0,
-                "total_count": len(valid_data),
-                "problem_percentage": 0.0,
-                "impact_level": "low",
                 "bounds": {
                     "min_lat": lat_min - 0.001,
                     "max_lat": lat_max + 0.001,
                     "min_lon": lon_min - 0.001,
                     "max_lon": lon_max + 0.001
-                }
+                },
+                "quality_score": 100.0,  # データが1点だけなら問題がなさそう
+                "problem_count": 0,
+                "total_count": len(valid_data),
+                "problem_percentage": 0.0,
+                "impact_level": "low"
             })
         
         return grids
@@ -950,7 +1154,7 @@ class QualityMetricsCalculator:
                 if len(self.data) > 0:
                     quality_score = 100.0 * (1 - (problem_count / len(self.data)))
                     
-                first_issue = {
+                period_info = {
                     "period": 0,
                     "start_time": start_time.isoformat(),
                     "end_time": end_time.isoformat(),
@@ -962,62 +1166,63 @@ class QualityMetricsCalculator:
                     "impact_level": self._determine_impact_level(quality_score)
                 }
                 
-                return [first_issue]
+                return [period_info]
+            
+            # 時間帯の数（簡易的に固定値）
+            period_count = min(5, max(1, int(time_range / 600)))  # 10分ごとに区切る（最大5区間）
+            
+            # 時間帯の作成
+            period_duration = timedelta(seconds=time_range / period_count)
+            periods = []
+            
+            for i in range(period_count):
+                period_start = start_time + i * period_duration
+                period_end = start_time + (i + 1) * period_duration
+                
+                # 時間帯のラベル作成
+                label = f"{period_start.strftime('%H:%M')} - {period_end.strftime('%H:%M')}"
+                
+                # 時間帯内のデータポイントをフィルタリング
+                period_data_indices = self.data[
+                    (timestamps >= period_start) & 
+                    (timestamps < period_end)
+                ].index.tolist()
+                
+                # 時間帯内のデータがなければスキップ
+                if not period_data_indices:
+                    continue
+                
+                # 時間帯内の問題数をカウント
+                problem_count = 0
+                for idx in period_data_indices:
+                    if idx in self.problematic_indices.get("all", []):
+                        problem_count += 1
+                
+                # 品質スコアの計算
+                quality_score = 100.0
+                if period_data_indices:
+                    quality_score = 100.0 * (1 - (problem_count / len(period_data_indices)))
+                
+                # 時間帯情報の作成
+                period_info = {
+                    "period": i,
+                    "start_time": period_start.isoformat(),
+                    "end_time": period_end.isoformat(),
+                    "label": label,
+                    "quality_score": quality_score,
+                    "problem_count": problem_count,
+                    "total_count": len(period_data_indices),
+                    "problem_percentage": 100.0 * problem_count / len(period_data_indices) if period_data_indices else 0.0,
+                    "impact_level": self._determine_impact_level(quality_score)
+                }
+                
+                periods.append(period_info)
+            
+            return periods
+            
         except Exception as e:
-            # エラー対応のため、テスト用の値を返す
+            # エラー時は空リストを返す
             return []
-        
-        # 時間帯の数（簡易的に固定値）
-        period_count = min(5, max(1, int(time_range / 600)))  # 10分ごとに区切る（最大5区間）
-        
-        # 時間帯の作成
-        period_duration = timedelta(seconds=time_range / period_count)
-        periods = []
-        
-        for i in range(period_count):
-            period_start = start_time + i * period_duration
-            period_end = start_time + (i + 1) * period_duration
-            
-            # 時間帯のラベル作成
-            label = f"{period_start.strftime('%H:%M')} - {period_end.strftime('%H:%M')}"
-            
-            # 時間帯内のデータポイントをフィルタリング
-            period_data_indices = self.data[
-                (timestamps >= period_start) & 
-                (timestamps < period_end)
-            ].index.tolist()
-            
-            # 時間帯内のデータがなければスキップ
-            if not period_data_indices:
-                continue
-            
-            # 時間帯内の問題数をカウント
-            problem_count = 0
-            for idx in period_data_indices:
-                if idx in self.problematic_indices.get("all", []):
-                    problem_count += 1
-            
-            # 品質スコアの計算
-            quality_score = 100.0
-            if period_data_indices:
-                quality_score = 100.0 * (1 - (problem_count / len(period_data_indices)))
-            
-            # 時間帯情報の作成
-            period_info = {
-                "period": i,
-                "start_time": period_start.isoformat(),
-                "end_time": period_end.isoformat(),
-                "label": label,
-                "quality_score": quality_score,
-                "problem_count": problem_count,
-                "total_count": len(period_data_indices),
-                "problem_percentage": 100.0 * problem_count / len(period_data_indices) if period_data_indices else 0.0,
-                "impact_level": self._determine_impact_level(quality_score)
-            }
-            
-            periods.append(period_info)
-        
-        return periods
         
     def get_quality_report(self) -> Dict[str, Any]:
         """
@@ -1039,13 +1244,17 @@ class QualityMetricsCalculator:
         total_problems = sum(basic_info["issue_counts"].values())
         problem_summary = {
             "total_problems": total_problems,
-            "problem_types": {
+            "problem_types": {}
+        }
+        
+        # 問題タイプの分布
+        if total_problems > 0:
+            problem_summary["problem_types"] = {
                 k: {
                     "count": v,
                     "percentage": 100.0 * v / total_problems if total_problems > 0 else 0.0
                 } for k, v in basic_info["issue_counts"].items() if v > 0
             }
-        }
         
         # 分布情報の取得
         distribution_info = {
