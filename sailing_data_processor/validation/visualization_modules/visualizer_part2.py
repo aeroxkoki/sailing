@@ -610,7 +610,7 @@ class ValidationVisualizerPart2:
             mode="gauge+number",
             value=total_score,
             title={"text": "データ品質スコア", "font": {"size": 24}},
-            number={"font": {"size": 32}, "color": score_color},
+            number={"font": {"size": 32, "color": score_color}},
             gauge={
                 "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
                 "bar": {"color": score_color},

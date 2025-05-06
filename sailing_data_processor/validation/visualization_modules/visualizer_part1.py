@@ -65,7 +65,7 @@ class ValidationVisualizer:
             mode="gauge+number",
             value=quality_scores["total"],
             title={"text": "データ品質スコア", "font": {"size": 24}},
-            number={"font": {"size": 32}, "color": self._get_score_color(quality_scores["total"])},
+            number={"font": {"size": 32, "color": self._get_score_color(quality_scores["total"])}},
             gauge={
                 "axis": {"range": [0, 100], "tickwidth": 1, "tickcolor": "darkblue"},
                 "bar": {"color": self._get_score_color(quality_scores["total"])},
