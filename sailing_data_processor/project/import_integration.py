@@ -2,7 +2,7 @@
 """
 sailing_data_processor.project.import_integration
 
-ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚·ã‚¹ãƒ†ãƒ ã¨ã‚¤ãƒ³ãƒãƒ¼ãƒˆã‚·ã‚¹ãƒ†ãƒ ã®é€£æºã‚’è¡Œã†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+×í¸§¯È·¹Æàh¤óİüÈ·¹Æàn#:’LFâ¸åüë
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -17,117 +17,117 @@ from sailing_data_processor.project.session_reference import SessionReference
 from sailing_data_processor.project.project_storage import ProjectStorage
 from sailing_data_processor.data_model.container import GPSDataContainer
 
-# ãƒ­ã‚¬ãƒ¼ã®è¨­å®š
+# í¬ün-š
 logger = logging.getLogger(__name__)
 
 class ImportIntegration:
     """
-    ã‚¤ãƒ³ãƒãƒ¼ãƒˆé€£æºã‚¯ãƒ©ã‚¹
+    ¤óİüÈ#:¯é¹
     
-    ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚·ã‚¹ãƒ†ãƒ ã¨ã‚¤ãƒ³ãƒãƒ¼ãƒˆã‚·ã‚¹ãƒ†ãƒ ã®é€£æºã‚’è¡Œã†ã‚¯ãƒ©ã‚¹ã€‚
-    ã‚¤ãƒ³ãƒãƒ¼ãƒˆçµæœã®è‡ªå‹•ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆå‰²ã‚Šå½“ã¦ã‚„ã€ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆè¨­å®šã«åŸºã¥ã
-    è‡ªå‹•å‡¦ç†ã‚’å®Ÿè£…ã—ã¾ã™ã€‚
+    ×í¸§¯È·¹Æàh¤óİüÈ·¹Æàn#:’LF¯é¹
+    ¤óİüÈPœnêÕ×í¸§¯ÈrŠSf„×í¸§¯È-škúeO
+    êÕæ’ŸÅW~Y
     
-    å±æ€§
+    ^'
     -----
     project_storage : ProjectStorage
-        ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸
+        ×í¸§¯È¹Èìü¸
     """
     
     def __init__(self, project_storage: ProjectStorage):
         """
-        ã‚¤ãƒ³ãƒãƒ¼ãƒˆé€£æºã®åˆæœŸåŒ–
+        ¤óİüÈ#:n
         
         Parameters
         ----------
         project_storage : ProjectStorage
-            ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚¹ãƒˆãƒ¬ãƒ¼ã‚¸
+            ×í¸§¯È¹Èìü¸
         """
         self.project_storage = project_storage
     
     def assign_to_project(self, session_id: str, project_id: str, 
                          display_name: Optional[str] = None) -> bool:
         """
-        ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã«å‰²ã‚Šå½“ã¦
+        »Ã·çó’×í¸§¯ÈkrŠSf
         
         Parameters
         ----------
         session_id : str
-            å‰²ã‚Šå½“ã¦ã‚‹ã‚»ãƒƒã‚·ãƒ§ãƒ³ID
+            rŠSf‹»Ã·çóID
         project_id : str
-            å‰²ã‚Šå½“ã¦å…ˆã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆID
+            rŠSfHn×í¸§¯ÈID
         display_name : Optional[str], optional
-            ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆå†…ã§ã®è¡¨ç¤ºå, by default None
+            ×í¸§¯È…gnh:, by default None
         
         Returns
         -------
         bool
-            å‰²ã‚Šå½“ã¦ã«æˆåŠŸã—ãŸå ´åˆTrue
+            rŠSfkŸW_4True
         """
         project = self.project_storage.get_project(project_id)
         session = self.project_storage.get_session(session_id)
         
         if not project:
-            logger.error(f"ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ {project_id} ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“")
+            logger.error(f"×í¸§¯È {project_id} L‹dKŠ~[“")
             return False
         
         if not session:
-            logger.error(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session_id} ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“")
+            logger.error(f"»Ã·çó {session_id} L‹dKŠ~[“")
             return False
         
-        # ã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ã®ä½œæˆ
+        # »Ã·çóÂgn\
         reference = SessionReference(
             session_id=session_id,
             display_name=display_name or session.name,
             description=session.description
         )
         
-        # ã‚»ãƒƒã‚·ãƒ§ãƒ³æƒ…å ±ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ›´æ–°
+        # »Ã·çóÅ1n­ãÃ·å’ô°
         reference.update_cached_info(session)
         
-        # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ã‚»ãƒƒã‚·ãƒ§ãƒ³ãƒªã‚¹ãƒˆã«è¿½åŠ 
-        # æ³¨: æ—¢å­˜ã®ã‚»ãƒƒã‚·ãƒ§ãƒ³ãƒªã‚¹ãƒˆã‚’æ´»ç”¨ã—ã¤ã¤ã€ã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ã‚’å†…éƒ¨ã§ç®¡ç†ã™ã‚‹ãŸã‚ã®å¯¾å¿œãŒå¿…è¦
-        # ç¾çŠ¶ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒ©ã‚¹ã¯ã‚»ãƒƒã‚·ãƒ§ãƒ³IDã®ãƒªã‚¹ãƒˆã‚’æŒã¤ã ã‘ãªã®ã§ã€äº’æ›æ€§ã‚’ä¿ã¡ãªãŒã‚‰ã®æ‹¡å¼µãŒå¿…è¦
+        # ×í¸§¯Èn»Ã·çóê¹Èkı 
+        # è: âXn»Ã·çóê¹È’;(Wdd»Ã·çóÂg’…èg¡Y‹_nşÜLÅ
+        # ş¶n×í¸§¯È¯é¹o»Ã·çóIDnê¹È’d`Qjng’Û'’İajL‰ná5LÅ
         project.add_session(session_id)
         
-        # ã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ç®¡ç†ã®ãŸã‚ã€ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿ã‚’åˆ©ç”¨
+        # »Ã·çóÂg¡n_×í¸§¯Èná¿Çü¿’)(
         if "session_references" not in project.metadata:
             project.metadata["session_references"] = {}
         
         project.metadata["session_references"][session_id] = reference.to_dict()
         
-        # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¿å­˜
+        # ×í¸§¯È’İX
         return self.project_storage.save_project(project)
     
     def remove_from_project(self, session_id: str, project_id: str) -> bool:
         """
-        ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‹ã‚‰å‰Šé™¤
+        »Ã·çó’×í¸§¯ÈK‰Jd
         
         Parameters
         ----------
         session_id : str
-            å‰Šé™¤ã™ã‚‹ã‚»ãƒƒã‚·ãƒ§ãƒ³ID
+            JdY‹»Ã·çóID
         project_id : str
-            å‰Šé™¤å…ƒã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆID
+            JdCn×í¸§¯ÈID
         
         Returns
         -------
         bool
-            å‰Šé™¤ã«æˆåŠŸã—ãŸå ´åˆTrue
+            JdkŸW_4True
         """
         project = self.project_storage.get_project(project_id)
         
         if not project:
-            logger.error(f"ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ {project_id} ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“")
+            logger.error(f"×í¸§¯È {project_id} L‹dKŠ~[“")
             return False
         
-        # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‹ã‚‰ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’å‰Šé™¤
+        # ×í¸§¯ÈK‰»Ã·çó’Jd
         if project.remove_session(session_id):
-            # ã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ã‚‚å‰Šé™¤
+            # »Ã·çóÂg‚Jd
             if "session_references" in project.metadata and session_id in project.metadata["session_references"]:
                 del project.metadata["session_references"][session_id]
             
-            # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¿å­˜
+            # ×í¸§¯È’İX
             return self.project_storage.save_project(project)
         
         return False
@@ -138,38 +138,38 @@ class ImportIntegration:
                                order: Optional[int] = None,
                                view_settings: Optional[Dict[str, Any]] = None) -> bool:
         """
-        ã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ã‚’æ›´æ–°
+        »Ã·çóÂg’ô°
         
         Parameters
         ----------
         project_id : str
-            ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆID
+            ×í¸§¯ÈID
         session_id : str
-            ã‚»ãƒƒã‚·ãƒ§ãƒ³ID
+            »Ã·çóID
         display_name : Optional[str], optional
-            æ–°ã—ã„è¡¨ç¤ºå, by default None
+            °WDh:, by default None
         description : Optional[str], optional
-            æ–°ã—ã„èª¬æ˜, by default None
+            °WD¬, by default None
         order : Optional[int], optional
-            æ–°ã—ã„è¡¨ç¤ºé †åº, by default None
+            °WDh:, by default None
         view_settings : Optional[Dict[str, Any]], optional
-            æ–°ã—ã„è¡¨ç¤ºè¨­å®š, by default None
+            °WDh:-š, by default None
         
         Returns
         -------
         bool
-            æ›´æ–°ã«æˆåŠŸã—ãŸå ´åˆTrue
+            ô°kŸW_4True
         """
         project = self.project_storage.get_project(project_id)
         
         if not project:
-            logger.error(f"ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ {project_id} ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“")
+            logger.error(f"×í¸§¯È {project_id} L‹dKŠ~[“")
             return False
         
-        # ã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ã®å–å¾—
+        # »Ã·çóÂgnÖ—
         if ("session_references" not in project.metadata or 
             session_id not in project.metadata["session_references"]):
-            # ã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ãŒãªã„å ´åˆã¯æ–°è¦ä½œæˆ
+            # »Ã·çóÂgLjD4o°\
             if session_id in project.sessions:
                 session = self.project_storage.get_session(session_id)
                 if session:
@@ -185,13 +185,13 @@ class ImportIntegration:
                     
                     project.metadata["session_references"][session_id] = reference.to_dict()
                 else:
-                    logger.error(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session_id} ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“")
+                    logger.error(f"»Ã·çó {session_id} L‹dKŠ~[“")
                     return False
             else:
-                logger.error(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session_id} ã¯ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ {project_id} ã«å«ã¾ã‚Œã¦ã„ã¾ã›ã‚“")
+                logger.error(f"»Ã·çó {session_id} o×í¸§¯È {project_id} k+~ŒfD~[“")
                 return False
         
-        # ã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ã®æ›´æ–°
+        # »Ã·çóÂgnô°
         reference_dict = project.metadata["session_references"][session_id]
         reference = SessionReference.from_dict(reference_dict)
         
@@ -207,195 +207,212 @@ class ImportIntegration:
         if view_settings is not None:
             reference.update_view_settings(view_settings)
         
-        # æ›´æ–°ã—ãŸã‚»ãƒƒã‚·ãƒ§ãƒ³å‚ç…§ã‚’ä¿å­˜
+        # ô°W_»Ã·çóÂg’İX
         project.metadata["session_references"][session_id] = reference.to_dict()
         
-        # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¿å­˜
+        # ×í¸§¯È’İX
         return self.project_storage.save_project(project)
     
     def process_import_result(self, session: Session, container: GPSDataContainer,
                             target_project_id: Optional[str] = None,
                             auto_assign: bool = True) -> Tuple[bool, Optional[str]]:
         """
-        ã‚¤ãƒ³ãƒãƒ¼ãƒˆçµæœã‚’å‡¦ç†
+        ¤óİüÈPœ’æ
         
         Parameters
         ----------
         session : Session
-            ã‚¤ãƒ³ãƒãƒ¼ãƒˆã•ã‚ŒãŸã‚»ãƒƒã‚·ãƒ§ãƒ³
+            ¤óİüÈUŒ_»Ã·çó
         container : GPSDataContainer
-            ã‚¤ãƒ³ãƒãƒ¼ãƒˆã•ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚³ãƒ³ãƒ†ãƒŠ
+            ¤óİüÈUŒ_Çü¿³óÆÊ
         target_project_id : Optional[str], optional
-            å‰²ã‚Šå½“ã¦å…ˆã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆID, by default None
+            rŠSfHn×í¸§¯ÈID, by default None
         auto_assign : bool, optional
-            è‡ªå‹•å‰²ã‚Šå½“ã¦ã‚’è¡Œã†ã‹ã©ã†ã‹, by default True
+            êÕrŠSf’LFKiFK, by default True
         
         Returns
         -------
         Tuple[bool, Optional[str]]
-            (æˆåŠŸã—ãŸã‹ã©ã†ã‹, å‰²ã‚Šå½“ã¦ã‚‰ã‚ŒãŸãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆID)
+            (ŸW_KiFK, rŠSf‰Œ_×í¸§¯ÈID)
         """
-        # ã‚»ãƒƒã‚·ãƒ§ãƒ³ã¨ã‚³ãƒ³ãƒ†ãƒŠã‚’ä¿å­˜
+        # »Ã·çóh³óÆÊ’İX
         if not self.project_storage.save_session(session):
-            logger.error(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session.session_id} ã®ä¿å­˜ã«å¤±æ•—ã—ã¾ã—ãŸ")
+            logger.error(f"»Ã·çó {session.session_id} nİXk1WW~W_")
             return False, None
         
         if not self.project_storage.save_container(container, session.session_id):
-            logger.error(f"ãƒ‡ãƒ¼ã‚¿ã‚³ãƒ³ãƒ†ãƒŠã®ä¿å­˜ã«å¤±æ•—ã—ã¾ã—ãŸ")
+            logger.error(f"Çü¿³óÆÊnİXk1WW~W_")
             return False, None
         
-        # ç‰¹å®šã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã«å‰²ã‚Šå½“ã¦ã‚‹å ´åˆ
+        # yšn×í¸§¯ÈkrŠSf‹4
         if target_project_id:
             success = self.assign_to_project(session.session_id, target_project_id)
             if success:
-                logger.info(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session.session_id} ã‚’ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ {target_project_id} ã«å‰²ã‚Šå½“ã¦ã¾ã—ãŸ")
+                logger.info(f"»Ã·çó {session.session_id} ’×í¸§¯È {target_project_id} krŠSf~W_")
                 return True, target_project_id
             else:
-                logger.error(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session.session_id} ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ {target_project_id} ã¸ã®å‰²ã‚Šå½“ã¦ã«å¤±æ•—ã—ã¾ã—ãŸ")
+                logger.error(f"»Ã·çó {session.session_id} n×í¸§¯È {target_project_id} xnrŠSfk1WW~W_")
                 return False, None
         
-        # è‡ªå‹•å‰²ã‚Šå½“ã¦ã‚’è¡Œã†å ´åˆ
+        # êÕrŠSf’LF4
         if auto_assign:
             project_id = self._auto_assign_project(session, container)
             if project_id:
                 success = self.assign_to_project(session.session_id, project_id)
                 if success:
-                    logger.info(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session.session_id} ã‚’ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ {project_id} ã«è‡ªå‹•å‰²ã‚Šå½“ã¦ã—ã¾ã—ãŸ")
+                    logger.info(f"»Ã·çó {session.session_id} ’×í¸§¯È {project_id} kêÕrŠSfW~W_")
                     return True, project_id
         
         return True, None
     
     def _auto_assign_project(self, session: Session, container: GPSDataContainer) -> Optional[str]:
         """
-        ã‚»ãƒƒã‚·ãƒ§ãƒ³ã«æœ€é©ãªãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’è‡ªå‹•åˆ¤å®š
+        »Ã·çók ij×í¸§¯È’êÕ$š
         
         Parameters
         ----------
         session : Session
-            å‰²ã‚Šå½“ã¦ã‚‹ã‚»ãƒƒã‚·ãƒ§ãƒ³
+            rŠSf‹»Ã·çó
         container : GPSDataContainer
-            ã‚»ãƒƒã‚·ãƒ§ãƒ³ã®ãƒ‡ãƒ¼ã‚¿ã‚³ãƒ³ãƒ†ãƒŠ
+            »Ã·çónÇü¿³óÆÊ
         
         Returns
         -------
         Optional[str]
-            å‰²ã‚Šå½“ã¦å…ˆã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆIDã€‚é©åˆ‡ãªãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆãŒãªã„å ´åˆã¯None
+            rŠSfHn×í¸§¯ÈIDij×í¸§¯ÈLjD4oNone
         """
-        # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆè‡ªå‹•å‰²ã‚Šå½“ã¦ã®ãƒ­ã‚¸ãƒƒã‚¯
-        # 1. ã‚¿ã‚°ã«åŸºã¥ãå‰²ã‚Šå½“ã¦
-        # 2. æ—¥ä»˜ã«åŸºã¥ãå‰²ã‚Šå½“ã¦
-        # 3. ä½ç½®æƒ…å ±ã«åŸºã¥ãå‰²ã‚Šå½“ã¦
-        # 4. æœ€è¿‘ä½œæˆã•ã‚ŒãŸãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ
+        # ×í¸§¯ÈêÕrŠSfní¸Ã¯
+        # 1. ¿°kúeOrŠSf
+        # 2. åØkúeOrŠSf
+        # 3. MnÅ1kúeOrŠSf
+        # 4.  Ñ\UŒ_×í¸§¯È
         
-        # ã‚¿ã‚°ã«åŸºã¥ãå‰²ã‚Šå½“ã¦
-        if session.tags:
-            for project in self.project_storage.get_projects():
-                # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¿ã‚°ã¨ä¸€è‡´ã™ã‚‹ã‹ç¢ºèª
-                if set(session.tags).intersection(set(project.tags)):
-                    return project.project_id
+        # ×í¸§¯Èê¹È’Ö—
+        projects = self.project_storage.get_projects()
+        if not projects:
+            return None
+            
+        # ¿°kúeOrŠSf
+        if session.tags and len(session.tags) > 0:
+            for project in projects:
+                if project.tags and len(project.tags) > 0:
+                    # ×í¸§¯Èn¿°h ôY‹Kº
+                    # »Ã·çón¿°h×í¸§¯Èn¿°L1dg‚ ôYŒprŠSf
+                    for tag in session.tags:
+                        if tag in project.tags:
+                            return project.project_id
         
-        # æ—¥ä»˜ã«åŸºã¥ãå‰²ã‚Šå½“ã¦
-        if 'event_date' in session.metadata:
-            session_date = session.metadata['event_date']
-            for project in self.project_storage.get_projects():
-                if 'event_date' in project.metadata and project.metadata['event_date'] == session_date:
-                    return project.project_id
+        # åØkúeOrŠSf
+        if 'event_date' in session.metadata and session.metadata['event_date']:
+            session_date = str(session.metadata['event_date'])
+            for project in projects:
+                if 'event_date' in project.metadata and project.metadata['event_date']:
+                    project_date = str(project.metadata['event_date'])
+                    # åØ‡W’cWfÔÕ©üŞÃÈnUD’8Î	
+                    if session_date == project_date:
+                        return project.project_id
         
-        # ä½ç½®æƒ…å ±ã«åŸºã¥ãå‰²ã‚Šå½“ã¦
-        if 'location' in session.metadata:
-            session_location = session.metadata['location']
-            for project in self.project_storage.get_projects():
-                if 'location' in project.metadata and project.metadata['location'] == session_location:
-                    return project.project_id
+        # MnÅ1kúeOrŠSf
+        if 'location' in session.metadata and session.metadata['location']:
+            session_location = str(session.metadata['location'])
+            for project in projects:
+                if 'location' in project.metadata and project.metadata['location']:
+                    project_location = str(project.metadata['location'])
+                    if session_location == project_location:
+                        return project.project_id
         
-        # æœ€è¿‘ä½œæˆã•ã‚ŒãŸãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ
-        if self.project_storage.get_projects():
-            # æœ€æ–°ã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
-            projects = sorted(self.project_storage.get_projects(), 
-                              key=lambda p: p.created_at, 
-                              reverse=True)
-            if projects:
-                return projects[0].project_id
+        #  Ñ\UŒ_×í¸§¯È
+        try:
+            # \åBg½üÈ °	
+            sorted_projects = sorted(projects, 
+                                     key=lambda p: p.created_at, 
+                                     reverse=True)
+            if sorted_projects:
+                return sorted_projects[0].project_id
+        except Exception as e:
+            # ½üÈ1WBo n×í¸§¯È’ÔY
+            return projects[0].project_id if projects else None
         
         return None
     
     def apply_project_settings(self, session_id: str, project_id: str) -> bool:
         """
-        ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆè¨­å®šã‚’ã‚»ãƒƒã‚·ãƒ§ãƒ³ã«é©ç”¨
+        ×í¸§¯È-š’»Ã·çóki(
         
         Parameters
         ----------
         session_id : str
-            è¨­å®šã‚’é©ç”¨ã™ã‚‹ã‚»ãƒƒã‚·ãƒ§ãƒ³ID
+            -š’i(Y‹»Ã·çóID
         project_id : str
-            è¨­å®šå…ƒã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆID
+            -šCn×í¸§¯ÈID
         
         Returns
         -------
         bool
-            é©ç”¨ã«æˆåŠŸã—ãŸå ´åˆTrue
+            i(kŸW_4True
         """
         project = self.project_storage.get_project(project_id)
         session = self.project_storage.get_session(session_id)
         
         if not project:
-            logger.error(f"ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆ {project_id} ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“")
+            logger.error(f"×í¸§¯È {project_id} L‹dKŠ~[“")
             return False
         
         if not session:
-            logger.error(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session_id} ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“")
+            logger.error(f"»Ã·çó {session_id} L‹dKŠ~[“")
             return False
         
-        # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆè¨­å®šã®é©ç”¨
-        # 1. ã‚¿ã‚°ã®ç¶™æ‰¿
-        # 2. ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿ã®ç¶™æ‰¿
-        # 3. ã‚«ãƒ†ã‚´ãƒªã®ç¶™æ‰¿
+        # ×í¸§¯È-šni(
+        # 1. ¿°n™
+        # 2. á¿Çü¿n™
+        # 3. «Æ´ên™
         
-        # ã‚¿ã‚°ã®ç¶™æ‰¿ï¼ˆãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ã‚¿ã‚°ã‚’ã‚»ãƒƒã‚·ãƒ§ãƒ³ã«è¿½åŠ ï¼‰
+        # ¿°n™×í¸§¯Èn¿°’»Ã·çókı 	
         for tag in project.tags:
             if tag not in session.tags:
                 session.add_tag(tag)
         
-        # ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿ã®ç¶™æ‰¿ï¼ˆãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿ã‚’ã‚»ãƒƒã‚·ãƒ§ãƒ³ã«è¿½åŠ ã€æ—¢å­˜ã®å€¤ã¯ä¸Šæ›¸ãã—ãªã„ï¼‰
+        # á¿Çü¿n™×í¸§¯Èná¿Çü¿’»Ã·çókı âXn$o
+øMWjD	
         project_settings = project.metadata.get("default_session_settings", {})
         for key, value in project_settings.items():
             if key not in session.metadata:
                 session.update_metadata(key, value)
         
-        # ã‚«ãƒ†ã‚´ãƒªã®ç¶™æ‰¿
+        # «Æ´ên™
         if hasattr(project, 'category') and hasattr(session, 'category'):
             if not session.category and project.category:
                 session.category = project.category
         
-        # ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’ä¿å­˜
+        # »Ã·çó’İX
         return self.project_storage.save_session(session)
     
     def process_batch_import(self, sessions: List[Session], containers: Dict[str, GPSDataContainer],
                            target_project_id: Optional[str] = None) -> Dict[str, str]:
         """
-        ãƒãƒƒãƒã‚¤ãƒ³ãƒãƒ¼ãƒˆçµæœã‚’å‡¦ç†
+        ĞÃÁ¤óİüÈPœ’æ
         
         Parameters
         ----------
         sessions : List[Session]
-            ã‚¤ãƒ³ãƒãƒ¼ãƒˆã•ã‚ŒãŸã‚»ãƒƒã‚·ãƒ§ãƒ³ã®ãƒªã‚¹ãƒˆ
+            ¤óİüÈUŒ_»Ã·çónê¹È
         containers : Dict[str, GPSDataContainer]
-            ã‚»ãƒƒã‚·ãƒ§ãƒ³IDã‚’ã‚­ãƒ¼ã¨ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚³ãƒ³ãƒ†ãƒŠã®è¾æ›¸
+            »Ã·çóID’­ühY‹Çü¿³óÆÊnø
         target_project_id : Optional[str], optional
-            å‰²ã‚Šå½“ã¦å…ˆã®ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆID, by default None
+            rŠSfHn×í¸§¯ÈID, by default None
         
         Returns
         -------
         Dict[str, str]
-            ã‚»ãƒƒã‚·ãƒ§ãƒ³IDã‚’ã‚­ãƒ¼ã€å‰²ã‚Šå½“ã¦ã‚‰ã‚ŒãŸãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆIDã‚’å€¤ã¨ã™ã‚‹è¾æ›¸
+            »Ã·çóID’­ürŠSf‰Œ_×í¸§¯ÈID’$hY‹ø
         """
         results = {}
         
         for session in sessions:
             container = containers.get(session.session_id)
             if not container:
-                logger.error(f"ã‚»ãƒƒã‚·ãƒ§ãƒ³ {session.session_id} ã®ãƒ‡ãƒ¼ã‚¿ã‚³ãƒ³ãƒ†ãƒŠãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“")
-                # ã‚³ãƒ³ãƒ†ãƒŠãŒè¦‹ã¤ã‹ã‚‰ãªãã¦ã‚‚ã€ãƒ†ã‚¹ãƒˆå¯¾å¿œã®ãŸã‚çµæœã«ã‚¨ãƒ³ãƒˆãƒªã‚’è¿½åŠ 
+                logger.error(f"»Ã·çó {session.session_id} nÇü¿³óÆÊL‹dKŠ~[“")
+                # ³óÆÊL‹dK‰jOf‚Æ¹ÈşÜn_Pœk¨óÈê’ı 
                 if target_project_id:
                     results[session.session_id] = target_project_id
                 continue
@@ -404,13 +421,13 @@ class ImportIntegration:
                 session, container, target_project_id, auto_assign=True
             )
             
-            # æˆåŠŸã—ãŸå ´åˆã¯ã€ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆIDãŒã‚ã£ã¦ã‚‚ãªãã¦ã‚‚çµæœã«è¿½åŠ 
+            # ŸW_4o×í¸§¯ÈIDLBcf‚jOf‚Pœkı 
             if success:
-                # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆIDãŒãªã„å ´åˆã¯è‡ªå‹•å‰²ã‚Šå½“ã¦ã«å¤±æ•—ã—ãŸå ´åˆãªã®ã§ã€
-                # æŒ‡å®šã•ã‚ŒãŸãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆIDã‚’ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¨ã—ã¦ä½¿ç”¨
+                # ×í¸§¯ÈIDLjD4oêÕrŠSfk1WW_4jng
+                # šUŒ_×í¸§¯ÈID’ÇÕ©ëÈhWf(
                 results[session.session_id] = project_id or target_project_id
         
-        # ãƒ†ã‚¹ãƒˆå¯¾å¿œï¼šã‚»ãƒƒã‚·ãƒ§ãƒ³ã¨ã‚¿ãƒ¼ã‚²ãƒƒãƒˆãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆIDãŒã‚ã‚‹ã®ã«resultsãŒç©ºã®å ´åˆã®å¯¾ç­–
+        # Æ¹ÈşÜ»Ã·çóh¿ü²ÃÈ×í¸§¯ÈIDLB‹nkresultsLzn4nşV
         if not results and sessions and target_project_id:
             for session in sessions:
                 results[session.session_id] = target_project_id
@@ -422,50 +439,50 @@ class ImportIntegration:
                                 sessions: List[Session] = None,
                                 containers: Dict[str, GPSDataContainer] = None) -> Optional[str]:
         """
-        ã‚¤ãƒ³ãƒãƒ¼ãƒˆç”¨ã®æ–°ã—ã„ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã‚’ä½œæˆ
+        ¤óİüÈ(n°WD×í¸§¯È’\
         
         Parameters
         ----------
         name : str
-            ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆå
+            ×í¸§¯È
         description : str, optional
-            ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®èª¬æ˜, by default ""
+            ×í¸§¯Èn¬, by default ""
         tags : List[str], optional
-            ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã«é–¢é€£ã™ã‚‹ã‚¿ã‚°, by default None
+            ×í¸§¯Èk¢#Y‹¿°, by default None
         metadata : Dict[str, Any], optional
-            è¿½åŠ ã®ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿, by default None
+            ı ná¿Çü¿, by default None
         sessions : List[Session], optional
-            ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã«è¿½åŠ ã™ã‚‹ã‚»ãƒƒã‚·ãƒ§ãƒ³ã®ãƒªã‚¹ãƒˆ, by default None
+            ×í¸§¯Èkı Y‹»Ã·çónê¹È, by default None
         containers : Dict[str, GPSDataContainer], optional
-            ã‚»ãƒƒã‚·ãƒ§ãƒ³IDã‚’ã‚­ãƒ¼ã¨ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã‚³ãƒ³ãƒ†ãƒŠã®è¾æ›¸, by default None
+            »Ã·çóID’­ühY‹Çü¿³óÆÊnø, by default None
         
         Returns
         -------
         Optional[str]
-            ä½œæˆã•ã‚ŒãŸãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆIDã€‚å¤±æ•—ã—ãŸå ´åˆã¯None
+            \UŒ_×í¸§¯ÈID1WW_4oNone
         """
-        # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆ
+        # ×í¸§¯Èn\
         project = self.project_storage.create_project(name, description, tags, metadata)
         
         if not project:
-            logger.error("ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã®ä½œæˆã«å¤±æ•—ã—ã¾ã—ãŸ")
+            logger.error("×í¸§¯Èn\k1WW~W_")
             return None
         
-        # ã‚»ãƒƒã‚·ãƒ§ãƒ³ã®è¿½åŠ 
+        # »Ã·çónı 
         if sessions:
             for session in sessions:
-                # ã‚»ãƒƒã‚·ãƒ§ãƒ³ã®ä¿å­˜
+                # »Ã·çónİX
                 self.project_storage.save_session(session)
                 
-                # ã‚³ãƒ³ãƒ†ãƒŠã®ä¿å­˜
+                # ³óÆÊnİX
                 if containers and session.session_id in containers:
                     container = containers[session.session_id]
                     self.project_storage.save_container(container, session.session_id)
                 
-                # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆã«ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’è¿½åŠ 
+                # ×í¸§¯Èk»Ã·çó’ı 
                 self.assign_to_project(session.session_id, project.project_id)
                 
-                # ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆè¨­å®šã®é©ç”¨
+                # ×í¸§¯È-šni(
                 self.apply_project_settings(session.session_id, project.project_id)
         
         return project.project_id
