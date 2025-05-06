@@ -2,7 +2,7 @@
 """
 sailing_data_processor.project.import_integration
 
-×í¸§¯È·¹Æàh¤óÝüÈ·¹Æàn#:’LFâ¸åüë
+ImportIntegration class for project management and import processing.
 """
 
 from typing import Dict, List, Any, Optional, Union, Tuple
@@ -17,117 +17,117 @@ from sailing_data_processor.project.session_reference import SessionReference
 from sailing_data_processor.project.project_storage import ProjectStorage
 from sailing_data_processor.data_model.container import GPSDataContainer
 
-# í¬ün-š
+# Module logger
 logger = logging.getLogger(__name__)
 
 class ImportIntegration:
     """
-    ¤óÝüÈ#:¯é¹
+    Import integration class
     
-    ×í¸§¯È·¹Æàh¤óÝüÈ·¹Æàn#:’LF¯é¹
-    ¤óÝüÈPœnêÕ×í¸§¯ÈrŠSf„×í¸§¯È-škúeO
-    êÕæ’ŸÅW~Y
+    Manages the integration between project management and import processing.
+    Provides functionality for adding imported sessions to projects, applying
+    project settings, and more.
     
-    ^'
-    -----
+    Attributes
+    ----------
     project_storage : ProjectStorage
-        ×í¸§¯È¹Èìü¸
+        Project storage manager
     """
     
     def __init__(self, project_storage: ProjectStorage):
         """
-        ¤óÝüÈ#:n
+        Initialize import integration
         
         Parameters
         ----------
         project_storage : ProjectStorage
-            ×í¸§¯È¹Èìü¸
+            Project storage manager
         """
         self.project_storage = project_storage
     
     def assign_to_project(self, session_id: str, project_id: str, 
                          display_name: Optional[str] = None) -> bool:
         """
-        »Ã·çó’×í¸§¯ÈkrŠSf
+        Assign session to a project
         
         Parameters
         ----------
         session_id : str
-            rŠSf‹»Ã·çóID
+            Session ID to assign
         project_id : str
-            rŠSfHn×í¸§¯ÈID
+            Project ID to assign to
         display_name : Optional[str], optional
-            ×í¸§¯È…gnh:, by default None
+            Custom display name, by default None
         
         Returns
         -------
         bool
-            rŠSfkŸW_4True
+            True if successful
         """
         project = self.project_storage.get_project(project_id)
         session = self.project_storage.get_session(session_id)
         
         if not project:
-            logger.error(f"×í¸§¯È {project_id} L‹dKŠ~[“")
+            logger.error(f"Project {project_id} not found")
             return False
         
         if not session:
-            logger.error(f"»Ã·çó {session_id} L‹dKŠ~[“")
+            logger.error(f"Session {session_id} not found")
             return False
         
-        # »Ã·çóÂgn\
+        # Create session reference
         reference = SessionReference(
             session_id=session_id,
             display_name=display_name or session.name,
             description=session.description
         )
         
-        # »Ã·çóÅ1n­ãÃ·å’ô°
+        # Update cached info from session
         reference.update_cached_info(session)
         
-        # ×í¸§¯Èn»Ã·çóê¹Èký 
-        # è: âXn»Ã·çóê¹È’;(Wdd»Ã·çóÂg’…èg¡Y‹_nþÜLÅ
-        # þ¶n×í¸§¯È¯é¹o»Ã·çóIDnê¹È’d`Qjng’Û'’ÝajL‰ná5LÅ
+        # Add session to project sessions list
+        # Note: The session list is just a set of IDs, actual session references
+        # with display names and settings are stored in metadata
         project.add_session(session_id)
         
-        # »Ã·çóÂg¡n_×í¸§¯Èná¿Çü¿’)(
+        # Add session reference to project metadata
         if "session_references" not in project.metadata:
             project.metadata["session_references"] = {}
         
         project.metadata["session_references"][session_id] = reference.to_dict()
         
-        # ×í¸§¯È’ÝX
+        # Save project
         return self.project_storage.save_project(project)
     
     def remove_from_project(self, session_id: str, project_id: str) -> bool:
         """
-        »Ã·çó’×í¸§¯ÈK‰Jd
+        Remove session from a project
         
         Parameters
         ----------
         session_id : str
-            JdY‹»Ã·çóID
+            Session ID to remove
         project_id : str
-            JdCn×í¸§¯ÈID
+            Project ID to remove from
         
         Returns
         -------
         bool
-            JdkŸW_4True
+            True if successful
         """
         project = self.project_storage.get_project(project_id)
         
         if not project:
-            logger.error(f"×í¸§¯È {project_id} L‹dKŠ~[“")
+            logger.error(f"Project {project_id} not found")
             return False
         
-        # ×í¸§¯ÈK‰»Ã·çó’Jd
+        # Remove session from project
         if project.remove_session(session_id):
-            # »Ã·çóÂg‚Jd
+            # Remove session reference
             if "session_references" in project.metadata and session_id in project.metadata["session_references"]:
                 del project.metadata["session_references"][session_id]
             
-            # ×í¸§¯È’ÝX
+            # Save project
             return self.project_storage.save_project(project)
         
         return False
@@ -138,38 +138,38 @@ class ImportIntegration:
                                order: Optional[int] = None,
                                view_settings: Optional[Dict[str, Any]] = None) -> bool:
         """
-        »Ã·çóÂg’ô°
+        Update session reference
         
         Parameters
         ----------
         project_id : str
-            ×í¸§¯ÈID
+            Project ID
         session_id : str
-            »Ã·çóID
+            Session ID
         display_name : Optional[str], optional
-            °WDh:, by default None
+            New display name, by default None
         description : Optional[str], optional
-            °WD¬, by default None
+            New description, by default None
         order : Optional[int], optional
-            °WDh:, by default None
+            New display order, by default None
         view_settings : Optional[Dict[str, Any]], optional
-            °WDh:-š, by default None
+            New view settings, by default None
         
         Returns
         -------
         bool
-            ô°kŸW_4True
+            True if successful
         """
         project = self.project_storage.get_project(project_id)
         
         if not project:
-            logger.error(f"×í¸§¯È {project_id} L‹dKŠ~[“")
+            logger.error(f"Project {project_id} not found")
             return False
         
-        # »Ã·çóÂgnÖ—
+        # Check if session reference exists
         if ("session_references" not in project.metadata or 
             session_id not in project.metadata["session_references"]):
-            # »Ã·çóÂgLjD4o°\
+            # If session reference doesn't exist, create it
             if session_id in project.sessions:
                 session = self.project_storage.get_session(session_id)
                 if session:
@@ -185,13 +185,13 @@ class ImportIntegration:
                     
                     project.metadata["session_references"][session_id] = reference.to_dict()
                 else:
-                    logger.error(f"»Ã·çó {session_id} L‹dKŠ~[“")
+                    logger.error(f"Session {session_id} not found")
                     return False
             else:
-                logger.error(f"»Ã·çó {session_id} o×í¸§¯È {project_id} k+~ŒfD~[“")
+                logger.error(f"Session {session_id} is not in project {project_id}")
                 return False
         
-        # »Ã·çóÂgnô°
+        # Update session reference
         reference_dict = project.metadata["session_references"][session_id]
         reference = SessionReference.from_dict(reference_dict)
         
@@ -207,112 +207,112 @@ class ImportIntegration:
         if view_settings is not None:
             reference.update_view_settings(view_settings)
         
-        # ô°W_»Ã·çóÂg’ÝX
+        # Update reference in project metadata
         project.metadata["session_references"][session_id] = reference.to_dict()
         
-        # ×í¸§¯È’ÝX
+        # Save project
         return self.project_storage.save_project(project)
     
     def process_import_result(self, session: Session, container: GPSDataContainer,
                             target_project_id: Optional[str] = None,
                             auto_assign: bool = True) -> Tuple[bool, Optional[str]]:
         """
-        ¤óÝüÈPœ’æ
+        Process import result
         
         Parameters
         ----------
         session : Session
-            ¤óÝüÈUŒ_»Ã·çó
+            Imported session
         container : GPSDataContainer
-            ¤óÝüÈUŒ_Çü¿³óÆÊ
+            Imported data container
         target_project_id : Optional[str], optional
-            rŠSfHn×í¸§¯ÈID, by default None
+            Target project ID to assign to, by default None
         auto_assign : bool, optional
-            êÕrŠSf’LFKiFK, by default True
+            Enable auto-assignment feature, by default True
         
         Returns
         -------
         Tuple[bool, Optional[str]]
-            (ŸW_KiFK, rŠSf‰Œ_×í¸§¯ÈID)
+            (Success flag, assigned project ID)
         """
-        # »Ã·çóh³óÆÊ’ÝX
+        # Save session and container
         if not self.project_storage.save_session(session):
-            logger.error(f"»Ã·çó {session.session_id} nÝXk1WW~W_")
+            logger.error(f"Failed to save session {session.session_id}")
             return False, None
         
         if not self.project_storage.save_container(container, session.session_id):
-            logger.error(f"Çü¿³óÆÊnÝXk1WW~W_")
+            logger.error(f"Failed to save container")
             return False, None
         
-        # yšn×í¸§¯ÈkrŠSf‹4
+        # If target project specified, assign to it
         if target_project_id:
             success = self.assign_to_project(session.session_id, target_project_id)
             if success:
-                logger.info(f"»Ã·çó {session.session_id} ’×í¸§¯È {target_project_id} krŠSf~W_")
+                logger.info(f"Session {session.session_id} assigned to project {target_project_id}")
                 return True, target_project_id
             else:
-                logger.error(f"»Ã·çó {session.session_id} n×í¸§¯È {target_project_id} xnrŠSfk1WW~W_")
+                logger.error(f"Failed to assign session {session.session_id} to project {target_project_id}")
                 return False, None
         
-        # êÕrŠSf’LF4
+        # Auto assignment feature
         if auto_assign:
             project_id = self._auto_assign_project(session, container)
             if project_id:
                 success = self.assign_to_project(session.session_id, project_id)
                 if success:
-                    logger.info(f"»Ã·çó {session.session_id} ’×í¸§¯È {project_id} kêÕrŠSfW~W_")
+                    logger.info(f"Session {session.session_id} auto-assigned to project {project_id}")
                     return True, project_id
         
         return True, None
     
     def _auto_assign_project(self, session: Session, container: GPSDataContainer) -> Optional[str]:
         """
-        »Ã·çók ij×í¸§¯È’êÕ$š
+        Auto-assign session to an appropriate project
         
         Parameters
         ----------
         session : Session
-            rŠSf‹»Ã·çó
+            Session to assign
         container : GPSDataContainer
-            »Ã·çónÇü¿³óÆÊ
+            Session's data container
         
         Returns
         -------
         Optional[str]
-            rŠSfHn×í¸§¯ÈIDij×í¸§¯ÈLjD4oNone
+            Project ID to assign to, or None if no matching project
         """
-        # ×í¸§¯ÈêÕrŠSfní¸Ã¯
-        # 1. ¿°kúeOrŠSf
-        # 2. åØkúeOrŠSf
-        # 3. MnÅ1kúeOrŠSf
-        # 4.  Ñ\UŒ_×í¸§¯È
+        # Auto-assignment strategy:
+        # 1. Tag-based matching
+        # 2. Date-based matching
+        # 3. Location-based matching
+        # 4. Most recently created project
         
-        # ×í¸§¯Èê¹È’Ö—
+        # Get all projects
         projects = self.project_storage.get_projects()
         if not projects:
             return None
             
-        # ¿°kúeOrŠSf
+        # Tag-based matching
         if session.tags and len(session.tags) > 0:
             for project in projects:
                 if project.tags and len(project.tags) > 0:
-                    # ×í¸§¯Èn¿°h ôY‹Kº
-                    # »Ã·çón¿°h×í¸§¯Èn¿°L1dg‚ ôYŒprŠSf
+                    # Check for tag overlap
+                    # If any tag in the session matches any tag in the project, assign to it
                     for tag in session.tags:
                         if tag in project.tags:
                             return project.project_id
         
-        # åØkúeOrŠSf
+        # Date-based matching
         if 'event_date' in session.metadata and session.metadata['event_date']:
             session_date = str(session.metadata['event_date'])
             for project in projects:
                 if 'event_date' in project.metadata and project.metadata['event_date']:
                     project_date = str(project.metadata['event_date'])
-                    # åØ‡W’cWfÔÕ©üÞÃÈnUD’8Î	
+                    # Date comparison (allowing for different but equivalent formats)
                     if session_date == project_date:
                         return project.project_id
         
-        # MnÅ1kúeOrŠSf
+        # Location-based matching
         if 'location' in session.metadata and session.metadata['location']:
             session_location = str(session.metadata['location'])
             for project in projects:
@@ -321,98 +321,97 @@ class ImportIntegration:
                     if session_location == project_location:
                         return project.project_id
         
-        #  Ñ\UŒ_×í¸§¯È
+        # Most recently created project
         try:
-            # \åBg½üÈ °	
+            # Sort by creation time
             sorted_projects = sorted(projects, 
                                      key=lambda p: p.created_at, 
                                      reverse=True)
             if sorted_projects:
                 return sorted_projects[0].project_id
         except Exception as e:
-            # ½üÈ1WBo n×í¸§¯È’ÔY
+            # Fallback to first project
             return projects[0].project_id if projects else None
         
         return None
     
     def apply_project_settings(self, session_id: str, project_id: str) -> bool:
         """
-        ×í¸§¯È-š’»Ã·çóki(
+        Apply project settings to session
         
         Parameters
         ----------
         session_id : str
-            -š’i(Y‹»Ã·çóID
+            Session ID to apply settings to
         project_id : str
-            -šCn×í¸§¯ÈID
+            Project ID to get settings from
         
         Returns
         -------
         bool
-            i(kŸW_4True
+            True if successful
         """
         project = self.project_storage.get_project(project_id)
         session = self.project_storage.get_session(session_id)
         
         if not project:
-            logger.error(f"×í¸§¯È {project_id} L‹dKŠ~[“")
+            logger.error(f"Project {project_id} not found")
             return False
         
         if not session:
-            logger.error(f"»Ã·çó {session_id} L‹dKŠ~[“")
+            logger.error(f"Session {session_id} not found")
             return False
         
-        # ×í¸§¯È-šni(
-        # 1. ¿°n™
-        # 2. á¿Çü¿n™
-        # 3. «Æ´ên™
+        # Settings to apply:
+        # 1. Tags inheritance
+        # 2. Metadata inheritance
+        # 3. Category inheritance
         
-        # ¿°n™×í¸§¯Èn¿°’»Ã·çóký 	
+        # Tags inheritance (project tags are added to session tags)
         for tag in project.tags:
             if tag not in session.tags:
                 session.add_tag(tag)
         
-        # á¿Çü¿n™×í¸§¯Èná¿Çü¿’»Ã·çóký âXn$o
-øMWjD	
+        # Metadata inheritance (project default settings are added to session metadata, if not already present)
         project_settings = project.metadata.get("default_session_settings", {})
         for key, value in project_settings.items():
             if key not in session.metadata:
                 session.update_metadata(key, value)
         
-        # «Æ´ên™
+        # Category inheritance
         if hasattr(project, 'category') and hasattr(session, 'category'):
             if not session.category and project.category:
                 session.category = project.category
         
-        # »Ã·çó’ÝX
+        # Save session
         return self.project_storage.save_session(session)
     
     def process_batch_import(self, sessions: List[Session], containers: Dict[str, GPSDataContainer],
                            target_project_id: Optional[str] = None) -> Dict[str, str]:
         """
-        ÐÃÁ¤óÝüÈPœ’æ
+        Process batch import
         
         Parameters
         ----------
         sessions : List[Session]
-            ¤óÝüÈUŒ_»Ã·çónê¹È
+            List of imported sessions
         containers : Dict[str, GPSDataContainer]
-            »Ã·çóID’­ühY‹Çü¿³óÆÊnžø
+            Dictionary of data containers, keyed by session ID
         target_project_id : Optional[str], optional
-            rŠSfHn×í¸§¯ÈID, by default None
+            Target project ID to assign to, by default None
         
         Returns
         -------
         Dict[str, str]
-            »Ã·çóID’­ürŠSf‰Œ_×í¸§¯ÈID’$hY‹žø
+            Dictionary mapping session IDs to assigned project IDs
         """
         results = {}
         
         for session in sessions:
             container = containers.get(session.session_id)
             if not container:
-                logger.error(f"»Ã·çó {session.session_id} nÇü¿³óÆÊL‹dKŠ~[“")
-                # ³óÆÊL‹dK‰jOf‚Æ¹ÈþÜn_Pœk¨óÈê’ý 
+                logger.error(f"Container for session {session.session_id} not found")
+                # If container not found but target_project_id provided, still add to results
                 if target_project_id:
                     results[session.session_id] = target_project_id
                 continue
@@ -421,13 +420,13 @@ class ImportIntegration:
                 session, container, target_project_id, auto_assign=True
             )
             
-            # ŸW_4o×í¸§¯ÈIDLBcf‚jOf‚Pœký 
+            # If successful, add to results
             if success:
-                # ×í¸§¯ÈIDLjD4oêÕrŠSfk1WW_4jng
-                # šUŒ_×í¸§¯ÈID’ÇÕ©ëÈhWf(
+                # If project_id is None but processing was successful,
+                # use the target_project_id as fallback
                 results[session.session_id] = project_id or target_project_id
         
-        # Æ¹ÈþÜ»Ã·çóh¿ü²ÃÈ×í¸§¯ÈIDLB‹nkresultsLzn4nþV
+        # If no results but sessions and target_project_id exist, use target_project_id for all
         if not results and sessions and target_project_id:
             for session in sessions:
                 results[session.session_id] = target_project_id
@@ -439,50 +438,50 @@ class ImportIntegration:
                                 sessions: List[Session] = None,
                                 containers: Dict[str, GPSDataContainer] = None) -> Optional[str]:
         """
-        ¤óÝüÈ(n°WD×í¸§¯È’\
+        Create a new project for import
         
         Parameters
         ----------
         name : str
-            ×í¸§¯È
+            Project name
         description : str, optional
-            ×í¸§¯Èn¬, by default ""
+            Project description, by default ""
         tags : List[str], optional
-            ×í¸§¯Èk¢#Y‹¿°, by default None
+            Project tags, by default None
         metadata : Dict[str, Any], optional
-            ý ná¿Çü¿, by default None
+            Additional metadata, by default None
         sessions : List[Session], optional
-            ×í¸§¯Èký Y‹»Ã·çónê¹È, by default None
+            List of sessions to add to project, by default None
         containers : Dict[str, GPSDataContainer], optional
-            »Ã·çóID’­ühY‹Çü¿³óÆÊnžø, by default None
+            Dictionary of data containers, keyed by session ID, by default None
         
         Returns
         -------
         Optional[str]
-            \UŒ_×í¸§¯ÈID1WW_4oNone
+            Created project ID, or None if failed
         """
-        # ×í¸§¯Èn\
+        # Create project
         project = self.project_storage.create_project(name, description, tags, metadata)
         
         if not project:
-            logger.error("×í¸§¯Èn\k1WW~W_")
+            logger.error("Failed to create project")
             return None
         
-        # »Ã·çóný 
+        # Process sessions
         if sessions:
             for session in sessions:
-                # »Ã·çónÝX
+                # Save session
                 self.project_storage.save_session(session)
                 
-                # ³óÆÊnÝX
+                # Save container
                 if containers and session.session_id in containers:
                     container = containers[session.session_id]
                     self.project_storage.save_container(container, session.session_id)
                 
-                # ×í¸§¯Èk»Ã·çó’ý 
+                # Assign to project
                 self.assign_to_project(session.session_id, project.project_id)
                 
-                # ×í¸§¯È-šni(
+                # Apply project settings
                 self.apply_project_settings(session.session_id, project.project_id)
         
         return project.project_id
