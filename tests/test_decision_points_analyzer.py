@@ -87,7 +87,7 @@ class TestDecisionPointsAnalyzer(unittest.TestCase):
     
     def test_detect_performance_changes(self):
         """パフォーマンス変化の検出テスト"""
-        performance_metrics = self.analyzer._extract_performance_metrics(self.track_data)
+        performance_metrics = self.analyzer._extract_performance_metrics(self.track_data, self.wind_data)
         performance_points = self.analyzer.detect_performance_changes(self.track_data, performance_metrics)
         
         # パフォーマンスポイントが検出されていることをチェック

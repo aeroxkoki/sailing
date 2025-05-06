@@ -1235,30 +1235,35 @@ class WindEstimator:
         # 風下判定（閾値以上なら風下）
         return rel_angle >= self.params["downwind_threshold"]
         
-    def _determine_point_state(self, course: float, wind_direction: float) -> str:
+    def _determine_point_state(self, rel_angle: float, upwind_threshold: float = None, downwind_threshold: float = None) -> str:
         """
         風に対する状態を判定
         
         Parameters:
         -----------
-        course : float
-            進行方向（度、0-360）
-        wind_direction : float
-            風向（度、0-360、風が吹いてくる方向）
+        rel_angle : float
+            風向との相対角度（度、0-180）
+        upwind_threshold : float, optional
+            風上判定閾値, by default None (パラメータから取得)
+        downwind_threshold : float, optional
+            風下判定閾値, by default None (パラメータから取得)
             
         Returns:
         --------
         str
             'upwind': 風上, 'downwind': 風下, 'reaching': リーチング
         """
-        # 風向との相対角度（絶対値）
-        rel_angle = abs(self._calculate_angle_difference(course, wind_direction))
+        # デフォルト値の設定
+        if upwind_threshold is None:
+            upwind_threshold = self.params["upwind_threshold"]
+        if downwind_threshold is None:
+            downwind_threshold = self.params["downwind_threshold"]
         
         # 風上判定
-        if rel_angle <= self.params["upwind_threshold"]:
+        if rel_angle <= upwind_threshold:
             return 'upwind'
         # 風下判定
-        elif rel_angle >= self.params["downwind_threshold"]:
+        elif rel_angle >= downwind_threshold:
             return 'downwind'
         # それ以外はリーチング
         else:
@@ -1294,8 +1299,10 @@ class WindEstimator:
         after_rel_wind = self._calculate_angle_difference(after_bearing, wind_direction)
         
         # マニューバー前後の状態を判定
-        before_state = self._determine_point_state(before_bearing, wind_direction)
-        after_state = self._determine_point_state(after_bearing, wind_direction)
+        before_rel_angle = abs(before_rel_wind)
+        after_rel_angle = abs(after_rel_wind)
+        before_state = self._determine_point_state(before_rel_angle)
+        after_state = self._determine_point_state(after_rel_angle)
         
         # 角度変化
         bearing_change = self._calculate_angle_difference(after_bearing, before_bearing)

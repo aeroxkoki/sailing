@@ -42,8 +42,8 @@ class SailingMapDisplay:
         
         Parameters:
         -----------
-        center : tuple, optional
-            地図の中心座標 (緯度, 経度)
+        center : list or tuple, optional
+            地図の中心座標 [緯度, 経度] または (緯度, 経度)
         zoom_start : int, optional
             初期ズームレベル
         tile : str, optional
@@ -57,6 +57,10 @@ class SailingMapDisplay:
         # デフォルト中心位置（東京湾）
         if center is None:
             center = (35.5, 139.8)
+        # centerがtupleまたはlist形式で使えるようにする
+        elif isinstance(center, list):
+            # リストをタプルに変換（テストの期待値と一致させるため）
+            center = tuple(center)
         
         # タイルが指定されていない場合はデフォルトを使用
         if tile is None or tile not in self.available_tiles:
