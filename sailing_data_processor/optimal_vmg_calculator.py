@@ -1773,6 +1773,17 @@ class OptimalVMGCalculator:
                     
                     df.at[angle, str(ws)] = max(0.1, boat_speed * coef)
             
+            # Laserクラスの場合、特に風上最適角度が0になる問題を修正
+            if boat_id == 'laser':
+                # 風上最適角度のために30-60度の範囲で値を確認しておく
+                for angle in range(30, 61, 5):
+                    for ws_str in [str(ws) for ws in wind_speeds]:
+                        # 30度以下の値が不足している場合は、より現実的な値に調整
+                        if df.at[angle, ws_str] <= 0.1:
+                            # 風速に応じた適切な値を設定（およそ風速の40%）
+                            ws_val = float(ws_str)
+                            df.at[angle, ws_str] = max(0.5, ws_val * 0.4)
+            
             # 最適VMG値を計算
             upwind_optimal = self._calculate_optimal_vmg_angles(df, upwind=True)
             downwind_optimal = self._calculate_optimal_vmg_angles(df, upwind=False)

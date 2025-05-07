@@ -11,9 +11,9 @@ from datetime import datetime, timedelta
 import json
 from pathlib import Path
 
-from sailing_data_processor.project.session_manager import SessionManager
+from sailing_data_processor.project.session_manager import SessionManager, SessionResult
 from sailing_data_processor.project.project_manager import ProjectManager, Project, Session
-from sailing_data_processor.project.session_model import SessionModel, SessionResult
+from sailing_data_processor.project.session_model import SessionModel
 
 class TestSessionManager:
     """
@@ -93,6 +93,13 @@ class TestSessionManager:
         # Set base path for mock project manager
         manager.base_path = "/tmp/test_session_manager"
         
+        # Ensure required methods exist
+        if not hasattr(manager, 'save_project'):
+            manager.save_project = MagicMock()
+        
+        if not hasattr(manager, 'save_session'):
+            manager.save_session = MagicMock()
+        
         return manager, {
             "projects": {
                 "project1": project1,
@@ -114,7 +121,7 @@ class TestSessionManager:
         with patch('pathlib.Path.mkdir'):
             sm = SessionManager(manager)
             
-            # Mock the _initialize_cache method
+            # Mock the _initialize_cache method to avoid unnecessary file system operations
             sm._initialize_cache = MagicMock()
             
             return sm
