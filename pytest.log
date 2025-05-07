@@ -9,18 +9,52 @@ DEBUG    sailing_test:conftest.py:236 Python path: [
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload",
   "/Users/koki_air/Library/Python/3.9/lib/python/site-packages",
-  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
 ]
 DEBUG    sailing_test:conftest.py:239 Environment variables:
 DEBUG    sailing_test:conftest.py:241   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
-DEBUG    sailing_test:conftest.py:241   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
+DEBUG    sailing_test:conftest.py:241   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer
 DEBUG    sailing_test:conftest.py:241   PYTHONVERBOSE: 1
 INFO     sailing_test:conftest.py:243 ======== テスト開始 ========
 INFO     sailing_test:conftest.py:250 テスト開始: test_init
 INFO     sailing_test:conftest.py:264 テスト終了: test_init
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_all_sessions
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_all_sessions
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_project_sessions
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_project_sessions
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_sessions_not_in_project
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_sessions_not_in_project
+INFO     sailing_test:conftest.py:250 テスト開始: test_add_session_to_project
+INFO     sailing_test:conftest.py:264 テスト終了: test_add_session_to_project
+INFO     sailing_test:conftest.py:250 テスト開始: test_add_session_to_nonexistent_project
+INFO     sailing_test:conftest.py:264 テスト終了: test_add_session_to_nonexistent_project
+INFO     sailing_test:conftest.py:250 テスト開始: test_remove_session_from_project
+INFO     sailing_test:conftest.py:264 テスト終了: test_remove_session_from_project
+INFO     sailing_test:conftest.py:250 テスト開始: test_move_session
+INFO     sailing_test:conftest.py:264 テスト終了: test_move_session
+INFO     sailing_test:conftest.py:250 テスト開始: test_update_session_metadata
+INFO     sailing_test:conftest.py:264 テスト終了: test_update_session_metadata
+INFO     sailing_test:conftest.py:250 テスト開始: test_search_sessions_by_query
+INFO     sailing_test:conftest.py:264 テスト終了: test_search_sessions_by_query
+INFO     sailing_test:conftest.py:250 テスト開始: test_search_sessions_by_tags
+INFO     sailing_test:conftest.py:264 テスト終了: test_search_sessions_by_tags
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_available_tags
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_available_tags
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_sessions_by_tag
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_sessions_by_tag
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_sessions_by_multiple_tags_and
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_sessions_by_multiple_tags_and
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_sessions_by_multiple_tags_or
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_sessions_by_multiple_tags_or
+INFO     sailing_test:conftest.py:250 テスト開始: test_update_session_status
+INFO     sailing_test:conftest.py:264 テスト終了: test_update_session_status
+INFO     sailing_test:conftest.py:250 テスト開始: test_update_session_category
+INFO     sailing_test:conftest.py:264 テスト終了: test_update_session_category
+INFO     sailing_test:conftest.py:250 テスト開始: test_update_session_tags
+INFO     sailing_test:conftest.py:264 テスト終了: test_update_session_tags
 INFO     sailing_test:conftest.py:245 ======== テスト終了 ========

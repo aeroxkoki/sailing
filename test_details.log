@@ -1,26 +1,60 @@
-2025-05-07 12:17:20,324 - sailing_test - INFO - ======== テスト環境情報 ========
-2025-05-07 12:17:20,325 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
-2025-05-07 12:17:20,325 - sailing_test - INFO - Python version: 3.9.6
-2025-05-07 12:17:20,326 - sailing_test - INFO - Hostname: MacBook-Air-2.local
-2025-05-07 12:17:20,326 - sailing_test - DEBUG - Python path: [
+2025-05-07 12:32:34,397 - sailing_test - INFO - ======== テスト環境情報 ========
+2025-05-07 12:32:34,399 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
+2025-05-07 12:32:34,399 - sailing_test - INFO - Python version: 3.9.6
+2025-05-07 12:32:34,399 - sailing_test - INFO - Hostname: MacBook-Air-2.local
+2025-05-07 12:32:34,400 - sailing_test - DEBUG - Python path: [
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload",
   "/Users/koki_air/Library/Python/3.9/lib/python/site-packages",
-  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
 ]
-2025-05-07 12:17:20,326 - sailing_test - DEBUG - Environment variables:
-2025-05-07 12:17:20,326 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
-2025-05-07 12:17:20,327 - sailing_test - DEBUG -   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
-2025-05-07 12:17:20,327 - sailing_test - DEBUG -   PYTHONVERBOSE: 1
-2025-05-07 12:17:20,327 - sailing_test - INFO - ======== テスト開始 ========
-2025-05-07 12:17:20,328 - sailing_test - INFO - テスト開始: test_init
-2025-05-07 12:17:20,644 - sailing_test - INFO - テスト終了: test_init
-2025-05-07 12:17:20,646 - sailing_test - INFO - ======== テスト終了 ========
+2025-05-07 12:32:34,400 - sailing_test - DEBUG - Environment variables:
+2025-05-07 12:32:34,400 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
+2025-05-07 12:32:34,400 - sailing_test - DEBUG -   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer
+2025-05-07 12:32:34,401 - sailing_test - DEBUG -   PYTHONVERBOSE: 1
+2025-05-07 12:32:34,401 - sailing_test - INFO - ======== テスト開始 ========
+2025-05-07 12:32:34,402 - sailing_test - INFO - テスト開始: test_init
+2025-05-07 12:32:34,963 - sailing_test - INFO - テスト終了: test_init
+2025-05-07 12:32:34,969 - sailing_test - INFO - テスト開始: test_get_all_sessions
+2025-05-07 12:32:35,200 - sailing_test - INFO - テスト終了: test_get_all_sessions
+2025-05-07 12:32:35,203 - sailing_test - INFO - テスト開始: test_get_project_sessions
+2025-05-07 12:32:35,215 - sailing_test - INFO - テスト終了: test_get_project_sessions
+2025-05-07 12:32:35,218 - sailing_test - INFO - テスト開始: test_get_sessions_not_in_project
+2025-05-07 12:32:35,228 - sailing_test - INFO - テスト終了: test_get_sessions_not_in_project
+2025-05-07 12:32:35,232 - sailing_test - INFO - テスト開始: test_add_session_to_project
+2025-05-07 12:32:35,267 - sailing_test - INFO - テスト終了: test_add_session_to_project
+2025-05-07 12:32:35,271 - sailing_test - INFO - テスト開始: test_add_session_to_nonexistent_project
+2025-05-07 12:32:35,280 - sailing_test - INFO - テスト終了: test_add_session_to_nonexistent_project
+2025-05-07 12:32:35,283 - sailing_test - INFO - テスト開始: test_remove_session_from_project
+2025-05-07 12:32:35,317 - sailing_test - INFO - テスト終了: test_remove_session_from_project
+2025-05-07 12:32:35,320 - sailing_test - INFO - テスト開始: test_move_session
+2025-05-07 12:32:35,348 - sailing_test - INFO - テスト終了: test_move_session
+2025-05-07 12:32:35,352 - sailing_test - INFO - テスト開始: test_update_session_metadata
+2025-05-07 12:32:35,363 - sailing_test - INFO - テスト終了: test_update_session_metadata
+2025-05-07 12:32:35,365 - sailing_test - INFO - テスト開始: test_search_sessions_by_query
+2025-05-07 12:32:35,373 - sailing_test - INFO - テスト終了: test_search_sessions_by_query
+2025-05-07 12:32:35,375 - sailing_test - INFO - テスト開始: test_search_sessions_by_tags
+2025-05-07 12:32:35,389 - sailing_test - INFO - テスト終了: test_search_sessions_by_tags
+2025-05-07 12:32:35,392 - sailing_test - INFO - テスト開始: test_get_available_tags
+2025-05-07 12:32:35,406 - sailing_test - INFO - テスト終了: test_get_available_tags
+2025-05-07 12:32:35,409 - sailing_test - INFO - テスト開始: test_get_sessions_by_tag
+2025-05-07 12:32:35,419 - sailing_test - INFO - テスト終了: test_get_sessions_by_tag
+2025-05-07 12:32:35,422 - sailing_test - INFO - テスト開始: test_get_sessions_by_multiple_tags_and
+2025-05-07 12:32:35,434 - sailing_test - INFO - テスト終了: test_get_sessions_by_multiple_tags_and
+2025-05-07 12:32:35,437 - sailing_test - INFO - テスト開始: test_get_sessions_by_multiple_tags_or
+2025-05-07 12:32:35,447 - sailing_test - INFO - テスト終了: test_get_sessions_by_multiple_tags_or
+2025-05-07 12:32:35,449 - sailing_test - INFO - テスト開始: test_update_session_status
+2025-05-07 12:32:35,461 - sailing_test - INFO - テスト終了: test_update_session_status
+2025-05-07 12:32:35,465 - sailing_test - INFO - テスト開始: test_update_session_category
+2025-05-07 12:32:35,479 - sailing_test - INFO - テスト終了: test_update_session_category
+2025-05-07 12:32:35,482 - sailing_test - INFO - テスト開始: test_update_session_tags
+2025-05-07 12:32:35,493 - sailing_test - INFO - テスト終了: test_update_session_tags
+2025-05-07 12:32:35,494 - sailing_test - INFO - ======== テスト終了 ========
