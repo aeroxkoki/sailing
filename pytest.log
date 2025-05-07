@@ -22,32 +22,6 @@ DEBUG    sailing_test:conftest.py:241   PATH: /Users/koki_air/.npm-global/bin:/u
 DEBUG    sailing_test:conftest.py:241   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
 DEBUG    sailing_test:conftest.py:241   PYTHONVERBOSE: 1
 INFO     sailing_test:conftest.py:243 ======== テスト開始 ========
-INFO     sailing_test:conftest.py:250 テスト開始: test_initialization
-INFO     sailing_test:conftest.py:264 テスト終了: test_initialization
-INFO     sailing_test:conftest.py:250 テスト開始: test_calculate_overall_score
-INFO     sailing_test:conftest.py:264 テスト終了: test_calculate_overall_score
-INFO     sailing_test:conftest.py:250 テスト開始: test_get_problem_distribution
-INFO     sailing_test:conftest.py:264 テスト終了: test_get_problem_distribution
-INFO     sailing_test:conftest.py:250 テスト開始: test_get_record_issues
-INFO     sailing_test:conftest.py:264 テスト終了: test_get_record_issues
-INFO     sailing_test:conftest.py:250 テスト開始: test_get_quality_summary
-INFO     sailing_test:conftest.py:264 テスト終了: test_get_quality_summary
-INFO     sailing_test:conftest.py:250 テスト開始: test_create_sample_data
-INFO     sailing_test:conftest.py:264 テスト終了: test_create_sample_data
-INFO     sailing_test:conftest.py:250 テスト開始: test_get_quality_report
-INFO     sailing_test:conftest.py:264 テスト終了: test_get_quality_report
-INFO     sailing_test:conftest.py:250 テスト開始: test_calculate_hierarchical_quality_scores
-INFO     sailing_test:conftest.py:264 テスト終了: test_calculate_hierarchical_quality_scores
-INFO     sailing_test:conftest.py:250 テスト開始: test_get_data_quality_patterns
-INFO     sailing_test:conftest.py:264 テスト終了: test_get_data_quality_patterns
-INFO     sailing_test:conftest.py:250 テスト開始: test_precision_and_validity_scores
-INFO     sailing_test:conftest.py:264 テスト終了: test_precision_and_validity_scores
 INFO     sailing_test:conftest.py:250 テスト開始: test_calculate_uniformity_score
 INFO     sailing_test:conftest.py:264 テスト終了: test_calculate_uniformity_score
-INFO     sailing_test:conftest.py:250 テスト開始: test_get_comprehensive_quality_metrics
-INFO     sailing_test:conftest.py:264 テスト終了: test_get_comprehensive_quality_metrics
-INFO     sailing_test:conftest.py:250 テスト開始: test_calculate_spatial_quality_scores
-INFO     sailing_test:conftest.py:264 テスト終了: test_calculate_spatial_quality_scores
-INFO     sailing_test:conftest.py:250 テスト開始: test_calculate_temporal_quality_scores
-INFO     sailing_test:conftest.py:264 テスト終了: test_calculate_temporal_quality_scores
 INFO     sailing_test:conftest.py:245 ======== テスト終了 ========
