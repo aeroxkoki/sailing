@@ -6,6 +6,7 @@
 import pytest
 from datetime import datetime
 import uuid
+from unittest.mock import patch
 
 from sailing_data_processor.project.project_collection import ProjectCollection
 from sailing_data_processor.project.project_model import Project
@@ -372,7 +373,34 @@ class TestProjectCollection:
         assert collection.projects[project1_id].name == "プロジェクト1"
         assert collection.projects[project2_id].name == "プロジェクト2"
         assert "タグ1" in collection.projects[project1_id].tags
+
+    @pytest.fixture
+    def sample_collection(self):
+        """サンプルのプロジェクトコレクション"""
+        return ProjectCollection(
+            version="1.0",
+            metadata={"created_by": "test_user"}
         )
+    
+    @pytest.fixture
+    def sample_projects(self):
+        """サンプルプロジェクト"""
+        parent = Project("親プロジェクト", description="親プロジェクトの説明")
+        child1 = Project("子プロジェクト1", parent_id=parent.project_id)
+        child2 = Project("子プロジェクト2", parent_id=parent.project_id)
+        independent = Project("独立プロジェクト")
+        
+        return {
+            "parent": parent,
+            "child1": child1,
+            "child2": child2,
+            "independent": independent
+        }
+    
+    def test_remove_project_with_children(self, sample_collection, sample_projects):
+        """子プロジェクトを持つプロジェクトの削除テスト"""
+        parent = sample_projects["parent"]
+        child = sample_projects["child1"]
         
         sample_collection.add_project(parent)
         sample_collection.add_project(child)
@@ -386,7 +414,7 @@ class TestProjectCollection:
         assert parent.project_id not in sample_collection.projects
         assert child.project_id not in sample_collection.projects
     
-    def test_move_project(self, sample_collection, sample_projects):
+    def test_move_project_with_fixtures(self, sample_collection, sample_projects):
         """Test for moving project"""
         # Add all projects
         for project in sample_projects.values():
@@ -423,7 +451,7 @@ class TestProjectCollection:
         assert parent.parent_id is None
         assert parent.project_id in sample_collection.root_projects
     
-    def test_to_dict_and_from_dict(self, sample_collection, sample_projects):
+    def test_to_dict_and_from_dict_with_fixtures(self, sample_collection, sample_projects):
         """Test for serialization and deserialization"""
         # Add all projects
         for project in sample_projects.values():
