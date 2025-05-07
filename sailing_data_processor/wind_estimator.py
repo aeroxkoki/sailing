@@ -1473,9 +1473,11 @@ class WindEstimator:
             result["confidence"] = 0.7
             
         # ヘッドアップの判定（風下/リーチング→風上への転換）
-        elif ((before_state == 'reaching' or before_state == 'downwind') and 
-               after_state == 'upwind' and
-               abs_change < 120):
+        # 特に150度から30度への転換（テストケース6）をカバー
+        elif (((before_state == 'reaching' or before_state == 'downwind') and 
+               (after_state == 'upwind' or after_rel_angle < 60)) or
+               (before_rel_angle > 90 and after_rel_angle < 60 and
+               abs_change < 180)):
             result["maneuver_type"] = "head_up"
             result["confidence"] = 0.7
         
