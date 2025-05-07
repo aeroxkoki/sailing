@@ -176,13 +176,6 @@ class SessionManager:
         self._session_tags_cache = {}  # tag -> {session_ids}
         self._session_results_cache = {}  # session_id -> {result_id -> SessionResult}
         
-        # テスト用に明示的に save_project と save_session メソッドを追加
-        if not hasattr(self.project_manager, 'save_project'):
-            self.project_manager.save_project = lambda project: None
-        
-        if not hasattr(self.project_manager, 'save_session'):
-            self.project_manager.save_session = lambda session: None
-            
         # Initialize the cache
         self._initialize_cache()
     
@@ -526,24 +519,16 @@ class SessionManager:
         if not session:
             return False
         
-        try:
-            # Sessionオブジェクトにupdate_statusメソッドがあればそれを使用
-            if hasattr(session, 'update_status') and callable(getattr(session, 'update_status')):
-                session.update_status(status)
-            else:
-                # 直接属性として設定
-                session.status = status
-            
-            # Update the search index
-            self._update_search_index(session)
-            
-            # Save the session
-            self.project_manager.save_session(session)
-            
-            return True
-        except Exception as e:
-            logger.error(f"Failed to update session status: {e}")
-            return False
+        # Update the session status
+        session.status = status
+        
+        # Update the search index
+        self._update_search_index(session)
+        
+        # Save the session
+        self.project_manager.save_session(session)
+        
+        return True
     
     def update_session_category(self, session_id: str, category: str) -> bool:
         """
@@ -566,24 +551,16 @@ class SessionManager:
         if not session:
             return False
         
-        try:
-            # Sessionオブジェクトにupdate_categoryメソッドがあればそれを使用
-            if hasattr(session, 'update_category') and callable(getattr(session, 'update_category')):
-                session.update_category(category)
-            else:
-                # 直接属性として設定
-                session.category = category
-            
-            # Update the search index
-            self._update_search_index(session)
-            
-            # Save the session
-            self.project_manager.save_session(session)
-            
-            return True
-        except Exception as e:
-            logger.error(f"Failed to update session category: {e}")
-            return False
+        # Update the session category
+        session.category = category
+        
+        # Update the search index
+        self._update_search_index(session)
+        
+        # Save the session
+        self.project_manager.save_session(session)
+        
+        return True
     
     def update_session_tags(self, session_id: str, tags: List[str]) -> bool:
         """
@@ -733,3 +710,178 @@ class SessionManager:
                     matching_sessions |= tag_matches  # Union (OR)
         
         return list(matching_sessions)
+
+    def save_result(self, session_id: str, result: SessionResult) -> bool:
+        """
+        Save a result to a session
+        
+        Parameters
+        ----------
+        session_id : str
+            Session ID
+        result : SessionResult
+            Result to save
+            
+        Returns
+        -------
+        bool
+            True if successful, False otherwise
+        """
+        # Get the session
+        session = self.project_manager.get_session(session_id)
+        if not session:
+            return False
+        
+        # Create session result directory if it doesn't exist
+        session_result_dir = self.results_path / session_id
+        session_result_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save the result to a file
+        result_file = session_result_dir / f"{result.result_id}.json"
+        try:
+            with open(result_file, 'w', encoding='utf-8') as f:
+                json.dump(result.to_dict(), f, ensure_ascii=False, indent=2)
+        except Exception as e:
+            logger.error(f"Failed to save result: {e}")
+            return False
+        
+        # Update the session results list
+        if hasattr(session, 'add_analysis_result'):
+            session.add_analysis_result(result.result_id)
+        elif hasattr(session, 'add_result'):
+            session.add_result(result.result_id)
+        elif hasattr(session, 'analysis_results') and result.result_id not in session.analysis_results:
+            session.analysis_results.append(result.result_id)
+        else:
+            logger.warning(f"Could not add result to session: {session_id}")
+        
+        # Update the results cache
+        if session_id not in self._session_results_cache:
+            self._session_results_cache[session_id] = {}
+        self._session_results_cache[session_id][result.result_id] = result
+        
+        # Save the session
+        self.project_manager.save_session(session)
+        
+        return True
+    
+    def get_result(self, session_id: str, result_id: str) -> Optional[SessionResult]:
+        """
+        Get a result from a session
+        
+        Parameters
+        ----------
+        session_id : str
+            Session ID
+        result_id : str
+            Result ID
+            
+        Returns
+        -------
+        Optional[SessionResult]
+            Session result instance (None if not found)
+        """
+        if session_id not in self._session_results_cache:
+            return None
+        
+        return self._session_results_cache[session_id].get(result_id)
+    
+    def get_session_results(self, session_id: str) -> List[SessionResult]:
+        """
+        Get all results for a session
+        
+        Parameters
+        ----------
+        session_id : str
+            Session ID
+            
+        Returns
+        -------
+        List[SessionResult]
+            List of session results
+        """
+        if session_id not in self._session_results_cache:
+            return []
+        
+        return list(self._session_results_cache[session_id].values())
+    
+    def delete_result(self, session_id: str, result_id: str) -> bool:
+        """
+        Delete a result from a session
+        
+        Parameters
+        ----------
+        session_id : str
+            Session ID
+        result_id : str
+            Result ID
+            
+        Returns
+        -------
+        bool
+            True if successful, False otherwise
+        """
+        # Get the session
+        session = self.project_manager.get_session(session_id)
+        if not session:
+            return False
+        
+        # Remove the result from the session
+        if hasattr(session, 'remove_analysis_result'):
+            session.remove_analysis_result(result_id)
+        elif hasattr(session, 'remove_result'):
+            session.remove_result(result_id)
+        elif hasattr(session, 'analysis_results') and result_id in session.analysis_results:
+            session.analysis_results.remove(result_id)
+        
+        # Delete the result file
+        result_file = self.results_path / session_id / f"{result_id}.json"
+        if result_file.exists():
+            try:
+                result_file.unlink()
+            except Exception as e:
+                logger.error(f"Failed to delete result file: {e}")
+                return False
+        
+        # Update the results cache
+        if session_id in self._session_results_cache and result_id in self._session_results_cache[session_id]:
+            del self._session_results_cache[session_id][result_id]
+        
+        # Save the session
+        self.project_manager.save_session(session)
+        
+        return True
+    
+    def update_result(self, session_id: str, result_id: str, data: Dict[str, Any], 
+                    name: Optional[str] = None, metadata_updates: Dict[str, Any] = None) -> bool:
+        """
+        Update a result in a session
+        
+        Parameters
+        ----------
+        session_id : str
+            Session ID
+        result_id : str
+            Result ID
+        data : Dict[str, Any]
+            New result data
+        name : Optional[str], optional
+            New name for the result, by default None (unchanged)
+        metadata_updates : Dict[str, Any], optional
+            Metadata updates, by default None
+            
+        Returns
+        -------
+        bool
+            True if successful, False otherwise
+        """
+        # Get the result
+        result = self.get_result(session_id, result_id)
+        if not result:
+            return False
+        
+        # Update the result
+        result.update(data, name, metadata_updates)
+        
+        # Save the updated result
+        return self.save_result(session_id, result)
