@@ -168,6 +168,9 @@ class TestSessionManager:
             data["sessions"]["session1"],
             data["sessions"]["session2"],
             data["sessions"]["session3"]
+        ]["session1"],
+            data["sessions"]["session2"],
+            data["sessions"]["session3"]
         ]
     
     def test_get_project_sessions(self, session_manager, mock_project_manager):
