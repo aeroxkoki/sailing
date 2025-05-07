@@ -1142,7 +1142,7 @@ class ProjectStorage:
                     results.append(project)
         else:
             # クエリがない場合は全プロジェクトを対象にする
-            results = all_projects
+            results = all_projects.copy()
         
         # タグで検索
         if tags:
@@ -1152,10 +1152,11 @@ class ProjectStorage:
                 # プロジェクトにタグリストがなければ空リストとして扱う
                 project_tags = project.tags if project.tags else []
                 
-                # タグのいずれかが一致する場合に含める
+                # すべてのタグで検索する場合は、いずれかのタグが一致すればOK
                 if any(tag in project_tags for tag in tags):
                     tag_results.append(project)
             
+            # 結果を上書き
             results = tag_results
         
         return results

@@ -184,14 +184,12 @@ class CacheManager:
                         return entry['result']
                 
                 # キャッシュミスの場合は関数を実行し、結果をキャッシュに格納
-                # テスト時にカウントが重複しないように、key not in cacheの場合のみmissesをカウント
-                if key not in cache:
-                    self._stats[cache_name]['misses'] += 1
-                    result = func(*args, **kwargs)
-                else:
-                    # キャッシュヒットの場合は、先の条件分岐で既にカウントアップされている
-                    # このケースに入ることはないはずだが、念のため
-                    return cache[key]['result']
+                # この行に到達した場合は、以下の2つのケースのどちらか:
+                # 1. キーがキャッシュになかった
+                # 2. キーがあったがTTLが切れていた（TTLの条件分岐で削除済み）
+                # どちらの場合も新しい実行が必要なので、missesのカウントアップは一度だけ行う
+                self._stats[cache_name]['misses'] += 1
+                result = func(*args, **kwargs)
                 
                 # キャッシュサイズ管理（LRU方式）
                 if len(cache) >= max_size:
