@@ -175,7 +175,7 @@ class CacheManager:
                     if ttl is not None and time.time() - entry['timestamp'] > ttl:
                         del cache[key]
                         self._stats[cache_name]['size'] -= 1
-                        # TTLが切れたのでミスとしてカウント
+                        # TTLが切れた場合はミスとしてカウント
                         self._stats[cache_name]['misses'] += 1
                     else:
                         # ヒット数をカウント
@@ -183,9 +183,9 @@ class CacheManager:
                         # キャッシュからの結果を返す
                         return entry['result']
                 
-                # キャッシュミスの場合は関数を実行
-                # 既にキャッシュにない場合のみミスをカウント
-                # TTLが切れた場合は既にカウント済みなので、ここではカウントしない
+                # キャッシュミスの場合のみカウント
+                # 前の条件分岐で既にキャッシュから削除されている可能性があるため
+                # 改めてチェックして、ない場合のみカウントアップ
                 if key not in cache:
                     self._stats[cache_name]['misses'] += 1
                 result = func(*args, **kwargs)

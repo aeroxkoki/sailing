@@ -1185,6 +1185,10 @@ class ProjectStorage:
             tag_results = []
             
             for project in projects_to_filter:
+                if not tags:  # タグが空リストの場合はすべて合致と判断
+                    tag_results.append(project)
+                    continue
+                    
                 # 完全一致: プロジェクトのタグに検索タグのいずれかが含まれる場合
                 exact_match = any(tag in project.tags for tag in tags)
                 # 部分一致: プロジェクトのタグに検索タグの一部が含まれる場合

@@ -1007,3 +1007,105 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
         )
         
         return fig
+        
+    def generate_temporal_quality_chart(self) -> 'go.Figure':
+        """
+        時間帯別の品質分布チャートを生成
+        
+        時間経過に伴うデータ品質の変化を可視化します。
+        各時間帯のデータ品質スコアとデータ量を棒グラフとして表示します。
+        
+        Returns
+        -------
+        go.Figure
+            時間帯別品質チャートの図
+        """
+        import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+        
+        # 時間帯別品質スコアの計算
+        temporal_scores = self.calculate_temporal_quality_scores()
+        
+        if not temporal_scores:
+            # データがない場合は空のグラフを返す
+            fig = go.Figure()
+            fig.update_layout(
+                title="時間帯別品質チャート (データなし)",
+                xaxis_title="時間帯",
+                yaxis_title="品質スコア"
+            )
+            return fig
+        
+        # 時間帯ラベル、品質スコア、データ量を抽出
+        periods = [score['period'] for score in temporal_scores]
+        quality_scores = [score['quality_score'] for score in temporal_scores]
+        data_counts = [score['total_count'] for score in temporal_scores]
+        problem_counts = [score['problem_count'] for score in temporal_scores]
+        
+        # スコアに基づく色の設定
+        bar_colors = [self._get_score_color(score) for score in quality_scores]
+        
+        # 二軸グラフの作成
+        fig = make_subplots(specs=[[{"secondary_y": True}]])
+        
+        # 品質スコアのバーチャート
+        fig.add_trace(
+            go.Bar(
+                x=periods,
+                y=quality_scores,
+                name="品質スコア",
+                marker_color=bar_colors,
+                opacity=0.8
+            ),
+            secondary_y=False
+        )
+        
+        # データ量の折れ線グラフ
+        fig.add_trace(
+            go.Scatter(
+                x=periods,
+                y=data_counts,
+                name="データ量",
+                mode="lines+markers",
+                line=dict(color="blue", width=2),
+                marker=dict(size=8)
+            ),
+            secondary_y=True
+        )
+        
+        # 問題数の折れ線グラフ
+        fig.add_trace(
+            go.Scatter(
+                x=periods,
+                y=problem_counts,
+                name="問題数",
+                mode="lines+markers",
+                line=dict(color="red", width=2),
+                marker=dict(size=8)
+            ),
+            secondary_y=True
+        )
+        
+        # グラフのレイアウト設定
+        fig.update_layout(
+            title="時間帯別品質チャート",
+            xaxis_title="時間帯",
+            legend=dict(
+                orientation="h",
+                yanchor="bottom",
+                y=1.02,
+                xanchor="right",
+                x=1
+            ),
+            height=500,
+            margin=dict(l=50, r=50, t=80, b=100)
+        )
+        
+        # Y軸のタイトル設定
+        fig.update_yaxes(title_text="品質スコア (0-100)", secondary_y=False, range=[0, 100])
+        fig.update_yaxes(title_text="データ量", secondary_y=True)
+        
+        # X軸のティックラベルの回転（読みやすくするため）
+        fig.update_xaxes(tickangle=45)
+        
+        return fig

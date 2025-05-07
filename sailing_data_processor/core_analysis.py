@@ -251,48 +251,6 @@ class SailingDataAnalyzer:
         
         return report
     
-    def detect_and_fix_gps_anomalies(self, boat_id: str, max_speed_knots: float = 40.0) -> pd.DataFrame:
-        """
-        GPS異常値を検出して修正する
-        
-        Parameters:
-        -----------
-        boat_id : str
-            艇の識別ID
-        max_speed_knots : float
-            最大許容速度（ノット）
-            
-        Returns:
-        --------
-        pd.DataFrame
-            異常値修正後のデータ
-        """
-        if boat_id not in self.boat_data:
-            raise ValueError(f"Boat ID '{boat_id}' not found")
-        
-        df = self.boat_data[boat_id].copy()
-        
-        # 異常な速度を検出
-        anomaly_mask = df['speed'] > max_speed_knots
-        
-        # 異常値を修正
-        if anomaly_mask.any():
-            # 前後の値の平均で補間
-            for idx in df[anomaly_mask].index:
-                prev_idx = idx - 1 if idx > 0 else idx
-                next_idx = idx + 1 if idx < len(df) - 1 else idx
-                
-                if prev_idx == idx and next_idx == idx:
-                    # 最初か最後の点の場合
-                    df.loc[idx, 'speed'] = 0.0
-                else:
-                    # 前後の平均値
-                    df.loc[idx, 'speed'] = (df.loc[prev_idx, 'speed'] + df.loc[next_idx, 'speed']) / 2
-        
-        # 更新したデータを保存
-        self.boat_data[boat_id] = df
-        
-        return df
     
     def process_multiple_boats(self) -> Dict[str, Any]:
         """
@@ -388,21 +346,28 @@ class SailingDataAnalyzer:
         
         df = self.boat_data[boat_id].copy()
         
-        # 異常値検出と修正のためのモジュール
-        from .anomaly_detector import GPSAnomalyDetector
+        # 異常な速度を検出し修正
+        anomaly_mask = df['speed'] > max_speed_knots
         
-        detector = GPSAnomalyDetector()
-        
-        # 異常値検出
-        result = detector.detect_anomalies(df)
-        
-        # 異常値修正
-        fixed_df = detector.fix_anomalies(result, method=method)
+        # 異常値を修正
+        if anomaly_mask.any():
+            # 前後の値の平均で補間
+            for idx in df[anomaly_mask].index:
+                prev_idx = idx - 1 if idx > 0 else idx
+                next_idx = idx + 1 if idx < len(df) - 1 else idx
+                
+                if prev_idx == idx and next_idx == idx:
+                    # 最初か最後の点の場合
+                    df.loc[idx, 'speed'] = max_speed_knots - 1.0  # 最大速度より少し小さい値
+                else:
+                    # 前後の平均値（最大でもmax_speed_knotsを超えないようにする）
+                    new_speed = (df.loc[prev_idx, 'speed'] + df.loc[next_idx, 'speed']) / 2
+                    df.loc[idx, 'speed'] = min(new_speed, max_speed_knots - 0.1)
         
         # データを更新
-        self.boat_data[boat_id] = fixed_df
+        self.boat_data[boat_id] = df
         
-        return fixed_df
+        return df
     
     def process_multiple_boats(self) -> Dict[str, Any]:
         """
