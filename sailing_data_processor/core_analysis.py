@@ -358,11 +358,11 @@ class SailingDataAnalyzer:
                 
                 if prev_idx == idx and next_idx == idx:
                     # 最初か最後の点の場合
-                    df.loc[idx, 'speed'] = max_speed_knots - 1.0  # 最大速度より少し小さい値
+                    df.loc[idx, 'speed'] = max_speed_knots * 0.9  # 最大速度の90%の値に設定
                 else:
-                    # 前後の平均値（最大でもmax_speed_knotsを超えないようにする）
+                    # 前後の平均値（最大でもmax_speed_knotsの95%を超えないようにする）
                     new_speed = (df.loc[prev_idx, 'speed'] + df.loc[next_idx, 'speed']) / 2
-                    df.loc[idx, 'speed'] = min(new_speed, max_speed_knots - 0.1)
+                    df.loc[idx, 'speed'] = min(new_speed, max_speed_knots * 0.95)
         
         # データを更新
         self.boat_data[boat_id] = df
