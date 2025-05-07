@@ -1464,9 +1464,9 @@ class WindEstimator:
             result["confidence"] = 1.0 - min(1.0, abs(abs_change - 80) / 40)
             
         # ベアウェイの判定（風上→風下/リーチングへの転換）
-        # 以前より緩い条件にして検出率を上げる
-        elif ((before_state == 'upwind' or abs(before_rel_angle) < 60) and 
-              ((after_state == 'reaching' or after_state == 'downwind') or abs(after_rel_angle) > 60) and
+        # 条件を明確にして検出を確実にする
+        elif ((before_state == 'upwind' or before_rel_angle < 60) and 
+              ((after_state == 'reaching' or after_state == 'downwind') or after_rel_angle > 60) and
               abs_change < 120):
             result["maneuver_type"] = "bear_away"
             result["confidence"] = 0.7

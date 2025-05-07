@@ -167,12 +167,12 @@ def determine_tack_type(bearing: float, wind_direction: float) -> str:
     wind_norm = wind_direction % 360
     
     # 艇の進行方向に対して風がどちらから来るかを判定する
-    # 風向と艇の方位の角度差を計算
+    # 風の方向と艇の間の相対角度を計算
     # 風が艇の右側から来る場合はスターボードタック
     # 風が艇の左側から来る場合はポートタック
     
-    # 風向から艇の方位を引く（風が来る方向と進む方向の差）
-    wind_rel = (wind_norm - bearing_norm) % 360
+    # 艇の方位から風向を引いて相対角度を計算（進む方向と風が来る方向の差）
+    wind_rel = (bearing_norm - wind_norm) % 360
     
     # 0-180度の間なら右舷から風 → starboard tack
     # 180-360度の間なら左舷から風 → port tack

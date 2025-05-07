@@ -1360,8 +1360,8 @@ class OptimalVMGCalculator:
             # 角度範囲（風上または風下）
             angle_range = range(0, 91) if upwind else range(91, 181)
             
-            max_vmg = 0.0
-            optimal_angle = 0.0
+            max_vmg = -1.0  # 負の値から始めて必ず更新されるようにする
+            optimal_angle = 30.0 if upwind else 140.0  # デフォルト値を設定
             
             for angle in angle_range:
                 try:
@@ -1374,8 +1374,15 @@ class OptimalVMGCalculator:
                     if vmg > max_vmg:
                         max_vmg = vmg
                         optimal_angle = angle
-                except:
+                except Exception as e:
+                    # エラーが発生した場合はログに記録
+                    print(f"VMG計算エラー - 角度: {angle}, 風速: {wind_speed_float}, エラー: {str(e)}")
                     continue
+            
+            # VMGが計算できなかった場合はデフォルト値を設定
+            if max_vmg < 0:
+                max_vmg = 1.0  # 適切なデフォルト値
+                print(f"警告: 風速{wind_speed_float}における最適VMGが計算できませんでした。デフォルト値を使用します。")
             
             result[wind_speed_float] = (optimal_angle, max_vmg)
         

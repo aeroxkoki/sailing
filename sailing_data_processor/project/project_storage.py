@@ -916,40 +916,6 @@ class ProjectStorage:
         
         return sorted(results, key=lambda r: r.name)
     
-    def search_projects(self, query: str = "", tags: List[str] = None) -> List[Project]:
-        """
-        プロジェクトを検索
-        
-        Parameters
-        ----------
-        query : str, optional
-            検索クエリ（プロジェクト名と説明に対して）, by default ""
-        tags : List[str], optional
-            フィルタリングするタグのリスト, by default None
-            
-        Returns
-        -------
-        List[Project]
-            検索結果のプロジェクトリスト
-        """
-        query = query.lower()
-        projects = self.get_projects()
-        results = []
-        
-        for project in projects:
-            # クエリによる検索
-            match_query = (not query) or (
-                query in project.name.lower() or
-                query in project.description.lower()
-            )
-            
-            # タグによるフィルタリング
-            match_tags = (not tags) or all(tag in project.tags for tag in tags)
-            
-            if match_query and match_tags:
-                results.append(project)
-        
-        return sorted(results, key=lambda p: p.name)
     
     def search_sessions(self, query: str = "", tags: List[str] = None, 
                        categories: List[str] = None) -> List[Session]:

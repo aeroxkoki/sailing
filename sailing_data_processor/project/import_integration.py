@@ -304,13 +304,45 @@ class ImportIntegration:
         
         # Date-based matching
         if 'event_date' in session.metadata and session.metadata['event_date']:
-            session_date = str(session.metadata['event_date'])
+            session_date = str(session.metadata['event_date']).strip()
             for project in projects:
                 if 'event_date' in project.metadata and project.metadata['event_date']:
-                    project_date = str(project.metadata['event_date'])
+                    project_date = str(project.metadata['event_date']).strip()
                     # Date comparison (allowing for different but equivalent formats)
+                    # 単純な文字列比較だけでなく、異なる形式も考慮する
                     if session_date == project_date:
                         return project.project_id
+                    # 日付形式が異なる場合も比較できるようにする
+                    try:
+                        # 日付形式が異なる場合に標準形式に変換して比較
+                        from datetime import datetime
+                        # よくある日付形式を試す
+                        for fmt in ['%Y-%m-%d', '%Y/%m/%d', '%d-%m-%Y', '%d/%m/%Y', '%m-%d-%Y', '%m/%d/%Y']:
+                            try:
+                                session_datetime = datetime.strptime(session_date, fmt)
+                                break
+                            except ValueError:
+                                continue
+                        else:
+                            # どの形式にも合致しない場合は次のプロジェクトへ
+                            continue
+                            
+                        for fmt in ['%Y-%m-%d', '%Y/%m/%d', '%d-%m-%Y', '%d/%m/%Y', '%m-%d-%Y', '%m/%d/%Y']:
+                            try:
+                                project_datetime = datetime.strptime(project_date, fmt)
+                                break
+                            except ValueError:
+                                continue
+                        else:
+                            # どの形式にも合致しない場合は次のプロジェクトへ
+                            continue
+                        
+                        # 日付が一致する場合
+                        if session_datetime.date() == project_datetime.date():
+                            return project.project_id
+                    except Exception:
+                        # 日付変換に失敗した場合は単純比較の結果を使用
+                        pass
         
         # Location-based matching
         if 'location' in session.metadata and session.metadata['location']:

@@ -184,7 +184,8 @@ class CacheManager:
                         return entry['result']
                 
                 # キャッシュミスの場合は関数を実行
-                # キャッシュが見つからなかった場合のみミスをカウント
+                # 既にキャッシュにない場合のみミスをカウント
+                # TTLが切れた場合は既にカウント済みなので、ここではカウントしない
                 if key not in cache:
                     self._stats[cache_name]['misses'] += 1
                 result = func(*args, **kwargs)
