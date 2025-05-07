@@ -122,10 +122,24 @@ class ValidationDashboard:
         problem_records_df = pd.DataFrame(problem_records) if problem_records else pd.DataFrame()
         
         # 詳細チャートの生成
+        try:
         spatial_quality_map = self.visualizer.generate_spatial_quality_map()
         temporal_quality_chart = self.visualizer.generate_temporal_quality_chart()
+        except Exception as e:
+            print(f"Error generating spatial quality map: {e}")
+            # エラー時はダミーのマップを返す
+            spatial_quality_map = go.Figure()
+            spatial_quality_map.update_layout(title="空間品質マップ（エラーのため表示できません）")
         
-        # 詳細レポートの生成
+        try:
+        
+                except Exception as e:
+            print(f"Error generating temporal quality chart: {e}")
+            # エラー時はダミーのチャートを返す
+            temporal_quality_chart = go.Figure()
+            temporal_quality_chart.update_layout(title="時間品質チャート（エラーのため表示できません）")
+        
+# 詳細レポートの生成
         detailed_report = self.metrics_calculator.get_quality_report()
         
         return {
@@ -135,6 +149,14 @@ class ValidationDashboard:
             },
             "problem_records_df": problem_records_df,
             "detailed_report": detailed_report
+        }
+    except Exception as e:
+        # 最終的なフォールバック - エラーが発生した場合も最低限の情報を返す
+        print(f"Error rendering details section: {e}")
+        return {
+            "charts": {},
+            "problem_records_df": pd.DataFrame(),
+            "detailed_report": {"error": f"レポート生成エラー: {str(e)}"}
         }
     
     def render_action_section(self) -> Dict[str, Any]:
