@@ -1134,36 +1134,28 @@ class ProjectStorage:
         if query:
             query = query.lower()
             for project in all_projects:
-                # テストケースの期待動作に合わせた修正: 
                 # 名前または説明文に部分一致するものを追加
-                if (project.name and query in project.name.lower()) or \
-                   (project.description and query in project.description.lower()):
+                project_name = project.name.lower() if project.name else ""
+                project_desc = project.description.lower() if project.description else ""
+                
+                if query in project_name or query in project_desc:
                     results.append(project)
-            
-            # タグがない場合は結果を返す
-            if not tags:
-                logger.debug(f"検索クエリ \"{query}\" で {len(results)} 件のプロジェクトを検出")
-                return results
+        else:
+            # クエリがない場合は全プロジェクトを対象にする
+            results = all_projects
         
         # タグで検索
         if tags:
-            # クエリがある場合は結果をさらにフィルタリング
-            projects_to_filter = results if query else all_projects
             tag_results = []
             
-            for project in projects_to_filter:
-                if not tags:  # タグが空リストの場合はすべて合致と判断
-                    tag_results.append(project)
-                    continue
-                
+            for project in results:
                 # プロジェクトにタグリストがなければ空リストとして扱う
                 project_tags = project.tags if project.tags else []
-                    
-                # 完全一致: プロジェクトのタグに検索タグのいずれかが含まれる場合
+                
+                # タグのいずれかが一致する場合に含める
                 if any(tag in project_tags for tag in tags):
                     tag_results.append(project)
             
             results = tag_results
-            logger.debug(f"タグ {tags} で {len(results)} 件のプロジェクトを検出")
         
         return results
