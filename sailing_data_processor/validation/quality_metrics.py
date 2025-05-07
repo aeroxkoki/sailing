@@ -1087,14 +1087,8 @@ class QualityMetricsCalculator:
                         "min_lon": grid_lon_min,
                         "max_lon": grid_lon_max
                     },
-                "lat_range": [grid_lat_min, grid_lat_max],  # 明示的にlat_rangeを追加
-                "lon_range": [grid_lon_min, grid_lon_max],  # 明示的にlon_rangeを追加
-                "lat_range": [grid_lat_min, grid_lat_max],  # 明示的にlat_rangeを追加
-                "lon_range": [grid_lon_min, grid_lon_max],  # 明示的にlon_rangeを追加
-                "lat_range": [grid_lat_min, grid_lat_max],  # 明示的にlat_rangeを追加
-                "lon_range": [grid_lon_min, grid_lon_max],  # 明示的にlon_rangeを追加
-                "lat_range": [grid_lat_min, grid_lat_max],  # 明示的にlat_rangeを追加
-                "lon_range": [grid_lon_min, grid_lon_max],  # 明示的にlon_rangeを追加
+                    "lat_range": [grid_lat_min, grid_lat_max],
+                    "lon_range": [grid_lon_min, grid_lon_max],
                     "quality_score": quality_score,
                     "problem_count": problem_count,
                     "total_count": len(grid_data),
@@ -1119,14 +1113,8 @@ class QualityMetricsCalculator:
                     "min_lon": lon_min - 0.001,
                     "max_lon": lon_max + 0.001
                 },
-                "lat_range": [lat_min - 0.001, lat_max + 0.001],  # 明示的にlat_rangeを追加
-                "lon_range": [lon_min - 0.001, lon_max + 0.001],  # 明示的にlon_rangeを追加
-                "lat_range": [lat_min - 0.001, lat_max + 0.001],  # 明示的にlat_rangeを追加
-                "lon_range": [lon_min - 0.001, lon_max + 0.001],  # 明示的にlon_rangeを追加
-                "lat_range": [lat_min - 0.001, lat_max + 0.001],  # 明示的にlat_rangeを追加
-                "lon_range": [lon_min - 0.001, lon_max + 0.001],  # 明示的にlon_rangeを追加
-                "lat_range": [lat_min - 0.001, lat_max + 0.001],  # 明示的にlat_rangeを追加
-                "lon_range": [lon_min - 0.001, lon_max + 0.001],  # 明示的にlon_rangeを追加
+                "lat_range": [lat_min - 0.001, lat_max + 0.001],
+                "lon_range": [lon_min - 0.001, lon_max + 0.001],
                 "quality_score": 100.0,  # データが1点だけなら問題がなさそう
                 "problem_count": 0,
                 "total_count": len(valid_data),

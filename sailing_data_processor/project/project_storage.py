@@ -1155,11 +1155,12 @@ class ProjectStorage:
                 if not tags:  # タグが空リストの場合はすべて合致と判断
                     tag_results.append(project)
                     continue
+                
+                # プロジェクトにタグリストがなければ空リストとして扱う
+                project_tags = project.tags if project.tags else []
                     
                 # 完全一致: プロジェクトのタグに検索タグのいずれかが含まれる場合
-                exact_match = any(tag in project.tags for tag in tags)
-                
-                if exact_match:
+                if any(tag in project_tags for tag in tags):
                     tag_results.append(project)
             
             results = tag_results
