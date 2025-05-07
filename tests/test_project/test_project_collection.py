@@ -372,3 +372,92 @@ class TestProjectCollection:
         assert collection.projects[project1_id].name == "プロジェクト1"
         assert collection.projects[project2_id].name == "プロジェクト2"
         assert "タグ1" in collection.projects[project1_id].tags
+        )
+        
+        sample_collection.add_project(parent)
+        sample_collection.add_project(child)
+        parent.add_sub_project(child.project_id)
+        
+        # Remove parent project with recursive
+        success = sample_collection.remove_project(parent.project_id, recursive=True)
+        
+        # Verify parent and child are removed
+        assert success is True
+        assert parent.project_id not in sample_collection.projects
+        assert child.project_id not in sample_collection.projects
+    
+    def test_move_project(self, sample_collection, sample_projects):
+        """Test for moving project"""
+        # Add all projects
+        for project in sample_projects.values():
+            sample_collection.add_project(project)
+        
+        # Add children to parent's sub_projects list
+        parent = sample_projects["parent"]
+        parent.add_sub_project(sample_projects["child1"].project_id)
+        parent.add_sub_project(sample_projects["child2"].project_id)
+        
+        # Move child1 to be independent
+        success = sample_collection.move_project(sample_projects["child1"].project_id, new_parent_id=None)
+        
+        # Verify child1 is now a root project
+        assert success is True
+        assert sample_projects["child1"].parent_id is None
+        assert sample_projects["child1"].project_id in sample_collection.root_projects
+        assert sample_projects["child1"].project_id not in parent.sub_projects
+        
+        # Move independent to be under parent
+        success = sample_collection.move_project(sample_projects["independent"].project_id, new_parent_id=parent.project_id)
+        
+        # Verify independent is now under parent
+        assert success is True
+        assert sample_projects["independent"].parent_id == parent.project_id
+        assert sample_projects["independent"].project_id not in sample_collection.root_projects
+        assert sample_projects["independent"].project_id in parent.sub_projects
+        
+        # Try to create circular reference (parent under child2)
+        success = sample_collection.move_project(parent.project_id, new_parent_id=sample_projects["child2"].project_id)
+        
+        # Verify move failed due to circular reference
+        assert success is False
+        assert parent.parent_id is None
+        assert parent.project_id in sample_collection.root_projects
+    
+    def test_to_dict_and_from_dict(self, sample_collection, sample_projects):
+        """Test for serialization and deserialization"""
+        # Add all projects
+        for project in sample_projects.values():
+            sample_collection.add_project(project)
+        
+        # Add children to parent's sub_projects list
+        parent = sample_projects["parent"]
+        parent.add_sub_project(sample_projects["child1"].project_id)
+        parent.add_sub_project(sample_projects["child2"].project_id)
+        
+        # Convert to dict
+        collection_dict = sample_collection.to_dict()
+        
+        # Verify dict structure
+        assert "version" in collection_dict
+        assert "metadata" in collection_dict
+        assert "root_projects" in collection_dict
+        assert "projects" in collection_dict
+        assert len(collection_dict["projects"]) == 4
+        assert len(collection_dict["root_projects"]) == 2
+        
+        # Convert back to collection
+        with patch('sailing_data_processor.project.project_model.Project.from_dict') as mock_from_dict:
+            # Setup mock to return original projects
+            mock_from_dict.side_effect = lambda data: next(
+                (p for p in sample_projects.values() if p.project_id == data.get("project_id")),
+                None
+            )
+            
+            # Create new collection from dict
+            new_collection = ProjectCollection.from_dict(collection_dict)
+            
+            # Verify new collection
+            assert new_collection.version == sample_collection.version
+            assert new_collection.metadata["created_by"] == "test_user"
+            assert len(new_collection.projects) == 4
+            assert len(new_collection.root_projects) == 2
