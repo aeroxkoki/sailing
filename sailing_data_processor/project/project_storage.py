@@ -1141,24 +1141,37 @@ class ProjectStorage:
                     continue
                 
                 # メタデータの値にクエリが含まれる場合
-                for value in project.metadata.values():
+                for key, value in project.metadata.items():
                     if isinstance(value, str) and query in value.lower():
                         results.append(project)
                         break
+                
+                # ここが重要: 日本語の文字列も含めて検索できるようにする
+                if any(query in str(attr).lower() for attr in [
+                    project.name, 
+                    project.description,
+                    project.category,
+                ]):
+                    if project not in results:
+                        results.append(project)
             
             # タグがない場合は結果を返す
             if not tags:
+                logger.debug(f"検索クエリ \"{query}\" で {len(results)} 件のプロジェクトを検出")
                 return results
         
         # タグで検索
         if tags:
             # クエリがある場合は結果をさらにフィルタリング
             projects_to_filter = results if query else all_projects
-            results = []
+            tag_results = []
             
             for project in projects_to_filter:
                 # プロジェクトのタグに検索タグのいずれかが含まれる場合
                 if any(tag in project.tags for tag in tags):
-                    results.append(project)
+                    tag_results.append(project)
+            
+            results = tag_results
+            logger.debug(f"タグ {tags} で {len(results)} 件のプロジェクトを検出")
         
         return results

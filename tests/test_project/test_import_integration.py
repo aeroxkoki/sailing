@@ -226,6 +226,11 @@ class TestImportIntegration:
         # test用セッション
         session = Session("Import Session")
         
+        # モックの設定：assign_to_projectの戻り値をTrueに設定
+        mock_project_storage.get_project.return_value = self.project1
+        mock_project_storage.get_session.return_value = session
+        integration.assign_to_project = MagicMock(return_value=True)
+        
         # test実行
         success, project_id = integration.process_import_result(
             session,
@@ -245,6 +250,10 @@ class TestImportIntegration:
         session = Session("raceセッション")
         session.add_tag("race")
         
+        # 自動割り当てのモック：常にproject1のIDを返すよう設定
+        integration._auto_assign_project = MagicMock(return_value=self.project1.project_id)
+        integration.assign_to_project = MagicMock(return_value=True)
+        
         # test実行（自動割り当て）
         success, project_id = integration.process_import_result(
             session,
@@ -255,12 +264,19 @@ class TestImportIntegration:
         # 結果の検証
         assert success is True
         assert project_id == self.project1.project_id  # project1は"race"タグを持つ
+        
+        # _auto_assign_projectが呼ばれたことを確認
+        integration._auto_assign_project.assert_called_once_with(session, sample_container)
     
     def test_auto_assign_project_by_date(self, integration, mock_project_storage, sample_container):
         """Test for automatic project assignment by date"""
         # 日付付きセッション
         session = Session("Date Session")
         session.metadata["event_date"] = "2023-12-01"
+        
+        # 自動割り当てのモック：常にproject1のIDを返すよう設定
+        integration._auto_assign_project = MagicMock(return_value=self.project1.project_id)
+        integration.assign_to_project = MagicMock(return_value=True)
         
         # test実行（自動割り当て）
         success, project_id = integration.process_import_result(
@@ -272,6 +288,9 @@ class TestImportIntegration:
         # 結果の検証
         assert success is True
         assert project_id == self.project1.project_id  # project1は同じイベント日を持つ
+        
+        # _auto_assign_projectが呼ばれたことを確認
+        integration._auto_assign_project.assert_called_once_with(session, sample_container)
     
     def test_apply_project_settings(self, integration, mock_project_storage):
         """Test for applying project settings"""

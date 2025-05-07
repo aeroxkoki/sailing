@@ -300,6 +300,7 @@ class ImportIntegration:
                     # If any tag in the session matches any tag in the project, assign to it
                     for tag in session.tags:
                         if tag in project.tags:
+                            logger.info(f"Auto-assigning session {session.session_id} to project {project.project_id} based on matching tag: {tag}")
                             return project.project_id
         
         # Date-based matching
@@ -308,49 +309,58 @@ class ImportIntegration:
             for project in projects:
                 if 'event_date' in project.metadata and project.metadata['event_date']:
                     project_date = str(project.metadata['event_date']).strip()
-                    # Date comparison (allowing for different but equivalent formats)
-                    # 単純な文字列比較だけでなく、異なる形式も考慮する
+                    # 単純な文字列比較
                     if session_date == project_date:
+                        logger.info(f"Auto-assigning session {session.session_id} to project {project.project_id} based on exact date match: {session_date}")
                         return project.project_id
-                    # 日付形式が異なる場合も比較できるようにする
+                    
+                    # 異なる日付形式の比較
                     try:
                         # 日付形式が異なる場合に標準形式に変換して比較
-                        from datetime import datetime
-                        # よくある日付形式を試す
+                        # セッション日付の解析
+                        session_datetime = None
                         for fmt in ['%Y-%m-%d', '%Y/%m/%d', '%d-%m-%Y', '%d/%m/%Y', '%m-%d-%Y', '%m/%d/%Y']:
                             try:
                                 session_datetime = datetime.strptime(session_date, fmt)
+                                logger.debug(f"Parsed session date {session_date} with format {fmt}")
                                 break
                             except ValueError:
                                 continue
-                        else:
-                            # どの形式にも合致しない場合は次のプロジェクトへ
+                        
+                        if not session_datetime:
+                            logger.debug(f"Could not parse session date: {session_date}")
                             continue
-                            
+                        
+                        # プロジェクト日付の解析
+                        project_datetime = None
                         for fmt in ['%Y-%m-%d', '%Y/%m/%d', '%d-%m-%Y', '%d/%m/%Y', '%m-%d-%Y', '%m/%d/%Y']:
                             try:
                                 project_datetime = datetime.strptime(project_date, fmt)
+                                logger.debug(f"Parsed project date {project_date} with format {fmt}")
                                 break
                             except ValueError:
                                 continue
-                        else:
-                            # どの形式にも合致しない場合は次のプロジェクトへ
+                        
+                        if not project_datetime:
+                            logger.debug(f"Could not parse project date: {project_date}")
                             continue
                         
                         # 日付が一致する場合
                         if session_datetime.date() == project_datetime.date():
+                            logger.info(f"Auto-assigning session {session.session_id} to project {project.project_id} based on normalized date match: {session_datetime.date()}")
                             return project.project_id
-                    except Exception:
-                        # 日付変換に失敗した場合は単純比較の結果を使用
-                        pass
+                    except Exception as e:
+                        logger.warning(f"Error during date comparison: {str(e)}")
+                        # 日付変換に失敗した場合は単純比較の結果のみ使用
         
         # Location-based matching
         if 'location' in session.metadata and session.metadata['location']:
-            session_location = str(session.metadata['location'])
+            session_location = str(session.metadata['location']).lower().strip()
             for project in projects:
                 if 'location' in project.metadata and project.metadata['location']:
-                    project_location = str(project.metadata['location'])
+                    project_location = str(project.metadata['location']).lower().strip()
                     if session_location == project_location:
+                        logger.info(f"Auto-assigning session {session.session_id} to project {project.project_id} based on location match: {session_location}")
                         return project.project_id
         
         # Most recently created project
@@ -360,11 +370,16 @@ class ImportIntegration:
                                      key=lambda p: p.created_at, 
                                      reverse=True)
             if sorted_projects:
+                logger.info(f"Auto-assigning session {session.session_id} to most recently created project {sorted_projects[0].project_id}")
                 return sorted_projects[0].project_id
         except Exception as e:
+            logger.warning(f"Error sorting projects by creation time: {str(e)}")
             # Fallback to first project
-            return projects[0].project_id if projects else None
+            if projects:
+                logger.info(f"Falling back to first project {projects[0].project_id} for session {session.session_id}")
+                return projects[0].project_id
         
+        logger.info(f"No suitable project found for session {session.session_id}")
         return None
     
     def apply_project_settings(self, session_id: str, project_id: str) -> bool:
