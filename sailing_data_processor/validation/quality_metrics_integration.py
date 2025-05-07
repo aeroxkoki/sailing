@@ -925,3 +925,85 @@ class EnhancedQualityMetricsCalculator(QualityMetricsCalculator):
                     })
         
         return spatial_scores
+
+    def generate_spatial_quality_map(self) -> 'go.Figure':
+        """
+        空間的な品質分布のマップを生成
+        
+        GPSデータの空間的な品質分布を地図上に視覚化します。
+        各エリアは品質スコアによって色分けされ、品質の空間的な変動を把握できます。
+        
+        Returns
+        -------
+        go.Figure
+            品質マップの図
+        """
+        import plotly.graph_objects as go
+        from plotly.colors import sequential
+        
+        # 空間品質スコアの計算
+        spatial_scores = self.calculate_spatial_quality_scores()
+        
+        if not spatial_scores:
+            # データがない場合は空のマップを返す
+            fig = go.Figure()
+            fig.update_layout(
+                title="空間品質マップ (データなし)",
+                mapbox=dict(
+                    style="open-street-map",
+                    zoom=10
+                )
+            )
+            return fig
+            
+        # マップのセンター位置を計算
+        lats = [score['center'][0] for score in spatial_scores]
+        lons = [score['center'][1] for score in spatial_scores]
+        center_lat = sum(lats) / len(lats) if lats else 35.0
+        center_lon = sum(lons) / len(lons) if lons else 135.0
+            
+        # 色をスコアに応じて設定
+        colors = [self._get_score_color(score['quality_score']) for score in spatial_scores]
+        
+        # グリッド情報をテキストに整形
+        hover_texts = []
+        for score in spatial_scores:
+            text = f"グリッド: {score['grid_id']}<br>" + \
+                   f"品質スコア: {score['quality_score']:.1f}<br>" + \
+                   f"問題数: {score['problem_count']}/{score['total_count']}"
+            hover_texts.append(text)
+        
+        # マーカーサイズをデータ量に応じて調整
+        marker_sizes = [max(8, min(20, 8 + (score['total_count'] / 10))) for score in spatial_scores]
+        
+        # マップの作成
+        fig = go.Figure()
+        
+        # グリッドをマーカーとして追加
+        fig.add_trace(go.Scattermapbox(
+            lat=lats,
+            lon=lons,
+            mode='markers',
+            marker=dict(
+                size=marker_sizes,
+                color=colors,
+                opacity=0.7
+            ),
+            text=hover_texts,
+            hoverinfo='text',
+            name='品質スコア'
+        ))
+        
+        # レイアウト設定
+        fig.update_layout(
+            title="空間品質マップ",
+            mapbox=dict(
+                style="open-street-map",
+                center=dict(lat=center_lat, lon=center_lon),
+                zoom=11
+            ),
+            height=600,
+            margin=dict(l=0, r=0, t=30, b=0)
+        )
+        
+        return fig

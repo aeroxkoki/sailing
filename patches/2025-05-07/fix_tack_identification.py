@@ -1,101 +1,79 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-ÑÃÁ¹¯ê×È: ¿Ã¯¹âÛ	X%í¸Ã¯nîc
-
-Sn¹¯ê×Èo¿Ã¯$ší¸Ã¯nOL’îcW~Y
-wS„ko¨hGn¹nøşÒ¦—LcWOj‹ˆFk¿tW~Y
+ã‚¿ãƒƒã‚¯è­˜åˆ¥ãƒ­ã‚¸ãƒƒã‚¯ä¿®æ­£ãƒ‘ãƒƒãƒ
 """
 
-import os
-import sys
 from pathlib import Path
+import shutil
+import re
 
-# Ñ¹nı 
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-sys.path.insert(0, project_root)
-
-def fix_tack_identification():
-    """¿Ã¯$ší¸Ã¯nîc"""
-    file_path = os.path.join(project_root, 'sailing_data_processor', 'strategy', 'strategy_detector_utils.py')
+def apply_patch():
+    """ã‚¿ãƒƒã‚¯è­˜åˆ¥ãƒ­ã‚¸ãƒƒã‚¯ã®ä¿®æ­£ã‚’é©ç”¨ã™ã‚‹"""
+    # ä¿®æ­£ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹
+    file_path = Path(__file__).parents[2] / "sailing_data_processor" / "strategy" / "strategy_detector_utils.py"
     
-    with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()
+    # ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ä½œæˆ
+    backup_path = file_path.with_suffix(".py.bak")
+    shutil.copy2(file_path, backup_path)
+    print(f"ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ã‚’ä½œæˆã—ã¾ã—ãŸ: {backup_path}")
     
-    # determine_tack_type ¢pnîc
-    old_function = """def determine_tack_type(bearing: float, wind_direction: float) -> str:
-    \"\"\"
-    ¿Ã¯.^’$š
+    # ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
+    with open(file_path, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    # determine_tack_typeé–¢æ•°ã‚’æ¢ã™
+    func_pattern = r'def determine_tack_type\(bearing: float, wind_direction: float\) -> str:.*?(?=\ndef|\Z)'
+    func_match = re.search(func_pattern, content, re.DOTALL)
+    
+    if not func_match:
+        print("determine_tack_typeé–¢æ•°ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸã€‚")
+        return False
+    
+    old_func = func_match.group(0)
+    
+    # ä¿®æ­£å¾Œã®é–¢æ•°ï¼ˆã‚¤ãƒ³ãƒ‡ãƒ³ãƒˆã«æ³¨æ„ï¼‰
+    new_func = '''def determine_tack_type(bearing: float, wind_direction: float) -> str:
+    """
+    ã‚¿ãƒƒã‚¯ç¨®é¡ã‚’åˆ¤å®š
     
     Parameters:
     -----------
     bearing : float
-        2L¹Ò¦¦	
+        é€²è¡Œæ–¹å‘è§’åº¦ï¼ˆåº¦ï¼‰
     wind_direction : float
-        ¨Ò¦¦’0hWfBŞŠ	
+        é¢¨å‘è§’åº¦ï¼ˆåº¦ã€åŒ—ã‚’0ã¨ã—ã¦æ™‚è¨ˆå›ã‚Šï¼‰
         
     Returns:
     --------
     str
-        ¿Ã¯ ('port'~_o'starboard')
-    \"\"\"
-    # ¨h2L¹nÒ¦î
-    # ¹Mnc
+        ã‚¿ãƒƒã‚¯ ('port'ã¾ãŸã¯'starboard')
+    """
+    # æ–¹ä½ã®æ­£è¦åŒ–
     bearing_norm = bearing % 360
     wind_norm = wind_direction % 360
     
-    # Gn2L¹kşWf¨Lia‰K‰e‹K’$šY‹
-    # ¨K‰Gn¹M’DfBŞŠnî	360¦grc_YŠ’B
-    # ]n$L0180¦j‰ótstarboard	K‰¨LefD‹
-    # 180360¦j‰ætport	K‰¨LefD‹
-    wind_rel = (wind_norm - bearing_norm) % 360
+    # è‰‡ã®é€²è¡Œæ–¹å‘ã«å¯¾ã—ã¦é¢¨ãŒã©ã¡ã‚‰ã‹ã‚‰æ¥ã‚‹ã‹ã‚’åˆ¤å®šã™ã‚‹
+    # é¢¨å‘ã¨è‰‡ã®æ–¹ä½ã®è§’åº¦å·®ã‚’è¨ˆç®—
+    # é¢¨ãŒè‰‡ã®å³å´ã‹ã‚‰æ¥ã‚‹å ´åˆã¯ã‚¹ã‚¿ãƒ¼ãƒœãƒ¼ãƒ‰ã‚¿ãƒƒã‚¯
+    # é¢¨ãŒè‰‡ã®å·¦å´ã‹ã‚‰æ¥ã‚‹å ´åˆã¯ãƒãƒ¼ãƒˆã‚¿ãƒƒã‚¯
     
-    # 0-180¦n“j‰ó7K‰¨ ’ starboard tack
-    # 180-360¦n“j‰æ7K‰¨ ’ port tack
-    return 'starboard' if 0 <= wind_rel <= 180 else 'port'"""
+    # è‰‡ã®æ–¹ä½ã‹ã‚‰é¢¨å‘ã‚’å¼•ãï¼ˆè‰‡ã®é€²è¡Œæ–¹å‘ã¨é¢¨ãŒæ¥ã‚‹æ–¹å‘ã®å·®ï¼‰
+    rel_wind = (bearing_norm - wind_norm) % 360
     
-    new_function = """def determine_tack_type(bearing: float, wind_direction: float) -> str:
-    \"\"\"
-    ¿Ã¯.^’$š
+    # 0-180åº¦ã®é–“ãªã‚‰å³èˆ·ã‹ã‚‰é¢¨ â†’ starboard tack
+    # 180-360åº¦ã®é–“ãªã‚‰å·¦èˆ·ã‹ã‚‰é¢¨ â†’ port tack
+    return 'starboard' if 0 <= rel_wind <= 180 else 'port'
+'''
     
-    Parameters:
-    -----------
-    bearing : float
-        2L¹Ò¦¦	
-    wind_direction : float
-        ¨Ò¦¦’0hWfBŞŠ	
-        
-    Returns:
-    --------
-    str
-        ¿Ã¯ ('port'~_o'starboard')
-    \"\"\"
-    # ¨h2L¹nÒ¦î
-    # ¹Mnc
-    bearing_norm = bearing % 360
-    wind_norm = wind_direction % 360
+    # é–¢æ•°ã®ç½®æ›
+    new_content = content.replace(old_func, new_func)
     
-    # Gn2L¹kşWf¨Lia‰K‰e‹K’$šY‹
-    # Gn¹MK‰¨’DfBŞŠnî	360¦grc_YŠ’B
-    # ]n$L0180¦j‰ó7K‰¨ ’ starboard tack
-    # 180360¦j‰æ7K‰¨ ’ port tack
-    # ;è: ¨o¨Le‹¹’:WGn¹MoGL2€¹’:Y
-    wind_rel = (bearing_norm - wind_norm) % 360
+    # ä¿®æ­£ã‚’é©ç”¨
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(new_content)
     
-    # 0-180¦n“j‰ó7K‰¨ ’ starboard tack
-    # 180-360¦n“j‰æ7K‰¨ ’ port tack
-    return 'port' if 0 <= wind_rel <= 180 else 'starboard'"""
-    
-    # ³üÉ’nÛ
-    updated_content = content.replace(old_function, new_function)
-    
-    with open(file_path, 'w', encoding='utf-8') as file:
-        file.write(updated_content)
-        
-    print(f"[] ¿Ã¯$ší¸Ã¯’îcW~W_: {file_path}")
+    print(f"ã‚¿ãƒƒã‚¯è­˜åˆ¥ãƒ­ã‚¸ãƒƒã‚¯ã®ä¿®æ­£ã‚’é©ç”¨ã—ã¾ã—ãŸ: {file_path}")
     return True
 
 if __name__ == "__main__":
-    print("ÑÃÁ¹¯ê×È: ¿Ã¯$ší¸Ã¯nîc’‹ËW~Y")
-    fix_tack_identification()
-    print("ÑÃÁ¹¯ê×È: îcŒ†")
+    apply_patch()

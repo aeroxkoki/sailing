@@ -1,7 +1,24 @@
 # -*- coding: utf-8 -*-
 """
-sailing_data_processor.data_model.cache_manager
+キャッシュマネージャーの修正パッチ
+"""
 
+from pathlib import Path
+import shutil
+
+def apply_patch():
+    """キャッシュマネージャーの修正を適用する"""
+    # 修正するファイルのパス
+    file_path = Path(__file__).parents[2] / "sailing_data_processor" / "data_model" / "cache_manager.py"
+    
+    # バックアップを作成
+    backup_path = file_path.with_suffix(".py.bak")
+    shutil.copy2(file_path, backup_path)
+    print(f"バックアップを作成しました: {backup_path}")
+    
+    # 修正内容
+    patch_content = """# -*- coding: utf-8 -*-
+"""
 キャッシング機能を提供するモジュール
 """
 
@@ -173,6 +190,7 @@ class CacheManager:
                     
                     # TTLが設定されている場合は有効期限をチェック
                     if ttl is not None and time.time() - entry['timestamp'] > ttl:
+                        # TTLが切れた場合、キャッシュから削除
                         del cache[key]
                         self._stats[cache_name]['size'] -= 1
                         # TTLが切れたのでミスとしてカウント
@@ -183,10 +201,9 @@ class CacheManager:
                         # キャッシュからの結果を返す
                         return entry['result']
                 
-                # キャッシュミスの場合は関数を実行
-                # キャッシュが見つからなかった場合のみミスをカウント
-                if key not in cache:
-                    self._stats[cache_name]['misses'] += 1
+                # キャッシュにヒットしなかった場合（キャッシュミス）
+                # この行はTTLが切れた場合も実行される
+                self._stats[cache_name]['misses'] += 1
                 result = func(*args, **kwargs)
                 
                 # キャッシュサイズ管理（LRU方式）
@@ -301,3 +318,14 @@ def get_cache_stats(name: str = None) -> Dict[str, Any]:
         統計情報を含む辞書
     """
     return cache_manager.get_stats(name)
+"""
+    
+    # 修正を適用
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(patch_content)
+    
+    print(f"キャッシュマネージャーの修正を適用しました: {file_path}")
+    return True
+
+if __name__ == "__main__":
+    apply_patch()

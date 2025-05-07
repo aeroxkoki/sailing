@@ -162,20 +162,21 @@ def determine_tack_type(bearing: float, wind_direction: float) -> str:
     str
         タック ('port'または'starboard')
     """
-    # 風と進行方向の角度差
     # 方位の正規化
     bearing_norm = bearing % 360
     wind_norm = wind_direction % 360
     
     # 艇の進行方向に対して風がどちらから来るかを判定する
-    # 実際には、艇の方位から風向を引く（時計回りの差）、360度で割った余りを求める必要がある
-    # その値が0〜180度なら左側（port）から風が来ている
-    # 180〜360度なら右側（starboard）から風が来ている
-    wind_rel = (bearing_norm - wind_norm) % 360
+    # 風向と艇の方位の角度差を計算
+    # 風が艇の右側から来る場合はスターボードタック
+    # 風が艇の左側から来る場合はポートタック
     
-    # 0-180度の間なら左舷から風 → port tack
-    # 180-360度の間なら右舷から風 → starboard tack
-    return 'port' if 0 <= wind_rel <= 180 else 'starboard'
+    # 風向から艇の方位を引く（風が来る方向と進む方向の差）
+    wind_rel = (wind_norm - bearing_norm) % 360
+    
+    # 0-180度の間なら右舷から風 → starboard tack
+    # 180-360度の間なら左舷から風 → port tack
+    return 'starboard' if 0 <= wind_rel <= 180 else 'port'
 
 def get_wind_at_position(lat: float, lon: float, time_point, wind_field: Dict[str, Any]) -> Optional[Dict[str, float]]:
     """

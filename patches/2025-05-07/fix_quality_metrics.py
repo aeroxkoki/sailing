@@ -1,40 +1,100 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-パッチスクリプト: 品質メトリクス関連の修正
-
-EnhancedQualityMetricsCalculator クラスに generate_spatial_quality_map メソッドを追加します。
-このメソッドは、GPSデータの品質分布を地図上に視覚化する機能を提供します。
+品質メトリクス可視化機能の修正パッチ
 """
 
-import os
-import sys
 from pathlib import Path
+import shutil
+import re
 
-# パスの追加
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-sys.path.insert(0, project_root)
+def apply_patch():
+    """品質メトリクス可視化機能の修正を適用する"""
+    # 修正するファイルのパス
+    file_path = Path(__file__).parents[2] / "sailing_data_processor" / "validation" / "visualization_integration.py"
+    
+    # バックアップを作成
+    backup_path = file_path.with_suffix(".py.bak")
+    shutil.copy2(file_path, backup_path)
+    print(f"バックアップを作成しました: {backup_path}")
+    
+    # 修正内容
+    patch_content = """# -*- coding: utf-8 -*-
+"""
+Module for data connector between map layers and data sources.
+This module provides functions for binding and data transformation between layers and data sources.
+"""
 
-def add_spatial_quality_map_method():
-    """EnhancedQualityMetricsCalculator に generate_spatial_quality_map メソッドを追加"""
-    file_path = os.path.join(project_root, 'sailing_data_processor', 'validation', 'quality_metrics_integration.py')
-    
-    with open(file_path, 'r', encoding='utf-8') as file:
-        content = file.read()
-    
-    # メソッドを追加するポイントを見つける（クラス内の最後のメソッドの後）
-    insert_point = content.rfind('    def calculate_spatial_quality_scores')
-    
-    # calculate_spatial_quality_scores メソッドの終わりを見つける
-    end_of_method = content.find('\n\n', insert_point)
-    if end_of_method == -1:  # ファイルの末尾の場合
-        end_of_method = len(content)
-    
-    # 新しいメソッドのコード
-    new_method = """
-    def generate_spatial_quality_map(self) -> 'go.Figure':
-        \"\"\"
-        空間的な品質分布のマップを生成
+from typing import Dict, List, Any, Optional, Tuple, Set
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+from datetime import datetime
+
+from sailing_data_processor.data_model.container import GPSDataContainer
+from sailing_data_processor.validation.data_validator import DataValidator
+from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
+from sailing_data_processor.validation.quality_metrics_integration import EnhancedQualityMetricsCalculator
+from sailing_data_processor.validation.visualization import ValidationVisualizer
+from sailing_data_processor.validation.visualization_improvements import EnhancedValidationVisualization
+
+
+class EnhancedValidationVisualizer(ValidationVisualizer):
+    """
+    拡張されたデータ検証結果の視覚化クラス
+
+    既存のValidationVisualizerクラスを継承し、新しい視覚化機能を追加します。
+
+    Parameters
+    ----------
+    quality_metrics : QualityMetricsCalculator
+        データ品質メトリクス計算クラス
+    data : pd.DataFrame
+        検証されたデータフレーム
+    """
+
+    def __init__(self, quality_metrics: QualityMetricsCalculator, data: pd.DataFrame):
+        """
+        初期化
+
+        Parameters
+        ----------
+        quality_metrics : QualityMetricsCalculator
+            データ品質メトリクス計算クラス
+        data : pd.DataFrame
+            検証されたデータフレーム
+        """
+        # 親クラスの初期化
+        super().__init__(quality_metrics, data)
+
+        # quality_metricsが通常のQualityMetricsCalculatorであれば、EnhancedQualityMetricsCalculatorに変換
+        if not isinstance(quality_metrics, EnhancedQualityMetricsCalculator):
+            self.enhanced_metrics = EnhancedQualityMetricsCalculator(
+                quality_metrics.validation_results, data)
+        else:
+            self.enhanced_metrics = quality_metrics
+
+        # 拡張視覚化クラスのインスタンス作成
+        self.enhanced_visualization = EnhancedValidationVisualization(
+            self.enhanced_metrics, data)
+
+    def generate_quality_score_visualization(self) -> Tuple[go.Figure, go.Figure]:
+        """
+        品質スコアのゲージチャートとカテゴリ別バーチャートを生成。
+        
+        品質スコアの視覚的表現として、総合スコアを円形ゲージで、
+        カテゴリ別スコア（完全性、正確性、一貫性）を棒グラフで表示します。
+        
+        Returns
+        -------
+        Tuple[go.Figure, go.Figure]
+            ゲージチャートとバーチャート
+        """
+        # 拡張視覚化クラスによる実装を使用
+        return self.enhanced_visualization.generate_quality_score_visualization()
+
+    def generate_spatial_quality_map(self) -> go.Figure:
+        """
+        空間的な品質分布のマップを生成。
         
         GPSデータの空間的な品質分布を地図上に視覚化します。
         各エリアは品質スコアによって色分けされ、品質の空間的な変動を把握できます。
@@ -43,87 +103,101 @@ def add_spatial_quality_map_method():
         -------
         go.Figure
             品質マップの図
-        \"\"\"
-        import plotly.graph_objects as go
-        from plotly.colors import sequential
+        """
+        # 拡張視覚化クラスによる実装を使用
+        return self.enhanced_visualization.generate_spatial_quality_map()
+
+    def generate_temporal_quality_chart(self) -> go.Figure:
+        """
+        時間帯別の品質分布チャートを生成。
         
-        # 空間品質スコアの計算
-        spatial_scores = self.calculate_spatial_quality_scores()
+        時間帯ごとの品質スコアをグラフ化し、時間的な品質の変動を視覚化します。
+        各時間帯のデータ量と問題発生率も表示します。
         
-        if not spatial_scores:
-            # データがない場合は空のマップを返す
-            fig = go.Figure()
-            fig.update_layout(
-                title="空間品質マップ (データなし)",
-                mapbox=dict(
-                    style="open-street-map",
-                    zoom=10
-                )
-            )
-            return fig
+        Returns
+        -------
+        go.Figure
+            時間帯別品質チャート
+        """
+        # 拡張視覚化クラスによる実装を使用
+        return self.enhanced_visualization.generate_temporal_quality_chart()
+
+    def generate_quality_score_dashboard(self) -> Dict[str, go.Figure]:
+        """
+        品質スコアダッシュボードを生成
+
+        各種品質スコアの視覚的表現を含むダッシュボード要素を生成します。
+
+        Returns
+        -------
+        Dict[str, go.Figure]
+            ダッシュボード要素の辞書
+        """
+        return self.enhanced_visualization.generate_quality_score_dashboard()
+
+    def generate_problem_distribution_visualization(self) -> Dict[str, go.Figure]:
+        """
+        問題分布の視覚化を生成
+
+        問題の時間的・空間的分布を視覚化します。
+
+        Returns
+        -------
+        Dict[str, go.Figure]
+            問題分布の視覚化の辞書
+        """
+        return self.enhanced_visualization.generate_problem_distribution_visualization()
+
+    def generate_quality_score_card(self) -> Dict[str, Any]:
+        """
+        品質スコアのカード形式表示データを生成
+
+        Returns
+        -------
+        Dict[str, Any]
+            カード表示用のデータ
+        """
+        return self.enhanced_visualization.generate_quality_score_card()
+
+
+# 簡単なファクトリ関数を提供
+def create_validation_visualizer(validator: DataValidator, container: GPSDataContainer, enhanced: bool = True) -> ValidationVisualizer:
+    """
+    ValidationVisualizerの適切なインスタンスを作成する
+
+    Parameters
+    ----------
+    validator : DataValidator
+        データ検証器
+    container : GPSDataContainer
+        GPSデータコンテナ
+    enhanced : bool, optional
+        拡張機能を使用するかどうか, by default True
+
+    Returns
+    -------
+    ValidationVisualizer
+        通常または拡張されたValidationVisualizerインスタンス
+    """
+    if enhanced:
+        # 検証が実行されていない場合は実行
+        if not validator.validation_results:
+            validator.validate(container)
             
-        # マップのセンター位置を計算
-        lats = [score['center'][0] for score in spatial_scores]
-        lons = [score['center'][1] for score in spatial_scores]
-        center_lat = sum(lats) / len(lats) if lats else 35.0
-        center_lon = sum(lons) / len(lons) if lons else 135.0
-            
-        # 色をスコアに応じて設定
-        colors = [self._get_score_color(score['quality_score']) for score in spatial_scores]
-        
-        # グリッド情報をテキストに整形
-        hover_texts = []
-        for score in spatial_scores:
-            text = f"グリッド: {score['grid_id']}<br>" + \\
-                   f"品質スコア: {score['quality_score']:.1f}<br>" + \\
-                   f"問題数: {score['problem_count']}/{score['total_count']}"
-            hover_texts.append(text)
-        
-        # マーカーサイズをデータ量に応じて調整
-        marker_sizes = [max(8, min(20, 8 + (score['total_count'] / 10))) for score in spatial_scores]
-        
-        # マップの作成
-        fig = go.Figure()
-        
-        # グリッドをマーカーとして追加
-        fig.add_trace(go.Scattermapbox(
-            lat=lats,
-            lon=lons,
-            mode='markers',
-            marker=dict(
-                size=marker_sizes,
-                color=colors,
-                opacity=0.7
-            ),
-            text=hover_texts,
-            hoverinfo='text',
-            name='品質スコア'
-        ))
-        
-        # レイアウト設定
-        fig.update_layout(
-            title="空間品質マップ",
-            mapbox=dict(
-                style="open-street-map",
-                center=dict(lat=center_lat, lon=center_lon),
-                zoom=11
-            ),
-            height=600,
-            margin=dict(l=0, r=0, t=30, b=0)
-        )
-        
-        return fig"""
+        # 拡張されたクラスを使用
+        metrics = EnhancedQualityMetricsCalculator(validator.validation_results, container.data)
+        return EnhancedValidationVisualizer(metrics, container.data)
+    else:
+        # 既存のクラスを使用
+        return ValidationVisualizer(validator, container)
+"""
     
-    # メソッドを挿入
-    updated_content = content[:end_of_method] + new_method + content[end_of_method:]
+    # 修正を適用
+    with open(file_path, 'w', encoding='utf-8') as f:
+        f.write(patch_content)
     
-    with open(file_path, 'w', encoding='utf-8') as file:
-        file.write(updated_content)
-        
-    print(f"[✓] EnhancedQualityMetricsCalculator に generate_spatial_quality_map メソッドを追加しました: {file_path}")
+    print(f"品質メトリクス可視化機能の修正を適用しました: {file_path}")
     return True
 
 if __name__ == "__main__":
-    print("パッチスクリプト: 品質メトリクス関連の修正を開始します")
-    add_spatial_quality_map_method()
-    print("パッチスクリプト: 修正完了")
+    apply_patch()
