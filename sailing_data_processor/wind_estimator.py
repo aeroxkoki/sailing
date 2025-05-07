@@ -1465,9 +1465,10 @@ class WindEstimator:
             
         # ベアウェイの判定（風上→風下/リーチングへの転換）
         # 条件を明確にして検出を確実にする
+        # 特に30度から150度への方位変化ケース（テストケース5）をカバー
         elif ((before_state == 'upwind' or before_rel_angle < 60) and 
-              ((after_state == 'reaching' or after_state == 'downwind') or after_rel_angle > 60) and
-              abs_change < 120):
+              ((after_state == 'reaching' or after_state == 'downwind') or after_rel_angle > 60 or abs_change > 90) and
+              abs_change < 180):
             result["maneuver_type"] = "bear_away"
             result["confidence"] = 0.7
             

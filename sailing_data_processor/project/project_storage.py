@@ -1134,26 +1134,36 @@ class ProjectStorage:
         if query:
             query = query.lower()
             for project in all_projects:
+                was_added = False
+                
                 # 名前か説明にクエリが含まれる場合
-                if (query in project.name.lower() or 
+                if ((project.name and query in project.name.lower()) or 
                     (project.description and query in project.description.lower())):
                     results.append(project)
+                    was_added = True
                     continue
                 
                 # メタデータの値にクエリが含まれる場合
-                for key, value in project.metadata.items():
-                    if isinstance(value, str) and query in value.lower():
-                        results.append(project)
-                        break
+                if not was_added:
+                    for key, value in project.metadata.items():
+                        if isinstance(value, str) and query in str(value).lower():
+                            results.append(project)
+                            was_added = True
+                            break
                 
-                # ここが重要: 日本語の文字列も含めて検索できるようにする
-                if any(query in str(attr).lower() for attr in [
-                    project.name, 
-                    project.description,
-                    project.category,
-                ]):
-                    if project not in results:
+                # タグの中にクエリが含まれる場合
+                if not was_added:
+                    for tag in project.tags:
+                        if tag and query in tag.lower():
+                            results.append(project)
+                            was_added = True
+                            break
+                
+                # カテゴリにクエリが含まれる場合
+                if not was_added and hasattr(project, 'category') and project.category:
+                    if query in project.category.lower():
                         results.append(project)
+                        was_added = True
             
             # タグがない場合は結果を返す
             if not tags:
@@ -1167,8 +1177,16 @@ class ProjectStorage:
             tag_results = []
             
             for project in projects_to_filter:
-                # プロジェクトのタグに検索タグのいずれかが含まれる場合
-                if any(tag in project.tags for tag in tags):
+                # 完全一致: プロジェクトのタグに検索タグのいずれかが含まれる場合
+                exact_match = any(tag in project.tags for tag in tags)
+                # 部分一致: プロジェクトのタグに検索タグの一部が含まれる場合
+                partial_match = any(
+                    p_tag and s_tag and s_tag.lower() in p_tag.lower()
+                    for p_tag in project.tags if p_tag
+                    for s_tag in tags if s_tag
+                )
+                
+                if exact_match or partial_match:
                     tag_results.append(project)
             
             results = tag_results
