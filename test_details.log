@@ -1,0 +1,42 @@
+2025-05-07 09:40:52,600 - sailing_test - INFO - ======== テスト環境情報 ========
+2025-05-07 09:40:52,604 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
+2025-05-07 09:40:52,605 - sailing_test - INFO - Python version: 3.9.6
+2025-05-07 09:40:52,606 - sailing_test - INFO - Hostname: MacBook-Air-2.local
+2025-05-07 09:40:52,607 - sailing_test - DEBUG - Python path: [
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python39.zip",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload",
+  "/Users/koki_air/Library/Python/3.9/lib/python/site-packages",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
+]
+2025-05-07 09:40:52,607 - sailing_test - DEBUG - Environment variables:
+2025-05-07 09:40:52,609 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
+2025-05-07 09:40:52,611 - sailing_test - DEBUG -   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
+2025-05-07 09:40:52,612 - sailing_test - DEBUG -   PYTHONVERBOSE: 1
+2025-05-07 09:40:52,614 - sailing_test - INFO - ======== テスト開始 ========
+2025-05-07 09:40:52,617 - sailing_test - INFO - テスト開始: test_create_directories
+2025-05-07 09:40:52,640 - sailing_test - INFO - テスト終了: test_create_directories
+2025-05-07 09:40:52,646 - sailing_test - INFO - テスト開始: test_save_load_project
+2025-05-07 09:40:52,669 - sailing_test - INFO - テスト終了: test_save_load_project
+2025-05-07 09:40:52,677 - sailing_test - INFO - テスト開始: test_save_load_session
+2025-05-07 09:40:52,698 - sailing_test - INFO - テスト終了: test_save_load_session
+2025-05-07 09:40:52,702 - sailing_test - INFO - テスト開始: test_save_load_result
+2025-05-07 09:40:52,724 - sailing_test - INFO - テスト終了: test_save_load_result
+2025-05-07 09:40:52,734 - sailing_test - INFO - テスト開始: test_create_project
+2025-05-07 09:40:52,749 - sailing_test - INFO - テスト終了: test_create_project
+2025-05-07 09:40:52,753 - sailing_test - INFO - テスト開始: test_create_session
+2025-05-07 09:40:52,769 - sailing_test - INFO - テスト終了: test_create_session
+2025-05-07 09:40:52,774 - sailing_test - INFO - テスト開始: test_create_result
+2025-05-07 09:40:52,786 - sailing_test - INFO - テスト終了: test_create_result
+2025-05-07 09:40:52,790 - sailing_test - INFO - テスト開始: test_add_session_to_project
+2025-05-07 09:40:52,805 - sailing_test - INFO - テスト終了: test_add_session_to_project
+2025-05-07 09:40:52,809 - sailing_test - INFO - テスト開始: test_add_result_to_session
+2025-05-07 09:40:52,827 - sailing_test - INFO - テスト終了: test_add_result_to_session
+2025-05-07 09:40:52,828 - sailing_test - INFO - ======== テスト終了 ========
