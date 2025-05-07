@@ -57,10 +57,6 @@ class SailingMapDisplay:
         # デフォルト中心位置（東京湾）
         if center is None:
             center = (35.5, 139.8)
-        # centerがtupleまたはlist形式で使えるようにする
-        elif isinstance(center, list):
-            # リストをタプルに変換（テストの期待値と一致させるため）
-            center = tuple(center)
         
         # タイルが指定されていない場合はデフォルトを使用
         if tile is None or tile not in self.available_tiles:
@@ -69,8 +65,10 @@ class SailingMapDisplay:
             tile = self.available_tiles[tile]
         
         # 地図オブジェクトの作成
+        # 引数の型を保証する（タプルでも受け取れるようにしつつ、内部ではリスト形式に統一）
+        map_center = list(center) if isinstance(center, (list, tuple)) else center
         self.map_object = folium.Map(
-            location=center,
+            location=map_center,
             zoom_start=zoom_start,
             tiles=tile
         )

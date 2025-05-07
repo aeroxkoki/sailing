@@ -33,7 +33,7 @@ class TestSailingMapDisplay(unittest.TestCase):
         self.assertIsInstance(map_object, folium.Map)
         
         # カスタム設定での地図作成
-        custom_center = (34.5, 138.5)
+        custom_center = [34.5, 138.5]
         custom_zoom = 10
         custom_tile = "オープンストリートマップ"
         
@@ -44,7 +44,7 @@ class TestSailingMapDisplay(unittest.TestCase):
         )
         
         self.assertIsNotNone(map_object)
-        self.assertEqual(map_object.location, custom_center)
+        self.assertEqual(map_object.location, list(custom_center))
         self.assertEqual(map_object.zoom_start, custom_zoom)
     
     def test_add_track(self):

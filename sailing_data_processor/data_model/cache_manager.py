@@ -183,6 +183,7 @@ class CacheManager:
                 
                 # キャッシュミスの場合は関数を実行
                 # ミスをカウントするのは一度だけにする
+                self._stats[cache_name]['misses'] += 1
                 result = func(*args, **kwargs)
                 
                 # キャッシュサイズ管理（LRU方式）

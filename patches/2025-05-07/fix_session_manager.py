@@ -1,4 +1,4 @@
-#\!/usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 セッションマネージャーのバグ修正スクリプト
@@ -12,6 +12,7 @@
 import sys
 import os
 import re
+import shutil
 
 def fix_session_manager(file_path):
     """session_manager.py ファイルを修正します"""
@@ -50,6 +51,36 @@ def fix_session_manager(file_path):
     print(f"Session manager fixed successfully")
     return True
 
+def create_if_not_exists(file_path):
+    """ファイルが存在しない場合に作成します"""
+    if not os.path.exists(file_path):
+        # テンプレートをコピー
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(os.path.dirname(os.path.dirname(script_dir)))
+        template_path = os.path.join(project_root, "sailing_data_processor/session/session_manager.py")
+        
+        if os.path.exists(template_path):
+            print(f"Using template from {template_path}")
+            shutil.copy(template_path, file_path)
+            print(f"Created {file_path} from template")
+            return True
+        else:
+            print(f"Template file not found: {template_path}")
+            # ファイルが空の場合、新しいファイルを作成
+            dir_path = os.path.dirname(file_path)
+            if not os.path.exists(dir_path):
+                os.makedirs(dir_path)
+            
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write("# -*- coding: utf-8 -*-\n")
+                f.write("\"\"\"\nsailing_data_processor.project.session_manager\n\nSession management class implementation.\n\"\"\"\n\n")
+                f.write("# Placeholder for SessionManager implementation\n")
+            
+            print(f"Created empty {file_path}")
+            return True
+    
+    return False
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
         file_path = sys.argv[1]
@@ -60,8 +91,11 @@ if __name__ == "__main__":
     root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     abs_file_path = os.path.join(root_dir, file_path)
     
+    # ファイルが存在しなければ作成
+    created = create_if_not_exists(abs_file_path)
+    
     if fix_session_manager(abs_file_path):
-        print("Success\!")
+        print("Success!")
     else:
         print("Failed to fix session manager.")
         sys.exit(1)

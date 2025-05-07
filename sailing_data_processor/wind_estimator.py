@@ -1443,15 +1443,15 @@ class WindEstimator:
             result["confidence"] = angle_confidence
             
         # ベアウェイの判定（風上→風下への転換）
-        elif (before_state == 'upwind' and after_state != 'upwind' and
-              bearing_change > 0 and abs_change < 120):
+        elif (before_state == 'upwind' and (after_state == 'reaching' or after_state == 'downwind') and
+              abs_change < 120):
               
             result["maneuver_type"] = "bear_away"
             result["confidence"] = 0.7
             
         # ヘッドアップの判定（風下→風上への転換）
-        elif (before_state != 'upwind' and after_state == 'upwind' and
-              bearing_change < 0 and abs_change < 120):
+        elif ((before_state == 'reaching' or before_state == 'downwind') and after_state == 'upwind' and
+              abs_change < 120):
               
             result["maneuver_type"] = "head_up"
             result["confidence"] = 0.7

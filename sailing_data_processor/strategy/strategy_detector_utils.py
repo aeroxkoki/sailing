@@ -163,10 +163,10 @@ def determine_tack_type(bearing: float, wind_direction: float) -> str:
         タック ('port'または'starboard')
     """
     # 風と進行方向の角度差
-    relative_angle = angle_difference(bearing, wind_direction)
+    relative_angle = angle_difference(wind_direction, bearing)
     
-    # 角度から判定（負ならポート、正ならスターボードタック）
-    return 'port' if relative_angle < 0 else 'starboard'
+    # 角度から判定（正（風が右から）ならスターボード、負（風が左から）ならポートタック）
+    return 'starboard' if relative_angle < 0 else 'port'
 
 def get_wind_at_position(lat: float, lon: float, time_point, wind_field: Dict[str, Any]) -> Optional[Dict[str, float]]:
     """

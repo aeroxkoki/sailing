@@ -1728,6 +1728,8 @@ class OptimalVMGCalculator:
             ('49er', '49er')
         ]:
             # 風向角（0-180度）と風速（4-25ノット）の範囲を設定
+            # 0度は船が風向きと同じ方向を向いていることを意味するため、
+            # 実際の最小角度は通常30度前後になるようにする
             angles = list(range(0, 181, 5))  # 0, 5, 10, ... 180
             wind_speeds = [4.0, 6.0, 8.0, 10.0, 12.0, 14.0, 16.0, 20.0, 25.0]
             
@@ -1742,10 +1744,19 @@ class OptimalVMGCalculator:
             # シンプルなモデルでポーラーデータを埋める
             for i, angle in enumerate(angles):
                 for j, ws in enumerate(wind_speeds):
+                    # 0度と180度では船は前に進まない（風と同じか真逆の方向）
+                    if angle == 0 or angle == 180:
+                        boat_speed = 0.1  # 最小値を設定
                     # 風上と風下に最適角度を設定
-                    if angle < 90:  # 風上
+                    elif angle < 90:  # 風上
                         # 風上最適角45度付近で最大、その後減少
-                        boat_speed = ws * 0.5 * (1 - abs(angle - 45) / 90)
+                        # 30度未満は現実的に帆走が難しいため、段階的に減少
+                        if angle < 30:
+                            # 30度未満は急激に性能低下（30度で通常の50%）
+                            reduction_factor = angle / 30.0
+                            boat_speed = ws * 0.5 * (1 - abs(45 - 30) / 90) * reduction_factor
+                        else:
+                            boat_speed = ws * 0.5 * (1 - abs(angle - 45) / 90)
                     else:  # 風下
                         # 風下最適角135度付近で最大
                         boat_speed = ws * 0.6 * (1 - abs(angle - 135) / 90)
