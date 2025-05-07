@@ -1135,8 +1135,9 @@ class ProjectStorage:
             query = query.lower()
             for project in all_projects:
                 # テストケースの期待動作に合わせた修正: 
-                # 説明文に部分一致するもののみを追加
-                if project.description and query in project.description.lower():
+                # 名前または説明文に部分一致するものを追加
+                if (project.name and query in project.name.lower()) or \
+                   (project.description and query in project.description.lower()):
                     results.append(project)
             
             # タグがない場合は結果を返す

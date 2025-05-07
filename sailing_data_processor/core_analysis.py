@@ -347,7 +347,7 @@ class SailingDataAnalyzer:
         df = self.boat_data[boat_id].copy()
         
         # 異常な速度を検出し修正
-        anomaly_mask = df['speed'] > max_speed_knots
+        anomaly_mask = df['speed'] >= max_speed_knots
         
         # 異常値を修正
         if anomaly_mask.any():

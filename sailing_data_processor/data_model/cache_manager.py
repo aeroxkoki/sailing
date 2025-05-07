@@ -183,12 +183,15 @@ class CacheManager:
                         # キャッシュからの結果を返す
                         return entry['result']
                 
-                # キャッシュミスの場合のみカウント
+                # キャッシュミスの場合は関数を実行し、結果をキャッシュに格納
                 # 前の条件分岐で既にキャッシュから削除されている可能性があるため
-                # 改めてチェックして、ない場合のみカウントアップ
+                # 改めてチェックし、キャッシュされていない場合のみ関数を実行
                 if key not in cache:
                     self._stats[cache_name]['misses'] += 1
-                result = func(*args, **kwargs)
+                    result = func(*args, **kwargs)
+                else:
+                    # キャッシュヒットの場合は、先の条件分岐で既にカウントアップされている
+                    return cache[key]['result']
                 
                 # キャッシュサイズ管理（LRU方式）
                 if len(cache) >= max_size:

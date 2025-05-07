@@ -244,7 +244,16 @@ class EnhancedValidationVisualization:
             ))
             
             # グリッドの境界を描画
-            bounds = grid["bounds"]
+            # lat_range と lon_range から bounds を生成
+            lat_range = grid.get("lat_range", (0, 0))
+            lon_range = grid.get("lon_range", (0, 0))
+            bounds = {
+                "min_lat": lat_range[0],
+                "max_lat": lat_range[1],
+                "min_lon": lon_range[0],
+                "max_lon": lon_range[1]
+            }
+            
             lats = [
                 bounds["min_lat"], bounds["max_lat"],
                 bounds["max_lat"], bounds["min_lat"],

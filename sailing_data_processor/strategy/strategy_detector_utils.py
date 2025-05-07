@@ -178,8 +178,8 @@ def determine_tack_type(bearing: float, wind_direction: float) -> str:
     
     # 0-180度なら右舷から風（スターボードタック）
     # 180-360度なら左舷から風（ポートタック）
-    # テストケースの期待値に合わせて判定ロジックを反転
-    return 'port' if 0 <= relative_wind <= 180 else 'starboard'
+    # テストケースと正しいセーリングルールに合わせる
+    return 'starboard' if 0 <= relative_wind <= 180 else 'port'
 
 def get_wind_at_position(lat: float, lon: float, time_point, wind_field: Dict[str, Any]) -> Optional[Dict[str, float]]:
     """
