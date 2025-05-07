@@ -373,10 +373,11 @@ class ImportIntegration:
                 session.add_tag(tag)
         
         # Metadata inheritance (project default settings are added to session metadata, if not already present)
+        # ここが問題の箇所 - プロジェクト設定をセッションメタデータに正しく適用していない
         project_settings = project.metadata.get("default_session_settings", {})
         for key, value in project_settings.items():
-            if key not in session.metadata:
-                session.update_metadata(key, value)
+            # 直接セッションメタデータに追加
+            session.metadata[key] = value
         
         # Category inheritance
         if hasattr(project, 'category') and hasattr(session, 'category'):

@@ -1139,3 +1139,60 @@ class ProjectStorage:
             "sessions": sessions,
             "children": sub_projects
         }
+    
+    def search_projects(self, query: str = None, tags: List[str] = None) -> List[Project]:
+        """
+        プロジェクトを検索
+        
+        Parameters
+        ----------
+        query : str, optional
+            検索クエリ, by default None
+        tags : List[str], optional
+            タグでフィルタリング, by default None
+            
+        Returns
+        -------
+        List[Project]
+            マッチするプロジェクトのリスト
+        """
+        # すべてのプロジェクトを取得
+        all_projects = list(self.projects.values())
+        results = []
+        
+        # クエリがなく、タグもない場合はすべてのプロジェクトを返す
+        if not query and not tags:
+            return all_projects
+        
+        # クエリで検索
+        if query:
+            query = query.lower()
+            for project in all_projects:
+                # 名前か説明にクエリが含まれる場合
+                if (query in project.name.lower() or 
+                    (project.description and query in project.description.lower())):
+                    results.append(project)
+                    continue
+                
+                # メタデータの値にクエリが含まれる場合
+                for value in project.metadata.values():
+                    if isinstance(value, str) and query in value.lower():
+                        results.append(project)
+                        break
+            
+            # タグがない場合は結果を返す
+            if not tags:
+                return results
+        
+        # タグで検索
+        if tags:
+            # クエリがある場合は結果をさらにフィルタリング
+            projects_to_filter = results if query else all_projects
+            results = []
+            
+            for project in projects_to_filter:
+                # プロジェクトのタグに検索タグのいずれかが含まれる場合
+                if any(tag in project.tags for tag in tags):
+                    results.append(project)
+        
+        return results
