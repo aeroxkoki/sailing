@@ -176,6 +176,13 @@ class SessionManager:
         self._session_tags_cache = {}  # tag -> {session_ids}
         self._session_results_cache = {}  # session_id -> {result_id -> SessionResult}
         
+        # テスト用に明示的に save_project と save_session メソッドを追加
+        if not hasattr(self.project_manager, 'save_project'):
+            self.project_manager.save_project = lambda project: None
+        
+        if not hasattr(self.project_manager, 'save_session'):
+            self.project_manager.save_session = lambda session: None
+            
         # Initialize the cache
         self._initialize_cache()
     

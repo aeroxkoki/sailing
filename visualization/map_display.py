@@ -73,6 +73,9 @@ class SailingMapDisplay:
             tiles=tile
         )
         
+        # zoom_startプロパティを設定（テスト用）
+        self.map_object.zoom_start = zoom_start
+        
         # スケールバーの追加
         plugins.MousePosition().add_to(self.map_object)
         

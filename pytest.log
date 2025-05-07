@@ -6,6 +6,9 @@ INFO     sailing_test:conftest.py:235 Hostname: MacBook-Air-2.local
 DEBUG    sailing_test:conftest.py:236 Python path: [
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
@@ -22,6 +25,74 @@ DEBUG    sailing_test:conftest.py:241   PATH: /Users/koki_air/.npm-global/bin:/u
 DEBUG    sailing_test:conftest.py:241   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
 DEBUG    sailing_test:conftest.py:241   PYTHONVERBOSE: 1
 INFO     sailing_test:conftest.py:243 ======== テスト開始 ========
-INFO     sailing_test:conftest.py:250 テスト開始: test_calculate_uniformity_score
-INFO     sailing_test:conftest.py:264 テスト終了: test_calculate_uniformity_score
+INFO     sailing_test:conftest.py:250 テスト開始: test_cached_decorator
+INFO     sailing_test:conftest.py:264 テスト終了: test_cached_decorator
+INFO     sailing_test:conftest.py:250 テスト開始: test_create_map
+INFO     sailing_test:conftest.py:264 テスト終了: test_create_map
+INFO     sailing_test:conftest.py:250 テスト開始: test_find_optimal_twa
+INFO     sailing_test:conftest.py:264 テスト終了: test_find_optimal_twa
+INFO     sailing_test:conftest.py:250 テスト開始: test_quality_metrics
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60227977523535, 139.70973666395005), curr(nan, 139.7097133797485)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.608360259786004, 139.7054868986058), curr(nan, 139.70540302305866)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60935616001554, 139.7035301940122), curr(35.609390993563196, nan)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60939645473685, 139.69657850348847), curr(nan, 139.6963912711986)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.604808226149885, 139.69123182109604), curr(35.6047203054129, nan)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.5900748018708, 139.69877916336222), curr(35.60445374644542, nan)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.601904226473614, 139.69018297797), curr(35.601805962678945, nan)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.59357001257946, 139.69234132767565), curr(nan, 139.69240600940861)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.59223931672912, 139.69369351166105), curr(35.59217664092773, nan)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.59223931672912, 139.69369351166105), curr(35.59211474745574, nan)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.59017547387376, 139.7018651236942), curr(nan, 139.70196327406265)
+ERROR    sailing_data_processor.validation.quality_metrics_integration:quality_metrics_integration.py:303 Error initializing EnhancedQualityMetricsCalculator: 'bool' object has no attribute 'get'
+INFO     sailing_test:conftest.py:264 テスト終了: test_quality_metrics
+INFO     sailing_test:conftest.py:250 テスト開始: test_visualization
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60496880137844, 139.70867819179676), curr(nan, 139.70862807070515)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60522687228931, 139.70852524522059), curr(nan, 139.70847255111013)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60731145829727, 139.70682221207286), curr(nan, 139.7067487576007)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60813415504789, 139.70581683089463), curr(nan, 139.70573519986073)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60872355482345, 139.7048887208186), curr(nan, 139.70480124229027)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60991458348192, 139.70130423708736), curr(35.609927129910375, nan)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.60334988150156, 139.6905777765933), curr(nan, 139.69054474944383)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.602682660509295, 139.69036655136557), curr(nan, 139.69034020687602)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.59961602095495, 139.69000737471467), curr(35.59951611556632, nan)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.59138403099689, 139.69492406874184), curr(nan, 139.69501048079033)
+WARNING  sailing_data_processor.validation.data_validator:data_validator.py:429 無効な座標値をスキップ: prev(35.59001945561241, 139.69937651485392), curr(35.59001371988793, nan)
+ERROR    sailing_data_processor.validation.quality_metrics_integration:quality_metrics_integration.py:303 Error initializing EnhancedQualityMetricsCalculator: 'bool' object has no attribute 'get'
+INFO     sailing_test:conftest.py:264 テスト終了: test_visualization
+INFO     sailing_test:conftest.py:250 テスト開始: test_init
+INFO     sailing_test:conftest.py:264 テスト終了: test_init
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_all_sessions
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_all_sessions
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_project_sessions
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_project_sessions
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_sessions_not_in_project
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_sessions_not_in_project
+INFO     sailing_test:conftest.py:250 テスト開始: test_add_session_to_project
+INFO     sailing_test:conftest.py:264 テスト終了: test_add_session_to_project
+INFO     sailing_test:conftest.py:250 テスト開始: test_add_session_to_nonexistent_project
+INFO     sailing_test:conftest.py:264 テスト終了: test_add_session_to_nonexistent_project
+INFO     sailing_test:conftest.py:250 テスト開始: test_remove_session_from_project
+INFO     sailing_test:conftest.py:264 テスト終了: test_remove_session_from_project
+INFO     sailing_test:conftest.py:250 テスト開始: test_move_session
+INFO     sailing_test:conftest.py:264 テスト終了: test_move_session
+INFO     sailing_test:conftest.py:250 テスト開始: test_update_session_metadata
+INFO     sailing_test:conftest.py:264 テスト終了: test_update_session_metadata
+INFO     sailing_test:conftest.py:250 テスト開始: test_search_sessions_by_query
+INFO     sailing_test:conftest.py:264 テスト終了: test_search_sessions_by_query
+INFO     sailing_test:conftest.py:250 テスト開始: test_search_sessions_by_tags
+INFO     sailing_test:conftest.py:264 テスト終了: test_search_sessions_by_tags
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_available_tags
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_available_tags
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_sessions_by_tag
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_sessions_by_tag
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_sessions_by_multiple_tags_and
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_sessions_by_multiple_tags_and
+INFO     sailing_test:conftest.py:250 テスト開始: test_get_sessions_by_multiple_tags_or
+INFO     sailing_test:conftest.py:264 テスト終了: test_get_sessions_by_multiple_tags_or
+INFO     sailing_test:conftest.py:250 テスト開始: test_update_session_status
+INFO     sailing_test:conftest.py:264 テスト終了: test_update_session_status
+INFO     sailing_test:conftest.py:250 テスト開始: test_update_session_category
+INFO     sailing_test:conftest.py:264 テスト終了: test_update_session_category
+INFO     sailing_test:conftest.py:250 テスト開始: test_update_session_tags
+INFO     sailing_test:conftest.py:264 テスト終了: test_update_session_tags
 INFO     sailing_test:conftest.py:245 ======== テスト終了 ========
