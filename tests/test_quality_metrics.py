@@ -23,6 +23,12 @@ from sailing_data_processor.validation.data_validator import DataValidator
 from sailing_data_processor.validation.quality_metrics_integration import EnhancedQualityMetricsCalculator
 from sailing_data_processor.validation.visualization_integration import EnhancedValidationVisualizer
 
+# Ensure plotly is imported properly
+try:
+    import plotly.graph_objects as go
+except ImportError:
+    pass  # The test will fail if this is a critical component
+
 def create_sample_data(rows=1000, error_rate=0.1):
     """サンプルデータを生成する"""
     # 現在時刻から24時間のデータを生成

@@ -11,7 +11,8 @@ from sailing_data_processor.data_model.container import GPSDataContainer
 from sailing_data_processor.validation.data_validator import DataValidator
 from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
 from sailing_data_processor.validation.visualization_modules.visualizer_part1 import ValidationVisualizer
-from sailing_data_processor.validation.visualization_modules.validation_dashboard import ValidationDashboard
+# 循環インポートを避けるため、遅延インポート（必要な時だけインポート）
+# from sailing_data_processor.validation.visualization_modules.validation_dashboard import ValidationDashboard
 
 class ValidationVisualization:
     """
@@ -49,7 +50,13 @@ class ValidationVisualization:
         # 新しいクラスを使用
         self.metrics_calculator = QualityMetricsCalculator(validator.validation_results, container.data)
         self.visualizer = ValidationVisualizer(self.metrics_calculator, container.data)
-        self.dashboard = ValidationDashboard(validator.validation_results, container.data)
+        
+        # 循環インポートを避けるために、ここでダッシュボードをインポートして初期化
+        try:
+            from sailing_data_processor.validation.visualization_modules.validation_dashboard import ValidationDashboard
+            self.dashboard = ValidationDashboard(validator.validation_results, container.data)
+        except ImportError:
+            self.dashboard = None
         
         # データ品質スコアの計算
         self.quality_score = self.metrics_calculator.quality_scores

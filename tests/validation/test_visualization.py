@@ -10,7 +10,8 @@ from datetime import datetime, timedelta
 import plotly.graph_objects as go
 
 from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
-from sailing_data_processor.validation.visualization import ValidationVisualizer, ValidationDashboard
+from sailing_data_processor.validation.visualization_modules.visualizer_part1 import ValidationVisualizer
+from sailing_data_processor.validation.visualization_modules.validation_dashboard import ValidationDashboard
 
 
 def test_validation_visualizer_initialization():

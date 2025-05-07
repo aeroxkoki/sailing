@@ -4,6 +4,7 @@
 """
 from typing import Dict, List, Any
 import pandas as pd
+import plotly.graph_objects as go
 from sailing_data_processor.validation.quality_metrics import QualityMetricsCalculator
 from sailing_data_processor.validation.visualization_modules.visualizer_part1 import ValidationVisualizer
 
@@ -105,59 +106,59 @@ class ValidationDashboard:
         Dict[str, Any]
             詳細セクションの内容
         """
-        # 問題レコードの取得
-        record_issues = self.metrics_calculator.get_record_issues()
-        
-        # 問題レコードをDataFrameに変換
-        problem_records = []
-        for idx, issue in record_issues.items():
-            if isinstance(idx, int) and isinstance(issue, dict):
-                record = self.data.iloc[idx].to_dict() if idx < len(self.data) else {}
-                record["index"] = idx
-                record["issue_type"] = ", ".join(issue.get("issues", []))
-                record["severity"] = issue.get("severity", "")
-                record["quality_score"] = issue.get("quality_score", {}).get("total", 0)
-                problem_records.append(record)
-        
-        problem_records_df = pd.DataFrame(problem_records) if problem_records else pd.DataFrame()
-        
-        # 詳細チャートの生成
         try:
-        spatial_quality_map = self.visualizer.generate_spatial_quality_map()
-        temporal_quality_chart = self.visualizer.generate_temporal_quality_chart()
+            # 問題レコードの取得
+            record_issues = self.metrics_calculator.get_record_issues()
+            
+            # 問題レコードをDataFrameに変換
+            problem_records = []
+            for idx, issue in record_issues.items():
+                if isinstance(idx, int) and isinstance(issue, dict):
+                    record = self.data.iloc[idx].to_dict() if idx < len(self.data) else {}
+                    record["index"] = idx
+                    record["issue_type"] = ", ".join(issue.get("issues", []))
+                    record["severity"] = issue.get("severity", "")
+                    record["quality_score"] = issue.get("quality_score", {}).get("total", 0)
+                    problem_records.append(record)
+            
+            problem_records_df = pd.DataFrame(problem_records) if problem_records else pd.DataFrame()
+            
+            # 詳細チャートの生成
+            try:
+                spatial_quality_map = self.visualizer.generate_spatial_quality_map()
+            except Exception as e:
+                print(f"Error generating spatial quality map: {e}")
+                # エラー時はダミーのマップを返す
+                spatial_quality_map = go.Figure()
+                spatial_quality_map.update_layout(title="空間品質マップ（エラーのため表示できません）")
+            
+            try:
+                temporal_quality_chart = self.visualizer.generate_temporal_quality_chart()
+            except Exception as e:
+                print(f"Error generating temporal quality chart: {e}")
+                # エラー時はダミーのチャートを返す
+                temporal_quality_chart = go.Figure()
+                temporal_quality_chart.update_layout(title="時間品質チャート（エラーのため表示できません）")
+            
+            # 詳細レポートの生成
+            detailed_report = self.metrics_calculator.get_quality_report()
+            
+            return {
+                "charts": {
+                    "spatial_quality": spatial_quality_map,
+                    "temporal_quality": temporal_quality_chart
+                },
+                "problem_records_df": problem_records_df,
+                "detailed_report": detailed_report
+            }
         except Exception as e:
-            print(f"Error generating spatial quality map: {e}")
-            # エラー時はダミーのマップを返す
-            spatial_quality_map = go.Figure()
-            spatial_quality_map.update_layout(title="空間品質マップ（エラーのため表示できません）")
-        
-        try:
-        
-                except Exception as e:
-            print(f"Error generating temporal quality chart: {e}")
-            # エラー時はダミーのチャートを返す
-            temporal_quality_chart = go.Figure()
-            temporal_quality_chart.update_layout(title="時間品質チャート（エラーのため表示できません）")
-        
-# 詳細レポートの生成
-        detailed_report = self.metrics_calculator.get_quality_report()
-        
-        return {
-            "charts": {
-                "spatial_quality": spatial_quality_map,
-                "temporal_quality": temporal_quality_chart
-            },
-            "problem_records_df": problem_records_df,
-            "detailed_report": detailed_report
-        }
-    except Exception as e:
-        # 最終的なフォールバック - エラーが発生した場合も最低限の情報を返す
-        print(f"Error rendering details section: {e}")
-        return {
-            "charts": {},
-            "problem_records_df": pd.DataFrame(),
-            "detailed_report": {"error": f"レポート生成エラー: {str(e)}"}
-        }
+            # 最終的なフォールバック - エラーが発生した場合も最低限の情報を返す
+            print(f"Error rendering details section: {e}")
+            return {
+                "charts": {},
+                "problem_records_df": pd.DataFrame(),
+                "detailed_report": {"error": f"レポート生成エラー: {str(e)}"}
+            }
     
     def render_action_section(self) -> Dict[str, Any]:
         """アクションセクションのレンダリング"""
