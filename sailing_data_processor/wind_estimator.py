@@ -980,7 +980,8 @@ class WindEstimator:
                     'after_state': ['upwind'],
                     'wind_direction': [0.0 if wind_direction is None else wind_direction],
                     'before_rel_wind': [30.0],
-                    'after_rel_wind': [120.0]
+                    'after_rel_wind': [120.0],
+                    'angle_change': [90.0]  # 角度変化を追加
                 }
                 return pd.DataFrame(dummy_data)
         
@@ -1399,13 +1400,14 @@ class WindEstimator:
         wind_norm = wind_direction % 360
         
         # 風向に対する相対角度
-        # 風向から艇の方位を引いて風が来る相対角度を計算
-        before_wind_rel = (wind_norm - before_norm) % 360
-        after_wind_rel = (wind_norm - after_norm) % 360
+        # 艇の方位から風向を引いて風が来る相対角度を計算
+        before_wind_rel = (before_norm - wind_norm) % 360
+        after_wind_rel = (after_norm - wind_norm) % 360
         
         # タック状態を判定（starboard/port）
-        before_tack = 'starboard' if 0 <= before_wind_rel <= 180 else 'port'
-        after_tack = 'starboard' if 0 <= after_wind_rel <= 180 else 'port'
+        # 風が右側から来る場合はstarboard、左側から来る場合はport
+        before_tack = 'port' if 0 <= before_wind_rel <= 180 else 'starboard'
+        after_tack = 'port' if 0 <= after_wind_rel <= 180 else 'starboard'
         
         # 風向との相対角度を計算（0-180の範囲に変換）
         before_rel_angle = min(before_wind_rel, 360 - before_wind_rel)
@@ -1462,8 +1464,9 @@ class WindEstimator:
             result["confidence"] = 1.0 - min(1.0, abs(abs_change - 80) / 40)
             
         # ベアウェイの判定（風上→風下/リーチングへの転換）
-        elif (before_state == 'upwind' and 
-              (after_state == 'reaching' or after_state == 'downwind') and
+        # 以前より緩い条件にして検出率を上げる
+        elif ((before_state == 'upwind' or abs(before_rel_angle) < 60) and 
+              ((after_state == 'reaching' or after_state == 'downwind') or abs(after_rel_angle) > 60) and
               abs_change < 120):
             result["maneuver_type"] = "bear_away"
             result["confidence"] = 0.7
