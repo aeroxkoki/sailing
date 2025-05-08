@@ -1,17 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-
-interface WindPoint {
-  longitude: number;
-  latitude: number;
-  direction: number; // in degrees, 0 = North, 90 = East, etc.
-  speed: number; // in knots
-  timestamp?: number;
-}
+import maplibregl from 'maplibre-gl';
+import { WindDataPoint } from '@/types/gps';
 
 interface WindLayerProps {
-  map: mapboxgl.Map;
-  windPoints: WindPoint[];
+  map: maplibregl.Map;
+  windPoints: WindDataPoint[];
   vectorColor?: string;
   vectorScale?: number;
   showHeatmap?: boolean;
@@ -167,7 +160,7 @@ const WindLayer: React.FC<WindLayerProps> = ({
         },
       });
     } else if (map.getSource(vectorSourceId)) {
-      const source = map.getSource(vectorSourceId) as mapboxgl.GeoJSONSource;
+      const source = map.getSource(vectorSourceId) as maplibregl.GeoJSONSource;
       source.setData(getWindVectorsGeoJSON() as any);
     }
 
@@ -207,7 +200,7 @@ const WindLayer: React.FC<WindLayerProps> = ({
           },
         }, 'wind-vector-layer'); // Add heatmap below vector layer
       } else if (map.getSource(heatmapSourceId)) {
-        const source = map.getSource(heatmapSourceId) as mapboxgl.GeoJSONSource;
+        const source = map.getSource(heatmapSourceId) as maplibregl.GeoJSONSource;
         source.setData(getWindHeatmapGeoJSON() as any);
       }
     } else {

@@ -41,6 +41,7 @@ interface SpeedChartProps {
   selectedTime?: number;
   onTimeSelect?: (timestamp: number) => void;
   zoomRange?: [number, number]; // [startTime, endTime]
+  onTimeRangeChange?: (range: [number, number]) => void;
   className?: string;
 }
 
@@ -58,9 +59,12 @@ const SpeedChart: React.FC<SpeedChartProps> = ({
   selectedTime,
   onTimeSelect,
   zoomRange,
+  onTimeRangeChange,
   className = '',
 }) => {
   const [hoveredTime, setHoveredTime] = useState<number | null>(null);
+  const [startBrush, setStartBrush] = useState<number | null>(null);
+  const [endBrush, setEndBrush] = useState<number | null>(null);
 
   // Process data to add formatted time
   const processedData = data.map((point) => {
@@ -173,6 +177,11 @@ const SpeedChart: React.FC<SpeedChartProps> = ({
   const handleMouseMove = (data: any) => {
     if (data && data.activePayload && data.activePayload.length > 0) {
       setHoveredTime(data.activePayload[0].payload.timestamp);
+      
+      // ブラシの開始点が設定されていれば、終了点を更新
+      if (startBrush !== null && data.activePayload[0].payload.timestamp !== startBrush) {
+        setEndBrush(data.activePayload[0].payload.timestamp);
+      }
     } else {
       setHoveredTime(null);
     }
@@ -180,6 +189,33 @@ const SpeedChart: React.FC<SpeedChartProps> = ({
 
   const handleMouseLeave = () => {
     setHoveredTime(null);
+  };
+
+  // ブラシ（選択領域）の開始
+  const handleMouseDown = (data: any) => {
+    if (!data || !data.activeLabel) return;
+    
+    const point = chartData.find(p => p.time === data.activeLabel);
+    if (point) {
+      setStartBrush(point.timestamp);
+      setEndBrush(null);
+    }
+  };
+
+  // ブラシ（選択領域）の適用
+  const handleMouseUp = () => {
+    if (startBrush !== null && endBrush !== null && onTimeRangeChange) {
+      // 開始時間と終了時間を順序正しく設定
+      const startTime = Math.min(startBrush, endBrush);
+      const endTime = Math.max(startBrush, endBrush);
+      
+      // 親コンポーネントに範囲変更を通知
+      onTimeRangeChange([startTime, endTime]);
+      
+      // ブラシをリセット
+      setStartBrush(null);
+      setEndBrush(null);
+    }
   };
 
   // Get mark color based on type
@@ -205,6 +241,8 @@ const SpeedChart: React.FC<SpeedChartProps> = ({
           onClick={handleClick}
           onMouseMove={handleMouseMove}
           onMouseLeave={handleMouseLeave}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
@@ -293,6 +331,18 @@ const SpeedChart: React.FC<SpeedChartProps> = ({
               stroke="#666666"
               strokeWidth={1}
               strokeDasharray="3 3"
+            />
+          )}
+          
+          {/* Add reference area for brush selection */}
+          {startBrush && endBrush && (
+            <ReferenceArea
+              x1={chartData.find((d) => d.timestamp === Math.min(startBrush, endBrush))?.time}
+              x2={chartData.find((d) => d.timestamp === Math.max(startBrush, endBrush))?.time}
+              strokeOpacity={0.3}
+              stroke="#2196F3"
+              fill="#2196F3"
+              fillOpacity={0.2}
             />
           )}
         </LineChart>

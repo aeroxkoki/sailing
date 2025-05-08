@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="SailingTracker" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>Test Sailing Track</name>
+    <time>2023-05-03T12:00:00Z</time>
+  </metadata>
+  <trk>
+    <name>Test Track</name>
+    <trkseg>
+      <trkpt lat="35.123" lon="139.456">
+        <ele>0</ele>
+        <time>2023-05-03T12:00:00Z</time>
+        <extensions>
+          <speed>5.2</speed>
+          <course>270</course>
+        </extensions>
+      </trkpt>
+      <trkpt lat="35.124" lon="139.455">
+        <ele>0</ele>
+        <time>2023-05-03T12:01:00Z</time>
+        <extensions>
+          <speed>5.5</speed>
+          <course>268</course>
+        </extensions>
+      </trkpt>
+      <trkpt lat="35.125" lon="139.454">
+        <ele>0</ele>
+        <time>2023-05-03T12:02:00Z</time>
+        <extensions>
+          <speed>5.6</speed>
+          <course>270</course>
+        </extensions>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

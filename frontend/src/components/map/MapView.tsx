@@ -1,80 +1,81 @@
 import React, { useRef, useEffect, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import maplibregl from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 interface MapViewProps {
-  initialCenter?: [number, number]; // [longitude, latitude]
-  initialZoom?: number;
-  style?: string;
+  center?: [number, number]; // [longitude, latitude]
+  zoom?: number;
+  style?: 'dark' | 'satellite' | 'nautical';
   width?: string;
   height?: string;
   className?: string;
-  onMapLoad?: (map: mapboxgl.Map) => void;
+  onMapLoaded?: (map: maplibregl.Map) => void;
   children?: React.ReactNode;
 }
 
 const MapView: React.FC<MapViewProps> = ({
-  initialCenter = [139.767, 35.681], // Tokyo by default
-  initialZoom = 10,
-  style = 'mapbox://styles/mapbox/outdoors-v12',
+  center = [139.767, 35.681], // Tokyo by default
+  zoom = 12,
+  style = 'dark',
   width = '100%',
-  height = '400px',
+  height = '500px',
   className = '',
-  onMapLoad,
+  onMapLoaded,
   children,
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<maplibregl.Map | null>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-
-  // Load environment variables or use defaults
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN || '';
-
+  
   useEffect(() => {
     if (!mapContainer.current) return;
-
-    // Set access token
-    mapboxgl.accessToken = mapboxToken;
-
-    // Initialize map
-    const mapInstance = new mapboxgl.Map({
+    
+    // マップスタイルURL
+    const styleUrls = {
+      dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+      satellite: 'https://api.maptiler.com/maps/hybrid/style.json?key=YOUR_KEY',
+      nautical: 'https://api.maptiler.com/maps/ocean/style.json?key=YOUR_KEY'
+    };
+    
+    // MapLibre GL JS の初期化
+    const mapInstance = new maplibregl.Map({
       container: mapContainer.current,
-      style: style,
-      center: initialCenter,
-      zoom: initialZoom,
+      style: styleUrls[style],
+      center: center,
+      zoom: zoom,
     });
-
-    // Add navigation controls
-    mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-    // Add scale control
+    
+    // ナビゲーションコントロールの追加
+    mapInstance.addControl(new maplibregl.NavigationControl(), 'top-right');
+    
+    // スケールコントロールの追加
     mapInstance.addControl(
-      new mapboxgl.ScaleControl({ maxWidth: 80, unit: 'metric' }),
+      new maplibregl.ScaleControl({ maxWidth: 80, unit: 'metric' }),
       'bottom-left'
     );
-
-    // Setup event handlers
+    
+    // マップ読み込み完了イベント
     mapInstance.on('load', () => {
       setMapLoaded(true);
-      if (onMapLoad) onMapLoad(mapInstance);
+      if (onMapLoaded) onMapLoaded(mapInstance);
     });
-
-    // Cleanup on unmount
+    
+    // クリーンアップ
     map.current = mapInstance;
     return () => {
       mapInstance.remove();
       map.current = null;
     };
-  }, [initialCenter, initialZoom, style, onMapLoad, mapboxToken]);
-
-  // Expose map context to children if needed
+  }, [center, zoom, style, onMapLoaded]);
+  
+  // マップコンテキストを子コンポーネントに公開
   const mapContext = {
     map: map.current,
     mapLoaded,
   };
-
+  
   return (
-    <div
+    <div 
       className={`relative overflow-hidden rounded-lg ${className}`}
       style={{ width, height }}
     >

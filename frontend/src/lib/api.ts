@@ -1,304 +1,132 @@
-/**
- * API接続用クライアント
- * バックエンドとの通信を担当
- */
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { AppSettings, ApiError } from '../types';
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+// APIクライアントの設定
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
-// API設定
-// 環境に応じたAPIのベースURL設定
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 
-  (process.env.NODE_ENV === 'production'
-    ? 'https://sailing-strategy-api.onrender.com'
-    : 'http://localhost:8000');
+// Axios インスタンスの作成
+const apiClient: AxiosInstance = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 30000, // 30秒タイムアウト
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
+});
 
-// デバッグ出力
-console.log(`Using API URL: ${API_BASE_URL} (NODE_ENV: ${process.env.NODE_ENV})`);
-const API_VERSION = '/api/v1';
-const API_TIMEOUT = 15000; // 15秒
-
-// デバッグモードではAPIのベースURLを表示
-if (process.env.NODE_ENV !== 'production') {
-  console.log(`API_BASE_URL: ${API_BASE_URL}`);
-}
-
-// レスポンス型定義
-export interface ApiResponse<T> {
-  data: T;
-  status: number;
-  message?: string;
-}
-
-// エラー型定義
-export interface ApiError {
-  status: number;
-  message: string;
-  details?: any;
-}
-
-/**
- * APIクライアントクラス
- */
-class ApiClient {
-  private client: AxiosInstance;
-  private token: string | null = null;
-
-  constructor() {
-    // Axiosインスタンスの初期化
-    this.client = axios.create({
-      baseURL: `${API_BASE_URL}${API_VERSION}`,
-      timeout: API_TIMEOUT,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Accept-Charset': 'utf-8',
-      },
-    });
-
-    // リクエストインターセプター
-    this.client.interceptors.request.use(
-      (config) => {
-        // 認証トークンがあれば追加
-        if (this.token) {
-          config.headers.Authorization = `Bearer ${this.token}`;
-        }
-        
-        // 日本語対応のため明示的にUTF-8を指定
-        config.headers['Content-Type'] = 'application/json; charset=utf-8';
-        
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
+// リクエストインターセプター
+apiClient.interceptors.request.use(
+  (config) => {
+    // JWTトークンがある場合はヘッダーに追加（クライアントサイドのみで実行）
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('auth_token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
       }
-    );
-
-    // レスポンスインターセプター
-    this.client.interceptors.response.use(
-      (response) => {
-        // 型変換を避けるためAxiosResponseをそのまま返す
-        return response;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-  }
-
-  /**
-   * トークンをセット
-   */
-  setToken(token: string): void {
-    this.token = token;
-    localStorage.setItem('auth_token', token);
-  }
-
-  /**
-   * トークンをクリア
-   */
-  clearToken(): void {
-    this.token = null;
-    localStorage.removeItem('auth_token');
-  }
-
-  /**
-   * セッションからトークンをロード
-   */
-  loadToken(): void {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      this.token = token;
     }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
+);
 
-  /**
-   * 成功レスポンスの処理
-   */
-  private handleSuccess<T>(response: AxiosResponse): ApiResponse<T> {
-    return {
-      data: response.data,
-      status: response.status,
-      message: 'Success',
-    };
-  }
-
-  /**
-   * エラーレスポンスの処理
-   */
-  private handleError(error: AxiosError): Promise<ApiError> {
-    let errorResponse: ApiError = {
-      status: 500,
-      message: 'Unknown error occurred',
-    };
-
+// レスポンスインターセプター
+apiClient.interceptors.response.use(
+  (response) => {
+    return response;
+  },
+  (error) => {
+    // エラーハンドリング
     if (error.response) {
       // サーバーからのレスポンスがある場合
       const { status, data } = error.response;
-      const errorData = data as any; // 型アサーションでanyに変換
-      errorResponse = {
-        status,
-        message: errorData.message || errorData.detail || 'An error occurred',
-        details: errorData,
-      };
-
-      // 認証エラーの場合 (401)
+      
+      // 認証エラー時の処理
       if (status === 401) {
-        this.clearToken();
-        // 認証ページへリダイレクト処理をここに追加可能
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('auth_token');
+          // 必要に応じてリダイレクト
+        }
       }
+      
+      // エラーメッセージの整形
+      const message = data.message || data.error || '不明なエラーが発生しました';
+      return Promise.reject({ status, message, data } as ApiError);
     } else if (error.request) {
       // リクエストは送信されたがレスポンスがない場合
-      errorResponse = {
-        status: 0,
-        message: 'No response from server',
-      };
-    }
-
-    console.error('API Error:', errorResponse);
-    return Promise.reject(errorResponse);
-  }
-
-  /**
-   * GETリクエスト
-   */
-  async get<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    try {
-      const response = await this.client.get<T>(url, config);
-      return this.handleSuccess(response);
-    } catch (error) {
-      return Promise.reject(this.handleError(error as AxiosError));
+      return Promise.reject({ 
+        status: 0, 
+        message: 'サーバーに接続できません。ネットワーク接続を確認してください。' 
+      } as ApiError);
+    } else {
+      // リクエスト設定中にエラーが発生した場合
+      return Promise.reject({ 
+        status: 0, 
+        message: 'リクエストの送信中にエラーが発生しました。' 
+      } as ApiError);
     }
   }
+);
 
-  /**
-   * POSTリクエスト
-   */
-  async post<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    try {
-      const response = await this.client.post<T>(url, data, config);
-      return this.handleSuccess(response);
-    } catch (error) {
-      return Promise.reject(this.handleError(error as AxiosError));
-    }
-  }
-
-  /**
-   * PUTリクエスト
-   */
-  async put<T>(url: string, data: any, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    try {
-      const response = await this.client.put<T>(url, data, config);
-      return this.handleSuccess(response);
-    } catch (error) {
-      return Promise.reject(this.handleError(error as AxiosError));
-    }
-  }
-
-  /**
-   * DELETEリクエスト
-   */
-  async delete<T>(url: string, config?: AxiosRequestConfig): Promise<ApiResponse<T>> {
-    try {
-      const response = await this.client.delete<T>(url, config);
-      // 204 No Contentの場合は空のデータを返す
-      if (response.status === 204) {
-        return {
-          data: {} as T,
-          status: 204,
-          message: 'Successfully deleted'
-        };
-      }
-      return this.handleSuccess(response);
-    } catch (error) {
-      return Promise.reject(this.handleError(error as AxiosError));
-    }
-  }
-
-  /**
-   * ファイルアップロード
-   */
-  async uploadFile<T>(url: string, file: File, additionalData?: Record<string, any>): Promise<ApiResponse<T>> {
+// APIエンドポイント関数
+export const api = {
+  // データアップロードと分析
+  analyzeGpsData: async (file: File, settings?: Partial<AppSettings>): Promise<AxiosResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-
-    // 追加データがある場合は追加
-    if (additionalData) {
-      Object.entries(additionalData).forEach(([key, value]) => {
-        formData.append(key, value);
+    
+    // 設定パラメータの追加
+    if (settings) {
+      // 設定オブジェクトを適切なフォーマットに変換
+      Object.entries(settings).forEach(([category, options]: [string, any]) => {
+        Object.entries(options).forEach(([key, value]) => {
+          // 配列や複雑なオブジェクトはJSON文字列に変換
+          if (typeof value === 'object' && value !== null) {
+            formData.append(`${category}.${key}`, JSON.stringify(value));
+          } else {
+            formData.append(`${category}.${key}`, String(value));
+          }
+        });
       });
     }
-
-    const config: AxiosRequestConfig = {
+    
+    return apiClient.post('/api/v1/analyze', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-    };
-
-    try {
-      const response = await this.client.post<T>(url, formData, config);
-      return this.handleSuccess(response);
-    } catch (error) {
-      return Promise.reject(this.handleError(error as AxiosError));
-    }
-  }
-}
-
-// APIクライアントのシングルトンインスタンス
-const apiClient = new ApiClient();
-
-// 初期化時にローカルストレージからトークンをロード
-if (typeof window !== 'undefined') {
-  apiClient.loadToken();
-}
-
-// 風向風速推定関連API
-export const windEstimationApi = {
-  // 風向風速推定実行
-  estimateWind: async (file: File, params: any): Promise<ApiResponse<any>> => {
-    const formData = new FormData();
-    formData.append('gps_data', file);
-    
-    // パラメータの追加
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null) {
-        formData.append(key, String(value));
-      }
     });
-    
-    const config: AxiosRequestConfig = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-    
-    return apiClient.post<any>('/wind-estimation/estimate', formData, config);
-  },
-};
-
-// 戦略検出関連API
-export const strategyDetectionApi = {
-  // 戦略検出実行
-  detectStrategies: async (params: any): Promise<ApiResponse<any>> => {
-    return apiClient.post<any>('/strategy-detection/detect', params);
-  },
-};
-
-// プロジェクト関連API
-export const projectApi = {
-  // プロジェクト一覧取得
-  getProjects: async (): Promise<ApiResponse<any>> => {
-    return apiClient.get<any>('/projects');
   },
   
-  // プロジェクト詳細取得
-  getProject: async (id: string): Promise<ApiResponse<any>> => {
-    return apiClient.get<any>(`/projects/${id}`);
+  // 風向風速推定
+  estimateWind: async (sessionId: string, settings?: Partial<AppSettings['wind']>): Promise<AxiosResponse> => {
+    return apiClient.post(`/api/v1/sessions/${sessionId}/wind-estimation`, settings);
   },
   
-  // プロジェクト作成
-  createProject: async (data: any): Promise<ApiResponse<any>> => {
-    return apiClient.post<any>('/projects', data);
+  // 戦略ポイント検出
+  detectStrategyPoints: async (sessionId: string, settings?: Partial<AppSettings['strategy']>): Promise<AxiosResponse> => {
+    return apiClient.post(`/api/v1/sessions/${sessionId}/strategy-detection`, settings);
+  },
+  
+  // 結果のエクスポート
+  exportAnalysis: async (sessionId: string, format: 'pdf' | 'csv' | 'gpx' | 'json', includeSettings: boolean = true): Promise<AxiosResponse> => {
+    return apiClient.get(`/api/v1/sessions/${sessionId}/export`, {
+      params: { format, includeSettings },
+      responseType: 'blob',
+    });
+  },
+  
+  // セッション情報取得
+  getSession: async (sessionId: string): Promise<AxiosResponse> => {
+    return apiClient.get(`/api/v1/sessions/${sessionId}`);
+  },
+  
+  // セッション一覧取得
+  getSessions: async (page = 1, limit = 10): Promise<AxiosResponse> => {
+    return apiClient.get('/api/v1/sessions', {
+      params: { page, limit }
+    });
   },
 };
 
-export default apiClient;
+export default api;

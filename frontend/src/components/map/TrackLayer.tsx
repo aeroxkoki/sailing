@@ -1,69 +1,78 @@
 import React, { useEffect, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-
-interface TrackPoint {
-  timestamp: number;
-  longitude: number;
-  latitude: number;
-  speed?: number;
-  heading?: number;
-}
+import maplibregl from 'maplibre-gl';
+import { GpsPoint } from '@/types/gps';
 
 interface TrackLayerProps {
-  map: mapboxgl.Map;
-  trackPoints: TrackPoint[];
-  trackColor?: string;
-  trackWidth?: number;
-  showMarkers?: boolean;
+  map: maplibregl.Map;
+  trackData: GpsPoint[];
+  colorScheme?: 'speed' | 'vmg' | 'heading';
+  selectedTime?: number;
+  timeWindow?: number; // ミリ秒単位の時間ウィンドウ
+  lineWidth?: number;
+  showPoints?: boolean;
   fitBounds?: boolean;
-  selectedPoint?: number;
-  onPointClick?: (index: number) => void;
+  onPointClick?: (point: GpsPoint) => void;
 }
 
 const TrackLayer: React.FC<TrackLayerProps> = ({
   map,
-  trackPoints,
-  trackColor = '#0080ff',
-  trackWidth = 3,
-  showMarkers = true,
+  trackData,
+  colorScheme = 'speed',
+  selectedTime,
+  timeWindow = 60000, // デフォルト1分
+  lineWidth = 3,
+  showPoints = true,
   fitBounds = true,
-  selectedPoint,
   onPointClick,
 }) => {
   const [sourceId] = useState(`track-source-${Math.random().toString(36).substring(2, 9)}`);
   const [layerId] = useState(`track-layer-${Math.random().toString(36).substring(2, 9)}`);
-  const [markersSourceId] = useState(`markers-source-${Math.random().toString(36).substring(2, 9)}`);
-  const [markersLayerId] = useState(`markers-layer-${Math.random().toString(36).substring(2, 9)}`);
-  const [selectedSourceId] = useState(`selected-source-${Math.random().toString(36).substring(2, 9)}`);
-  const [selectedLayerId] = useState(`selected-layer-${Math.random().toString(36).substring(2, 9)}`);
+  const [pointsSourceId] = useState(`track-points-source-${Math.random().toString(36).substring(2, 9)}`);
+  const [pointsLayerId] = useState(`track-points-layer-${Math.random().toString(36).substring(2, 9)}`);
+  const [currentPointSourceId] = useState(`current-point-source-${Math.random().toString(36).substring(2, 9)}`);
+  const [currentPointLayerId] = useState(`current-point-layer-${Math.random().toString(36).substring(2, 9)}`);
 
-  // Convert track points to GeoJSON
+  // 現在の時間ウィンドウに基づいてGPSデータをフィルタリング
+  const getFilteredTrackData = () => {
+    if (selectedTime === undefined || !timeWindow) {
+      return trackData;
+    }
+
+    return trackData.filter(point => {
+      const diff = Math.abs(point.timestamp - selectedTime);
+      return diff <= timeWindow / 2;
+    });
+  };
+
+  // トラックラインのGeoJSONを生成
   const getTrackGeoJSON = () => {
-    if (!trackPoints || trackPoints.length === 0) return null;
+    if (!trackData || trackData.length === 0) return null;
 
     return {
       type: 'Feature',
       properties: {},
       geometry: {
         type: 'LineString',
-        coordinates: trackPoints.map(point => [point.longitude, point.latitude]),
+        coordinates: trackData.map(point => [point.longitude, point.latitude]),
       },
     };
   };
 
-  // Convert track points to GeoJSON for markers
-  const getMarkersGeoJSON = () => {
-    if (!trackPoints || trackPoints.length === 0) return null;
+  // トラックポイントのGeoJSONを生成
+  const getTrackPointsGeoJSON = () => {
+    if (!trackData || trackData.length === 0) return null;
 
     return {
       type: 'FeatureCollection',
-      features: trackPoints.map((point, index) => ({
+      features: trackData.map((point, index) => ({
         type: 'Feature',
         properties: {
           id: index,
           timestamp: point.timestamp,
-          speed: point.speed,
-          heading: point.heading,
+          speed: point.speed || 0,
+          heading: point.heading || 0,
+          // 選択された時間に近いポイントに属性を追加
+          isSelected: selectedTime ? Math.abs(point.timestamp - selectedTime) < 100 : false,
         },
         geometry: {
           type: 'Point',
@@ -73,26 +82,78 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
     };
   };
 
-  // Get selected point as GeoJSON
-  const getSelectedPointGeoJSON = () => {
-    if (selectedPoint === undefined || !trackPoints || !trackPoints[selectedPoint]) return null;
+  // 現在の時間に対応するポイントのGeoJSONを生成
+  const getCurrentPointGeoJSON = () => {
+    if (!selectedTime || !trackData || trackData.length === 0) return null;
 
-    const point = trackPoints[selectedPoint];
+    // 選択された時間に最も近いポイントを見つける
+    let closestPoint = trackData[0];
+    let minDiff = Math.abs(closestPoint.timestamp - selectedTime);
+
+    trackData.forEach(point => {
+      const diff = Math.abs(point.timestamp - selectedTime);
+      if (diff < minDiff) {
+        closestPoint = point;
+        minDiff = diff;
+      }
+    });
+
     return {
       type: 'Feature',
-      properties: {},
+      properties: {
+        speed: closestPoint.speed || 0,
+        heading: closestPoint.heading || 0,
+      },
       geometry: {
         type: 'Point',
-        coordinates: [point.longitude, point.latitude],
+        coordinates: [closestPoint.longitude, closestPoint.latitude],
       },
     };
   };
 
-  // Initialize and update sources and layers
-  useEffect(() => {
-    if (!map || !trackPoints || trackPoints.length === 0) return;
+  // 色分けの式を取得
+  const getColorExpression = (scheme: string) => {
+    switch (scheme) {
+      case 'speed':
+        return [
+          'interpolate',
+          ['linear'],
+          ['get', 'speed'],
+          0, '#3B82F6',  // 低速 - 青
+          5, '#60A5FA',  // 中速 - 水色
+          10, '#F59E0B', // 高速 - オレンジ
+          15, '#EF4444'  // 最高速 - 赤
+        ];
+      case 'vmg':
+        return [
+          'interpolate',
+          ['linear'],
+          ['get', 'vmg'],
+          0, '#3B82F6',   // 低VMG - 青
+          3, '#10B981',   // 中VMG - 緑
+          6, '#F59E0B',   // 高VMG - オレンジ
+        ];
+      case 'heading':
+        return [
+          'interpolate',
+          ['linear'],
+          ['get', 'heading'],
+          0, '#3B82F6',    // 北 - 青
+          90, '#10B981',   // 東 - 緑
+          180, '#F59E0B',  // 南 - オレンジ
+          270, '#EF4444',  // 西 - 赤
+          360, '#3B82F6'   // 北 - 青
+        ];
+      default:
+        return '#3B82F6';  // デフォルト青
+    }
+  };
 
-    // Add track source and layer if they don't exist
+  // トラックレイヤーの初期化と更新
+  useEffect(() => {
+    if (!map || !trackData || trackData.length === 0) return;
+
+    // トラックラインソースとレイヤーの追加
     if (!map.getSource(sourceId)) {
       map.addSource(sourceId, {
         type: 'geojson',
@@ -108,130 +169,155 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
           'line-cap': 'round',
         },
         paint: {
-          'line-color': trackColor,
-          'line-width': trackWidth,
+          'line-color': getColorExpression(colorScheme),
+          'line-width': lineWidth,
         },
       });
     } else {
-      // Update existing source
-      const source = map.getSource(sourceId) as mapboxgl.GeoJSONSource;
+      // 既存ソースのデータを更新
+      const source = map.getSource(sourceId) as maplibregl.GeoJSONSource;
       source.setData(getTrackGeoJSON() as any);
+      
+      // 色分けスキームを更新
+      map.setPaintProperty(layerId, 'line-color', getColorExpression(colorScheme));
+      map.setPaintProperty(layerId, 'line-width', lineWidth);
     }
 
-    // Handle markers
-    if (showMarkers) {
-      if (!map.getSource(markersSourceId)) {
-        map.addSource(markersSourceId, {
+    // トラックポイントの表示（オプション）
+    if (showPoints) {
+      if (!map.getSource(pointsSourceId)) {
+        map.addSource(pointsSourceId, {
           type: 'geojson',
-          data: getMarkersGeoJSON() as any,
+          data: getTrackPointsGeoJSON() as any,
         });
 
         map.addLayer({
-          id: markersLayerId,
+          id: pointsLayerId,
           type: 'circle',
-          source: markersSourceId,
+          source: pointsSourceId,
           paint: {
-            'circle-radius': 4,
-            'circle-color': trackColor,
-            'circle-stroke-width': 1,
+            'circle-radius': [
+              'case',
+              ['get', 'isSelected'],
+              6, // 選択されたポイントは大きく
+              3  // 通常のポイント
+            ],
+            'circle-color': getColorExpression(colorScheme),
             'circle-stroke-color': '#ffffff',
+            'circle-stroke-width': 1,
+            'circle-opacity': [
+              'case',
+              ['get', 'isSelected'],
+              1, // 選択されたポイントは完全に不透明
+              0.7 // 通常のポイントは少し透明
+            ],
           },
         });
 
-        // Add click handler
+        // クリックイベントの設定
         if (onPointClick) {
-          map.on('click', markersLayerId, (e) => {
+          map.on('click', pointsLayerId, (e) => {
             if (e.features && e.features.length > 0) {
-              const feature = e.features[0];
-              const id = feature.properties?.id;
-              if (id !== undefined) {
-                onPointClick(id);
+              const id = e.features[0].properties?.id;
+              if (id !== undefined && trackData[id]) {
+                onPointClick(trackData[id]);
               }
             }
           });
 
-          // Change cursor on hover
-          map.on('mouseenter', markersLayerId, () => {
+          // ポインタの変更
+          map.on('mouseenter', pointsLayerId, () => {
             map.getCanvas().style.cursor = 'pointer';
           });
 
-          map.on('mouseleave', markersLayerId, () => {
+          map.on('mouseleave', pointsLayerId, () => {
             map.getCanvas().style.cursor = '';
           });
         }
       } else {
-        // Update existing markers source
-        const source = map.getSource(markersSourceId) as mapboxgl.GeoJSONSource;
-        source.setData(getMarkersGeoJSON() as any);
+        // 既存ソースのデータを更新
+        const source = map.getSource(pointsSourceId) as maplibregl.GeoJSONSource;
+        source.setData(getTrackPointsGeoJSON() as any);
+      }
+    } else {
+      // ポイントレイヤーが不要な場合は削除
+      if (map.getLayer(pointsLayerId)) {
+        map.removeLayer(pointsLayerId);
+      }
+      if (map.getSource(pointsSourceId)) {
+        map.removeSource(pointsSourceId);
       }
     }
 
-    // Handle selected point
-    if (selectedPoint !== undefined) {
-      if (!map.getSource(selectedSourceId)) {
-        map.addSource(selectedSourceId, {
+    // 現在選択されているポイントを表示
+    if (selectedTime) {
+      if (!map.getSource(currentPointSourceId)) {
+        map.addSource(currentPointSourceId, {
           type: 'geojson',
-          data: getSelectedPointGeoJSON() as any,
+          data: getCurrentPointGeoJSON() as any,
         });
 
         map.addLayer({
-          id: selectedLayerId,
+          id: currentPointLayerId,
           type: 'circle',
-          source: selectedSourceId,
+          source: currentPointSourceId,
           paint: {
             'circle-radius': 8,
-            'circle-color': '#ff0000',
+            'circle-color': '#ffffff',
+            'circle-stroke-color': '#000000',
             'circle-stroke-width': 2,
-            'circle-stroke-color': '#ffffff',
           },
         });
       } else {
-        // Update existing selected point source
-        const source = map.getSource(selectedSourceId) as mapboxgl.GeoJSONSource;
-        source.setData(getSelectedPointGeoJSON() as any);
+        // 既存ソースのデータを更新
+        const source = map.getSource(currentPointSourceId) as maplibregl.GeoJSONSource;
+        source.setData(getCurrentPointGeoJSON() as any);
       }
     }
 
-    // Fit bounds if needed
-    if (fitBounds && trackPoints.length > 1) {
-      const bounds = new mapboxgl.LngLatBounds();
-      trackPoints.forEach(point => {
+    // マップの表示範囲をトラックに合わせる（初回のみ）
+    if (fitBounds && trackData.length > 1) {
+      const bounds = new maplibregl.LngLatBounds();
+      trackData.forEach(point => {
         bounds.extend([point.longitude, point.latitude]);
       });
 
       map.fitBounds(bounds, {
-        padding: 50,
+        padding: { top: 50, bottom: 50, left: 50, right: 50 },
         animate: true,
+        duration: 500,
       });
     }
 
-    // Cleanup on unmount
+    // クリーンアップ関数
     return () => {
       if (map.getLayer(layerId)) map.removeLayer(layerId);
       if (map.getSource(sourceId)) map.removeSource(sourceId);
-      if (map.getLayer(markersLayerId)) map.removeLayer(markersLayerId);
-      if (map.getSource(markersSourceId)) map.removeSource(markersSourceId);
-      if (map.getLayer(selectedLayerId)) map.removeLayer(selectedLayerId);
-      if (map.getSource(selectedSourceId)) map.removeSource(selectedSourceId);
+      
+      if (map.getLayer(pointsLayerId)) map.removeLayer(pointsLayerId);
+      if (map.getSource(pointsSourceId)) map.removeSource(pointsSourceId);
+      
+      if (map.getLayer(currentPointLayerId)) map.removeLayer(currentPointLayerId);
+      if (map.getSource(currentPointSourceId)) map.removeSource(currentPointSourceId);
     };
   }, [
     map,
-    trackPoints,
+    trackData,
     sourceId,
     layerId,
-    markersSourceId,
-    markersLayerId,
-    selectedSourceId,
-    selectedLayerId,
-    trackColor,
-    trackWidth,
-    showMarkers,
+    pointsSourceId,
+    pointsLayerId,
+    currentPointSourceId,
+    currentPointLayerId,
+    colorScheme,
+    selectedTime,
+    lineWidth,
+    showPoints,
     fitBounds,
-    selectedPoint,
     onPointClick,
   ]);
 
-  return null; // This component doesn't render anything on its own
+  return null; // このコンポーネントは直接UIを描画しない
 };
 
 export default TrackLayer;

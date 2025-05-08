@@ -1,75 +1,78 @@
 import React, { useEffect, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-
-export type StrategyPointType = 'tack' | 'gybe' | 'mark' | 'start' | 'finish' | 'custom';
-
-interface StrategyPoint {
-  id: string | number;
-  longitude: number;
-  latitude: number;
-  type: StrategyPointType;
-  timestamp?: number;
-  quality?: number; // 0-1, represents the quality/confidence of the strategy point
-  details?: {
-    name?: string;
-    description?: string;
-    [key: string]: any;
-  };
-}
+import maplibregl from 'maplibre-gl';
+import { StrategyPoint, StrategyPointType } from '@/types/gps';
 
 interface StrategyPointLayerProps {
-  map: mapboxgl.Map;
+  map: maplibregl.Map;
   strategyPoints: StrategyPoint[];
-  onPointClick?: (pointId: string | number) => void;
-  selectedPoint?: string | number;
+  selectedTime?: number;
+  timeWindow?: number; // ミリ秒単位の時間ウィンドウ
   showLabels?: boolean;
+  onPointClick?: (point: StrategyPoint) => void;
 }
 
 const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
   map,
   strategyPoints,
-  onPointClick,
-  selectedPoint,
+  selectedTime,
+  timeWindow = 600000, // デフォルト10分
   showLabels = true,
+  onPointClick,
 }) => {
   const [sourceId] = useState(`strategy-source-${Math.random().toString(36).substring(2, 9)}`);
   const [pointsLayerId] = useState(`strategy-points-layer-${Math.random().toString(36).substring(2, 9)}`);
   const [labelsLayerId] = useState(`strategy-labels-layer-${Math.random().toString(36).substring(2, 9)}`);
-  const [selectedSourceId] = useState(`selected-strategy-source-${Math.random().toString(36).substring(2, 9)}`);
-  const [selectedLayerId] = useState(`selected-strategy-layer-${Math.random().toString(36).substring(2, 9)}`);
+  const [currentPointSourceId] = useState(`current-strategy-source-${Math.random().toString(36).substring(2, 9)}`);
+  const [currentPointLayerId] = useState(`current-strategy-layer-${Math.random().toString(36).substring(2, 9)}`);
 
-  // Set up custom markers for strategy points
+  // 現在の時間ウィンドウに基づいて戦略ポイントをフィルタリング
+  const getFilteredStrategyPoints = () => {
+    if (selectedTime === undefined || !timeWindow) {
+      return strategyPoints;
+    }
+
+    return strategyPoints.filter(point => {
+      const diff = Math.abs(point.timestamp - selectedTime);
+      return diff <= timeWindow / 2;
+    });
+  };
+
+  // 戦略ポイント用の独自マーカーアイコンを設定
   useEffect(() => {
     if (!map) return;
 
     const icons = {
-      tack: {
-        color: '#4CAF50',
+      [StrategyPointType.TACK]: {
+        color: '#4CAF50', // 緑
         shape: 'triangle',
       },
-      gybe: {
-        color: '#2196F3',
+      [StrategyPointType.JIBE]: {
+        color: '#2196F3', // 青
         shape: 'circle',
       },
-      mark: {
-        color: '#F44336',
+      [StrategyPointType.MARK_ROUNDING]: {
+        color: '#F44336', // 赤
         shape: 'square',
       },
-      start: {
-        color: '#9C27B0',
+      [StrategyPointType.WIND_SHIFT]: {
+        color: '#9C27B0', // 紫
         shape: 'diamond',
       },
-      finish: {
-        color: '#FF9800',
+      [StrategyPointType.LAYLINE]: {
+        color: '#FF9800', // オレンジ
+        shape: 'pentagon',
+      },
+      [StrategyPointType.START]: {
+        color: '#009688', // ティール
         shape: 'star',
       },
-      custom: {
-        color: '#795548',
-        shape: 'pentagon',
+      [StrategyPointType.FINISH]: {
+        color: '#795548', // 茶色
+        shape: 'star',
       },
     };
 
-    // Create custom marker icons
+    // カスタムマーカーアイコンを作成
     Object.entries(icons).forEach(([type, { color, shape }]) => {
       const iconId = `strategy-icon-${type}`;
       
@@ -80,10 +83,10 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Clear canvas
+        // キャンバスをクリア
         ctx.clearRect(0, 0, 24, 24);
         
-        // Draw shape
+        // 形を描画
         ctx.fillStyle = color;
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 2;
@@ -115,7 +118,7 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
             ctx.closePath();
             break;
           case 'star':
-            // 5-pointed star
+            // 5つ星
             ctx.beginPath();
             for (let i = 0; i < 5; i++) {
               const outerAngle = i * Math.PI * 2 / 5 - Math.PI / 2;
@@ -158,41 +161,35 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
             ctx.closePath();
         }
         
-        // Fill and stroke
+        // 塗りつぶしと枠線
         ctx.fill();
         ctx.stroke();
         
-        // キャンバスからデータURLを取得してHTMLImageElementを作成（TypeScript型エラー修正用）
-        const dataURL = canvas.toDataURL();
-        const img = new Image();
-        
-        // 画像が読み込まれたときにmapに追加
-        img.onload = () => {
-          map.addImage(iconId, img);
-        };
-        
-        // データURLをセットしてロード開始
-        img.src = dataURL;
+        // キャンバスから画像データを取得
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        map.addImage(iconId, imageData);
       }
     });
   }, [map]);
 
-  // Convert strategy points to GeoJSON
+  // 戦略ポイントをGeoJSONに変換
   const getStrategyPointsGeoJSON = () => {
-    if (!strategyPoints || strategyPoints.length === 0) return null;
+    const filteredPoints = getFilteredStrategyPoints();
+    if (!filteredPoints || filteredPoints.length === 0) return null;
 
     return {
       type: 'FeatureCollection',
-      features: strategyPoints.map(point => ({
+      features: filteredPoints.map(point => ({
         type: 'Feature',
         properties: {
           id: point.id,
           type: point.type,
           timestamp: point.timestamp,
-          quality: point.quality || 1,
-          name: point.details?.name || getDefaultName(point.type),
-          description: point.details?.description || '',
-          ...point.details,
+          score: point.evaluation?.score || 1,
+          name: getPointName(point),
+          description: getPointDescription(point),
+          details: JSON.stringify(point.details || {}),
+          evaluation: JSON.stringify(point.evaluation || {}),
         },
         geometry: {
           type: 'Point',
@@ -202,67 +199,95 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
     };
   };
 
-  // Get selected point GeoJSON
-  const getSelectedPointGeoJSON = () => {
-    if (selectedPoint === undefined) return null;
-    
-    const point = strategyPoints.find(p => p.id === selectedPoint);
-    if (!point) return null;
-    
+  // 現在時間に最も近い戦略ポイントを取得
+  const getCurrentStrategyPointGeoJSON = () => {
+    if (!selectedTime || !strategyPoints || strategyPoints.length === 0) return null;
+
+    // 選択時間に最も近いポイントを見つける
+    let closestPoint = strategyPoints[0];
+    let minDiff = Math.abs(closestPoint.timestamp - selectedTime);
+
+    strategyPoints.forEach(point => {
+      const diff = Math.abs(point.timestamp - selectedTime);
+      if (diff < minDiff) {
+        closestPoint = point;
+        minDiff = diff;
+      }
+    });
+
+    // 時間差があまりに大きい場合は表示しない
+    if (minDiff > 5000) return null; // 5秒以上離れていたら表示しない
+
     return {
       type: 'Feature',
       properties: {
-        id: point.id,
-        type: point.type,
+        id: closestPoint.id,
+        type: closestPoint.type,
       },
       geometry: {
         type: 'Point',
-        coordinates: [point.longitude, point.latitude],
+        coordinates: [closestPoint.longitude, closestPoint.latitude],
       },
     };
   };
 
-  // Utility for default names based on type
-  const getDefaultName = (type: StrategyPointType) => {
-    switch (type) {
-      case 'tack': return 'タック';
-      case 'gybe': return 'ジャイブ';
-      case 'mark': return 'マーク';
-      case 'start': return 'スタート';
-      case 'finish': return 'フィニッシュ';
-      case 'custom': return 'カスタムポイント';
-      default: return 'ポイント';
+  // ポイント名を取得
+  const getPointName = (point: StrategyPoint): string => {
+    if (point.details?.name) return point.details.name;
+    
+    // タイプに基づくデフォルト名
+    switch (point.type) {
+      case StrategyPointType.TACK: return 'タック';
+      case StrategyPointType.JIBE: return 'ジャイブ';
+      case StrategyPointType.MARK_ROUNDING: return 'マーク回航';
+      case StrategyPointType.WIND_SHIFT: return '風向シフト';
+      case StrategyPointType.LAYLINE: return 'レイライン';
+      case StrategyPointType.START: return 'スタート';
+      case StrategyPointType.FINISH: return 'フィニッシュ';
+      default: return '戦略ポイント';
     }
   };
 
-  // Initialize and update layers
+  // ポイント説明を取得
+  const getPointDescription = (point: StrategyPoint): string => {
+    // 評価コメントがある場合はそれを使用
+    if (point.evaluation?.comments) return point.evaluation.comments;
+    
+    // 詳細説明がある場合はそれを使用
+    if (point.details?.description) return point.details.description;
+    
+    // デフォルトの説明
+    return '';
+  };
+
+  // レイヤーの初期化と更新
   useEffect(() => {
     if (!map || !strategyPoints || strategyPoints.length === 0) return;
 
-    // Add strategy points source and layer
+    // 戦略ポイントのソースとレイヤーを追加
     if (!map.getSource(sourceId)) {
       map.addSource(sourceId, {
         type: 'geojson',
         data: getStrategyPointsGeoJSON() as any,
       });
 
-      // Add strategy points layer
+      // 戦略ポイントレイヤーを追加
       map.addLayer({
         id: pointsLayerId,
         type: 'symbol',
         source: sourceId,
         layout: {
           'icon-image': ['concat', 'strategy-icon-', ['get', 'type']],
-          'icon-size': ['interpolate', ['linear'], ['get', 'quality'], 
-            0, 0.5,
-            0.5, 0.75,
-            1, 1.0
+          'icon-size': ['interpolate', ['linear'], ['get', 'score'], 
+            0, 0.5,    // 低評価は小さく
+            0.5, 0.75, // 中評価は中くらい
+            1, 1.0     // 高評価は標準サイズ
           ],
           'icon-allow-overlap': true,
         },
       });
 
-      // Add labels if enabled
+      // ラベルを追加（オプション）
       if (showLabels) {
         map.addLayer({
           id: labelsLayerId,
@@ -270,33 +295,34 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
           source: sourceId,
           layout: {
             'text-field': ['get', 'name'],
-            'text-font': ['Open Sans Regular'],
             'text-size': 12,
             'text-offset': [0, 1.5],
             'text-anchor': 'top',
             'text-allow-overlap': false,
           },
           paint: {
-            'text-color': '#333333',
-            'text-halo-color': '#ffffff',
+            'text-color': '#ffffff',
+            'text-halo-color': '#000000',
             'text-halo-width': 1,
           },
         });
       }
 
-      // Add click handler
+      // クリックハンドラを追加
       if (onPointClick) {
         map.on('click', pointsLayerId, (e) => {
           if (e.features && e.features.length > 0) {
-            const feature = e.features[0];
-            const id = feature.properties?.id;
+            const id = e.features[0].properties?.id;
             if (id !== undefined) {
-              onPointClick(id);
+              const point = strategyPoints.find(p => p.id === id);
+              if (point) {
+                onPointClick(point);
+              }
             }
           }
         });
 
-        // Change cursor on hover
+        // ホバー時のカーソル変更
         map.on('mouseenter', pointsLayerId, () => {
           map.getCanvas().style.cursor = 'pointer';
         });
@@ -306,44 +332,52 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
         });
       }
     } else {
-      // Update existing source
-      const source = map.getSource(sourceId) as mapboxgl.GeoJSONSource;
+      // 既存ソースのデータを更新
+      const source = map.getSource(sourceId) as maplibregl.GeoJSONSource;
       source.setData(getStrategyPointsGeoJSON() as any);
     }
 
-    // Handle selected point
-    if (selectedPoint !== undefined) {
-      if (!map.getSource(selectedSourceId)) {
-        map.addSource(selectedSourceId, {
+    // 現在時間に最も近いポイントの強調表示
+    const currentPoint = getCurrentStrategyPointGeoJSON();
+    if (currentPoint) {
+      if (!map.getSource(currentPointSourceId)) {
+        map.addSource(currentPointSourceId, {
           type: 'geojson',
-          data: getSelectedPointGeoJSON() as any,
+          data: currentPoint as any,
         });
 
         map.addLayer({
-          id: selectedLayerId,
+          id: currentPointLayerId,
           type: 'circle',
-          source: selectedSourceId,
+          source: currentPointSourceId,
           paint: {
             'circle-radius': 15,
             'circle-color': 'rgba(255, 255, 255, 0)',
             'circle-stroke-width': 3,
-            'circle-stroke-color': '#000000',
+            'circle-stroke-color': '#ffffff',
           },
-        });
+        }, pointsLayerId); // 戦略ポイントレイヤーの下に配置
       } else {
-        // Update existing selected point source
-        const source = map.getSource(selectedSourceId) as mapboxgl.GeoJSONSource;
-        source.setData(getSelectedPointGeoJSON() as any);
+        // 既存ソースのデータを更新
+        const source = map.getSource(currentPointSourceId) as maplibregl.GeoJSONSource;
+        source.setData(currentPoint as any);
+      }
+    } else {
+      // 現在のポイントが存在しない場合はレイヤーを非表示にする
+      if (map.getLayer(currentPointLayerId)) {
+        if (map.getLayoutProperty(currentPointLayerId, 'visibility') !== 'none') {
+          map.setLayoutProperty(currentPointLayerId, 'visibility', 'none');
+        }
       }
     }
 
-    // Cleanup on unmount
+    // クリーンアップ関数
     return () => {
       if (map.getLayer(pointsLayerId)) map.removeLayer(pointsLayerId);
       if (showLabels && map.getLayer(labelsLayerId)) map.removeLayer(labelsLayerId);
       if (map.getSource(sourceId)) map.removeSource(sourceId);
-      if (map.getLayer(selectedLayerId)) map.removeLayer(selectedLayerId);
-      if (map.getSource(selectedSourceId)) map.removeSource(selectedSourceId);
+      if (map.getLayer(currentPointLayerId)) map.removeLayer(currentPointLayerId);
+      if (map.getSource(currentPointSourceId)) map.removeSource(currentPointSourceId);
     };
   }, [
     map,
@@ -351,14 +385,15 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
     sourceId,
     pointsLayerId,
     labelsLayerId,
-    selectedSourceId,
-    selectedLayerId,
-    selectedPoint,
+    currentPointSourceId,
+    currentPointLayerId,
+    selectedTime,
+    timeWindow,
     showLabels,
     onPointClick,
   ]);
 
-  return null; // This component doesn't render anything on its own
+  return null; // このコンポーネントは直接UIを描画しない
 };
 
 export default StrategyPointLayer;

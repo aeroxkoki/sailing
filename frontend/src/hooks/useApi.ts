@@ -1,109 +1,68 @@
-/**
- * APIデータフェッチングフック
- * 注: このモジュールはAPIとの通信を管理します
- */
-import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
-// 両方のインポート方法に対応
-import apiClient, { ApiResponse, ApiError } from '../lib';
+import { useState, useCallback } from 'react';
+import { AxiosResponse } from 'axios';
+import { ApiError } from '../types';
 
 /**
- * フック戻り値の型
+ * API呼び出しを行うカスタムフック
+ * ローディング状態とエラー処理をカプセル化
  */
-export interface UseApiResponse<T> extends Omit<SWRResponse<ApiResponse<T>, ApiError>, 'data' | 'isLoading'> {
-  data: T | undefined;
-  isLoading: boolean;
-  isError: boolean;
-  response: ApiResponse<T> | undefined;
-}
+export function useApi<T = any>() {
+  const [data, setData] = useState<T | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<ApiError | null>(null);
 
-/**
- * APIデータを取得するためのSWRフック
- * 
- * @param url APIのURL
- * @param config SWRの設定オプション
- * @returns データ、ロード状態、エラー状態などを含むオブジェクト
- */
-export function useApi<T>(url: string | null, config?: SWRConfiguration): UseApiResponse<T> {
-  // null URLの場合はデータをフェッチしない
-  const shouldFetch = !!url;
-  
-  const fetcher = async (path: string) => {
-    try {
-      return await apiClient.get<T>(path);
-    } catch (error) {
-      throw error;
-    }
-  };
+  /**
+   * API呼び出しを実行する関数
+   * @param apiCall - API呼び出し関数（Promiseを返す）
+   * @param onSuccess - 成功時のコールバック
+   * @param onError - エラー時のコールバック
+   */
+  const execute = useCallback(
+    async <R = T>(
+      apiCall: () => Promise<AxiosResponse<R>>, 
+      onSuccess?: (data: R) => void, 
+      onError?: (error: ApiError) => void
+    ): Promise<R | null> => {
+      setIsLoading(true);
+      setError(null);
 
-  const { data, error, mutate, isValidating, isLoading: swrIsLoading, ...rest } = useSWR<ApiResponse<T>, ApiError>(
-    shouldFetch ? url : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: true,
-      errorRetryCount: 3,
-      ...config,
-    }
+      try {
+        const response = await apiCall();
+        const result = response.data;
+        
+        setData(result as unknown as T);
+        if (onSuccess) onSuccess(result);
+        
+        return result;
+      } catch (err: any) {
+        const apiError = err as ApiError;
+        setError(apiError);
+        if (onError) onError(apiError);
+        
+        return null;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
   );
 
-  // カスタムのisLoading状態
-  const loading = shouldFetch && !error && !data;
-  
+  /**
+   * データをリセットする関数
+   */
+  const reset = useCallback(() => {
+    setData(null);
+    setError(null);
+    setIsLoading(false);
+  }, []);
+
   return {
-    data: data?.data,
-    response: data,
-    isLoading: loading,
-    isError: !!error,
+    data,
+    isLoading,
     error,
-    mutate,
-    isValidating,
-    ...rest,
+    execute,
+    reset
   };
 }
-
-/**
- * 投稿リクエスト用フック
- */
-export const usePost = <T, P = any>() => {
-  const post = async (url: string, payload: P): Promise<ApiResponse<T>> => {
-    try {
-      return await apiClient.post<T>(url, payload);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  return { post };
-};
-
-/**
- * 更新リクエスト用フック
- */
-export const usePut = <T, P = any>() => {
-  const put = async (url: string, payload: P): Promise<ApiResponse<T>> => {
-    try {
-      return await apiClient.put<T>(url, payload);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  return { put };
-};
-
-/**
- * 削除リクエスト用フック
- */
-export const useDelete = <T>() => {
-  const del = async (url: string): Promise<ApiResponse<T>> => {
-    try {
-      return await apiClient.delete<T>(url);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  return { del };
-};
 
 export default useApi;
