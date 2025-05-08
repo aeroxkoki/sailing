@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-&e�hn��ƣ�ƣ�p����
+戦略検出ユーティリティモジュール
 
-&e��kŁjq�p�ЛW~Y
+戦略ポイント検出に使用される各種ユーティリティ関数を提供します
 """
 
 import math
@@ -10,119 +10,119 @@ import logging
 from typing import Dict, List, Tuple, Optional, Union, Any
 from datetime import datetime, timedelta
 
-# ���-�
+# ロガー設定
 logger = logging.getLogger(__name__)
 
 def normalize_to_timestamp(t) -> float:
     """
-    �jB�h�K�qW_UNIX��๿�ג\
+    時間値をUNIXタイムスタンプに変換
     
     Parameters:
     -----------
     t : any
-        �jB�h�(datetime, timedelta, int, floatI)
+        時間値（datetime, timedelta, int, float等）
         
     Returns:
     --------
     float
-        UNIX��๿��bn$
+        UNIXタイムスタンプ（秒数）
     """
     if isinstance(t, datetime):
-        # datetime�UNIX��๿��k	�
+        # datetimeをUNIXタイムスタンプに変換
         return t.timestamp()
     elif isinstance(t, timedelta):
-        # timedelta��k	�
+        # timedeltalを変換
         return t.total_seconds()
     elif isinstance(t, (int, float)):
-        # p$o]n~~floatg�Y
+        # 数値はそのままfloatで返す
         return float(t)
     elif isinstance(t, dict):
-        # ���n4
+        # 辞書の場合
         if 'timestamp' in t:
-            # timestamp���d��n4
+            # timestampキーがある場合
             return float(t['timestamp'])
         else:
-            # timestamp��LjD��n4o���2bn_�!P'��Y
+            # timestampがない場合は無限大を返す
             return float('inf')
     elif isinstance(t, str):
         try:
-            # p$�Wn4op$k	�
+            # 数値文字列なら数値に変換
             return float(t)
         except ValueError:
             try:
-                # ISObn�B�W
+                # ISO形式の時間文字列
                 dt = datetime.fromisoformat(t.replace('Z', '+00:00'))
                 return dt.timestamp()
             except ValueError:
-                # 	�gMjD4o!P'
+                # 変換できない場合は無限大
                 return float('inf')
     else:
-        # ]n�n�o�Wk	�WfK�p$
+        # その他の型は文字列に変換して数値化
         try:
             return float(str(t))
         except ValueError:
-            # 	�gMjD4o!P'��Y��	
+            # 変換できない場合は無限大を返す
             return float('inf')
 
 def get_time_difference_seconds(time1, time2) -> float:
     """
-    �dnB�h�n���XMg�
+    二つの時間値の差分を秒数で取得
     
     Parameters:
     -----------
     time1, time2 : any
-        �jB�h�datetime, timedelta, int, float, etc	
+        時間値（datetime, timedelta, int, float, etc）
         
     Returns:
     --------
     float
-        B���	�gMjD4o!P'
+        時間差（秒）。変換できない場合は無限大
     """
-    # ia�nB��c�WfK���
+    # 両方の時間をタイムスタンプに変換
     try:
         ts1 = normalize_to_timestamp(time1)
         ts2 = normalize_to_timestamp(time2)
         
-        # ia�KL!�j4o!P'��Y
+        # どちらかが無限大なら無限大を返す
         if ts1 == float('inf') or ts2 == float('inf'):
             return float('inf')
             
         return abs(ts1 - ts2)
     except Exception as e:
-        logger.error(f"B������: {e}")
-        # ���LzW_4o!P'��Y
+        logger.error(f"時間差の計算エラー: {e}")
+        # エラーが発生した場合は無限大を返す
         return float('inf')
 
 def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """
-    2��n���
+    2点間の距離を計算
     
     Parameters:
     -----------
     lat1, lon1 : float
-        ˹n�L�
+        始点の緯度経度
     lat2, lon2 : float
-        B�n�L�
+        終点の緯度経度
         
     Returns:
     --------
     float
-        ������	
+        距離（メートル）
     """
-    # 0nJ�����	
+    # 地球の半径（メートル）
     R = 6371000
     
-    # �L��鸢�k	�
+    # 緯度経度をラジアンに変換
     lat1_rad = math.radians(lat1)
     lon1_rad = math.radians(lon1)
     lat2_rad = math.radians(lat2)
     lon2_rad = math.radians(lon2)
     
-    # �
+    # 差分
     dlat = lat2_rad - lat1_rad
     dlon = lon2_rad - lon1_rad
     
-    # Haversinenl
+    # Haversineの公式
     a = math.sin(dlat/2)**2 + math.cos(lat1_rad) * math.cos(lat2_rad) * math.sin(dlon/2)**2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1-a))
     distance = R * c
@@ -131,74 +131,74 @@ def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
 
 def angle_difference(a: float, b: float) -> float:
     """
-    2dnҦn��-180180�n��	
+    2つの角度の差を計算（-180～180度の範囲）
     
     Parameters:
     -----------
     a, b : float
-        Ҧ�	
+        角度（度）
         
     Returns:
     --------
     float
-        Ҧ��-180180	
+        角度差（-180～180）
     """
     diff = (a - b + 180) % 360 - 180
     return diff
 
 def determine_tack_type(bearing: float, wind_direction: float) -> str:
     """
-    �ï.^�$�
+    タック種類を判定
     
     Parameters:
     -----------
     bearing : float
-        2L�Ҧ�	
+        進行方向角度（度）
     wind_direction : float
-        �Ҧ��0hWfBފ	
+        風向角度（度、北を0として時計回り）
         
     Returns:
     --------
     str
-        �ï ('port'~_o'starboard')
+        タック ('port'または'starboard')
     """
-    # �Mnc�
+    # 方位の正規化
     bearing_norm = bearing % 360
     wind_norm = wind_direction % 360
     
-    # Gn2L�k�Wf�Lia�K�e�K�$�Y�
-    # �h9LDfD��n��Ҧ��
+    # 艇の進行方向に対して風がどちらから来るかを判定する
+    # 風向と船が向いている方向の相対角度を計算
     
-    # �hGnMn��Ҧ��
-    # �L�K�e�j��������K�e�j����
+    # 風向と艇の向きの相対角度を計算
+    # 風が右から来るならスターボード、左から来るならポート
     relative_angle = (wind_norm - bearing_norm) % 360
     
-    # 0-180�j��7K�������ɿï	
-    # 180-360�j��7K����ȿï	
-    if 0 < relative_angle < 180:
-        return 'starboard'  # �L�K�e�4
+    # 0-180度なら右舷から風（スターボードタック）
+    # 180-360度なら左舷から風（ポートタック）
+    if 0 <= relative_angle <= 180:
+        return 'starboard'  # 風が右から来る場合
     else:
-        return 'port'       # �L�K�e�4180-360�~_o0�	
+        return 'port'       # 風が左から来る場合（180-360度より大きい）
 
 def get_wind_at_position(lat: float, lon: float, time_point, wind_field: Dict[str, Any]) -> Optional[Dict[str, float]]:
     """
-    y�Mn�B�n��1�֗
+    指定位置の風の情報を取得
     
     Parameters:
     -----------
     lat : float
-        �
+        緯度
     lon : float
-        L�
+        経度
     time_point : any
-        B�
+        時間
     wind_field : Dict[str, Any]
-        �n4���
+        風の場データ
         
     Returns:
     --------
     Optional[Dict[str, float]]
-        ��1direction, speed, confidenceI	
+        風情報（direction, speed, confidence）
     """
     if not wind_field:
         return None
@@ -206,33 +206,33 @@ def get_wind_at_position(lat: float, lon: float, time_point, wind_field: Dict[st
     if 'lat_grid' not in wind_field or 'lon_grid' not in wind_field:
         return None
     
-    # ���ɵ���֗
+    # 緯度経度グリッド取得
     lat_grid = wind_field['lat_grid']
     lon_grid = wind_field['lon_grid']
     
     if lat_grid.size == 0 or lon_grid.size == 0:
         return None
     
-    # ��D����ݤ�Ȓ�dQ�
+    # 最も近いグリッドポイントを検索
     distances = (lat_grid - lat)**2 + (lon_grid - lon)**2
     closest_idx = distances.argmin()
     closest_i, closest_j = divmod(closest_idx, lat_grid.shape[1])
     
-    # ��Dݤ��K�n��1�֗
+    # 最も近いポイントの風情報取得
     wind_dir = wind_field['wind_direction'][closest_i, closest_j]
     wind_speed = wind_field['wind_speed'][closest_i, closest_j]
     
-    # �<��1LB�p֗
-    confidence = 0.8  # �թ��$
+    # 信頼度情報取得
+    confidence = 0.8  # デフォルト値
     if 'confidence' in wind_field:
         confidence = wind_field['confidence'][closest_i, closest_j]
     
-    # 	�'�1LB�p֗
-    variability = 0.2  # �թ��$
+    # 変動性情報取得
+    variability = 0.2  # デフォルト値
     if 'variability' in wind_field:
         variability = wind_field['variability'][closest_i, closest_j]
     
-    # ��1��Y
+    # 風情報返す
     return {
         'direction': wind_dir,
         'speed': wind_speed,
@@ -247,105 +247,105 @@ def calculate_strategic_score(maneuver_type: str,
                              time_point, 
                              wind_field: Dict[str, Any]) -> Tuple[float, str]:
     """
-    &e�́�n����
+    戦略判断の評価点を計算
     
     Parameters:
     -----------
     maneuver_type : str
-        �\n.^ ('tack', 'gybe', 'wind_shift'I)
+        操作の種類 ('tack', 'gybe', 'wind_shift'等)
     before_tack_type : str
-        �\Mn�ï ('port'~_o'starboard')
+        操作前のタック ('port'または'starboard')
     after_tack_type : str
-        �\�n�ï ('port'~_o'starboard')
+        操作後のタック ('port'または'starboard')
     position : Tuple[float, float]
-        �\nMn�, L�	
+        操作位置の（緯度, 経度）
     time_point : any
-        �\nB�
+        操作の時間
     wind_field : Dict[str, Any]
-        �n4���
+        風の場データ
         
     Returns:
     --------
     Tuple[float, str]
-        (&e����0-1	, ����)
+        (戦略評価点（0-1）, 評価コメント)
     """
-    score = 0.5  # �թ��$
-    note = "8n&e�	�"
+    score = 0.5  # デフォルト値
+    note = "標準的な戦略判断"
     
-    # ��1֗
+    # 風情報取得
     wind = get_wind_at_position(position[0], position[1], time_point, wind_field)
     
     if not wind:
         return score, note
     
-    # ���Thkpj��
+    # 操作タイプに応じた評価
     if maneuver_type == 'tack':
-        # �ïn4
+        # タックの場合
         wind_shift_probability = wind.get('variability', 0.2)
         
-        # �ï	�
+        # タック種類が変わっていることを確認
         if before_tack_type != after_tack_type:
-            # �ïL�	k�#Y�4
+            # タックが風向変化に合致するか確認
             if wind_shift_probability > 0.6:
-                # 	�'n�D�gnij�ï
+                # 変動の大きい風での適切なタック
                 score = 0.8
-                note = "�n	�k��W_ij�ï"
+                note = "風の変化に応じた適切なタック"
             elif wind.get('confidence', 0.5) < 0.4:
-                # ��nND�,k�eO�ï
+                # 風の不確実さに起因するタック
                 score = 0.3
-                note = "�n��LND-gn�ïN�k	"
+                note = "風の予測が不確かでのタック（慎重に）"
             else:
-                # 8n�ï
+                # 標準的なタック
                 score = 0.5
-                note = "8n�ï"
+                note = "標準的なタック"
         
     elif maneuver_type == 'wind_shift':
-        # ����n4
+        # 風向変化の場合
         shift_angle = abs(angle_difference(
             wind.get('direction', 0), 
             wind.get('before_direction', wind.get('direction', 0))
         ))
         
         if shift_angle > 20:
-            # 'Mj�	
+            # 大きな風向変化
             score = 0.9
-            note = "'Mj�	ݤ��"
+            note = "大きな風向変化を検出"
         elif shift_angle > 10:
-            # -�n�	
+            # 中程度の風向変化
             score = 0.7
-            note = "-�n�	"
+            note = "中程度の風向変化"
         else:
-            # Uj�	
+            # 小さな風向変化
             score = 0.5
-            note = "Uj�	"
+            note = "小さな風向変化"
         
-        # �n	�n
+        # 風速の変化も考慮
         if 'before_speed' in wind and 'speed' in wind:
             speed_change = abs(wind['speed'] - wind['before_speed'])
             if speed_change > 5:
                 score += 0.1
-                note += "��'MO		"
+                note += "（風速も大きく変化）"
     
-    # Mnn�ń'jiU�ks0jU��LF4
+    # 位置の最適性なども追加要素として考慮可能
     if 'lat_grid' in wind_field and 'lon_grid' in wind_field:
-        # e�k�5
+        # 更に詳細に分析
         pass
     
     return min(1.0, score), note
 
 def filter_duplicate_shift_points(shift_points):
     """
-    �Y�����ݤ�Ȓգ���
+    重複する風向変化ポイントを除去
     
     Parameters:
     -----------
     shift_points : List
-        ���ݤ����
+        風向変化ポイントリスト
         
     Returns:
     --------
     List
-        գ���U�_���ݤ��
+        重複を除去した風向変化ポイント
     """
     if len(shift_points) <= 1:
         return shift_points
@@ -358,28 +358,28 @@ def filter_duplicate_shift_points(shift_points):
         is_duplicate = False
         
         for existing in filtered_points:
-            # MnL�D300m�	
+            # 位置が近い（300m以内）
             position_close = calculate_distance(
                 point.position[0], point.position[1],
                 existing.position[0], existing.position[1]
             ) < 300
             
-            # B�L�D5�	
+            # 時間が近い（5分以内）
             time_diff = get_time_difference_seconds(
                 point.time_estimate, existing.time_estimate
             )
             time_close = time_diff < 300
             
-            # ҦL^<WfD�15��	
+            # 角度が類似している（15度以内）
             angle_similar = abs(angle_difference(
                 point.shift_angle, existing.shift_angle
             )) < 15
             
-            # �h$�
+            # 重複と判定
             if position_close and time_close and angle_similar:
-                # ��L�D��*H
+                # 確率が高いほうを選択
                 if point.shift_probability > existing.shift_probability:
-                    # �Xn���ݤ�ȒnM�H
+                    # 古い風向変化ポイントの代わり
                     filtered_points.remove(existing)
                     filtered_points.append(point)
                 
@@ -393,19 +393,19 @@ def filter_duplicate_shift_points(shift_points):
 
 def filter_duplicate_tack_points(tack_points):
     """
-    �Y��ïݤ�Ȓգ���
+    重複するタックポイントを除去
     
     Parameters:
     -----------
     tack_points : List
-        �ïݤ����
+        タックポイントリスト
         
     Returns:
     --------
     List
-        գ���U�_�ïݤ��
+        重複を除去したタックポイント
     """
-    # �,�k filter_duplicate_shift_points h�
+    # 基本的に filter_duplicate_shift_points と同様
     if len(tack_points) <= 1:
         return tack_points
     
@@ -414,17 +414,17 @@ def filter_duplicate_tack_points(tack_points):
         is_duplicate = False
         
         for existing in filtered_points:
-            # MnL�D
+            # 位置が近い
             position_close = calculate_distance(
                 point.position[0], point.position[1],
                 existing.position[0], existing.position[1]
-            ) < 200  # �ïo����k$�
+            ) < 200  # タックはより厳密に設定
             
-            # VMG)�L^<WfD�
+            # VMG利得が類似している
             vmg_similar = abs(point.vmg_gain - existing.vmg_gain) < 0.05
             
             if position_close and vmg_similar:
-                # VMG)�L'MD��*H
+                # VMG利得が大きいほうを選択
                 if point.vmg_gain > existing.vmg_gain:
                     filtered_points.remove(existing)
                     filtered_points.append(point)
@@ -439,19 +439,19 @@ def filter_duplicate_tack_points(tack_points):
 
 def filter_duplicate_laylines(layline_points):
     """
-    �Y����ݤ�Ȓգ���
+    重複するレイラインポイントを除去
     
     Parameters:
     -----------
     layline_points : List
-        ���ݤ����
+        レイラインポイントリスト
         
     Returns:
     --------
     List
-        գ���U�_���ݤ��
+        重複を除去したレイラインポイント
     """
-    # �,�k filter_duplicate_shift_points h�
+    # 基本的に filter_duplicate_shift_points と同様
     if len(layline_points) <= 1:
         return layline_points
     
@@ -460,17 +460,17 @@ def filter_duplicate_laylines(layline_points):
         is_duplicate = False
         
         for existing in filtered_points:
-            # X���Q
+            # 同じマーク対象
             same_mark = point.mark_id == existing.mark_id
             
-            # MnL�D
+            # 位置が近い
             position_close = calculate_distance(
                 point.position[0], point.position[1],
                 existing.position[0], existing.position[1]
             ) < 300
             
             if same_mark and position_close:
-                # ��L�D��*H
+                # 確率が高いほうを選択
                 if point.confidence > existing.confidence:
                     filtered_points.remove(existing)
                     filtered_points.append(point)
