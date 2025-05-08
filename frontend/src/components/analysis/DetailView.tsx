@@ -184,7 +184,7 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
             <div className="h-64 mb-4">
               <SpeedChart 
                 data={getVisibleData()} 
-                currentTime={data.currentTime || undefined}
+                selectedTime={data.currentTime || undefined}
                 onTimeRangeChange={handleTimeRangeChange}
               />
             </div>
@@ -226,7 +226,7 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
             <div className="h-64 mb-4">
               <WindChart 
                 data={data.windData || []} 
-                currentTime={data.currentTime || undefined}
+                selectedTime={data.currentTime || undefined}
                 onTimeRangeChange={handleTimeRangeChange}
               />
             </div>
