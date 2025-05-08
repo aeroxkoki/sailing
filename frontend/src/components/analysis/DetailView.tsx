@@ -18,15 +18,28 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
   const getVisibleData = () => {
     if (!data.gpsData || data.gpsData.length === 0) return [];
     
+    // GpsPointからSpeedDataPointへの変換
+    const convertToSpeedDataPoint = (points: GpsPoint[]) => {
+      return points
+        .filter(point => point.speed !== undefined) // speedが存在するポイントのみフィルタリング
+        .map(point => ({
+          timestamp: point.timestamp,
+          speed: point.speed as number, // speedが存在することを確認済み
+          heading: point.heading
+        }));
+    };
+    
     if (!timeRange) {
       // 時間範囲が指定されていない場合はすべてのデータを返す
-      return data.gpsData;
+      return convertToSpeedDataPoint(data.gpsData);
     }
     
     const [startTime, endTime] = timeRange;
-    return data.gpsData.filter(
+    const filteredData = data.gpsData.filter(
       point => point.timestamp >= startTime && point.timestamp <= endTime
     );
+    
+    return convertToSpeedDataPoint(filteredData);
   };
 
   // 現在のポイントの詳細データを取得
@@ -171,7 +184,7 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
             <div className="h-64 mb-4">
               <SpeedChart 
                 data={getVisibleData()} 
-                currentTime={data.currentTime}
+                currentTime={data.currentTime || undefined}
                 onTimeRangeChange={handleTimeRangeChange}
               />
             </div>
@@ -193,13 +206,13 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
                 <div className="bg-gray-800 p-3 rounded-lg">
                   <div className="text-xs text-gray-500">最大速度</div>
                   <div className="text-lg font-semibold text-gray-200">
-                    {Math.max(...getVisibleData().filter(p => p.speed !== undefined).map(p => p.speed || 0)).toFixed(1)} ノット
+                    {Math.max(...getVisibleData().map(p => p.speed)).toFixed(1)} ノット
                   </div>
                 </div>
                 <div className="bg-gray-800 p-3 rounded-lg">
                   <div className="text-xs text-gray-500">平均速度</div>
                   <div className="text-lg font-semibold text-gray-200">
-                    {(getVisibleData().reduce((sum, p) => sum + (p.speed || 0), 0) / getVisibleData().length).toFixed(1)} ノット
+                    {(getVisibleData().reduce((sum, p) => sum + p.speed, 0) / getVisibleData().length).toFixed(1)} ノット
                   </div>
                 </div>
               </div>
@@ -213,7 +226,7 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
             <div className="h-64 mb-4">
               <WindChart 
                 data={data.windData || []} 
-                currentTime={data.currentTime}
+                currentTime={data.currentTime || undefined}
                 onTimeRangeChange={handleTimeRangeChange}
               />
             </div>
