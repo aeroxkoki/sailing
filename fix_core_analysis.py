@@ -1,10 +1,24 @@
+#\!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# sailing_data_processor/core_analysis.py
 """
+core_analysis.pyファイルを修正する
+"""
+
+import os
+import sys
+
+def replace_core_analysis():
+    """core_analysis.pyファイルを既知の正しい内容で置き換える"""
+    file_path = 'sailing_data_processor/core_analysis.py'
+    
+    # 正しい内容
+    content = """# -*- coding: utf-8 -*-
+# sailing_data_processor/core_analysis.py
+\"\"\"
 セーリングデータ分析の基本モジュール
 
 SailingDataAnalyzerクラスを提供し、GPSデータからの分析機能を実装します。
-"""
+\"\"\"
 
 from typing import Dict, List, Tuple, Optional, Union, Any
 import pandas as pd
@@ -19,10 +33,10 @@ logger = logging.getLogger(__name__)
 
 
 class SailingDataAnalyzer:
-    """セーリングデータ分析の基本クラス"""
+    \"\"\"セーリングデータ分析の基本クラス\"\"\"
     
     def __init__(self):
-        """初期化"""
+        \"\"\"初期化\"\"\"
         # 分析データの保存
         self.processed_data = {}  # 前処理済みデータ
         self.wind_estimates = {}  # 風推定結果
@@ -50,7 +64,7 @@ class SailingDataAnalyzer:
         }
 
     def analyze_wind(self, boat_data: Dict[str, pd.DataFrame]) -> Dict[str, Any]:
-        """
+        \"\"\"
         複数艇のデータから風向風速を推定する
         
         Parameters:
@@ -62,7 +76,7 @@ class SailingDataAnalyzer:
         --------
         Dict[str, Any]
             風推定結果
-        """
+        \"\"\"
         if not boat_data:
             return {"error": "データがありません"}
         
@@ -131,7 +145,7 @@ class SailingDataAnalyzer:
             return {"error": error_msg}
     
     def _estimate_wind_from_tacks(self, df: pd.DataFrame) -> Dict[str, Any]:
-        """
+        \"\"\"
         タック点から風向風速を推定する内部メソッド
         
         Parameters:
@@ -143,7 +157,7 @@ class SailingDataAnalyzer:
         --------
         Dict[str, Any]
             風推定結果
-        """
+        \"\"\"
         # コースの差分を計算して大きな方位変化を検出
         course_diff = df['course'].diff().abs()
         
@@ -248,7 +262,7 @@ class SailingDataAnalyzer:
         }
     
     def _estimate_wind_from_vmg(self, df: pd.DataFrame) -> Dict[str, Any]:
-        """
+        \"\"\"
         VMG分析から風向風速を推定する内部メソッド
         
         Parameters:
@@ -260,7 +274,7 @@ class SailingDataAnalyzer:
         --------
         Dict[str, Any]
             風推定結果
-        """
+        \"\"\"
         if len(df) < 100:
             return {"error": "データポイントが不足しています"}
         
@@ -306,7 +320,7 @@ class SailingDataAnalyzer:
             
             for angle, vmg in vmg_values.items():
                 # 対称的な角度（反対側）
-                opposite_angle = -angle if angle != 0 else 180
+                opposite_angle = -angle if angle \!= 0 else 180
                 
                 # 最も近い角度を探す
                 closest_opp = None
@@ -361,7 +375,7 @@ class SailingDataAnalyzer:
         }
     
     def _combine_wind_estimates(self, boat_estimates: Dict[str, Dict[str, Any]]) -> Dict[str, Any]:
-        """
+        \"\"\"
         複数艇からの風推定値を統合する内部メソッド
         
         Parameters:
@@ -373,7 +387,7 @@ class SailingDataAnalyzer:
         --------
         Dict[str, Any]
             統合された風推定結果
-        """
+        \"\"\"
         if not boat_estimates:
             return {
                 "direction": 0.0,
@@ -423,9 +437,23 @@ class SailingDataAnalyzer:
         }
     
     def cleanup(self):
-        """メモリをクリーンアップする"""
+        \"\"\"メモリをクリーンアップする\"\"\"
         self.processed_data.clear()
         self.wind_estimates.clear()
         self.wind_field_data.clear()
         self.strategy_points.clear()
         gc.collect()
+"""
+    
+    try:
+        # ファイルにUTF-8エンコーディングで書き込む
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"Successfully replaced {file_path}")
+        return True
+    except Exception as e:
+        print(f"Error replacing {file_path}: {e}")
+        return False
+
+if __name__ == "__main__":
+    replace_core_analysis()
