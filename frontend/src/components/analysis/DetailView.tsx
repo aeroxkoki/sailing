@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GpsPoint } from '@/types/gps';
+import { GpsPoint, StrategyPointType } from '@/types/gps';
 import { useAnalysis } from '@/context/AnalysisContext';
 import SpeedChart from '@/components/charts/SpeedChart';
 import WindChart from '@/components/charts/WindChart';
@@ -288,10 +288,10 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
                       <div className="flex justify-between items-start">
                         <div className="flex items-center">
                           <div className={`w-2 h-2 rounded-full mr-2 ${
-                            point.type === 'tack' ? 'bg-green-500' :
-                            point.type === 'gybe' ? 'bg-yellow-500' :
-                            point.type === 'mark_rounding' ? 'bg-purple-500' :
-                            point.type === 'wind_shift' ? 'bg-blue-500' :
+                            point.type === StrategyPointType.TACK ? 'bg-green-500' :
+                            point.type === StrategyPointType.JIBE ? 'bg-yellow-500' :
+                            point.type === StrategyPointType.MARK_ROUNDING ? 'bg-purple-500' :
+                            point.type === StrategyPointType.WIND_SHIFT ? 'bg-blue-500' :
                             'bg-gray-500'
                           }`} />
                           <span className="font-medium text-gray-300 capitalize">
@@ -305,7 +305,7 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
                       
                       {point.details && (
                         <div className="mt-2 grid grid-cols-2 gap-2 text-sm">
-                          {point.type === 'tack' && (
+                          {point.type === StrategyPointType.TACK && (
                             <>
                               <div className="text-gray-400">角度変化</div>
                               <div className="text-gray-300">{point.details.angle_change?.toFixed(0) || 'N/A'}°</div>
@@ -314,7 +314,7 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
                             </>
                           )}
                           
-                          {point.type === 'wind_shift' && (
+                          {point.type === StrategyPointType.WIND_SHIFT && (
                             <>
                               <div className="text-gray-400">シフト量</div>
                               <div className="text-gray-300">{point.details.shift_amount?.toFixed(0) || 'N/A'}°</div>
@@ -347,13 +347,13 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
               <div className="bg-gray-800 p-3 rounded-lg">
                 <div className="text-xs text-gray-500">タック回数</div>
                 <div className="text-lg font-semibold text-gray-200">
-                  {strategyPoints.filter(p => p.type === 'tack').length}
+                  {strategyPoints.filter(p => p.type === StrategyPointType.TACK).length}
                 </div>
               </div>
               <div className="bg-gray-800 p-3 rounded-lg">
                 <div className="text-xs text-gray-500">ジャイブ回数</div>
                 <div className="text-lg font-semibold text-gray-200">
-                  {strategyPoints.filter(p => p.type === 'gybe').length}
+                  {strategyPoints.filter(p => p.type === StrategyPointType.JIBE).length}
                 </div>
               </div>
             </div>
