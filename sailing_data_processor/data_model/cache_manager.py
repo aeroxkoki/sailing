@@ -183,10 +183,12 @@ class CacheManager:
                         # キャッシュからの結果を返す
                         return entry['result']
                 
-                # キャッシュミスのカウント (一度だけ)
-                # test_cached_decorator のテストが失敗する問題を修正: 
-                # ミスのカウントが二重になっていた可能性があるため明示的にコメントを追加
-                self._stats[cache_name]['misses'] += 1
+                # キャッシュミスのカウント (TTLが切れていない場合のみ、一度だけカウント)
+                # test_cached_decorator のテストが失敗する問題を修正:
+                # TTLが切れた場合は上部のif文内ですでにミスをカウントしているため
+                # ここでは重複してカウントしない
+                if key not in cache:
+                    self._stats[cache_name]['misses'] += 1
                 
                 # 関数を実行し、結果を取得
                 result = func(*args, **kwargs)

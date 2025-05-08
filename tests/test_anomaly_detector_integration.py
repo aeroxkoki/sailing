@@ -133,6 +133,9 @@ class TestAnomalyDetectorIntegration(unittest.TestCase):
         # 異常値が検出されることを確認
         self.assertTrue(result['is_anomaly'].any())
         
+        # 修正前のデータを保存
+        original_lat_values = result.loc[result['is_anomaly'], 'latitude'].values.tolist()
+        
         # 修正実行
         try:
             # カルマンフィルタによる修正を試みる（ライブラリがなくてもエラーにならない）
@@ -145,9 +148,12 @@ class TestAnomalyDetectorIntegration(unittest.TestCase):
         fixed_result = detector.fix_anomalies(result, method='linear')
         
         # 修正された値を確認
-        self.assertNotEqual(
-            self.df.loc[result['is_anomaly'], 'latitude'].values.tolist(),
-            fixed_result.loc[result['is_anomaly'], 'latitude'].values.tolist()
+        modified_lat_values = fixed_result.loc[result['is_anomaly'], 'latitude'].values.tolist()
+        
+        # 少なくとも1つの値が修正されていることを確認
+        self.assertTrue(
+            any(abs(original - modified) > 1e-10 for original, modified in zip(original_lat_values, modified_lat_values)),
+            "少なくとも1つの異常値が修正されていることを確認"
         )
     
     def test_process_function(self):
