@@ -325,7 +325,7 @@ const DetailView: React.FC<DetailViewProps> = ({ className = '', onClose }) => {
                         </div>
                       )}
                       
-                      {point.evaluation && (
+                      {point.evaluation?.score !== undefined && (
                         <div className="mt-2 flex items-center">
                           <div className="text-xs text-gray-400 mr-2">評価:</div>
                           <div className={`text-sm font-medium ${
