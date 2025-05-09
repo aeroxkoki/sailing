@@ -1484,6 +1484,7 @@ class WindEstimator:
         return result
 
 # 以下、改良版機能の追加
+WindEstimator._determine_sailing_state = lambda self, course, wind_direction: _determine_sailing_state(self, course, wind_direction)
 def _determine_sailing_state(self, course: float, wind_direction: float) -> str:
     """
     コースと風向から艇の帆走状態を詳細に判定（改善版）
@@ -1608,10 +1609,10 @@ def _identify_maneuver_type(self, before_bearing: float, after_bearing: float,
         return "tack", min(1.0, tack_score * 1.2)
     elif jibe_score > 0.5:
         return "jibe", min(1.0, jibe_score * 1.2)
-    elif before_point == 'upwind' and after_point \!= 'upwind':
+    elif before_tack == 'upwind' and after_tack != 'upwind':
         # 風上から風下/リーチングへの転換 (ベアウェイ)
         return "bear_away", 0.8
-    elif before_point \!= 'upwind' and after_point == 'upwind':
+    elif before_tack != 'upwind' and after_tack == 'upwind':
         # 風下/リーチングから風上への転換 (ヘッドアップ)
         return "head_up", 0.8
     else:
@@ -1721,7 +1722,7 @@ def detect_maneuvers(self, df: pd.DataFrame, wind_direction: float = None,
     df_copy['is_maneuver'] = df_copy['bearing_change_ma'] > min_angle_change
     
     # 連続するフラグを一つのマニューバーとしてグループ化
-    df_copy['maneuver_group'] = (df_copy['is_maneuver'] \!= df_copy['is_maneuver'].shift(1)).cumsum()
+    df_copy['maneuver_group'] = (df_copy['is_maneuver'] != df_copy['is_maneuver'].shift(1)).cumsum()
     
     # マニューバーとみなされるグループのみ抽出
     maneuver_groups = df_copy[df_copy['is_maneuver']].groupby('maneuver_group')
