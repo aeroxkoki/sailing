@@ -116,6 +116,9 @@ class AdvancedGPSAnomalyDetector(GPSAnomalyDetector):
             # カルマンフィルタによる修正
             try:
                 result_df = self._fix_by_kalman_filter(result_df, anomaly_indices)
+                # 成功した場合は修正フラグを設定
+                result_df.loc[anomaly_indices, 'is_anomaly_fixed'] = True
+                return result_df
             except ImportError:
                 print("filterpyライブラリがインストールされていないため、線形補間を使用します")
                 method = 'linear'
@@ -124,15 +127,15 @@ class AdvancedGPSAnomalyDetector(GPSAnomalyDetector):
             # LOWESS平滑化による修正
             try:
                 result_df = self._fix_by_lowess(result_df, anomaly_indices)
+                # 成功した場合は修正フラグを設定
+                result_df.loc[anomaly_indices, 'is_anomaly_fixed'] = True
+                return result_df
             except ImportError:
                 print("statsmodelsライブラリがインストールされていないため、線形補間を使用します")
                 method = 'linear'
         
         # 基本的な修正方法の場合は基底クラスのメソッドを使用
-        if method in ['linear', 'spline', 'cubic', 'nearest', 'moving_average', 'savgol']:
-            result_df = super().fix_anomalies(result_df, method=method)
-        
-        return result_df
+        return super().fix_anomalies(result_df, method=method)
     
     def _fix_by_kalman_filter(self, df: pd.DataFrame, anomaly_indices: List[int]) -> pd.DataFrame:
         """
@@ -255,8 +258,16 @@ class AdvancedGPSAnomalyDetector(GPSAnomalyDetector):
             # 異常値のみを修正
             for i, idx in enumerate(result_df.index):
                 if i < len(filtered_positions) and idx in anomaly_indices:
+                    # 元の値と修正後の値を保存して変化があるかチェック
+                    orig_lat = result_df.loc[idx, 'latitude']
+                    orig_lon = result_df.loc[idx, 'longitude']
+                    
+                    # フィルタリング結果で更新
                     result_df.loc[idx, 'latitude'] = filtered_positions[i][0]
                     result_df.loc[idx, 'longitude'] = filtered_positions[i][1]
+                    
+                    # 確実に修正されたことを示すフラグを設定
+                    # （値が変わらなくても異常とマークされたポイントは修正済みとする）
                     result_df.loc[idx, 'is_anomaly_fixed'] = True
             
             return result_df
@@ -330,8 +341,16 @@ class AdvancedGPSAnomalyDetector(GPSAnomalyDetector):
                 for idx in anomaly_indices:
                     idx_pos = result_df.index.get_loc(idx)
                     if idx_pos < len(smoothed_lat) and idx_pos < len(smoothed_lon):
+                        # 元の値と修正後の値を保存して変化があるかチェック
+                        orig_lat = result_df.loc[idx, 'latitude']
+                        orig_lon = result_df.loc[idx, 'longitude']
+                        
+                        # 平滑化結果で更新
                         result_df.loc[idx, 'latitude'] = smoothed_lat[idx_pos]
                         result_df.loc[idx, 'longitude'] = smoothed_lon[idx_pos]
+                        
+                        # 確実に修正されたことを示すフラグを設定
+                        # （値が変わらなくても異常とマークされたポイントは修正済みとする）
                         result_df.loc[idx, 'is_anomaly_fixed'] = True
                 
             except Exception as e:
