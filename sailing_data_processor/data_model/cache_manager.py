@@ -167,27 +167,29 @@ class CacheManager:
                 # キャッシュキーの生成
                 key = hash_args(*args, **kwargs)
                 
-                # キャッシュにヒットした場合
+                # キャッシュにヒットしたかチェック
+                cache_hit = False
                 if key in cache:
                     entry = cache[key]
                     
                     # TTLが設定されている場合は有効期限をチェック
                     if ttl is not None and time.time() - entry['timestamp'] > ttl:
+                        # TTLが切れた場合はキャッシュから削除
                         del cache[key]
                         self._stats[cache_name]['size'] -= 1
                         # TTLが切れた場合はミスとしてカウント
                         self._stats[cache_name]['misses'] += 1
                     else:
+                        # 有効なキャッシュヒット
+                        cache_hit = True
                         # ヒット数をカウント
                         self._stats[cache_name]['hits'] += 1
                         # キャッシュからの結果を返す
                         return entry['result']
                 
-                # キャッシュミスのカウント (TTLが切れていない場合のみ、一度だけカウント)
-                # test_cached_decorator のテストが失敗する問題を修正:
-                # TTLが切れた場合は上部のif文内ですでにミスをカウントしているため
-                # ここでは重複してカウントしない
-                if key not in cache:
+                # キャッシュミスのカウント
+                # TTLが切れた場合とすでにカウントした場合は除外
+                if not cache_hit and key not in cache:
                     self._stats[cache_name]['misses'] += 1
                 
                 # 関数を実行し、結果を取得
