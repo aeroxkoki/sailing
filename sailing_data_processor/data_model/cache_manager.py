@@ -99,8 +99,13 @@ class CacheManager:
         elif name in self._caches:
             self._caches[name].clear()
             if name in self._stats:
-                self._stats[name]['size'] = 0
-                # ヒット数とミス数は維持
+                # ヒット数とミス数も完全にリセット
+                self._stats[name] = {
+                    'hits': 0,
+                    'misses': 0,
+                    'size': 0,
+                    'max_size': self._stats[name].get('max_size', 0)
+                }
     
     def get_stats(self, name: str = None) -> Dict[str, Any]:
         """
