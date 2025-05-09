@@ -159,4 +159,18 @@ class StrategyDetector:
     def _angle_difference(self, angle1, angle2):
         """2つの角度間の最小差分を計算（-180〜180度の範囲）"""
         return ((angle1 - angle2 + 180) % 360) - 180
+        
+    def _determine_tack_type(self, bearing, wind_direction):
+        """
+        艇の進行方向と風向から、タックタイプ（スターボード/ポート）を判定
+        
+        Args:
+            bearing: 艇の進行方向（度、0-360）
+            wind_direction: 風向（度、0-360、風が吹いてくる方向）
+            
+        Returns:
+            str: 'starboard'（右舷から風）または'port'（左舷から風）
+        """
+        from .strategy_detector_utils import determine_tack_type
+        return determine_tack_type(bearing, wind_direction)
 
