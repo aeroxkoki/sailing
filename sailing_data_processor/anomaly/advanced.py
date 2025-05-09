@@ -103,6 +103,10 @@ class AdvancedGPSAnomalyDetector(GPSAnomalyDetector):
         # 異常値のインデックス
         anomaly_indices = result_df.index[result_df['is_anomaly']].tolist()
         
+        # is_anomaly_fixedカラムを初期化
+        if 'is_anomaly_fixed' not in result_df.columns:
+            result_df['is_anomaly_fixed'] = False
+        
         # 異常値がない場合は元のデータフレームを返す
         if len(anomaly_indices) == 0:
             return result_df
