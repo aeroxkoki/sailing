@@ -169,6 +169,9 @@ class CacheManager:
                 
                 # キャッシュにヒットしたかチェック
                 cache_hit = False
+                # ミスをカウントしたかどうかを追跡
+                miss_counted = False
+                
                 if key in cache:
                     entry = cache[key]
                     
@@ -179,6 +182,7 @@ class CacheManager:
                         self._stats[cache_name]['size'] -= 1
                         # TTLが切れた場合はミスとしてカウント
                         self._stats[cache_name]['misses'] += 1
+                        miss_counted = True  # ミスをカウントしたことをマーク
                     else:
                         # 有効なキャッシュヒット
                         cache_hit = True
@@ -187,9 +191,8 @@ class CacheManager:
                         # キャッシュからの結果を返す
                         return entry['result']
                 
-                # キャッシュミスのカウント
-                # TTLが切れた場合とすでにカウントした場合は除外
-                if not cache_hit and key not in cache:
+                # キャッシュミスのカウント（まだカウントされていない場合のみ）
+                if not cache_hit and not miss_counted:
                     self._stats[cache_name]['misses'] += 1
                 
                 # 関数を実行し、結果を取得
