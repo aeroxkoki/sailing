@@ -216,7 +216,7 @@ class TestProjectStorageAdvanced:
         assert project3.project_id in project_ids
         
         # 複合検索
-        results = storage.search_projects(query="分析", tags=["wind"])
+        results = storage.search_projects(query="analysis", tags=["wind"])
         assert len(results) == 1
         assert results[0].project_id == project3.project_id
     

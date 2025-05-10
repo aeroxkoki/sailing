@@ -1,8 +1,8 @@
-2025-05-09 12:15:12,453 - sailing_test - INFO - ======== テスト環境情報 ========
-2025-05-09 12:15:12,457 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
-2025-05-09 12:15:12,458 - sailing_test - INFO - Python version: 3.9.6
-2025-05-09 12:15:12,459 - sailing_test - INFO - Hostname: MacBook-Air-2.local
-2025-05-09 12:15:12,460 - sailing_test - DEBUG - Python path: [
+2025-05-10 12:44:55,251 - sailing_test - INFO - ======== テスト環境情報 ========
+2025-05-10 12:44:55,255 - sailing_test - INFO - Platform: macOS-14.7.4-x86_64-i386-64bit
+2025-05-10 12:44:55,256 - sailing_test - INFO - Python version: 3.9.6
+2025-05-10 12:44:55,257 - sailing_test - INFO - Hostname: MacBook-Air-2.local
+2025-05-10 12:44:55,258 - sailing_test - DEBUG - Python path: [
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy",
@@ -16,11 +16,11 @@
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
 ]
-2025-05-09 12:15:12,461 - sailing_test - DEBUG - Environment variables:
-2025-05-09 12:15:12,462 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
-2025-05-09 12:15:12,462 - sailing_test - DEBUG -   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
-2025-05-09 12:15:12,463 - sailing_test - DEBUG -   PYTHONVERBOSE: 1
-2025-05-09 12:15:12,463 - sailing_test - INFO - ======== テスト開始 ========
-2025-05-09 12:15:12,467 - sailing_test - INFO - テスト開始: test_advanced_detector
-2025-05-09 12:15:12,859 - sailing_test - INFO - テスト終了: test_advanced_detector
-2025-05-09 12:15:12,863 - sailing_test - INFO - ======== テスト終了 ========
+2025-05-10 12:44:55,259 - sailing_test - DEBUG - Environment variables:
+2025-05-10 12:44:55,259 - sailing_test - DEBUG -   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
+2025-05-10 12:44:55,260 - sailing_test - DEBUG -   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
+2025-05-10 12:44:55,261 - sailing_test - DEBUG -   PYTHONVERBOSE: 1
+2025-05-10 12:44:55,262 - sailing_test - INFO - ======== テスト開始 ========
+2025-05-10 12:44:55,263 - sailing_test - INFO - テスト開始: test_search_projects
+2025-05-10 12:44:55,276 - sailing_test - INFO - テスト終了: test_search_projects
+2025-05-10 12:44:55,277 - sailing_test - INFO - ======== テスト終了 ========
