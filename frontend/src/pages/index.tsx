@@ -1,44 +1,59 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import FileUploader from '../components/upload/FileUploader';
 import Menu from '../components/common/Menu';
 import MobileMenu from '../components/common/MobileMenu';
+import { api } from '../lib/api';
+import { useAnalysis } from '../context/AnalysisContext';
 
 export default function HomePage() {
+  const router = useRouter();
+  const { uploadFile } = useAnalysis();
   const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleFileSelect = (file: File) => {
+  const handleFileSelect = async (file: File) => {
     setSelectedFile(file);
-    // 通常はここでAPIを呼び出して分析を開始します
+    setError(null);
     setLoading(true);
-    // 分析処理をシミュレート
-    setTimeout(() => {
+    
+    try {
+      // 実際にファイルをアップロードして分析
+      await uploadFile(file);
+      
+      // 分析ページに遷移
+      router.push('/analysis');
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      setError(err.message || 'ファイルのアップロードに失敗しました。');
+    } finally {
       setLoading(false);
-    }, 3000);
+    }
   };
 
   const menuItems = [
     {
       id: 'new-project',
       label: '新規プロジェクト',
-      onClick: () => console.log('新規プロジェクト'),
+      onClick: () => router.push('/projects/new'),
     },
     {
       id: 'open-project',
       label: 'プロジェクトを開く',
-      onClick: () => console.log('プロジェクトを開く'),
+      onClick: () => router.push('/projects'),
     },
     {
       id: 'settings',
       label: '設定',
-      onClick: () => console.log('設定'),
+      onClick: () => router.push('/settings'),
     },
   ];
 
@@ -96,8 +111,8 @@ export default function HomePage() {
       </header>
 
       <main className="container mx-auto py-8 px-4">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="md:col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2">
             <Card
               title="GPSデータアップロード"
               variant="dark"
@@ -114,96 +129,79 @@ export default function HomePage() {
                   acceptedFileTypes=".gpx,.csv,.fit,.tcx"
                 />
               )}
-            </Card>
-            
-            {selectedFile && !loading && (
-              <Card
-                title="分析結果"
-                variant="dark"
-              >
-                <div className="p-4">
-                  <h3 className="text-lg font-medium text-gray-200 mb-4">ファイル: {selectedFile.name}</h3>
-                  <p className="text-gray-400 mb-6">
-                    これはサンプル分析結果表示です。実際の実装では、アップロードされたファイルの分析結果がここに表示されます。
-                  </p>
-                  <div className="flex space-x-4">
-                    <Button variant="primary">詳細分析</Button>
-                    <Button variant="outline">レポート作成</Button>
+              
+              {error && (
+                <div className="mt-4 p-3 bg-red-900 bg-opacity-50 border border-red-800 rounded text-red-200">
+                  <div className="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>{error}</span>
                   </div>
                 </div>
-              </Card>
-            )}
+              )}
+            </Card>
+            
+            <Card
+              title="はじめに"
+              variant="dark"
+            >
+              <div className="p-4">
+                <h3 className="text-lg font-medium text-gray-200 mb-4">セーリング戦略分析システムへようこそ</h3>
+                <p className="text-gray-400 mb-6">
+                  GPSログをアップロードすると、自動的に風向風速の推定と戦略分析が実行されます。
+                </p>
+                <div className="space-y-4 text-gray-400">
+                  <div>
+                    <h4 className="font-medium text-gray-300 mb-2">対応フォーマット</h4>
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>GPX - GPS Exchange Format</li>
+                      <li>CSV - カンマ区切りファイル</li>
+                      <li>FIT - Flexible and Interoperable Data Transfer</li>
+                      <li>TCX - Training Center XML</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-300 mb-2">分析内容</h4>
+                    <ul className="list-disc list-inside space-y-1">
+                      <li>風向風速の推定</li>
+                      <li>タック・ジャイブの検出</li>
+                      <li>戦略ポイントの評価</li>
+                      <li>パフォーマンス分析</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </Card>
           </div>
           
           <div>
             <Card
-              title="コンポーネントサンプル"
+              title="クイックアクション"
               variant="dark"
               className="mb-8"
             >
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-sm font-medium text-gray-400 mb-2">ボタンバリエーション</h3>
-                  <div className="space-y-2">
-                    <Button variant="primary" className="mb-2 mr-2">プライマリ</Button>
-                    <Button variant="secondary" className="mb-2 mr-2">セカンダリ</Button>
-                    <Button variant="outline" className="mb-2 mr-2">アウトライン</Button>
-                    <Button variant="ghost" className="mb-2 mr-2">ゴースト</Button>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium text-gray-400 mb-2">サイズバリエーション</h3>
-                  <div className="space-y-2">
-                    <Button variant="primary" size="sm" className="mb-2 mr-2">Small</Button>
-                    <Button variant="primary" size="md" className="mb-2 mr-2">Medium</Button>
-                    <Button variant="primary" size="lg" className="mb-2 mr-2">Large</Button>
-                  </div>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium text-gray-400 mb-2">ローディング状態</h3>
-                  <Button variant="primary" isLoading className="mb-2 mr-2">ローディング</Button>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium text-gray-400 mb-2">アイコン付き</h3>
-                  <Button 
-                    variant="primary" 
-                    icon={
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
-                      </svg>
-                    }
-                  >
-                    アイコン付き
-                  </Button>
-                </div>
-                
-                <div>
-                  <h3 className="text-sm font-medium text-gray-400 mb-2">全幅ボタン</h3>
-                  <Button variant="primary" fullWidth>全幅ボタン</Button>
-                </div>
+              <div className="space-y-3">
+                <Button variant="primary" fullWidth onClick={() => router.push('/projects/new')}>
+                  新規プロジェクト作成
+                </Button>
+                <Button variant="outline" fullWidth onClick={() => router.push('/projects')}>
+                  既存プロジェクトを開く
+                </Button>
+                <Button variant="outline" fullWidth onClick={() => router.push('/analysis/demo')}>
+                  デモ分析を見る
+                </Button>
               </div>
             </Card>
             
             <Card
-              title="ローディングスピナー"
+              title="最近のプロジェクト"
               variant="dark"
             >
-              <div className="grid grid-cols-3 gap-4 p-4">
-                <div className="flex flex-col items-center">
-                  <LoadingSpinner size="small" color="blue" />
-                  <span className="mt-2 text-xs text-gray-500">Small</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <LoadingSpinner size="medium" color="white" />
-                  <span className="mt-2 text-xs text-gray-500">Medium</span>
-                </div>
-                <div className="flex flex-col items-center">
-                  <LoadingSpinner size="large" color="gray" />
-                  <span className="mt-2 text-xs text-gray-500">Large</span>
-                </div>
+              <div className="p-4">
+                <p className="text-sm text-gray-500 text-center py-4">
+                  最近のプロジェクトはまだありません
+                </p>
               </div>
             </Card>
           </div>
