@@ -23,7 +23,9 @@ logger = logging.getLogger(__name__)
 from sailing_data_processor.strategy.points import StrategyPoint, WindShiftPoint, TackPoint, LaylinePoint, StrategyAlternative
 from sailing_data_processor.strategy.detector import StrategyDetector
 from sailing_data_processor.strategy.evaluator import StrategyEvaluator
-from sailing_data_processor.strategy.visualizer import StrategyVisualizer
+
+# Only import visualizer when explicitly needed to avoid matplotlib dependency
+StrategyVisualizer = None
 
 # Avoid eager loading to prevent circular references
 StrategyDetectorWithPropagation = None
@@ -141,6 +143,28 @@ def _create_fallback_detector():
     
     return StrategyDetectorWithPropagation
 
+def load_strategy_visualizer() -> Optional[Type]:
+    """戦略可視化クラスの遅延ロード
+    
+    matplotlibの依存を避けるための遅延ロード
+    
+    Returns:
+        StrategyVisualizer: 戦略可視化クラス
+    """
+    global StrategyVisualizer
+    
+    if StrategyVisualizer is not None:
+        return StrategyVisualizer
+    
+    try:
+        from sailing_data_processor.strategy.visualizer import StrategyVisualizer as SV
+        StrategyVisualizer = SV
+        logger.info("StrategyVisualizerのインポートに成功しました")
+        return StrategyVisualizer
+    except ImportError as e:
+        logger.warning(f"StrategyVisualizerのインポートに失敗しました: {e}")
+        return None
+
 __version__ = '1.0.1'
 __all__ = [
     'StrategyPoint',
@@ -152,6 +176,7 @@ __all__ = [
     'StrategyEvaluator',
     'StrategyVisualizer',
     'load_strategy_detector_with_propagation',
+    'load_strategy_visualizer',
 ]
 
 def get_version():
