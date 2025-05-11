@@ -7,7 +7,7 @@ import FileUpload from '../../components/forms/FileUpload';
 import WindChart from '../../components/charts/WindChart';
 import MapView from '../../components/analysis/MapView';
 import Tabs from '../../components/common/Tabs';
-import { windEstimationApi } from '../../lib/api';
+import api from '../../lib/api';
 import Select from '../../components/forms/Select';
 import Input from '../../components/forms/Input';
 import Alert from '../../components/common/Alert';
@@ -119,7 +119,13 @@ export default function WindEstimationPage() {
     
     try {
       // 風向風速推定APIの呼び出し
-      const response = await windEstimationApi.estimateWind(file, params);
+      const windSettings = {
+        algorithm: params.use_bayesian ? 'bayesian' : 'simple' as 'simple' | 'bayesian' | 'combined',
+        minTackAngle: params.min_tack_angle,
+        useShiftDetection: true,
+        smoothingFactor: 50
+      };
+      const response = await api.analyzeGpsData(file, { wind: windSettings });
       setResult(response.data);
       console.log('Wind estimation result:', response.data);
     } catch (err: any) {

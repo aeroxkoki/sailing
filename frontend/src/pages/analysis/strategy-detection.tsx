@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import Layout from '../../components/common/Layout';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
-import { strategyDetectionApi } from '../../lib/api';
+import api from '../../lib/api';
 import Select from '../../components/forms/Select';
 import Input from '../../components/forms/Input';
 import Alert from '../../components/common/Alert';
@@ -91,7 +91,12 @@ export default function StrategyDetectionPage() {
     
     try {
       // 戦略検出APIの呼び出し
-      const response = await strategyDetectionApi.detectStrategies(params);
+      const strategySettings = {
+        sensitivity: params.detection_sensitivity,
+        detectTypes: params.strategy_types || [],
+        minConfidence: params.detection_sensitivity,
+      };
+      const response = await api.detectStrategyPoints(params.session_id, strategySettings);
       setResult(response.data);
       console.log('Strategy detection result:', response.data);
     } catch (err: any) {

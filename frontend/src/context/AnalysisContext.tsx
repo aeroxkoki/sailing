@@ -1,7 +1,6 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 import { AnalysisData, ExportFormat, AppSettings, ApiError } from '../types';
 import api from '../lib/api';
-import { AxiosResponse } from 'axios';
 
 // 初期データ
 const initialAnalysisData: AnalysisData = {

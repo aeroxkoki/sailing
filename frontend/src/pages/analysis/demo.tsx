@@ -45,6 +45,53 @@ const AnalysisDemo: React.FC = () => {
   const [playing, setPlaying] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const mapRef = useRef<maplibregl.Map | null>(null);
+  
+  // 設定の状態管理
+  const [settings, setSettings] = useState({
+    wind: {
+      resolution: 0.001,
+      smoothing: 0.5,
+      confidenceThreshold: 0.6,
+      interpolation: 'kriging',
+      algorithm: 'combined'
+    },
+    strategy: {
+      tackAngle: 90,
+      jibeAngle: 135,
+      sensitivity: 0.7,
+      minDistance: 50,
+      laylineOffset: 5
+    },
+    display: {
+      showWindVectors: true,
+      showWindHeatmap: false,
+      showConfidence: false,
+      showTrack: true,
+      showStrategyPoints: true,
+      vectorDensity: 0.5,
+      colorScheme: 'turbo',
+      animationSpeed: 1.0
+    },
+    advanced: {
+      cacheEnable: true,
+      cacheDuration: 3600,
+      compression: true,
+      logLevel: 'info',
+      autoSave: true,
+      autoSaveInterval: 300
+    }
+  });
+
+  // 設定更新関数
+  const updateSettings = (category: string, key: string, value: any) => {
+    setSettings(prev => ({
+      ...prev,
+      [category]: {
+        ...prev[category as keyof typeof prev],
+        [key]: value
+      }
+    }));
+  };
 
   // マップのロード完了ハンドラ
   const handleMapLoaded = (map: maplibregl.Map) => {
@@ -144,8 +191,10 @@ const AnalysisDemo: React.FC = () => {
             // 設定適用時の処理
             setSettingsOpen(false);
             // 実際の実装では、設定を適用してデータを再分析するAPIを呼び出す
-            console.log('設定を適用して再分析');
+            console.log('設定を適用して再分析', settings);
           }}
+          settings={settings}
+          updateSettings={updateSettings}
         />
       </div>
     </Layout>
