@@ -200,7 +200,7 @@ class WindEstimator:
         
         return pd.DataFrame(gybes)
     
-    def detect_maneuvers(self, data: pd.DataFrame, **kwargs) -> List[Dict]:
+    def detect_maneuvers(self, data: pd.DataFrame, wind_direction=None) -> List[Dict]:
         """
         マニューバー（タック/ジャイブ）を検出する
         
@@ -208,8 +208,8 @@ class WindEstimator:
         -----------
         data : pd.DataFrame
             GPSデータ
-        **kwargs : dict
-            追加パラメータ
+        wind_direction : float, optional
+            風向（度）。指定された場合、マニューバーの種類を風向に基づいて判定
             
         Returns:
         --------
@@ -224,36 +224,58 @@ class WindEstimator:
         # タックのデータを追加
         if not tacks.empty:
             for _, tack in tacks.iterrows():
-                maneuvers.append({
+                maneuver_data = {
                     'timestamp': tack['timestamp'],
-                    'type': 'tack',
+                    'maneuver_type': 'tack',
                     'angle_change': tack['angle_change'],
-                    'heading_before': tack['heading_before'],
-                    'heading_after': tack['heading_after'],
-                    'index': tack['index']
-                })
+                    'before_bearing': tack['heading_before'],
+                    'after_bearing': tack['heading_after'],
+                    'maneuver_confidence': 0.8,  # デフォルトの信頼度
+                    'before_state': 'unknown',
+                    'after_state': 'unknown'
+                }
+                
+                # 風向が指定されている場合は状態を判定
+                if wind_direction is not None:
+                    maneuver_data['before_state'] = self._determine_point_state(
+                        tack['heading_before'] - wind_direction)
+                    maneuver_data['after_state'] = self._determine_point_state(
+                        tack['heading_after'] - wind_direction)
+                
+                maneuvers.append(maneuver_data)
         
         # ジャイブのデータを追加
         if not gybes.empty:
             for _, gybe in gybes.iterrows():
-                maneuvers.append({
+                maneuver_data = {
                     'timestamp': gybe['timestamp'],
-                    'type': 'gybe',
+                    'maneuver_type': 'jibe',
                     'angle_change': gybe['angle_change'],
-                    'heading_before': gybe['heading_before'],
-                    'heading_after': gybe['heading_after'],
-                    'index': gybe['index']
-                })
+                    'before_bearing': gybe['heading_before'],
+                    'after_bearing': gybe['heading_after'],
+                    'maneuver_confidence': 0.8,  # デフォルトの信頼度
+                    'before_state': 'unknown',
+                    'after_state': 'unknown'
+                }
+                
+                # 風向が指定されている場合は状態を判定
+                if wind_direction is not None:
+                    maneuver_data['before_state'] = self._determine_point_state(
+                        gybe['heading_before'] - wind_direction)
+                    maneuver_data['after_state'] = self._determine_point_state(
+                        gybe['heading_after'] - wind_direction)
+                
+                maneuvers.append(maneuver_data)
         
         # タイムスタンプでソート
-        maneuvers.sort(key=lambda x: x.get('timestamp', x.get('index', 0)))
-        
+        maneuvers.sort(key=lambda x: x['timestamp'])
+            
         return maneuvers
     
     def calculate_laylines(self, wind_direction: Union[float, str], wind_speed: Union[float, str], 
-                         mark_position: Tuple[float, float], 
-                         boat_position: Tuple[float, float], 
-                         **kwargs) -> Dict[str, Tuple[float, float]]:
+                         mark_position: Dict[str, float], 
+                         boat_position: Dict[str, float], 
+                         **kwargs) -> Dict[str, Any]:
         """
         レイラインを計算する
         
@@ -263,44 +285,54 @@ class WindEstimator:
             風向（度）
         wind_speed : Union[float, str]
             風速（ノット）
-        mark_position : Tuple[float, float]
-            マークの位置（緯度、経度）
-        boat_position : Tuple[float, float]
-            艇の位置（緯度、経度）
+        mark_position : Dict[str, float]
+            マークの位置（'latitude', 'longitude'のキーを持つ辞書）
+        boat_position : Dict[str, float]
+            艇の位置（'latitude', 'longitude'のキーを持つ辞書）
         **kwargs : dict
             追加パラメータ
             
         Returns:
         --------
-        Dict[str, Tuple[float, float]]
-            レイラインのポートタックとスターボードタックの終点
+        Dict[str, Any]
+            レイラインの情報を含む辞書
         """
-        # 型変換
+        # 型変換（文字列から数値へ）
         if isinstance(wind_direction, str):
             wind_direction = float(wind_direction)
         if isinstance(wind_speed, str):
             wind_speed = float(wind_speed)
         
+        # ポジションデータをタプルに変換
+        mark_pos = (float(mark_position['latitude']), float(mark_position['longitude']))
+        boat_pos = (float(boat_position['latitude']), float(boat_position['longitude']))
+        
         # 風上角度を使用
         upwind_angle = self.params["default_upwind_angle"]
         
         # マークへのベアリング
-        bearing_to_mark = self._calculate_bearing(boat_position, mark_position)
+        bearing_to_mark = self._calculate_bearing(boat_pos, mark_pos)
         
         # レイラインの方向を計算
-        port_layline_bearing = wind_direction + upwind_angle
-        starboard_layline_bearing = wind_direction - upwind_angle
+        port_layline_bearing = self._normalize_angle(wind_direction + upwind_angle)
+        starboard_layline_bearing = self._normalize_angle(wind_direction - upwind_angle)
         
         # レイラインの長さを計算（適当な長さを設定）
-        layline_length = self._calculate_distance(boat_position, mark_position) * 2
+        layline_length = self._calculate_distance(boat_pos, mark_pos) * 2
         
         # レイラインの終点を計算
-        port_end = self._calculate_endpoint(boat_position, port_layline_bearing, layline_length)
-        starboard_end = self._calculate_endpoint(boat_position, starboard_layline_bearing, layline_length)
+        port_end = self._calculate_endpoint(boat_pos, port_layline_bearing, layline_length)
+        starboard_end = self._calculate_endpoint(boat_pos, starboard_layline_bearing, layline_length)
+        
+        # タックが必要かどうかを判定
+        direct_bearing_diff = abs(self._calculate_angle_change(bearing_to_mark, wind_direction))
+        tacking_required = direct_bearing_diff < upwind_angle
         
         return {
             'port': port_end,
-            'starboard': starboard_end
+            'starboard': starboard_end,
+            'direct_bearing': bearing_to_mark,
+            'tacking_required': tacking_required
         }
     
     def _calculate_vmg(self, boat_speed: float, boat_course: float, 
@@ -330,7 +362,7 @@ class WindEstimator:
         
         return vmg
     
-    def _convert_angle_to_wind_vector(self, angle: float) -> Tuple[float, float]:
+    def _convert_angle_to_wind_vector(self, angle: float, speed: float = 1.0) -> Tuple[float, float]:
         """
         風向角度を風向ベクトルに変換する
         
@@ -338,6 +370,8 @@ class WindEstimator:
         -----------
         angle : float
             風向（度）
+        speed : float, optional
+            風速（ノット）
             
         Returns:
         --------
@@ -347,8 +381,8 @@ class WindEstimator:
         # 北を0度として時計回りの角度から、数学的な角度（東が0度、反時計回り）に変換
         math_angle = 90 - angle
         
-        x = math.cos(math.radians(math_angle))
-        y = math.sin(math.radians(math_angle))
+        x = speed * math.cos(math.radians(math_angle))
+        y = speed * math.sin(math.radians(math_angle))
         
         return (x, y)
     
@@ -368,25 +402,53 @@ class WindEstimator:
         """
         x, y = vector
         
+        # ベクトルが原点の場合は0度を返す
+        if abs(x) < 1e-10 and abs(y) < 1e-10:
+            return 0.0
+            
         # 数学的な角度（東が0度、反時計回り）を計算
         math_angle = math.degrees(math.atan2(y, x))
         
         # 北を0度として時計回りの角度に変換
-        wind_angle = 90 - math_angle
+        wind_angle = self._normalize_angle(90 - math_angle)
         
-        # 0-360度の範囲に正規化
-        return self._normalize_angle(wind_angle)
+        # 風ベクトルは風が吹いてくる方向を表すため、180度回転させる
+        wind_angle = self._normalize_angle(wind_angle + 180)
+        
+        return wind_angle
     
-    def _get_conversion_functions(self) -> Tuple[callable, callable]:
+    def _get_conversion_functions(self, latitude: float) -> Tuple[callable, callable]:
         """
-        風向変換関数のペアを取得
+        指定された緯度における度とメートルの変換関数を返す
         
+        Parameters:
+        -----------
+        latitude : float
+            緯度
+            
         Returns:
         --------
         Tuple[callable, callable]
-            (angle_to_vector, vector_to_angle) 関数のペア
+            (緯度変換関数, 経度変換関数)のタプル
         """
-        return self._convert_angle_to_wind_vector, self._convert_wind_vector_to_angle
+        # 球体近似による1度あたりの距離（メートル）
+        earth_radius = 6371000  # 地球の平均半径（メートル）
+        
+        # 緯度1度あたりのメートル距離（ほぼ一定）
+        meters_per_lat = earth_radius * math.pi / 180
+        
+        # 経度1度あたりのメートル距離（緯度によって変化）
+        meters_per_lon = meters_per_lat * math.cos(math.radians(latitude))
+        
+        # 緯度変換関数
+        def lat_to_meters(lat_diff):
+            return lat_diff * meters_per_lat
+        
+        # 経度変換関数
+        def lon_to_meters(lon_diff):
+            return lon_diff * meters_per_lon
+        
+        return lat_to_meters, lon_to_meters
     
     def _normalize_angle(self, angle: float) -> float:
         """
@@ -579,8 +641,6 @@ class WindEstimator:
         """
         GPS データから風向風速を推定する
         
-        テストが期待する形式に合わせたラッパーメソッド
-        
         Parameters:
         -----------
         data : pd.DataFrame
@@ -589,48 +649,35 @@ class WindEstimator:
         Returns:
         --------
         Dict[str, Any]
-            艇と風の情報を含む辞書
+            風向風速の推定結果
         """
         if data.empty:
             return {
-                'boat': {},
-                'wind': {
-                    'wind_data': []
-                }
+                "direction": 0.0,
+                "speed": 0.0,
+                "confidence": 0.0
             }
         
-        # 従来のメソッドを呼び出す
+        # 風推定を実行
         wind_df = self.estimate_wind_from_single_boat(data)
         
-        # テストが期待する形式に変換
-        wind_data = []
+        # 風向推定結果を取得
         if not wind_df.empty:
-            for _, row in wind_df.iterrows():
-                wind_data.append({
-                    'timestamp': row['timestamp'],
-                    'direction': row['wind_direction'],
-                    'speed': row['wind_speed'],
-                    'confidence': row['confidence']
-                })
-        
-        # 艇データを作成
-        boat_data = {}
-        if not data.empty:
-            latest = data.iloc[-1]
-            boat_data = {
-                'position': (latest.get('latitude', 0), latest.get('longitude', 0)),
-                'speed': latest.get('sog', latest.get('speed', 0)),
-                'course': latest.get('heading', latest.get('course', 0))
+            # 信頼度の高い結果を優先
+            best_estimate = wind_df.loc[wind_df['confidence'].idxmax()]
+            
+            return {
+                "direction": best_estimate['wind_direction'],
+                "speed": best_estimate['wind_speed'],
+                "confidence": best_estimate['confidence']
             }
-        
-        result = {
-            'boat': boat_data,
-            'wind': {
-                'wind_data': wind_data
+        else:
+            # 推定できない場合はデフォルト値
+            return {
+                "direction": 0.0,
+                "speed": 0.0,
+                "confidence": 0.0
             }
-        }
-        
-        return result
     
     def estimate_wind_from_single_boat(self, gps_data: pd.DataFrame, min_tack_angle: float = 30.0,
                                      boat_type: str = None, use_bayesian: bool = True) -> pd.DataFrame:
@@ -690,7 +737,7 @@ class WindEstimator:
         
         # マニューバーに基づく風向推定
         wind_from_maneuvers = None
-        if len(maneuvers) >= 2:
+        if not maneuvers.empty and len(maneuvers) >= 2:
             try:
                 wind_from_maneuvers = self._estimate_wind_from_maneuvers(maneuvers, df)
             except Exception as e:
@@ -778,13 +825,13 @@ class WindEstimator:
             timestamp=data.iloc[-1]['timestamp'] if 'timestamp' in data.columns else None
         )
     
-    def _estimate_wind_from_maneuvers(self, maneuvers: List[Dict], data: pd.DataFrame) -> Optional[Dict[str, Any]]:
+    def _estimate_wind_from_maneuvers(self, maneuvers, data: pd.DataFrame) -> Optional[Dict[str, Any]]:
         """
         マニューバーから風向風速を推定する
         
         Parameters:
         -----------
-        maneuvers : List[Dict]
+        maneuvers : List[Dict] or pd.DataFrame
             検出されたマニューバー
         data : pd.DataFrame
             GPSデータ
@@ -794,25 +841,49 @@ class WindEstimator:
         Optional[Dict[str, Any]]
             推定結果
         """
-        if not maneuvers or len(maneuvers) < 2:
-            return None
-        
-        # タックを抽出
-        tacks = [m for m in maneuvers if m['type'] == 'tack']
-        
-        if not tacks:
-            return None
-        
-        # タックの前後の方向から風向を推定
-        wind_directions = []
-        for tack in tacks:
-            before = tack['heading_before']
-            after = tack['heading_after']
+        # マニューバーが空かどうかを確認
+        if isinstance(maneuvers, pd.DataFrame):
+            if maneuvers.empty or len(maneuvers) < 2:
+                return None
+            # タックを抽出
+            tacks = maneuvers[maneuvers['maneuver_type'] == 'tack']
+            if tacks.empty:
+                return None
             
-            # タックの前後の方向の平均が風向に対して約90度
-            avg_heading = (before + after) / 2
-            wind_dir = self._normalize_angle(avg_heading + 90)
-            wind_directions.append(wind_dir)
+            # タックの前後の方向から風向を推定
+            wind_directions = []
+            for _, tack in tacks.iterrows():
+                before = tack['before_bearing']
+                after = tack['after_bearing']
+                
+                # タックの前後の方向の平均が風向に対して約90度
+                avg_heading = (before + after) / 2
+                wind_dir = self._normalize_angle(avg_heading + 90)
+                wind_directions.append(wind_dir)
+        else:
+            # リスト形式のマニューバー
+            if not maneuvers or len(maneuvers) < 2:
+                return None
+            
+            # タックを抽出
+            tacks = [m for m in maneuvers if m.get('maneuver_type') == 'tack']
+            if not tacks:
+                return None
+            
+            # タックの前後の方向から風向を推定
+            wind_directions = []
+            for tack in tacks:
+                before = tack['before_bearing']
+                after = tack['after_bearing']
+                
+                # タックの前後の方向の平均が風向に対して約90度
+                avg_heading = (before + after) / 2
+                wind_dir = self._normalize_angle(avg_heading + 90)
+                wind_directions.append(wind_dir)
+        
+        # 風向がない場合は終了
+        if not wind_directions:
+            return None
         
         # 平均風向
         mean_wind_direction = np.mean(wind_directions)
@@ -864,51 +935,124 @@ class WindEstimator:
         
         return df
     
-    def _categorize_maneuver(self, angle_change: float) -> str:
+    def _categorize_maneuver(self, before_bearing: float, after_bearing: float, 
+                          wind_direction: float, boat_type: str = None) -> Dict[str, Any]:
         """
         マニューバーの種類を分類する
         
         Parameters:
         -----------
-        angle_change : float
-            角度変化（度）
+        before_bearing : float
+            マニューバー前の方向（度）
+        after_bearing : float
+            マニューバー後の方向（度）
+        wind_direction : float
+            風向（度）
+        boat_type : str, optional
+            艇種
             
         Returns:
         --------
-        str
-            マニューバーの種類（'tack' または 'gybe'）
+        Dict[str, Any]
+            マニューバーの分類結果
         """
-        # 簡単な実装：角度変化の方向で判定
-        if angle_change > 0:
-            return 'gybe'
+        # 風に対する相対角度
+        rel_before = self._normalize_angle(before_bearing - wind_direction)
+        rel_after = self._normalize_angle(after_bearing - wind_direction)
+        
+        # 角度変化
+        angle_change = self._calculate_angle_change(before_bearing, after_bearing)
+        abs_change = abs(angle_change)
+        
+        # 風に対する状態
+        before_state = self._determine_point_state(rel_before, self.params["upwind_threshold"], 
+                                                 self.params["downwind_threshold"])
+        after_state = self._determine_point_state(rel_after, self.params["upwind_threshold"], 
+                                                self.params["downwind_threshold"])
+        
+        # マニューバー分類
+        maneuver_type = "unknown"
+        confidence = 0.5
+        
+        # タック／ジャイブの判定
+        if abs_change > 60:
+            if before_state == 'upwind' and after_state == 'upwind':
+                maneuver_type = "tack"
+                confidence = 0.9
+            elif before_state == 'downwind' and after_state == 'downwind':
+                maneuver_type = "jibe"
+                confidence = 0.9
+            else:
+                # 大きな角度変化があるが、状態変化が不明確な場合
+                if abs_change > 120:
+                    maneuver_type = "jibe"
+                    confidence = 0.7
+                else:
+                    maneuver_type = "tack"
+                    confidence = 0.7
         else:
-            return 'tack'
+            # より小さな角度変化の場合
+            if before_state != after_state:
+                if after_state == 'downwind':
+                    maneuver_type = "bear_away"
+                    confidence = 0.8
+                else:
+                    maneuver_type = "head_up"
+                    confidence = 0.8
+            else:
+                # コース修正
+                maneuver_type = "course_correction"
+                confidence = 0.6
+        
+        return {
+            "maneuver_type": maneuver_type,
+            "confidence": confidence,
+            "angle_change": abs_change,
+            "before_state": before_state,
+            "after_state": after_state
+        }
     
-    def _determine_point_state(self, heading: float, wind_direction: float) -> str:
+    def _determine_point_state(self, relative_angle: float, 
+                             upwind_range: float = None, 
+                             downwind_range: float = None) -> str:
         """
-        ポイントの状態を判定する
+        風に対する艇の状態を判定する
         
         Parameters:
         -----------
-        heading : float
-            艇の向き（度）
-        wind_direction : float
-            風向（度）
+        relative_angle : float
+            風に対する相対角度（度）
+        upwind_range : float, optional
+            風上判定の閾値
+        downwind_range : float, optional
+            風下判定の閾値
             
         Returns:
         --------
         str
             状態（'upwind', 'downwind', 'reaching'）
         """
-        # 風に対する相対角度を計算
-        relative_angle = abs(self._normalize_angle(heading - wind_direction))
-        if relative_angle > 180:
-            relative_angle = 360 - relative_angle
+        # デフォルト値の設定
+        if upwind_range is None:
+            upwind_range = self.params["upwind_threshold"]
+        if downwind_range is None:
+            downwind_range = self.params["downwind_threshold"]
         
-        # 状態を判定
-        if relative_angle < self.params["upwind_threshold"]:
+        # 0-360度の範囲に正規化
+        rel_angle = self._normalize_angle(relative_angle)
+        
+        # 絶対値で計算（0または180度からの距離）
+        abs_angle = rel_angle
+        if abs_angle > 180:
+            abs_angle = 360 - abs_angle
+        
+        # 風上状態（0度付近）
+        if abs_angle < upwind_range:
             return 'upwind'
-        elif relative_angle > self.params["downwind_threshold"]:
+        
+        # 風下状態（180度付近）
+        if abs_angle > 180 - downwind_range/2:
             return 'downwind'
-        else:
-            return 'reaching'
+        
+        # それ以外はリーチング
+        return 'reaching'
