@@ -1,7 +1,7 @@
 /**
  * プロジェクト関連のAPIサービス
  */
-import apiClient, { ApiResponse } from '../api';
+import { apiClient, ApiResponse } from '../api';
 
 // プロジェクト型定義
 export interface Project {

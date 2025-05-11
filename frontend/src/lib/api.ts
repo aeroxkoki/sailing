@@ -1,6 +1,9 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import { AppSettings, ApiError } from '../types';
 
+// APIレスポンス型定義
+export type ApiResponse<T = any> = AxiosResponse<T>;
+
 // APIクライアントの設定
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -129,4 +132,8 @@ export const api = {
   },
 };
 
+// apiClientのエクスポート
+export { apiClient };
+
+// デフォルトエクスポート
 export default api;
