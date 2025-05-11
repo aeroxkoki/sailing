@@ -1,7 +1,7 @@
 import React from 'react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost';
-type ButtonSize = 'sm' | 'md' | 'lg';
+type ButtonSize = 'sm' | 'md' | 'lg' | 'icon';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
@@ -38,6 +38,7 @@ const Button: React.FC<ButtonProps> = ({
     sm: 'text-xs px-2.5 py-1.5',
     md: 'text-sm px-4 py-2',
     lg: 'text-base px-6 py-3',
+    icon: 'p-2',
   };
   
   // Loading and disabled styles
@@ -62,7 +63,7 @@ const Button: React.FC<ButtonProps> = ({
         </>
       ) : (
         <>
-          {icon && <span className="mr-2">{icon}</span>}
+          {icon && <span className={children ? "mr-2" : ""}>{icon}</span>}
           {children}
         </>
       )}
