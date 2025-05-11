@@ -22,6 +22,8 @@ pytest-asyncio==0.21.0
 # httpxの依存解決のため、バージョンを指定（Supabase 2.15.0の要件に合わせる）
 httpx>=0.26.0,<0.29.0
 bcrypt==4.0.1
+# パフォーマンス最適化のためのシステムモニタリング
+psutil==5.9.8
 # Supabaseとその依存ライブラリのバージョンを固定
 supabase==2.15.0
 gotrue==2.12.0
