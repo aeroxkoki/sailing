@@ -191,11 +191,11 @@ class TestWindEstimator(unittest.TestCase):
     def test_convert_wind_vector_to_angle(self):
         """風ベクトルから角度への変換テスト"""
         # 北からの風
-        angle = self.estimator._convert_wind_vector_to_angle(0, 1)
+        angle = self.estimator._convert_wind_vector_to_angle((0, 1))
         self.assertAlmostEqual(angle, 180, places=1)
         
         # 東からの風
-        angle = self.estimator._convert_wind_vector_to_angle(1, 0)
+        angle = self.estimator._convert_wind_vector_to_angle((1, 0))
         self.assertAlmostEqual(angle, 270, places=1)
     
     def test_convert_angle_to_wind_vector(self):

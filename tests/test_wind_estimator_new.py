@@ -58,7 +58,7 @@ class TestWindEstimatorNewAPI(unittest.TestCase):
         
         # 検出結果があることを確認
         self.assertIsNotNone(maneuvers)
-        self.assertIsInstance(maneuvers, pd.DataFrame)
+        self.assertIsInstance(maneuvers, list)
     
     def test_estimate_wind(self):
         """estimate_windメソッドのテスト"""

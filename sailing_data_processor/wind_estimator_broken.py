@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+# 最適化されたwind_estimator.pyファイルに置き換え
+
 """
 sailing_data_processor.wind_estimator モジュール（最適化版）
 
@@ -146,7 +148,7 @@ class WindEstimator:
             # ヘディングの変化を計算（180度をまたぐ場合の処理を含む）
             angle_change = self._calculate_angle_change(heading_prev, heading_next)
             
-            # タック判定（角度が急激に変化）
+            # タック判定（左旋回）
             if abs(angle_change) > self.params["min_tack_angle_change"]:
                 tacks.append({
                     'timestamp': data.iloc[i]['timestamp'] if 'timestamp' in data.columns else i,
@@ -200,56 +202,6 @@ class WindEstimator:
         
         return pd.DataFrame(gybes)
     
-    def detect_maneuvers(self, data: pd.DataFrame, **kwargs) -> List[Dict]:
-        """
-        マニューバー（タック/ジャイブ）を検出する
-        
-        Parameters:
-        -----------
-        data : pd.DataFrame
-            GPSデータ
-        **kwargs : dict
-            追加パラメータ
-            
-        Returns:
-        --------
-        List[Dict]
-            検出されたマニューバーのリスト
-        """
-        tacks = self.detect_tacks(data)
-        gybes = self.detect_gybes(data)
-        
-        maneuvers = []
-        
-        # タックのデータを追加
-        if not tacks.empty:
-            for _, tack in tacks.iterrows():
-                maneuvers.append({
-                    'timestamp': tack['timestamp'],
-                    'type': 'tack',
-                    'angle_change': tack['angle_change'],
-                    'heading_before': tack['heading_before'],
-                    'heading_after': tack['heading_after'],
-                    'index': tack['index']
-                })
-        
-        # ジャイブのデータを追加
-        if not gybes.empty:
-            for _, gybe in gybes.iterrows():
-                maneuvers.append({
-                    'timestamp': gybe['timestamp'],
-                    'type': 'gybe',
-                    'angle_change': gybe['angle_change'],
-                    'heading_before': gybe['heading_before'],
-                    'heading_after': gybe['heading_after'],
-                    'index': gybe['index']
-                })
-        
-        # タイムスタンプでソート
-        maneuvers.sort(key=lambda x: x.get('timestamp', x.get('index', 0)))
-        
-        return maneuvers
-    
     def calculate_laylines(self, wind_direction: Union[float, str], wind_speed: Union[float, str], 
                          mark_position: Tuple[float, float], 
                          boat_position: Tuple[float, float], 
@@ -302,114 +254,17 @@ class WindEstimator:
             'port': port_end,
             'starboard': starboard_end
         }
-    
-    def _calculate_vmg(self, boat_speed: float, boat_course: float, 
-                      wind_direction: float) -> float:
-        """
-        VMG（Velocity Made Good）を計算する
+
+            }
         
-        Parameters:
-        -----------
-        boat_speed : float
-            艇速（ノット）
-        boat_course : float
-            艇の進行方向（度）
-        wind_direction : float
-            風向（度）
-            
-        Returns:
-        --------
-        float
-            VMG（ノット）
-        """
-        # 風向に対する相対角度
-        relative_angle = self._normalize_angle(boat_course - wind_direction)
+        result = {
+            'boat': boat_data,
+            'wind': {
+                'wind_data': wind_data
+            }
+        }
         
-        # VMG計算（風に対する速度成分）
-        vmg = boat_speed * math.cos(math.radians(relative_angle))
-        
-        return vmg
-    
-    def _convert_angle_to_wind_vector(self, angle: float) -> Tuple[float, float]:
-        """
-        風向角度を風向ベクトルに変換する
-        
-        Parameters:
-        -----------
-        angle : float
-            風向（度）
-            
-        Returns:
-        --------
-        Tuple[float, float]
-            風向ベクトル（x, y成分）
-        """
-        # 北を0度として時計回りの角度から、数学的な角度（東が0度、反時計回り）に変換
-        math_angle = 90 - angle
-        
-        x = math.cos(math.radians(math_angle))
-        y = math.sin(math.radians(math_angle))
-        
-        return (x, y)
-    
-    def _convert_wind_vector_to_angle(self, vector: Tuple[float, float]) -> float:
-        """
-        風向ベクトルを風向角度に変換する
-        
-        Parameters:
-        -----------
-        vector : Tuple[float, float]
-            風向ベクトル（x, y成分）
-            
-        Returns:
-        --------
-        float
-            風向（度）
-        """
-        x, y = vector
-        
-        # 数学的な角度（東が0度、反時計回り）を計算
-        math_angle = math.degrees(math.atan2(y, x))
-        
-        # 北を0度として時計回りの角度に変換
-        wind_angle = 90 - math_angle
-        
-        # 0-360度の範囲に正規化
-        return self._normalize_angle(wind_angle)
-    
-    def _get_conversion_functions(self) -> Tuple[callable, callable]:
-        """
-        風向変換関数のペアを取得
-        
-        Returns:
-        --------
-        Tuple[callable, callable]
-            (angle_to_vector, vector_to_angle) 関数のペア
-        """
-        return self._convert_angle_to_wind_vector, self._convert_wind_vector_to_angle
-    
-    def _normalize_angle(self, angle: float) -> float:
-        """
-        角度を0-360度の範囲に正規化する
-        
-        Parameters:
-        -----------
-        angle : float
-            角度（度）
-            
-        Returns:
-        --------
-        float
-            正規化された角度（0-360度）
-        """
-        # まず360で割った余りを計算
-        normalized = angle % 360
-        
-        # 負の値の場合は360を足す
-        if normalized < 0:
-            normalized += 360
-            
-        return normalized
+        return result
     
     def _calculate_angle_change(self, angle1: float, angle2: float) -> float:
         """
@@ -464,8 +319,9 @@ class WindEstimator:
         bearing = math.degrees(math.atan2(x, y))
         
         # 0-360度の範囲に正規化
-        return self._normalize_angle(bearing)
-    
+        return (bearing + 360) % 360
+        return bearing
+
     def _calculate_distance(self, point1: Tuple[float, float], 
                            point2: Tuple[float, float]) -> float:
         """
@@ -494,21 +350,21 @@ class WindEstimator:
         c = 2 * math.asin(math.sqrt(a))
         
         # 地球の半径（海里）
-        r = 3440.065
+        r = 3440.065  
         
         return c * r
     
     def _calculate_endpoint(self, start_point: Tuple[float, float], 
                            bearing: float, distance: float) -> Tuple[float, float]:
         """
-        始点からある方向と距離にある終点を計算する
+        開始点から指定の方向と距離にある終点を計算する
         
         Parameters:
         -----------
         start_point : Tuple[float, float]
-            始点（緯度、経度）
+            開始点（緯度、経度）
         bearing : float
-            方位（度）
+            方向（度）
         distance : float
             距離（海里）
             
@@ -574,63 +430,6 @@ class WindEstimator:
             "method": method,
             "timestamp": timestamp
         }
-    
-    def estimate_wind(self, data: pd.DataFrame) -> Dict[str, Any]:
-        """
-        GPS データから風向風速を推定する
-        
-        テストが期待する形式に合わせたラッパーメソッド
-        
-        Parameters:
-        -----------
-        data : pd.DataFrame
-            GPS データ
-            
-        Returns:
-        --------
-        Dict[str, Any]
-            艇と風の情報を含む辞書
-        """
-        if data.empty:
-            return {
-                'boat': {},
-                'wind': {
-                    'wind_data': []
-                }
-            }
-        
-        # 従来のメソッドを呼び出す
-        wind_df = self.estimate_wind_from_single_boat(data)
-        
-        # テストが期待する形式に変換
-        wind_data = []
-        if not wind_df.empty:
-            for _, row in wind_df.iterrows():
-                wind_data.append({
-                    'timestamp': row['timestamp'],
-                    'direction': row['wind_direction'],
-                    'speed': row['wind_speed'],
-                    'confidence': row['confidence']
-                })
-        
-        # 艇データを作成
-        boat_data = {}
-        if not data.empty:
-            latest = data.iloc[-1]
-            boat_data = {
-                'position': (latest.get('latitude', 0), latest.get('longitude', 0)),
-                'speed': latest.get('sog', latest.get('speed', 0)),
-                'course': latest.get('heading', latest.get('course', 0))
-            }
-        
-        result = {
-            'boat': boat_data,
-            'wind': {
-                'wind_data': wind_data
-            }
-        }
-        
-        return result
     
     def estimate_wind_from_single_boat(self, gps_data: pd.DataFrame, min_tack_angle: float = 30.0,
                                      boat_type: str = None, use_bayesian: bool = True) -> pd.DataFrame:
@@ -703,167 +502,255 @@ class WindEstimator:
         except Exception as e:
             warnings.warn(f"コース/速度からの風向推定エラー: {str(e)}")
         
-        # 推定結果の統合
-        results = []
+        # VMG解析に基づく風向推定
+        wind_from_vmg = None
+        try:
+            wind_from_vmg = self._estimate_wind_from_vmg_analysis(df)
+        except Exception as e:
+            warnings.warn(f"VMG解析からの風向推定エラー: {str(e)}")
         
-        if wind_from_maneuvers:
-            results.append({
-                'timestamp': wind_from_maneuvers['timestamp'],
-                'wind_direction': wind_from_maneuvers['direction'],
-                'wind_speed': wind_from_maneuvers['speed'],
-                'confidence': wind_from_maneuvers['confidence'],
-                'method': wind_from_maneuvers['method']
-            })
-        
-        if wind_from_course:
-            results.append({
-                'timestamp': wind_from_course['timestamp'],
-                'wind_direction': wind_from_course['direction'],
-                'wind_speed': wind_from_course['speed'],
-                'confidence': wind_from_course['confidence'],
-                'method': wind_from_course['method']
-            })
-        
-        if not results:
-            # デフォルト値を返す
-            results.append({
-                'timestamp': df.iloc[-1]['timestamp'] if 'timestamp' in df.columns else None,
-                'wind_direction': 0.0,
-                'wind_speed': 10.0,
-                'confidence': 0.1,
-                'method': 'default'
-            })
-        
-        return pd.DataFrame(results)
-    
-    def estimate_wind_from_course_speed(self, data: pd.DataFrame) -> Optional[Dict[str, Any]]:
-        """
-        コースと速度の変化から風向風速を推定する
-        
-        Parameters:
-        -----------
-        data : pd.DataFrame
-            GPSデータ
-            
-        Returns:
-        --------
-        Optional[Dict[str, Any]]
-            推定結果
-        """
-        if data.empty or len(data) < 10:
-            return None
-        
-        # 簡単な実装：平均的な方向から推定
-        heading_col = 'heading' if 'heading' in data.columns else 'course'
-        if heading_col not in data.columns:
-            return None
-        
-        # 平均的な向きから風向を推定（簡略化）
-        mean_heading = data[heading_col].mean()
-        wind_direction = self._normalize_angle(mean_heading + 180)
-        
-        # 速度から風速を推定（簡略化）
-        speed_col = 'sog' if 'sog' in data.columns else 'speed'
-        if speed_col in data.columns:
-            mean_speed = data[speed_col].mean()
-            wind_speed = mean_speed * 0.7  # 簡単な推定
+        # 統合推定（ベイズを使用する場合）
+        if use_bayesian and wind_from_maneuvers and wind_from_course and wind_from_vmg:
+            final_estimate = self._bayesian_wind_estimate([
+                wind_from_maneuvers,
+                wind_from_course,
+                wind_from_vmg
+            ])
         else:
-            wind_speed = 10.0  # デフォルト値
+            # 最も信頼度の高い推定を使用
+            candidates = [est for est in [wind_from_maneuvers, wind_from_course, wind_from_vmg] if est is not None]
+            if not candidates:
+                final_estimate = {
+                    "direction": 0.0,
+                    "speed": 0.0,
+                    "confidence": 0.0,
+                    "method": "none",
+                    "timestamp": df['timestamp'].iloc[-1] if not df.empty else None
+                }
+            else:
+                final_estimate = max(candidates, key=lambda x: x["confidence"])
         
-        return self._create_wind_result(
-            direction=wind_direction,
-            speed=wind_speed,
-            confidence=0.5,
-            method='course_speed',
-            timestamp=data.iloc[-1]['timestamp'] if 'timestamp' in data.columns else None
-        )
+        # 結果をデータフレームに変換
+        result_df = self._create_wind_time_series(df, final_estimate)
+        
+        # 結果を記録
+        self.estimated_wind = final_estimate
+        
+        # 一時変数のクリア
+        self._temp_bearings = None
+        self._temp_speeds = None
+        
+        gc.collect()
+        
+        return result_df
     
-    def _estimate_wind_from_maneuvers(self, maneuvers: List[Dict], data: pd.DataFrame) -> Optional[Dict[str, Any]]:
+    def detect_maneuvers(self, df: pd.DataFrame) -> List[Dict]:
         """
-        マニューバーから風向風速を推定する
+        マニューバー（タック/ジャイブ）を検出する
         
         Parameters:
         -----------
-        maneuvers : List[Dict]
-            検出されたマニューバー
-        data : pd.DataFrame
-            GPSデータ
+        df : pd.DataFrame
+            GPSデータフレーム
             
         Returns:
         --------
-        Optional[Dict[str, Any]]
-            推定結果
+        List[Dict]
+            検出されたマニューバーのリスト
         """
-        if not maneuvers or len(maneuvers) < 2:
-            return None
+        if df.empty or len(df) < 3:
+            return []
         
-        # タックを抽出
-        tacks = [m for m in maneuvers if m['type'] == 'tack']
+        heading_col = 'heading' if 'heading' in df.columns else 'course'
+        if heading_col not in df.columns:
+            return []
         
-        if not tacks:
-            return None
-        
-        # タックの前後の方向から風向を推定
-        wind_directions = []
-        for tack in tacks:
-            before = tack['heading_before']
-            after = tack['heading_after']
+        maneuvers = []
+        for i in range(1, len(df)-1):
+            heading_prev = df.iloc[i-1][heading_col]
+            heading_current = df.iloc[i][heading_col]
+            heading_next = df.iloc[i+1][heading_col]
             
-            # タックの前後の方向の平均が風向に対して約90度
-            avg_heading = (before + after) / 2
-            wind_dir = self._normalize_angle(avg_heading + 90)
-            wind_directions.append(wind_dir)
+            # ヘディングの変化を計算
+            angle_change = self._calculate_angle_change(heading_prev, heading_next)
+            
+            # タック判定（左旋回）
+            if abs(angle_change) > self.params["min_tack_angle_change"]:
+                maneuvers.append({
+                    'timestamp': df.iloc[i]['timestamp'] if 'timestamp' in df.columns else i,
+                    'type': 'tack',
+                    'angle_change': abs(angle_change),
+                    'heading_before': heading_prev,
+                    'heading_after': heading_next,
+                    'index': i
+                })
+            
+            # ジャイブ判定（右旋回）
+            elif angle_change > self.params["min_tack_angle_change"]:
+                maneuvers.append({
+                    'timestamp': df.iloc[i]['timestamp'] if 'timestamp' in df.columns else i,
+                    'type': 'gybe',
+                    'angle_change': abs(angle_change),
+                    'heading_before': heading_prev,
+                    'heading_after': heading_next,
+                    'index': i
+                })
         
-        # 平均風向
-        mean_wind_direction = np.mean(wind_directions)
-        
-        # 風速は速度から推定（簡略化）
-        speed_col = 'sog' if 'sog' in data.columns else 'speed'
-        if speed_col in data.columns:
-            wind_speed = data[speed_col].mean() * 0.8
-        else:
-            wind_speed = 12.0  # デフォルト値
-        
-        return self._create_wind_result(
-            direction=mean_wind_direction,
-            speed=wind_speed,
-            confidence=0.7,
-            method='maneuvers',
-            timestamp=data.iloc[-1]['timestamp'] if 'timestamp' in data.columns else None
-        )
+        return maneuvers
     
-    def _preprocess_data(self, data: pd.DataFrame) -> pd.DataFrame:
+    def _estimate_wind_from_maneuvers(self, maneuvers: List[Dict], df: pd.DataFrame) -> Dict[str, Any]:
         """
-        データの前処理を行う
+        マニューバーから風向を推定する
+        """
+        if not maneuvers:
+            return self._create_wind_result(0.0, 0.0, 0.0, "maneuvers", None)
         
-        Parameters:
-        -----------
-        data : pd.DataFrame
-            生のGPSデータ
+        # 単純化された実装
+        total_angle = 0
+        total_count = 0
+        
+        for maneuver in maneuvers:
+            before = maneuver.get('heading_before', 0)
+            after = maneuver.get('heading_after', 0)
             
-        Returns:
-        --------
-        pd.DataFrame
-            前処理されたデータ
+            # タックの場合、風向はヘディングの平均の反対
+            if maneuver.get('type') == 'tack':
+                wind_dir = ((before + after) / 2 + 180) % 360
+                total_angle += wind_dir
+                total_count += 1
+        
+        if total_count > 0:
+            avg_wind_dir = total_angle / total_count
+            return self._create_wind_result(avg_wind_dir, 10.0, 0.7, "maneuvers", 
+                                          df['timestamp'].iloc[-1] if not df.empty else None)
+        
+        return self._create_wind_result(0.0, 0.0, 0.0, "maneuvers", None)
+    
+    def estimate_wind_from_course_speed(self, df: pd.DataFrame) -> Dict[str, Any]:
         """
-        df = data.copy()
+        コースと速度のデータから風向を推定（単純化した実装）
+        """
+        if df.empty or len(df) < 5:
+            return self._create_wind_result(0.0, 0.0, 0.0, "course_speed", None)
         
-        # タイムスタンプの確認
-        if 'timestamp' not in df.columns:
-            df['timestamp'] = pd.to_datetime(df.index)
+        # 必要なカラムがあるか確認
+        heading_col = 'heading' if 'heading' in df.columns else 'course'
+        speed_col = 'sog' if 'sog' in df.columns else 'speed'
         
-        # 速度の確認
-        if 'sog' not in df.columns and 'speed' not in df.columns:
-            # 位置から速度を計算する必要がある場合
-            pass
+        if heading_col not in df.columns or speed_col not in df.columns:
+            return self._create_wind_result(0.0, 0.0, 0.0, "course_speed", None)
         
-        # ヘディングの確認
-        if 'heading' not in df.columns and 'course' not in df.columns:
-            # コースから計算する必要がある場合
-            pass
+        # 簡単な推定：平均ヘディングとその反対を風向とする
+        avg_heading = df[heading_col].mean()
+        wind_dir = (avg_heading + 180) % 360
+        
+        # 速度の変動から風速を推定
+        speed_std = df[speed_col].std()
+        wind_speed = speed_std * 5  # 適当な係数
+        
+        return self._create_wind_result(wind_dir, wind_speed, 0.5, "course_speed", 
+                                      df['timestamp'].iloc[-1] if not df.empty else None)
+    
+    def _estimate_wind_from_vmg_analysis(self, df: pd.DataFrame) -> Dict[str, Any]:
+        """
+        VMG解析から風向を推定する（単純化した実装）
+        """
+        if df.empty or len(df) < 5:
+            return self._create_wind_result(0.0, 0.0, 0.0, "vmg_analysis", None)
+        
+        # 必要なカラムがあるか確認
+        heading_col = 'heading' if 'heading' in df.columns else 'course'
+        speed_col = 'sog' if 'sog' in df.columns else 'speed'
+        
+        if heading_col not in df.columns or speed_col not in df.columns:
+            return self._create_wind_result(0.0, 0.0, 0.0, "vmg_analysis", None)
+        
+        # 最高速度を出している時のヘディングを基に推定
+        max_speed_idx = df[speed_col].idxmax()
+        max_speed_heading = df.loc[max_speed_idx, heading_col]
+        
+        # 風下帆走と仮定して、そのヘディングの反対を風向とする
+        wind_dir = (max_speed_heading + 180) % 360
+        wind_speed = 12.0  # 適当な値
+        
+        return self._create_wind_result(wind_dir, wind_speed, 0.6, "vmg_analysis", 
+                                      df['timestamp'].iloc[-1] if not df.empty else None)
+    
+    def _bayesian_wind_estimate(self, estimates: List[Dict[str, Any]]) -> Dict[str, Any]:
+        """
+        ベイズ推定による風向風速の統合（単純化した実装）
+        """
+        if not estimates:
+            return self._create_wind_result(0.0, 0.0, 0.0, "bayesian", None)
+        
+        # 信頼度で重み付けした平均
+        total_weight = 0
+        weighted_direction = 0
+        weighted_speed = 0
+        
+        for est in estimates:
+            weight = est.get('confidence', 0)
+            direction = est.get('direction', 0)
+            speed = est.get('speed', 0)
+            
+            total_weight += weight
+            weighted_direction += direction * weight
+            weighted_speed += speed * weight
+        
+        if total_weight > 0:
+            avg_direction = weighted_direction / total_weight
+            avg_speed = weighted_speed / total_weight
+            avg_confidence = min(0.9, total_weight / len(estimates))
+            
+            return self._create_wind_result(avg_direction, avg_speed, avg_confidence, 
+                                          "bayesian", estimates[0].get('timestamp'))
+        
+        return self._create_wind_result(0.0, 0.0, 0.0, "bayesian", None)
+    
+    def _create_wind_time_series(self, df: pd.DataFrame, estimate: Dict[str, Any]) -> pd.DataFrame:
+        """
+        風向風速の時系列データを作成する
+        """
+        if df.empty:
+            return pd.DataFrame(columns=[
+                'timestamp', 'wind_direction', 'wind_speed', 'confidence', 'method'
+            ])
+        
+        # 全タイムスタンプに対して同じ推定値を設定
+        result_df = pd.DataFrame({
+            'timestamp': df['timestamp'],
+            'wind_direction': estimate['direction'],
+            'wind_speed': estimate['speed'],
+            'confidence': estimate['confidence'],
+            'method': estimate['method']
+        })
+        
+        return result_df
+    
+    def _preprocess_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        風向風速推定のためのデータ前処理
+        """
+        # タイムスタンプのソート
+        if not df.empty and 'timestamp' in df.columns:
+            df = df.sort_values('timestamp').reset_index(drop=True)
+        
+        # 速度カラムがない場合、座標から計算
+        if 'speed' not in df.columns and 'sog' in df.columns:
+            df['speed'] = df['sog']
+        elif 'speed' not in df.columns:
+            # 簡単な速度計算を実装
+            df['speed'] = 0.0
+        
+        # コースカラムがない場合、座標から計算
+        if 'course' not in df.columns and 'heading' in df.columns:
+            df['course'] = df['heading']
+        elif 'course' not in df.columns:
+            # 簡単な方位計算を実装
+            df['course'] = 0.0
         
         return df
-    
+
     def _categorize_maneuver(self, angle_change: float) -> str:
         """
         マニューバーの種類を分類する
