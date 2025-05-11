@@ -112,7 +112,7 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
   };
 
   // 色分けの式を取得
-  const getColorExpression = (scheme: string) => {
+  const getColorExpression = (scheme: string): string | any[] => {
     switch (scheme) {
       case 'speed':
         return [
@@ -169,7 +169,7 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
           'line-cap': 'round',
         },
         paint: {
-          'line-color': getColorExpression(colorScheme),
+          'line-color': getColorExpression(colorScheme) as any,
           'line-width': lineWidth,
         },
       });
@@ -179,7 +179,7 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
       source.setData(getTrackGeoJSON() as any);
       
       // 色分けスキームを更新
-      map.setPaintProperty(layerId, 'line-color', getColorExpression(colorScheme));
+      map.setPaintProperty(layerId, 'line-color', getColorExpression(colorScheme) as any);
       map.setPaintProperty(layerId, 'line-width', lineWidth);
     }
 
@@ -202,7 +202,7 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
               6, // 選択されたポイントは大きく
               3  // 通常のポイント
             ],
-            'circle-color': getColorExpression(colorScheme),
+            'circle-color': getColorExpression(colorScheme) as any,
             'circle-stroke-color': '#ffffff',
             'circle-stroke-width': 1,
             'circle-opacity': [
