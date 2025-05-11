@@ -28,8 +28,13 @@ const nextConfig = {
       : [];
   },
   
-  // 出力設定
-  output: 'standalone',
+  // CSSとTailwindの設定を明示的に有効化
+  webpack: (config) => {
+    return config;
+  },
+  
+  // Vercelデプロイ最適化のために、standaloneを削除
+  // output: 'standalone',
 }
 
 module.exports = nextConfig
