@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-WindEstimatorクラスのマニューバー検出機能のテスト
+WindEstimatorクラスの包括的なテスト
 """
 
 import sys
@@ -8,6 +8,7 @@ import os
 import unittest
 import pandas as pd
 import numpy as np
+from datetime import datetime, timedelta
 
 # プロジェクトルートをパスに追加
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -28,96 +29,197 @@ class TestWindEstimator(unittest.TestCase):
         latitudes = [35.45] * 20  # 緯度は一定
         longitudes = [139.65] * 20  # 経度も一定
         
-        # タックパターンの方位変化（45度→315度）
-        bearings = [45] * 9 + [0] + [315] * 10
+        # ヘディングのパターン（明確なタック）
+        # 045度→急激に135度へ変化→維持
+        headings = [45] * 8 + [90] + [135] * 11
+        speeds = [6.0] * 20  # 速度は一定
         
-        # 速度データ（タック中に減速）
-        speeds = [5.5] * 9 + [3.0] + [5.5] * 10
-        
-        return pd.DataFrame({
+        data = pd.DataFrame({
             'timestamp': times,
             'latitude': latitudes,
             'longitude': longitudes,
-            'speed': speeds,
-            'course': bearings
+            'sog': speeds,
+            'heading': headings
         })
+        
+        return data
     
-    def test_categorize_maneuver(self):
-        """マニューバー分類機能のテスト"""
-        # 現在のWindEstimatorには_categorize_maneuverがないためスキップ
-        self.skipTest("_categorize_maneuver is not implemented in current version")
-        return
+    def _create_gybe_data(self):
+        """ジャイブのテストデータを作成"""
+        times = pd.date_range(start='2023-01-01 12:00:00', periods=20, freq='5s')
+        latitudes = [35.45] * 20
+        longitudes = [139.65] * 20
         
-        # テストシナリオの設定
-        test_cases = [
-            # (before_bearing, after_bearing, wind_direction, boat_type, expected_type)
-            # タックのテスト
-            (30, 330, 0, 'laser', 'tack'),
-            (330, 30, 0, 'laser', 'tack'),
-            # ジャイブのテスト
-            (150, 210, 0, 'laser', 'jibe'),
-            (210, 150, 0, 'laser', 'jibe'),
-            # ベアアウェイのテスト
-            (30, 150, 0, 'laser', 'bear_away'),
-            # ヘッドアップのテスト
-            (150, 30, 0, 'laser', 'head_up'),
-            # 異なる風向でのテスト
-            (90, 270, 180, 'laser', 'tack'),
-            (270, 90, 180, 'laser', 'tack')
-        ]
+        # ヘディングのパターン（明確なジャイブ）
+        # 225度→急激に315度へ変化
+        headings = [225] * 8 + [270] + [315] * 11
+        speeds = [8.0] * 20
         
-        for before, after, wind_dir, boat, expected in test_cases:
-            result = self.estimator._categorize_maneuver(before, after, wind_dir, boat)
-            self.assertEqual(result['maneuver_type'], expected,
-                         f"期待されるマニューバタイプ（{expected}）と実際の結果（{result['maneuver_type']}）が一致しません")
-            
-            # 信頼度が0-1の範囲内にあることを確認
-            self.assertTrue(0 <= result['confidence'] <= 1,
-                        f"信頼度（{result['confidence']}）が範囲外です")
-            
-            # 状態が正しく設定されていることを確認
-            self.assertIn(result['before_state'], ['upwind', 'downwind', 'reaching'],
-                      f"転換前の状態（{result['before_state']}）が無効です")
-            self.assertIn(result['after_state'], ['upwind', 'downwind', 'reaching'],
-                      f"転換後の状態（{result['after_state']}）が無効です")
+        data = pd.DataFrame({
+            'timestamp': times,
+            'latitude': latitudes,
+            'longitude': longitudes,
+            'sog': speeds,
+            'heading': headings
+        })
+        
+        return data
+    
+    def _create_continuous_data(self):
+        """連続的なヘディング変化のデータを作成"""
+        times = pd.date_range(start='2023-01-01 12:00:00', periods=100, freq='5s')
+        latitudes = [35.45] * 100
+        longitudes = [139.65] * 100
+        
+        # ゆっくりと継続的にヘディングが変化
+        headings = np.linspace(0, 180, 100)
+        speeds = [6.0] * 100
+        
+        data = pd.DataFrame({
+            'timestamp': times,
+            'latitude': latitudes,
+            'longitude': longitudes,
+            'sog': speeds,
+            'heading': headings
+        })
+        
+        return data
+    
+    def test_detect_tacks(self):
+        """タック検出のテスト"""
+        data = self._create_simple_tack_data()
+        tacks = self.estimator.detect_tacks(data)
+        
+        # タックが1つ検出されることを確認
+        self.assertEqual(len(tacks), 1)
+        
+        if len(tacks) > 0:
+            tack = tacks.iloc[0]
+            # タックの角度変化が適切か確認
+            self.assertGreater(tack['angle_change'], 80)
+    
+    def test_detect_gybes(self):
+        """ジャイブ検出のテスト"""
+        data = self._create_gybe_data()
+        gybes = self.estimator.detect_gybes(data)
+        
+        # ジャイブが1つ検出されることを確認
+        self.assertEqual(len(gybes), 1)
+        
+        if len(gybes) > 0:
+            gybe = gybes.iloc[0]
+            # ジャイブの角度変化が適切か確認
+            self.assertGreater(gybe['angle_change'], 80)
+    
+    def test_no_false_detection(self):
+        """誤検出がないことのテスト"""
+        data = self._create_continuous_data()
+        
+        tacks = self.estimator.detect_tacks(data)
+        gybes = self.estimator.detect_gybes(data)
+        
+        # 連続的な変化ではタックやジャイブを検出しない
+        self.assertEqual(len(tacks), 0)
+        self.assertEqual(len(gybes), 0)
+    
+    def test_estimate_wind_from_empty_data(self):
+        """空のデータでの風推定テスト"""
+        data = pd.DataFrame(columns=['timestamp', 'latitude', 'longitude', 'sog', 'heading'])
+        
+        result = self.estimator.estimate_wind(data)
+        
+        # 空のデータでもエラーにならず、空の結果を返すことを確認
+        self.assertIsNotNone(result)
+        self.assertIn('boat', result)
+        self.assertIn('wind', result)
+    
+    def test_estimate_wind_from_data(self):
+        """データからの風推定テスト"""
+        data = self._create_simple_tack_data()
+        
+        result = self.estimator.estimate_wind(data)
+        
+        # 結果の構造を確認
+        self.assertIsNotNone(result)
+        self.assertIn('boat', result)
+        self.assertIn('wind', result)
+        
+        # 風データが推定されていることを確認
+        if 'wind' in result and result['wind'] is not None:
+            wind_data = result['wind']['wind_data']
+            self.assertGreater(len(wind_data), 0)
+    
+    def test_calculate_laylines(self):
+        """レイライン計算のテスト"""
+        wind_direction = 270  # 西からの風
+        wind_speed = 12
+        mark_position = {'latitude': 35.5, 'longitude': 139.7}
+        current_position = {'latitude': 35.45, 'longitude': 139.65}
+        
+        laylines = self.estimator.calculate_laylines(
+            wind_direction, wind_speed,
+            mark_position, current_position
+        )
+        
+        # レイラインの結果を確認
+        self.assertIsNotNone(laylines)
+        self.assertIn('starboard', laylines)
+        self.assertIn('port', laylines)
+        self.assertIn('direct_bearing', laylines)
+        self.assertIn('tacking_required', laylines)
+    
+    def test_calculate_vmg(self):
+        """VMG計算のテスト"""
+        boat_speed = 6.0
+        boat_heading = 45
+        wind_direction = 0  # 北からの風
+        
+        vmg = self.estimator._calculate_vmg(boat_speed, boat_heading, wind_direction)
+        
+        # VMGが適切な範囲内であることを確認
+        self.assertGreater(vmg, 0)
+        self.assertLessEqual(vmg, boat_speed)
+    
+    def test_normalize_angle(self):
+        """角度正規化のテスト"""
+        # 様々な角度をテスト
+        self.assertEqual(self.estimator._normalize_angle(0), 0)
+        self.assertEqual(self.estimator._normalize_angle(360), 0)
+        self.assertEqual(self.estimator._normalize_angle(-90), 270)
+        self.assertEqual(self.estimator._normalize_angle(450), 90)
+    
+    def test_convert_wind_vector_to_angle(self):
+        """風ベクトルから角度への変換テスト"""
+        # 北からの風
+        angle = self.estimator._convert_wind_vector_to_angle(0, 1)
+        self.assertAlmostEqual(angle, 180, places=1)
+        
+        # 東からの風
+        angle = self.estimator._convert_wind_vector_to_angle(1, 0)
+        self.assertAlmostEqual(angle, 270, places=1)
+    
+    def test_convert_angle_to_wind_vector(self):
+        """風向角度からベクトルへの変換テスト"""
+        # 北からの風（風向180度）
+        u, v = self.estimator._convert_angle_to_wind_vector(180, 10)
+        self.assertAlmostEqual(u, 0, places=1)
+        self.assertAlmostEqual(v, -10, places=1)
+        
+        # 東からの風（風向270度）
+        u, v = self.estimator._convert_angle_to_wind_vector(270, 10)
+        self.assertAlmostEqual(u, -10, places=1)
+        self.assertAlmostEqual(v, 0, places=1)
 
-    def test_determine_point_state(self):
-        """風に対する状態判定のテスト"""
-        # 現在の実装では_determine_point_stateは存在しないため、
-        # このテストはスキップします
-        self.skipTest("_determine_point_state is not implemented in current version")
-
-    def test_detect_maneuvers_integration(self):
-        """マニューバー検出の統合テスト"""
-        # detect_maneuversのAPIが変更されているため、正しい引数を使用
-        # シンプルなタックパターンのデータを作成
-        test_data = self._create_simple_tack_data()
+    def test_get_conversion_functions(self):
+        """単位変換関数のテスト"""
+        lat_func, lon_func = self.estimator._get_conversion_functions(35.5)
         
-        # マニューバー検出（風向は指定しない）
-        try:
-            maneuvers = self.estimator.detect_maneuvers(test_data)
-        except TypeError:
-            # 引数の数が違う場合はスキップ
-            self.skipTest("detect_maneuvers API was changed")
+        # 変換関数が妥当な値を返すことを確認
+        meters_per_degree_lat = lat_func(1)
+        meters_per_degree_lon = lon_func(1)
         
-        # 検出結果があることを確認
-        self.assertIsNotNone(maneuvers, "マニューバー検出結果がNoneです")
-        self.assertGreater(len(maneuvers), 0, "マニューバーが検出されていません")
-        
-        # タックが正しく検出されていることを確認
-        if len(maneuvers) > 0:
-            # 最初の検出結果がタックであることを確認
-            self.assertEqual(maneuvers.iloc[0]['maneuver_type'], 'tack', 
-                         "検出されたマニューバーがタックではありません")
-            
-            # 信頼度スコアが存在することを確認
-            self.assertIn('maneuver_confidence', maneuvers.columns, 
-                      "信頼度スコアが結果に含まれていません")
-            
-            # 信頼度スコアが妥当な範囲にあることを確認
-            self.assertTrue(0 <= maneuvers.iloc[0]['maneuver_confidence'] <= 1,
-                        f"信頼度（{maneuvers.iloc[0]['maneuver_confidence']}）が範囲外です")
-
+        self.assertGreater(meters_per_degree_lat, 100000)  # 大体111km
+        self.assertGreater(meters_per_degree_lon, 80000)   # 緯度35度で大体91km
 
 if __name__ == '__main__':
     unittest.main()
