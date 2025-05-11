@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Layout } from '@/components/common/Layout';
+import Layout from '@/components/common/Layout';
 import MapView from '@/components/map/MapView';
 import TrackLayer from '@/components/map/TrackLayer';
 import WindLayer from '@/components/map/WindLayer';
