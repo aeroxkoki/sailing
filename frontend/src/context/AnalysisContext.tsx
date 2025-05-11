@@ -15,11 +15,17 @@ const initialAnalysisData: AnalysisData = {
   strategyPoints: [],
   averageWindDirection: 0,
   averageWindSpeed: 0,
+  maxWindSpeed: 0,
+  windStability: 0,
+  averageSpeed: 0,
+  maxSpeed: 0,
   upwindVMG: 0,
   downwindVMG: 0,
   trackLength: 0,
   totalTacks: 0,
   totalJibes: 0,
+  tackEfficiency: 0,
+  jibeEfficiency: 0,
   performanceScore: 0,
 };
 
@@ -101,9 +107,13 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
         windData: windResponse.data.windData,
         averageWindDirection: windResponse.data.averageWindDirection,
         averageWindSpeed: windResponse.data.averageWindSpeed,
+        maxWindSpeed: windResponse.data.maxWindSpeed,
+        windStability: windResponse.data.windStability,
         strategyPoints: strategyResponse.data.strategyPoints,
         totalTacks: strategyResponse.data.totalTacks,
         totalJibes: strategyResponse.data.totalJibes,
+        tackEfficiency: strategyResponse.data.tackEfficiency,
+        jibeEfficiency: strategyResponse.data.jibeEfficiency,
         performanceScore: strategyResponse.data.performanceScore
       }));
     } catch (err: any) {
