@@ -20,6 +20,9 @@ interface AnalysisPanelProps {
     icon?: React.ReactNode;
     color?: string;
   }>;
+  onTimeChange?: (time: number) => void;
+  playing?: boolean;
+  onPlayingChange?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
@@ -30,8 +33,15 @@ const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
   className = '',
   onLayerToggle,
   layers = [],
+  onTimeChange,
+  playing,
+  onPlayingChange,
 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  // playingとonPlayingChangeが渡されている場合はそれを使用、なければ内部状態を使用
+  const [internalPlaying, setInternalPlaying] = useState(false);
+  const isPlaying = playing !== undefined ? playing : internalPlaying;
+  const setIsPlaying = onPlayingChange || setInternalPlaying;
+  
   const [isPanelExpanded, setIsPanelExpanded] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const [isDetailViewOpen, setIsDetailViewOpen] = useState(false);
@@ -44,7 +54,9 @@ const AnalysisPanel: React.FC<AnalysisPanelProps> = ({
   // 時間変更ハンドラ
   const handleTimeChange = (time: number) => {
     // 親コンポーネントに通知
-    // 例: onTimeChange(time);
+    if (onTimeChange) {
+      onTimeChange(time);
+    }
   };
   
   // パネル展開/折りたたみの切り替え
