@@ -30,11 +30,6 @@ const nextConfig = {
   
   // 出力設定
   output: 'standalone',
-  
-  // Vercel向けの設定
-  experimental: {
-    optimizeFonts: true,
-  },
 }
 
 module.exports = nextConfig
