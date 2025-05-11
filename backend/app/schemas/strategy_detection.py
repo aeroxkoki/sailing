@@ -44,3 +44,44 @@ class StrategyAnalysisOptions(BaseModel):
     calculate_performance_score: bool = Field(True, description="パフォーマンススコアを計算するかどうか")
     generate_recommendations: bool = Field(True, description="推奨事項を生成するかどうか")
     detailed_analysis: bool = Field(False, description="詳細分析を行うかどうか")
+
+
+class StrategyPoint(BaseModel):
+    """戦略ポイント"""
+    id: UUID = Field(..., description="ID")
+    timestamp: str = Field(..., description="タイムスタンプ")
+    latitude: float = Field(..., description="緯度")
+    longitude: float = Field(..., description="経度")
+    strategy_type: StrategyType = Field(..., description="戦略タイプ")
+    confidence: float = Field(..., description="信頼度（0-1）")
+    details: dict = Field({}, description="詳細情報")
+    
+    class Config:
+        use_enum_values = True
+
+
+class PerformanceMetrics(BaseModel):
+    """パフォーマンスメトリクス"""
+    overall_score: float = Field(..., description="総合スコア（0-1）")
+    maneuver_efficiency: float = Field(..., description="マニューバー効率（0-1）")
+    wind_shift_response: float = Field(..., description="風向シフト対応（0-1）")
+    layline_accuracy: float = Field(..., description="レイライン精度（0-1）")
+    details: dict = Field({}, description="詳細情報")
+
+
+class StrategyRecommendation(BaseModel):
+    """戦略推奨事項"""
+    title: str = Field(..., description="タイトル")
+    description: str = Field(..., description="説明")
+    priority: str = Field(..., description="優先度（high/medium/low）")
+    category: str = Field(..., description="カテゴリ")
+
+
+class StrategyDetectionResult(BaseModel):
+    """戦略検出結果"""
+    session_id: UUID = Field(..., description="セッションID")
+    strategy_points: List[StrategyPoint] = Field([], description="戦略ポイントリスト")
+    performance_metrics: Optional[PerformanceMetrics] = Field(None, description="パフォーマンスメトリクス")
+    recommendations: List[StrategyRecommendation] = Field([], description="推奨事項リスト")
+    summary: dict = Field({}, description="サマリー情報")
+    created_at: str = Field(..., description="作成日時")

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-&e���ӹ
+戦略検出サービス
 
-����nGPS���h�����K�&eݤ�Ȓ�Y���ӹ_��Л
+セッションのGPSデータと風向風速データから戦略ポイントを検出
 """
 
+import uuid
 from typing import Dict, Any, List, Optional
 from uuid import UUID
 from datetime import datetime
@@ -13,97 +14,102 @@ from sqlalchemy.orm import Session
 import pandas as pd
 import numpy as np
 
-from app.models.strategy_point import StrategyPoint, StrategyDetectionResult
-from app.schemas.strategy_detection import StrategyDetectionInput
+from app.models.strategy_point import StrategyPoint as ModelStrategyPoint, StrategyDetectionResult as ModelStrategyDetectionResult
+from app.schemas.strategy_detection import StrategyDetectionInput, StrategyDetectionResult, StrategyPoint, PerformanceMetrics, StrategyRecommendation, StrategyType
 from sailing_data_processor.strategy.strategy_detector_with_propagation import StrategyDetectorWithPropagation
 from sailing_data_processor.strategy.points import WindShiftPoint, TackPoint, LaylinePoint
+
+from fastapi import HTTPException, status
 
 def detect_strategies(
     params: StrategyDetectionInput,
     user_id: UUID,
     db: Session
-) -> Dict[str, Any]:
+) -> StrategyDetectionResult:
     """
-    &eݤ�Ȓ�
+    戦略ポイントを検出
     
     Parameters:
     -----------
     params : StrategyDetectionInput
-        &e������
+        戦略検出パラメータ
     user_id : UUID
-        ����ID
+        ユーザーID
     db : Session
-        �������÷��
+        データベースセッション
         
     Returns:
     --------
-    Dict[str, Any]
-        &e�P�
+    StrategyDetectionResult
+        戦略検出結果
     """
     try:
-        # TODO: �÷��IDK�GPS���h������֗
-        # ��o���hWf�n����(
+        # TODO: セッションIDからGPSデータと風向データを取得
+        # デモ用のサンプルデータを使用
         course_data = _get_demo_course_data()
         wind_field = _get_demo_wind_field()
         
-        # &e�hn
+        # 戦略検出のインスタンス作成
         detector = StrategyDetectorWithPropagation()
         
-        # &eݤ��n�
-        # ����n�
+        # 戦略ポイントの検出
+        # 風向変化の検出
         wind_shifts = detector.detect_wind_shifts_with_propagation(
             course_data=course_data,
             wind_field=wind_field
         )
         
-        # �ïݤ��n�
+        # 最適タックポイント検出
         tack_points = detector.detect_optimal_tacks(
             course_data=course_data,
             wind_field=wind_field
         )
         
-        # ���ݤ��n�
+        # レイラインポイント検出
         layline_points = detector.detect_laylines(
             course_data=course_data,
             wind_field=wind_field
         )
         
-        # �P��q
+        # 結果の変換
         strategy_points = _convert_to_strategy_points(
             wind_shifts=wind_shifts,
             tack_points=tack_points,
             layline_points=layline_points
         )
         
-        # ��k�eOգ���
+        # 検出感度による絞り込み
         filtered_points = _filter_by_sensitivity(
             strategy_points=strategy_points,
             sensitivity=params.detection_sensitivity
         )
         
-        # ���bk	�
+        # 結果の作成
         result = _create_strategy_detection_result(
             strategy_points=filtered_points,
             session_id=str(params.session_id)
         )
         
-        # TODO: P��������k�X�׷��	
+        # TODO: 結果をデータベースに保存
         
         return result
     
     except Exception as e:
-        return {"error": f"&e����: {str(e)}"}
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"戦略検出エラー: {str(e)}"
+        )
 
 def _get_demo_course_data() -> Dict[str, Any]:
     """
-    ��(n�������
+    デモ用のコースデータを生成
     
     Returns:
     --------
     Dict[str, Any]
-        ������
+        コースデータ
     """
-    # ���
+    # 仮想データ
     return {
         "start_time": datetime.now(),
         "legs": [
@@ -120,16 +126,16 @@ def _get_demo_course_data() -> Dict[str, Any]:
 
 def _get_demo_wind_field() -> Dict[str, Any]:
     """
-    ��(n�n4����
+    デモ用の風場データを生成
     
     Returns:
     --------
     Dict[str, Any]
-        �n4���
+        風場データ
     """
     import numpy as np
     
-    # ���
+    # 仮想データ
     lat_grid, lon_grid = np.meshgrid(
         np.linspace(34.9, 35.2, 10),
         np.linspace(138.9, 139.2, 10)
@@ -139,200 +145,229 @@ def _get_demo_wind_field() -> Dict[str, Any]:
         "time": datetime.now(),
         "lat_grid": lat_grid,
         "lon_grid": lon_grid,
-        "wind_direction": np.ones_like(lat_grid) * 270.0,  # �
-        "wind_speed": np.ones_like(lat_grid) * 10.0,  # 10���
-        "confidence": np.ones_like(lat_grid) * 0.8  # �<�80%
+        "wind_direction": np.ones_like(lat_grid) * 270.0,  # 西風
+        "wind_speed": np.ones_like(lat_grid) * 10.0,  # 10ノット
+        "confidence": np.ones_like(lat_grid) * 0.8  # 信頼度80%
     }
 
 def _convert_to_strategy_points(
     wind_shifts: List,
     tack_points: List,
     layline_points: List
-) -> List[Dict[str, Any]]:
+) -> List[StrategyPoint]:
     """
-    �U�_.&eݤ�Ȓqbk	�
+    検出された各ポイントを共通フォーマットに変換
     
     Parameters:
     -----------
     wind_shifts : List
-        ����ݤ��n��
+        風向変化ポイントリスト
     tack_points : List
-        �ïݤ��n��
+        タックポイントリスト
     layline_points : List
-        ���ݤ��n��
+        レイラインポイントリスト
         
     Returns:
     --------
-    List[Dict[str, Any]]
-        qbk	�U�_&eݤ��
+    List[StrategyPoint]
+        共通フォーマットの戦略ポイント
     """
     strategy_points = []
     
-    # ����ݤ��n	�
+    # 風向変化ポイントの変換
     for point in wind_shifts:
-        strategy_points.append({
-            "timestamp": point.time_estimate,
-            "latitude": point.position[0],
-            "longitude": point.position[1],
-            "strategy_type": "wind_shift",
-            "confidence": point.shift_probability,
-            "metadata": {
+        strategy_points.append(StrategyPoint(
+            id=uuid.uuid4(),
+            timestamp=point.time_estimate.isoformat(),
+            latitude=point.position[0],
+            longitude=point.position[1],
+            strategy_type=StrategyType.WIND_SHIFT,
+            confidence=point.shift_probability,
+            details={
                 "shift_angle": point.shift_angle,
                 "before_direction": point.before_direction,
                 "after_direction": point.after_direction,
                 "strategic_score": point.strategic_score
             }
-        })
+        ))
     
-    # �ïݤ��n	�
+    # タックポイントの変換
     for point in tack_points:
-        strategy_points.append({
-            "timestamp": point.time_estimate,
-            "latitude": point.position[0],
-            "longitude": point.position[1],
-            "strategy_type": "tack",
-            "confidence": 0.8,  # �n$
-            "metadata": {
+        strategy_points.append(StrategyPoint(
+            id=uuid.uuid4(),
+            timestamp=point.time_estimate.isoformat(),
+            latitude=point.position[0],
+            longitude=point.position[1],
+            strategy_type=StrategyType.TACK,
+            confidence=0.8,  # 固定値
+            details={
                 "vmg_gain": point.vmg_gain if hasattr(point, 'vmg_gain') else 0.0,
                 "strategic_score": point.strategic_score if hasattr(point, 'strategic_score') else 0.0
             }
-        })
+        ))
     
-    # ���ݤ��n	�
+    # レイラインポイントの変換
     for point in layline_points:
-        strategy_points.append({
-            "timestamp": point.time_estimate,
-            "latitude": point.position[0],
-            "longitude": point.position[1],
-            "strategy_type": "layline",
-            "confidence": point.confidence if hasattr(point, 'confidence') else 0.8,
-            "metadata": {
+        strategy_points.append(StrategyPoint(
+            id=uuid.uuid4(),
+            timestamp=point.time_estimate.isoformat(),
+            latitude=point.position[0],
+            longitude=point.position[1],
+            strategy_type=StrategyType.LAYLINE,
+            confidence=point.confidence if hasattr(point, 'confidence') else 0.8,
+            details={
                 "mark_id": point.mark_id if hasattr(point, 'mark_id') else "",
                 "strategic_score": point.strategic_score if hasattr(point, 'strategic_score') else 0.0
             }
-        })
+        ))
     
     return strategy_points
 
 def _filter_by_sensitivity(
-    strategy_points: List[Dict[str, Any]],
+    strategy_points: List[StrategyPoint],
     sensitivity: float
-) -> List[Dict[str, Any]]:
+) -> List[StrategyPoint]:
     """
-    ��k�eDf&eݤ�Ȓգ���
+    検出感度による戦略ポイントのフィルタリング
     
     Parameters:
     -----------
-    strategy_points : List[Dict[str, Any]]
-        &eݤ��n��
+    strategy_points : List[StrategyPoint]
+        戦略ポイントリスト
     sensitivity : float
-        ��0-1	
+        検出感度（0-1）
         
     Returns:
     --------
-    List[Dict[str, Any]]
-        գ���U�_&eݤ��
+    List[StrategyPoint]
+        フィルタリングされた戦略ポイント
     """
-    # ��k�eO�<�n�$��
-    # �L�D{i�$oNOj���Onݤ��L�U��	
+    # 検出感度に基づく信頼度の閾値計算
+    # 感度が高いほど低い信頼度のポイントも検出される
     confidence_threshold = 1.0 - sensitivity
     
     filtered_points = [
         point for point in strategy_points
-        if point["confidence"] >= confidence_threshold
+        if point.confidence >= confidence_threshold
     ]
     
     return filtered_points
 
 def _create_strategy_detection_result(
-    strategy_points: List[Dict[str, Any]],
+    strategy_points: List[StrategyPoint],
     session_id: str
-) -> Dict[str, Any]:
+) -> StrategyDetectionResult:
     """
-    &e�P��API�Tbk	�
+    戦略検出結果をAPIレスポンス形式に変換
     
     Parameters:
     -----------
-    strategy_points : List[Dict[str, Any]]
-        �U�_&eݤ��
+    strategy_points : List[StrategyPoint]
+        検出された戦略ポイント
     session_id : str
-        �÷��ID
+        セッションID
         
     Returns:
     --------
-    Dict[str, Any]
-        API�Tbn&e�P�
+    StrategyDetectionResult
+        APIレスポンス形式の戦略検出結果
     """
-    # ���%nݤ��p�����
-    tack_count = sum(1 for p in strategy_points if p["strategy_type"] == "tack")
-    jibe_count = sum(1 for p in strategy_points if p["strategy_type"] == "jibe")
-    wind_shift_count = sum(1 for p in strategy_points if p["strategy_type"] == "wind_shift")
-    layline_count = sum(1 for p in strategy_points if p["strategy_type"] == "layline")
+    # 各種ポイントの集計
+    tack_count = sum(1 for p in strategy_points if p.strategy_type == StrategyType.TACK)
+    jibe_count = sum(1 for p in strategy_points if p.strategy_type == StrategyType.JIBE)
+    wind_shift_count = sum(1 for p in strategy_points if p.strategy_type == StrategyType.WIND_SHIFT)
+    layline_count = sum(1 for p in strategy_points if p.strategy_type == StrategyType.LAYLINE)
     
-    # �h�n
+    # 推奨事項の生成
     recommendations = _generate_recommendations(strategy_points)
     
-    # ���\
-    result = {
-        "strategy_points": strategy_points,
-        "created_at": datetime.now(),
-        "session_id": session_id,
-        "track_length": 0.0,  # TODO: ��n$��
-        "total_tacks": tack_count,
-        "total_jibes": jibe_count,
-        "upwind_percentage": 0.0,  # TODO: ��n$��
-        "downwind_percentage": 0.0,  # TODO: ��n$��
-        "reaching_percentage": 0.0,  # TODO: ��n$��
-        "performance_score": 0.0,  # TODO: ��n$��
-        "total_wind_shifts": wind_shift_count,
-        "total_layline_hits": layline_count,
-        "recommendations": recommendations
+    # パフォーマンスメトリクスの仮作成
+    performance_metrics = PerformanceMetrics(
+        overall_score=0.75,  # TODO: 実際の計算を実装
+        maneuver_efficiency=0.8,
+        wind_shift_response=0.7,
+        layline_accuracy=0.85,
+        details={
+            "tack_count": tack_count,
+            "jibe_count": jibe_count,
+            "wind_shift_count": wind_shift_count
+        }
+    )
+    
+    # サマリー作成
+    summary = {
+        "total_points": len(strategy_points),
+        "strategy_types": {
+            "tack": tack_count,
+            "jibe": jibe_count,
+            "wind_shift": wind_shift_count,
+            "layline": layline_count
+        }
     }
+    
+    # 結果作成
+    result = StrategyDetectionResult(
+        session_id=UUID(session_id),
+        strategy_points=strategy_points,
+        performance_metrics=performance_metrics,
+        recommendations=recommendations,
+        summary=summary,
+        created_at=datetime.now().isoformat()
+    )
     
     return result
 
-def _generate_recommendations(strategy_points: List[Dict[str, Any]]) -> List[str]:
+def _generate_recommendations(strategy_points: List[StrategyPoint]) -> List[StrategyRecommendation]:
     """
-    &eݤ��k�eDf�h��
+    戦略ポイントに基づく推奨事項を生成
     
     Parameters:
     -----------
-    strategy_points : List[Dict[str, Any]]
-        &eݤ��
+    strategy_points : List[StrategyPoint]
+        戦略ポイント
         
     Returns:
     --------
-    List[str]
-        �h�n��
+    List[StrategyRecommendation]
+        推奨事項のリスト
     """
     recommendations = []
     
-    # ����n��kdDfn�h�
-    wind_shifts = [p for p in strategy_points if p["strategy_type"] == "wind_shift"]
+    # 風向変化の分析に基づく推奨
+    wind_shifts = [p for p in strategy_points if p.strategy_type == StrategyType.WIND_SHIFT]
     if len(wind_shifts) > 0:
-        recommendations.append(
-            f"{len(wind_shifts)}dn����L�U�~W_���nM�gij�ïLŁgY"
-        )
+        recommendations.append(StrategyRecommendation(
+            title="風向変化への対応",
+            description=f"{len(wind_shifts)}回の風向変化が検出されました。風の変化に早く対応するようタックタイミングを最適化しましょう。",
+            priority="high",
+            category="wind_analysis"
+        ))
     
-    # �ïpkdDfn�h�
-    tack_points = [p for p in strategy_points if p["strategy_type"] == "tack"]
+    # タック数に基づく推奨
+    tack_points = [p for p in strategy_points if p.strategy_type == StrategyType.TACK]
     if len(tack_points) > 5:
-        recommendations.append(
-            "�ï�pLDgY
-Łj�ï��YShg��L
-W~Y"
-        )
+        recommendations.append(StrategyRecommendation(
+            title="タック数の最適化",
+            description="タック数が多めです。風の変化を正確に読んでタック回数を減らしましょう。",
+            priority="medium",
+            category="maneuver"
+        ))
     elif len(tack_points) < 2 and len(strategy_points) > 0:
-        recommendations.append(
-            "�ï�pLjDgY�	k�[_�ïgVMG�
-gM���'LB�~Y"
-        )
+        recommendations.append(StrategyRecommendation(
+            title="タック回数不足",
+            description="タック数が少ないです。風の振れに合わせたタックでVMGを向上させる機会があるかもしれません。",
+            priority="medium",
+            category="maneuver"
+        ))
     
-    # ���0TkdDfn�h�
-    layline_points = [p for p in strategy_points if p["strategy_type"] == "layline"]
+    # レイラインに基づく推奨
+    layline_points = [p for p in strategy_points if p.strategy_type == StrategyType.LAYLINE]
     if len(layline_points) > 0:
-        recommendations.append(
-            "���k�k0TWfD~Y���k�eO~g�ï�E�[�h	)j4LB�~Y"
-        )
+        recommendations.append(StrategyRecommendation(
+            title="レイライン戦略",
+            description="レイラインに到達しています。風の変化に注意してタックのタイミングを調整する機会があります。",
+            priority="low",
+            category="tactics"
+        ))
     
     return recommendations
