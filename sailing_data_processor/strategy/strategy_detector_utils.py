@@ -6,6 +6,140 @@
 """
 import numpy as np
 from typing import Tuple, Optional, Union, Literal
+from datetime import datetime, timedelta
+
+
+def normalize_to_timestamp(t) -> float:
+    """
+    様々な時間表現から統一したUNIXタイムスタンプを作成
+    
+    Parameters:
+    -----------
+    t : any
+        様々な時間表現(datetime, timedelta, int, float等)
+        
+    Returns:
+    --------
+    float
+        UNIXタイムスタンプ形式の値
+    """
+    if isinstance(t, datetime):
+        # datetimeをUNIXタイムスタンプに変換
+        return t.timestamp()
+    elif isinstance(t, timedelta):
+        # timedeltaを秒に変換
+        return t.total_seconds()
+    elif isinstance(t, (int, float)):
+        # 数値はそのままfloatで返す
+        return float(t)
+    elif isinstance(t, dict):
+        # 辞書型の場合
+        if 'timestamp' in t:
+            # timestampキーを持つ辞書の場合
+            return float(t['timestamp'])
+        else:
+            # timestampキーがない辞書の場合はエラー防止のため無限大を返す
+            return float('inf')
+    elif isinstance(t, str):
+        try:
+            # 数値文字列の場合は数値に変換
+            return float(t)
+        except ValueError:
+            try:
+                # ISO形式の日時文字列
+                dt = datetime.fromisoformat(t.replace('Z', '+00:00'))
+                return dt.timestamp()
+            except ValueError:
+                # 変換できない場合は無限大
+                return float('inf')
+    else:
+        # その他の型は文字列に変換してから数値化
+        try:
+            return float(str(t))
+        except ValueError:
+            # 変換できない場合は無限大（対応する順序）
+            return float('inf')
+
+
+def get_time_difference_seconds(t1, t2) -> float:
+    """
+    時刻の差分を秒単位で計算
+    
+    Parameters:
+    -----------
+    t1 : any
+        時刻1
+    t2 : any
+        時刻2
+    
+    Returns:
+    --------
+    float
+        時刻の差分（秒）
+    """
+    ts1 = normalize_to_timestamp(t1)
+    ts2 = normalize_to_timestamp(t2)
+    return abs(ts1 - ts2)
+
+
+def angle_difference(angle1: float, angle2: float) -> float:
+    """
+    2つの角度間の差を計算（-180～180度）
+    
+    Parameters:
+    -----------
+    angle1 : float
+        角度1（度）
+    angle2 : float
+        角度2（度）
+    
+    Returns:
+    --------
+    float
+        角度の差（-180～180度）
+    """
+    diff = angle2 - angle1
+    while diff > 180:
+        diff -= 360
+    while diff < -180:
+        diff += 360
+    return diff
+
+
+def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    """
+    2地点間の距離を計算（ハバーサイン公式）
+    
+    Parameters:
+    -----------
+    lat1 : float
+        地点1の緯度
+    lon1 : float
+        地点1の経度
+    lat2 : float
+        地点2の緯度
+    lon2 : float
+        地点2の経度
+    
+    Returns:
+    --------
+    float
+        距離（メートル）
+    """
+    # 地球の半径（メートル）
+    R = 6371000
+    
+    # ラジアンに変換
+    lat1_rad = np.radians(lat1)
+    lat2_rad = np.radians(lat2)
+    dlat = np.radians(lat2 - lat1)
+    dlon = np.radians(lon2 - lon1)
+    
+    # ハバーサイン公式
+    a = np.sin(dlat/2)**2 + np.cos(lat1_rad) * np.cos(lat2_rad) * np.sin(dlon/2)**2
+    c = 2 * np.arcsin(np.sqrt(a))
+    
+    return R * c
 
 
 def determine_tack_type(bearing: float, wind_direction: float) -> Literal['starboard', 'port']:
@@ -109,6 +243,8 @@ def determine_tack_type(bearing: float, wind_direction: float) -> Literal['starb
             return 'starboard'
         else:
             return 'port'
+
+
 def calculate_relative_wind_angle(bearing: float, wind_direction: float) -> float:
     """
     艇の進行方向と風向の相対角度を計算
@@ -137,6 +273,8 @@ def calculate_relative_wind_angle(bearing: float, wind_direction: float) -> floa
         angle = 360 - angle
         
     return angle
+
+
 def detect_tacking_maneuver(headings: np.ndarray, 
                            time_indices: np.ndarray, 
                            min_angle_change: float = 80.0,
@@ -179,6 +317,8 @@ def detect_tacking_maneuver(headings: np.ndarray,
             return i, angle_diff
     
     return None
+
+
 def estimate_wind_direction_from_tack(heading_before: float, heading_after: float) -> float:
     """
     タック前後の方位から風向を推定
@@ -203,4 +343,3 @@ def estimate_wind_direction_from_tack(heading_before: float, heading_after: floa
     estimated_wind = (avg_heading + 90) % 360
     
     return estimated_wind
-

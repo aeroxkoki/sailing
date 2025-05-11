@@ -2,17 +2,26 @@
 # ソースパッケージの指定
 source = 
     sailing_data_processor
-    tests
 
 # 対象外にするファイルやディレクトリ
 omit =
     */__pycache__/*
-    */tests/fixtures/*
+    */tests/*
+    */test_*
+    *test_*.py
+    *tests_*.py
+    test_*.py
+    tests_*.py
     */venv/*
     */.venv/*
     */site-packages/*
     setup.py
     sailing_data_processor/reporting/elements/map/layers/data_connector.py
+    .git/*
+    .pytest_cache/*
+    .coverage
+    htmlcov/*
+    conftest.py
 
 [report]
 # レポートに表示するもの
@@ -30,12 +39,20 @@ exclude_lines =
 # 対象外にするファイルやディレクトリ（レポート用）
 omit =
     */__pycache__/*
-    */tests/fixtures/*
+    */tests/*
+    */test_*
+    *test_*.py
+    *tests_*.py
+    test_*.py
+    tests_*.py
     */venv/*
     */.venv/*
     */site-packages/*
     setup.py
     sailing_data_processor/reporting/elements/map/layers/data_connector.py
+    .git/*
+    .pytest_cache/*
+    conftest.py
 
 # 欠損行の表示
 show_missing = True

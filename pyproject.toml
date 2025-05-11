@@ -1,0 +1,120 @@
+[tool.coverage.run]
+source = ["sailing_data_processor"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "*/conftest.py",
+    "*/__pycache__/*",
+    "*/venv/*",
+    "*/env/*",
+    "*/migrations/*",
+    "*/config/*",
+    "*/staticfiles/*",
+    "*/node_modules/*",
+    "*/build/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+fail_under = 70
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests"]
+addopts = """
+    --cov=sailing_data_processor
+    --cov-report=term-missing
+    --cov-fail-under=70
+"""
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sailing-strategy-analyzer"
+version = "0.1.0"
+description = "A tool for analyzing sailing strategy and race performance"
+readme = "README.md"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+authors = [
+    { name = "Your Name", email = "your.email@example.com" }
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+
+dependencies = [
+    "streamlit>=1.31.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "scipy>=1.10.0",
+    "plotly>=5.14.0",
+    "scikit-learn>=1.2.0",
+    "openpyxl>=3.1.0",
+    "xlsxwriter>=3.1.0",
+    "Pillow>=10.0.0",
+    "reportlab>=4.0.0",
+    "jinja2>=3.1.0",
+    "gpxpy>=1.6.0",
+    "fitdecode>=0.10.0",
+    "matplotlib>=3.8.0",
+    "chardet",
+    "requests",
+    "pyyaml",
+    "python-dateutil",
+    "folium>=0.17.0",
+    "pytz",
+    "shapely>=2.0.0",
+    "geopy>=2.4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.3.0",
+    "flake8>=6.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.3.0",
+]
+
+[project.scripts]
+sailing-analyzer = "ui.app:main"
+
+[tool.setuptools.package-data]
+sailing_data_processor = ["*.py"]
+ui = ["*.py"]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
