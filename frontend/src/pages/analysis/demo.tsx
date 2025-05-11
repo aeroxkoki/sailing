@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Layout from '@/components/common/Layout';
 import MapView from '@/components/map/MapView';
 import TrackLayer from '@/components/map/TrackLayer';
@@ -12,39 +12,45 @@ import SettingsPanel from '@/components/settings/SettingsPanel';
 import { AnalysisData } from '@/types/analysis';
 import { GpsPoint, WindDataPoint, StrategyPoint, StrategyPointType } from '@/types/gps';
 
-// デモ用のサンプルデータ
-const SAMPLE_DATA: AnalysisData = {
-  sessionId: 'demo-session-001',
-  fileName: 'demo-sailing-data.gpx',
-  startTime: Date.now() - 3600000, // 1時間前
-  endTime: Date.now(),
-  currentTime: Date.now() - 1800000, // 30分前（中間点）
-  gpsData: generateSampleGpsData(500),
-  windData: generateSampleWindData(100),
-  strategyPoints: generateSampleStrategyPoints(20),
-  averageWindDirection: 225, // 南西
-  averageWindSpeed: 12,
-  maxWindSpeed: 18,
-  windStability: 0.75,
-  averageSpeed: 6.5,
-  maxSpeed: 9.2,
-  upwindVMG: 4.2,
-  downwindVMG: 5.8,
-  trackLength: 8.5,
-  totalTacks: 12,
-  totalJibes: 8,
-  tackEfficiency: 0.75,
-  jibeEfficiency: 0.68,
-  performanceScore: 0.72,
-};
-
 const AnalysisDemo: React.FC = () => {
   const [activeView, setActiveView] = useState<'track' | 'wind' | 'strategy'>('track');
-  const [data, setData] = useState<AnalysisData>(SAMPLE_DATA);
+  const [data, setData] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(true);
   const [playing, setPlaying] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const mapRef = useRef<maplibregl.Map | null>(null);
+  
+  // デモ用のサンプルデータ - クライアントサイドで生成
+  const SAMPLE_DATA = useMemo(() => {
+    const startTime = Date.now() - 3600000; // 1時間前
+    const endTime = Date.now();
+    const currentTime = Date.now() - 1800000; // 30分前（中間点）
+    
+    return {
+      sessionId: 'demo-session-001',
+      fileName: 'demo-sailing-data.gpx',
+      startTime,
+      endTime,
+      currentTime,
+      gpsData: generateSampleGpsData(500, startTime, endTime),
+      windData: generateSampleWindData(100, startTime, endTime),
+      strategyPoints: generateSampleStrategyPoints(20, startTime, endTime),
+      averageWindDirection: 225, // 南西
+      averageWindSpeed: 12,
+      maxWindSpeed: 18,
+      windStability: 0.75,
+      averageSpeed: 6.5,
+      maxSpeed: 9.2,
+      upwindVMG: 4.2,
+      downwindVMG: 5.8,
+      trackLength: 8.5,
+      totalTacks: 12,
+      totalJibes: 8,
+      tackEfficiency: 0.75,
+      jibeEfficiency: 0.68,
+      performanceScore: 0.72,
+    };
+  }, []);
   
   // 設定の状態管理
   const [settings, setSettings] = useState({
@@ -101,21 +107,34 @@ const AnalysisDemo: React.FC = () => {
 
   // 時間変更ハンドラ
   const handleTimeChange = (time: number) => {
-    setData(prev => ({
+    if (!data) return;
+    setData(prev => prev ? {
       ...prev,
       currentTime: time
-    }));
+    } : null);
   };
 
   // 初期データのロード（実際のアプリではAPIから）
   useEffect(() => {
     // デモでは少し遅延を入れてロード完了を示す
     const timer = setTimeout(() => {
+      setData(SAMPLE_DATA);
       setLoading(false);
     }, 1500);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [SAMPLE_DATA]);
+
+  if (!data) {
+    return (
+      <Layout>
+        <div className="relative w-full h-screen bg-black flex items-center justify-center">
+          <LoadingSpinner size="large" />
+          <span className="ml-4 text-xl text-gray-200">データを準備中...</span>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -202,10 +221,8 @@ const AnalysisDemo: React.FC = () => {
 };
 
 // サンプルGPSデータ生成関数
-function generateSampleGpsData(count: number): GpsPoint[] {
+function generateSampleGpsData(count: number, startTime: number, endTime: number): GpsPoint[] {
   const points: GpsPoint[] = [];
-  const startTime = SAMPLE_DATA.startTime;
-  const endTime = SAMPLE_DATA.endTime;
   const duration = endTime - startTime;
   
   // 東京湾の座標周辺
@@ -243,10 +260,8 @@ function generateSampleGpsData(count: number): GpsPoint[] {
 }
 
 // サンプル風データ生成関数
-function generateSampleWindData(count: number): WindDataPoint[] {
+function generateSampleWindData(count: number, startTime: number, endTime: number): WindDataPoint[] {
   const points: WindDataPoint[] = [];
-  const startTime = SAMPLE_DATA.startTime;
-  const endTime = SAMPLE_DATA.endTime;
   const duration = endTime - startTime;
   
   // 東京湾の座標周辺（格子状に広げる）
@@ -285,10 +300,8 @@ function generateSampleWindData(count: number): WindDataPoint[] {
 }
 
 // サンプル戦略ポイント生成関数
-function generateSampleStrategyPoints(count: number): StrategyPoint[] {
+function generateSampleStrategyPoints(count: number, startTime: number, endTime: number): StrategyPoint[] {
   const points: StrategyPoint[] = [];
-  const startTime = SAMPLE_DATA.startTime;
-  const endTime = SAMPLE_DATA.endTime;
   const duration = endTime - startTime;
   
   // 戦略ポイントのタイプ配列（確率重みづけ）
@@ -305,7 +318,7 @@ function generateSampleStrategyPoints(count: number): StrategyPoint[] {
   ];
   
   // スタートとフィニッシュを追加
-  const gpsData = generateSampleGpsData(count * 10);
+  const gpsData = generateSampleGpsData(count * 10, startTime, endTime);
   
   // スタートポイント
   points.push({
