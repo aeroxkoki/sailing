@@ -5,6 +5,7 @@
 """
 
 import os
+import sys
 import re
 import json
 from datetime import datetime
@@ -13,6 +14,12 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from dotenv import load_dotenv
+
+# プロジェクトルートディレクトリをPython pathに追加
+# これにより sailing_data_processor モジュールがインポート可能になる
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 # 環境変数のロード
 load_dotenv()
