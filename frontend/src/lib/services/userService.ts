@@ -1,7 +1,7 @@
 /**
  * ユーザー関連のAPIサービス
  */
-import apiClient, { ApiResponse } from '../api';
+import { apiClient, ApiResponse } from '../api';
 
 // ユーザー型定義
 export interface User {
@@ -55,7 +55,7 @@ class UserService {
       const response = await apiClient.post<AuthResponse>('/auth/login', params);
       
       if (response.data.access_token) {
-        apiClient.setToken(response.data.access_token);
+        localStorage.setItem('auth_token', response.data.access_token);
       }
       
       return response;
@@ -73,7 +73,7 @@ class UserService {
       const response = await apiClient.post<AuthResponse>('/auth/register', params);
       
       if (response.data.access_token) {
-        apiClient.setToken(response.data.access_token);
+        localStorage.setItem('auth_token', response.data.access_token);
       }
       
       return response;
@@ -89,11 +89,11 @@ class UserService {
   async logout(): Promise<void> {
     try {
       await apiClient.post<void>('/auth/logout', {});
-      apiClient.clearToken();
+      localStorage.removeItem('auth_token');
     } catch (error) {
       console.error('Logout failed:', error);
       // トークンはクリアする
-      apiClient.clearToken();
+      localStorage.removeItem('auth_token');
       throw error;
     }
   }

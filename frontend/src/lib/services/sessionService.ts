@@ -1,7 +1,7 @@
 /**
  * セッション関連のAPIサービス
  */
-import apiClient, { ApiResponse } from '../api';
+import { apiClient, ApiResponse } from '../api';
 
 // セッション型定義
 export interface Session {
@@ -122,10 +122,29 @@ class SessionService {
   async importGpsData(params: ImportGpsDataParams): Promise<ApiResponse<any>> {
     try {
       const { session_id, file, options = {} } = params;
-      return await apiClient.uploadFile<any>(
+      
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      // オプションをFormDataに追加
+      if (options.skip_validation) {
+        formData.append('skip_validation', options.skip_validation.toString());
+      }
+      if (options.auto_clean) {
+        formData.append('auto_clean', options.auto_clean.toString());
+      }
+      if (options.column_mapping) {
+        formData.append('column_mapping', JSON.stringify(options.column_mapping));
+      }
+      
+      return await apiClient.post<any>(
         `${this.basePath}/${session_id}/import`,
-        file,
-        options
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
       );
     } catch (error) {
       console.error('Failed to import GPS data:', error);
