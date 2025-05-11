@@ -6,12 +6,18 @@ import math
 from typing import Dict, List, Tuple, Optional, Union, Any
 from scipy.interpolate import Rbf, LinearNDInterpolator, NearestNDInterpolator
 from scipy.spatial import Delaunay
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.colors import LightSource, Normalize
-import matplotlib.cm as cm
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, WhiteKernel, Matern, ConstantKernel
+
+# matplotlibは可視化機能でのみ必要なため、条件付きインポート
+try:
+    import matplotlib.pyplot as plt
+    from mpl_toolkits.mplot3d import Axes3D
+    from matplotlib.colors import LightSource, Normalize
+    import matplotlib.cm as cm
+    HAS_MATPLOTLIB = True
+except ImportError:
+    HAS_MATPLOTLIB = False
 
 class WindFieldInterpolator:
     """
@@ -851,7 +857,7 @@ class WindFieldInterpolator:
     def visualize_wind_field(self, wind_field: Dict[str, Any], 
                            show_confidence: bool = False, 
                            title: str = None,
-                           save_path: str = None) -> plt.Figure:
+                           save_path: str = None):
         """
         風の場をプロットして可視化
         
@@ -868,9 +874,12 @@ class WindFieldInterpolator:
             
         Returns:
         --------
-        plt.Figure
-            プロット図
+        plt.Figure or None
+            プロット図（matplotlibが利用できない場合はNone）
         """
+        if not HAS_MATPLOTLIB:
+            print("Warning: matplotlib is not available. Cannot visualize wind field.")
+            return None
         grid_lats = wind_field['lat_grid']
         grid_lons = wind_field['lon_grid']
         wind_directions = wind_field['wind_direction']
@@ -928,7 +937,7 @@ class WindFieldInterpolator:
     def visualize_wind_field_3d(self, wind_field: Dict[str, Any], 
                               show_confidence: bool = True,
                               title: str = None,
-                              save_path: str = None) -> plt.Figure:
+                              save_path: str = None):
         """
         風の場を3Dプロットで可視化
         
@@ -945,9 +954,12 @@ class WindFieldInterpolator:
             
         Returns:
         --------
-        plt.Figure
-            プロット図
+        plt.Figure or None
+            プロット図（matplotlibが利用できない場合はNone）
         """
+        if not HAS_MATPLOTLIB:
+            print("Warning: matplotlib is not available. Cannot visualize wind field in 3D.")
+            return None
         grid_lats = wind_field['lat_grid']
         grid_lons = wind_field['lon_grid']
         wind_speeds = wind_field['wind_speed']
