@@ -49,8 +49,8 @@ const MapContainer: React.FC<MapContainerProps> = ({
   };
 
   // 再生状態変更ハンドラ
-  const handlePlayingChange = (playing: boolean) => {
-    setIsPlaying(playing);
+  const handlePlayingChange = () => {
+    setIsPlaying(!isPlaying);
   };
 
   // ポイントクリックハンドラ
@@ -136,8 +136,8 @@ const MapContainer: React.FC<MapContainerProps> = ({
           endTime={endTime}
           currentTime={currentTime}
           onTimeChange={handleTimeChange}
-          playing={isPlaying}
-          onPlayingChange={handlePlayingChange}
+          isPlaying={isPlaying}
+          onPlayToggle={handlePlayingChange}
         />
       </div>
     </div>
