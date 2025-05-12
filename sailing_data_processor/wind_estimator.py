@@ -200,7 +200,7 @@ class WindEstimator:
         
         return pd.DataFrame(gybes)
     
-    def detect_maneuvers(self, data: pd.DataFrame, wind_direction=None) -> List[Dict]:
+    def detect_maneuvers(self, data: pd.DataFrame, wind_direction=None) -> pd.DataFrame:
         """
         マニューバー（タック/ジャイブ）を検出する
         
@@ -213,13 +213,14 @@ class WindEstimator:
             
         Returns:
         --------
-        List[Dict]
-            検出されたマニューバーのリスト
+        pd.DataFrame
+            検出されたマニューバーのデータフレーム
         """
+        # まずタックとジャイブを検出
         tacks = self.detect_tacks(data)
         gybes = self.detect_gybes(data)
         
-        maneuvers = []
+        maneuvers_list = []
         
         # タックのデータを追加
         if not tacks.empty:
@@ -242,7 +243,7 @@ class WindEstimator:
                     maneuver_data['after_state'] = self._determine_point_state(
                         tack['heading_after'] - wind_direction)
                 
-                maneuvers.append(maneuver_data)
+                maneuvers_list.append(maneuver_data)
         
         # ジャイブのデータを追加
         if not gybes.empty:
@@ -265,12 +266,14 @@ class WindEstimator:
                     maneuver_data['after_state'] = self._determine_point_state(
                         gybe['heading_after'] - wind_direction)
                 
-                maneuvers.append(maneuver_data)
+                maneuvers_list.append(maneuver_data)
         
         # タイムスタンプでソート
-        maneuvers.sort(key=lambda x: x['timestamp'])
+        maneuvers_df = pd.DataFrame(maneuvers_list)
+        if not maneuvers_df.empty and 'timestamp' in maneuvers_df.columns:
+            maneuvers_df = maneuvers_df.sort_values('timestamp')
             
-        return maneuvers
+        return maneuvers_df
     
     def calculate_laylines(self, wind_direction: Union[float, str], wind_speed: Union[float, str], 
                          mark_position: Dict[str, float], 
@@ -652,32 +655,45 @@ class WindEstimator:
             風向風速の推定結果
         """
         if data.empty:
+            # 空のデータの場合、テスト用の構造を返す
             return {
-                "direction": 0.0,
-                "speed": 0.0,
-                "confidence": 0.0
+                "boat": {"boat_id": "none"},
+                "wind": {
+                    "direction": 0.0,
+                    "speed": 0.0,
+                    "confidence": 0.0,
+                    "wind_data": []
+                }
             }
         
         # 風推定を実行
-        wind_df = self.estimate_wind_from_single_boat(data)
+        wind_estimation = self.estimate_wind_from_single_boat(data)
         
-        # 風向推定結果を取得
-        if not wind_df.empty:
-            # 信頼度の高い結果を優先
-            best_estimate = wind_df.loc[wind_df['confidence'].idxmax()]
-            
-            return {
-                "direction": best_estimate['wind_direction'],
-                "speed": best_estimate['wind_speed'],
-                "confidence": best_estimate['confidence']
-            }
-        else:
-            # 推定できない場合はデフォルト値
-            return {
+        # 結果の構築
+        result = {
+            "boat": {"boat_id": data.get("boat_id", ["unknown"])[0] if isinstance(data.get("boat_id"), list) else "unknown"},
+            "wind": {
                 "direction": 0.0,
                 "speed": 0.0,
-                "confidence": 0.0
+                "confidence": 0.0,
+                "wind_data": []
             }
+        }
+        
+        # 風向推定結果をセット
+        if isinstance(wind_estimation, pd.DataFrame) and not wind_estimation.empty:
+            # 信頼度の高い結果を優先
+            best_index = wind_estimation['confidence'].idxmax() if 'confidence' in wind_estimation.columns else 0
+            best_estimate = wind_estimation.iloc[best_index]
+            
+            result["wind"] = {
+                "direction": best_estimate.get('wind_direction', 0.0),
+                "speed": best_estimate.get('wind_speed', 0.0),
+                "confidence": best_estimate.get('confidence', 0.0),
+                "wind_data": wind_estimation.to_dict('records')
+            }
+            
+        return result
     
     def estimate_wind_from_single_boat(self, gps_data: pd.DataFrame, min_tack_angle: float = 30.0,
                                      boat_type: str = None, use_bayesian: bool = True) -> pd.DataFrame:
@@ -831,7 +847,7 @@ class WindEstimator:
         
         Parameters:
         -----------
-        maneuvers : List[Dict] or pd.DataFrame
+        maneuvers : pd.DataFrame
             検出されたマニューバー
         data : pd.DataFrame
             GPSデータ
@@ -842,44 +858,24 @@ class WindEstimator:
             推定結果
         """
         # マニューバーが空かどうかを確認
-        if isinstance(maneuvers, pd.DataFrame):
-            if maneuvers.empty or len(maneuvers) < 2:
-                return None
-            # タックを抽出
-            tacks = maneuvers[maneuvers['maneuver_type'] == 'tack']
-            if tacks.empty:
-                return None
+        if maneuvers.empty or len(maneuvers) < 2:
+            return None
+        
+        # タックを抽出
+        tacks = maneuvers[maneuvers['maneuver_type'] == 'tack']
+        if tacks.empty:
+            return None
+        
+        # タックの前後の方向から風向を推定
+        wind_directions = []
+        for _, tack in tacks.iterrows():
+            before = tack['before_bearing']
+            after = tack['after_bearing']
             
-            # タックの前後の方向から風向を推定
-            wind_directions = []
-            for _, tack in tacks.iterrows():
-                before = tack['before_bearing']
-                after = tack['after_bearing']
-                
-                # タックの前後の方向の平均が風向に対して約90度
-                avg_heading = (before + after) / 2
-                wind_dir = self._normalize_angle(avg_heading + 90)
-                wind_directions.append(wind_dir)
-        else:
-            # リスト形式のマニューバー
-            if not maneuvers or len(maneuvers) < 2:
-                return None
-            
-            # タックを抽出
-            tacks = [m for m in maneuvers if m.get('maneuver_type') == 'tack']
-            if not tacks:
-                return None
-            
-            # タックの前後の方向から風向を推定
-            wind_directions = []
-            for tack in tacks:
-                before = tack['before_bearing']
-                after = tack['after_bearing']
-                
-                # タックの前後の方向の平均が風向に対して約90度
-                avg_heading = (before + after) / 2
-                wind_dir = self._normalize_angle(avg_heading + 90)
-                wind_directions.append(wind_dir)
+            # タックの前後の方向の平均が風向に対して約90度
+            avg_heading = (before + after) / 2
+            wind_dir = self._normalize_angle(avg_heading + 90)
+            wind_directions.append(wind_dir)
         
         # 風向がない場合は終了
         if not wind_directions:
@@ -931,7 +927,10 @@ class WindEstimator:
         # ヘディングの確認
         if 'heading' not in df.columns and 'course' not in df.columns:
             # コースから計算する必要がある場合
-            pass
+            if 'course' in df.columns:
+                df['heading'] = df['course']
+            elif 'bearing' in df.columns:
+                df['heading'] = df['bearing']
         
         return df
     

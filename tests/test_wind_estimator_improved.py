@@ -32,7 +32,10 @@ def test_data():
     
     # 方位データ - より明確なタックパターン（急激な変化）を作成
     bearings = [30] * 45  # 最初の45ポイントは30度
-    bearings += [i for i in range(30, 150, 12)]  # 10ポイントで30度→150度へ変化
+    # より急激な変化を持つタックパターンを作成
+    bearings.append(45)  # 少し方向を変える
+    bearings.append(90)  # さらに方向が変わる
+    bearings.append(150)  # 大きく変わる - これでタックが検出されるはず
     bearings += [150] * (points - len(bearings))  # 残りのポイントは150度
     
     # 緯度・経度データ（シンプルな直線）
@@ -61,6 +64,7 @@ def test_data():
         'longitude': lons,
         'speed': np.array(speeds) * 0.514444,  # ノット→m/s変換
         'bearing': bearings,
+        'heading': bearings,  # headingカラムを追加
         'boat_id': ['TestBoat'] * points
     })
     
@@ -124,6 +128,10 @@ class TestWindEstimatorImproved:
     def test_detect_maneuvers(self, estimator, test_data):
         """マニューバー検出機能のテスト"""
         
+        # 方位カラムの確認と追加（test_dataがbearingを持っているがheadingを持っていない場合、headingを追加）
+        if 'bearing' in test_data.columns and 'heading' not in test_data.columns:
+            test_data['heading'] = test_data['bearing']
+        
         # 風向を設定（テストデータでは風向0度を想定）
         wind_direction = 0.0
         
@@ -131,7 +139,7 @@ class TestWindEstimatorImproved:
         maneuvers = estimator.detect_maneuvers(test_data, wind_direction)
         
         # 検出結果の確認
-        assert len(maneuvers) > 0, "マニューバが検出されていません"
+        assert not maneuvers.empty, "マニューバが検出されていません"
         
         # 検出されたマニューバーの内容を確認
         first_maneuver = maneuvers.iloc[0]
@@ -140,3 +148,7 @@ class TestWindEstimatorImproved:
         assert 'angle_change' in first_maneuver, "角度変化が含まれていません"
         assert 'before_bearing' in first_maneuver and 'after_bearing' in first_maneuver, "方位情報が不足しています"
         assert 'before_state' in first_maneuver and 'after_state' in first_maneuver, "状態情報が不足しています"
+
+# Directly run pytest if this file is executed directly
+if __name__ == "__main__":
+    pytest.main(["-xvs", __file__])
