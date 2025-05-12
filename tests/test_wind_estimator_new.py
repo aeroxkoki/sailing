@@ -38,9 +38,11 @@ class TestWindEstimatorNewAPI(unittest.TestCase):
             # 10番目のポイントでタック（大きな方位変化）
             if i < 10:
                 course = 45.0  # 北東方向
+                heading = 45.0  # 北東方向
                 speed = 5.0
             else:
                 course = 315.0  # 北西方向
+                heading = 315.0  # 北西方向
                 speed = 4.0  # タック後の速度低下
             
             data.append({
@@ -48,6 +50,7 @@ class TestWindEstimatorNewAPI(unittest.TestCase):
                 'latitude': latitude,
                 'longitude': longitude,
                 'course': course,
+                'heading': heading,
                 'speed': speed
             })
         
@@ -58,7 +61,14 @@ class TestWindEstimatorNewAPI(unittest.TestCase):
         
         # 検出結果があることを確認
         self.assertIsNotNone(maneuvers)
-        self.assertIsInstance(maneuvers, list)
+        # DataFrameであることを確認
+        self.assertIsInstance(maneuvers, pd.DataFrame)
+        self.assertFalse(maneuvers.empty)
+        
+        # マニューバーの内容を確認
+        self.assertIn('maneuver_type', maneuvers.columns)
+        self.assertIn('timestamp', maneuvers.columns)
+        self.assertEqual(maneuvers.iloc[0]['maneuver_type'], 'tack')
     
     def test_estimate_wind(self):
         """estimate_windメソッドのテスト"""
@@ -74,9 +84,11 @@ class TestWindEstimatorNewAPI(unittest.TestCase):
             # 風向を仮定して、風上走行と風下走行のパターンを作成
             if i % 20 < 10:
                 course = 45.0  # 風上
+                heading = 45.0  # 風上
                 speed = 4.0
             else:
                 course = 225.0  # 風下
+                heading = 225.0  # 風下
                 speed = 6.0
             
             data.append({
@@ -84,6 +96,7 @@ class TestWindEstimatorNewAPI(unittest.TestCase):
                 'latitude': latitude,
                 'longitude': longitude,
                 'course': course,
+                'heading': heading,
                 'speed': speed
             })
         
@@ -95,9 +108,11 @@ class TestWindEstimatorNewAPI(unittest.TestCase):
         # 結果の検証
         self.assertIsNotNone(wind_estimate)
         self.assertIsInstance(wind_estimate, dict)
-        self.assertIn('direction', wind_estimate)
-        self.assertIn('speed', wind_estimate)
-        self.assertIn('confidence', wind_estimate)
+        self.assertIn('boat', wind_estimate)
+        self.assertIn('wind', wind_estimate)
+        self.assertIn('direction', wind_estimate['wind'])
+        self.assertIn('speed', wind_estimate['wind'])
+        self.assertIn('confidence', wind_estimate['wind'])
 
 if __name__ == '__main__':
     unittest.main()
