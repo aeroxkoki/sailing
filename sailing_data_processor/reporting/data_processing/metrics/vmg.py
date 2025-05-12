@@ -72,7 +72,7 @@ class VMGCalculator(BaseCalculator):
         
         # 風上/風下タイプの判定（45度を境界とする）
         result_df['sailing_type'] = 'reaching'
-        result_df.loc[result_df['wind_angle'] <= 45, 'sailing_type'] = 'upwind'
+        result_df.loc[result_df['wind_angle'] < 45, 'sailing_type'] = 'upwind'
         result_df.loc[result_df['wind_angle'] >= 135, 'sailing_type'] = 'downwind'
         
         # 総合VMG（風上セーリング時は風上VMG、風下セーリング時は風下VMG）

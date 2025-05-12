@@ -87,7 +87,8 @@ class TestSailingMetrics:
         
         # Check sailing type classification
         assert 'sailing_type' in result_df.columns
-        # First 10 rows should be close to 45 degrees from wind
+        # First 10 rows should be at exactly 45 degrees from wind - classified as reaching
+        # Note: values exactly at 45 degrees are considered 'reaching', not 'upwind'
         assert all(result_df.loc[:9, 'sailing_type'] == 'reaching')
         # Last 10 rows should be close to 45 degrees from wind from the other side
         assert all(result_df.loc[10:, 'sailing_type'] == 'reaching')
