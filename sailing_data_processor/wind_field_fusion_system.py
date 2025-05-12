@@ -80,6 +80,25 @@ class WindFieldFusionSystem:
         
         # 最終融合時間
         self.last_fusion_time = None
+        
+    def _haversine_distance(self, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+        """
+        2点間のHaversine距離を計算（メートル）
+        
+        Parameters:
+        -----------
+        lat1, lon1 : float
+            始点の緯度経度
+        lat2, lon2 : float
+            終点の緯度経度
+            
+        Returns:
+        --------
+        float
+            距離（メートル）
+        """
+        # wind_field_fusion_utilsのhaversine_distance関数を使用
+        return haversine_distance(lat1, lon1, lat2, lon2)
     
     def add_wind_data_point(self, data_point: Dict[str, Any]):
         """
