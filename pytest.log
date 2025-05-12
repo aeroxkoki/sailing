@@ -4,7 +4,6 @@ INFO     sailing_test:conftest.py:234 Python version: 3.9.6
 INFO     sailing_test:conftest.py:235 Hostname: MacBook-Air-2.local
 DEBUG    sailing_test:conftest.py:236 Python path: [
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
-  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/tests",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor",
@@ -22,6 +21,16 @@ DEBUG    sailing_test:conftest.py:241   PATH: /Users/koki_air/.npm-global/bin:/u
 DEBUG    sailing_test:conftest.py:241   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
 DEBUG    sailing_test:conftest.py:241   PYTHONVERBOSE: 1
 INFO     sailing_test:conftest.py:243 ======== テスト開始 ========
-INFO     sailing_test:conftest.py:250 テスト開始: test_detect_tacks
-INFO     sailing_test:conftest.py:264 テスト終了: test_detect_tacks
+INFO     sailing_test:conftest.py:250 テスト開始: test_advanced_detector
+INFO     sailing_test:conftest.py:264 テスト終了: test_advanced_detector
+INFO     sailing_test:conftest.py:250 テスト開始: test_configurable_parameters
+INFO     sailing_test:conftest.py:264 テスト終了: test_configurable_parameters
+INFO     sailing_test:conftest.py:250 テスト開始: test_factory_function
+INFO     sailing_test:conftest.py:264 テスト終了: test_factory_function
+INFO     sailing_test:conftest.py:250 テスト開始: test_gps_detector
+INFO     sailing_test:conftest.py:264 テスト終了: test_gps_detector
+INFO     sailing_test:conftest.py:250 テスト開始: test_process_function
+INFO     sailing_test:conftest.py:264 テスト終了: test_process_function
+INFO     sailing_test:conftest.py:250 テスト開始: test_standard_detector
+INFO     sailing_test:conftest.py:264 テスト終了: test_standard_detector
 INFO     sailing_test:conftest.py:245 ======== テスト終了 ========

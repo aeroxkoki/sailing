@@ -16,7 +16,8 @@ import unittest
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # テスト対象のクラスをインポート
-from sailing_data_processor.wind_estimator import WindEstimator
+from sailing_data_processor.wind.wind_estimator import WindEstimator
+from sailing_data_processor.wind.wind_estimator_maneuvers import categorize_maneuver, determine_point_state
 
 @pytest.fixture
 def estimator():
@@ -73,27 +74,30 @@ def test_data():
 class TestWindEstimatorImproved:
     """WindEstimatorクラスの改良部分をテスト"""
     
-    @pytest.mark.skip(reason="Method implementation not required for core functionality")
-    def test_categorize_maneuver(self, estimator):
+    def test_categorize_maneuver(self):
         """マニューバー分類機能のテスト"""
         
         # テストシナリオの設定
         test_cases = [
-            # (before_bearing, after_bearing, wind_direction, boat_type, expected_type)
+            # (before_bearing, after_bearing, wind_direction, expected_type)
             # タックのテスト
-            (30, 330, 0, 'laser', 'tack'),
-            (330, 30, 0, 'laser', 'tack'),
+            (30, 330, 0, 'tack'),
+            (330, 30, 0, 'tack'),
             # ジャイブのテスト
-            (150, 210, 0, 'laser', 'jibe'),
-            (210, 150, 0, 'laser', 'jibe'),
+            (150, 210, 0, 'jibe'),
+            (210, 150, 0, 'jibe'),
             # ベアアウェイのテスト
-            (30, 150, 0, 'laser', 'bear_away'),
+            (30, 150, 0, 'bear_away'),
             # ヘッドアップのテスト
-            (150, 30, 0, 'laser', 'head_up'),
+            (150, 30, 0, 'head_up'),
         ]
         
-        for i, (before, after, wind_dir, boat, expected) in enumerate(test_cases):
-            result = estimator._categorize_maneuver(before, after, wind_dir, boat)
+        # 風上・風下の閾値
+        upwind_threshold = 45.0
+        downwind_threshold = 120.0
+        
+        for i, (before, after, wind_dir, expected) in enumerate(test_cases):
+            result = categorize_maneuver(before, after, wind_dir, upwind_threshold, downwind_threshold)
             assert result['maneuver_type'] == expected, f"テスト{i+1}失敗: 期待されるマニューバタイプ（{expected}）と実際の結果（{result['maneuver_type']}）が一致しません"
             
             # 信頼度が0-1の範囲内にあることを確認
@@ -103,8 +107,7 @@ class TestWindEstimatorImproved:
             assert result['before_state'] in ['upwind', 'downwind', 'reaching'], f"転換前の状態（{result['before_state']}）が無効です"
             assert result['after_state'] in ['upwind', 'downwind', 'reaching'], f"転換後の状態（{result['after_state']}）が無効です"
     
-    @pytest.mark.skip(reason="Method implementation not required for core functionality")
-    def test_determine_point_state(self, estimator):
+    def test_determine_point_state(self):
         """風に対する状態判定のテスト"""
         
         # テストケース
@@ -122,7 +125,7 @@ class TestWindEstimatorImproved:
         ]
         
         for i, (rel_angle, upwind, downwind, expected) in enumerate(test_cases):
-            result = estimator._determine_point_state(rel_angle, upwind, downwind)
+            result = determine_point_state(rel_angle, upwind, downwind)
             assert result == expected, f"テスト{i+1}失敗: 相対角度{rel_angle}°の期待される状態（{expected}）と実際の結果（{result}）が一致しません"
     
     def test_detect_maneuvers(self, estimator, test_data):

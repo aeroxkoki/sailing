@@ -17,7 +17,7 @@ def test_csv_importer():
     """CSVインポーターのテスト"""
     from sailing_data_processor.importers.csv_importer import CSVImporter
     
-    csv_path = os.path.join("test_data", "sample.csv")
+    csv_path = os.path.join(os.path.dirname(__file__), "test_data", "sample.csv")
     csv_importer = CSVImporter()
     
     # ファイルがインポート可能か確認
@@ -34,7 +34,7 @@ def test_importer_factory():
     """インポーターファクトリーのテスト"""
     from sailing_data_processor.importers.importer_factory import ImporterFactory
     
-    csv_path = os.path.join("test_data", "sample.csv")
+    csv_path = os.path.join(os.path.dirname(__file__), "test_data", "sample.csv")
     importer = ImporterFactory.get_importer(csv_path)
     
     assert importer is not None, "インポーターファクトリーがインポーターを見つけられませんでした"
@@ -45,7 +45,7 @@ def test_data_validator():
     from sailing_data_processor.importers.csv_importer import CSVImporter
     from sailing_data_processor.validation.data_validator import DataValidator
     
-    csv_path = os.path.join("test_data", "sample.csv")
+    csv_path = os.path.join(os.path.dirname(__file__), "test_data", "sample.csv")
     csv_importer = CSVImporter()
     container = csv_importer.import_data(csv_path)
     
@@ -63,7 +63,7 @@ def test_batch_importer():
     """バッチインポートのテスト"""
     from sailing_data_processor.importers.batch_importer import BatchImporter
     
-    csv_path = os.path.join("test_data", "sample.csv")
+    csv_path = os.path.join(os.path.dirname(__file__), "test_data", "sample.csv")
     
     # バッチインポーターを作成
     batch_importer = BatchImporter()
@@ -78,12 +78,12 @@ def test_batch_importer():
     assert summary['successful_count'] == 1, "成功ファイル数が正しくありません"
     assert summary['failed_count'] == 0, "失敗ファイル数が正しくありません"
 
-@pytest.mark.skipif(not os.path.exists("test_data/sample.csv"), reason="テストデータが存在しません")
+@pytest.mark.skipif(not os.path.exists(os.path.join(os.path.dirname(__file__), "test_data/sample.csv")), reason="テストデータが存在しません")
 def test_merge_containers():
     """コンテナのマージテスト"""
     from sailing_data_processor.importers.batch_importer import BatchImporter
     
-    csv_path = os.path.join("test_data", "sample.csv")
+    csv_path = os.path.join(os.path.dirname(__file__), "test_data", "sample.csv")
     batch_importer = BatchImporter()
     result = batch_importer.import_files([csv_path])
     
