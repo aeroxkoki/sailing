@@ -192,6 +192,15 @@ class VMGCalculator(BaseCalculator):
                 
                 # 推定到達時間 = 現在時刻 + 距離/VMG
                 estimated_seconds = result_df.loc[positive_vmg_mask, 'target_distance'] / (result_df.loc[positive_vmg_mask, 'target_vmg'] * speed_factor)
-                result_df.loc[positive_vmg_mask, 'estimated_arrival_time'] = result_df.loc[positive_vmg_mask, time_col] + pd.to_timedelta(estimated_seconds, unit='s')
+                
+                # 列をobject型に変換して日時を格納（型互換性エラー回避）
+                if 'estimated_arrival_time' not in result_df.columns or not pd.api.types.is_datetime64_any_dtype(result_df['estimated_arrival_time']):
+                    result_df['estimated_arrival_time'] = result_df['estimated_arrival_time'].astype('object')
+                
+                # 各行ごとに個別に日時を計算して割り当て
+                for idx in result_df.index[positive_vmg_mask]:
+                    base_time = result_df.loc[idx, time_col]
+                    seconds = estimated_seconds.loc[idx]
+                    result_df.loc[idx, 'estimated_arrival_time'] = base_time + pd.Timedelta(seconds=float(seconds))
         
         return result_df

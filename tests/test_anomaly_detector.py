@@ -14,7 +14,11 @@ from datetime import datetime, timedelta
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
-from sailing_data_processor.utilities.gps_anomaly_detector import AnomalyDetector
+# 非推奨モジュールの代わりに新しいモジュールを使用
+from sailing_data_processor.anomaly import create_anomaly_detector
+
+# 推奨される使用方法
+AnomalyDetector = create_anomaly_detector('gps').__class__
 
 def generate_test_data(num_points=1000, abnormal_ratio=0.05):
     """

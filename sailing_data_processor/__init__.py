@@ -34,8 +34,16 @@ logger.debug(f"sailing_data_processor version: {__version__}")
 # 後方互換性のために元のクラスをインポート可能にする
 from .core import SailingDataProcessor
 
-# 新しいクラスもインポート可能にする
-from .wind_estimator import WindEstimator
+# 新しいクラスをインポート
+# 注: .wind_estimator は非推奨。代わりに sailing_data_processor.wind.wind_estimator を使用してください
+import warnings
+warnings.warn(
+    "This module is deprecated. Use sailing_data_processor.wind.wind_estimator instead.",
+    DeprecationWarning,
+    stacklevel=2
+)
+from .wind import wind_estimator as _wind_estimator_module
+WindEstimator = _wind_estimator_module.WindEstimator
 from .performance_optimizer import PerformanceOptimizer
 from .boat_data_fusion import BoatDataFusionModel
 from .wind_field_interpolator import WindFieldInterpolator

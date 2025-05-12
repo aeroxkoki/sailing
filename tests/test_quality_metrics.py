@@ -114,6 +114,12 @@ def test_quality_metrics():
             print(f"  {score['grid_id']}: {score['quality_score']} (問題: {score['problem_count']}/{score['total_count']})")
     
     print("\n品質メトリクス計算テスト完了")
+    
+    # テストの検証：メトリクス計算が正常に完了していることを確認
+    assert metrics is not None, "メトリクス計算が失敗しました"
+    assert df is not None, "データフレームがNoneです"
+    assert len(quality_scores) > 0, "品質スコアが計算されていません"
+    
     return metrics, df
 
 def test_visualization(metrics):
@@ -141,6 +147,15 @@ def test_visualization(metrics):
     print("  ダッシュボード生成: 成功")
     
     print("\n視覚化機能テスト完了")
+    
+    # テストの検証：視覚化オブジェクトが正常に生成されていることを確認
+    assert visualizer is not None, "視覚化オブジェクトが生成されていません"
+    assert gauge_chart is not None, "ゲージチャートが生成されていません"
+    assert bar_chart is not None, "バーチャートが生成されていません"
+    assert spatial_map is not None, "空間マップが生成されていません"
+    assert temporal_chart is not None, "時間チャートが生成されていません"
+    assert dashboard is not None, "ダッシュボードが生成されていません"
+    
     return visualizer
 
 def save_html_output(visualizer, output_dir="test_output"):

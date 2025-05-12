@@ -83,7 +83,11 @@ def test_importer(importer, file_path, expected_success=True):
         meta_keys = list(container.metadata.keys())
         print(f"  メタデータキー: {', '.join(meta_keys[:5])}{' ...' if len(meta_keys) > 5 else ''}")
     
-    return True
+    # テストがパスしたことを検証するためにアサートを使用
+    if expected_success:
+        assert container is not None, "期待された成功がありませんでした"
+    else:
+        assert container is None, "期待された失敗がありませんでした"
 
 def test_factory_detection(file_path, expected_importer_name=None):
     """
@@ -107,16 +111,16 @@ def test_factory_detection(file_path, expected_importer_name=None):
     
     if importer is None:
         print(f"[エラー] 適切なインポーターが見つかりませんでした")
-        return False
+        assert False, "適切なインポーターが見つかりませんでした"
     
     importer_name = importer.__class__.__name__
     print(f"検出されたインポーター: {importer_name}")
     
     if expected_importer_name and importer_name != expected_importer_name:
         print(f"[エラー] 期待されたインポーター({expected_importer_name})と異なります")
-        return False
+        assert importer_name == expected_importer_name, f"期待されたインポーター({expected_importer_name})と異なります"
     
-    return True
+    # テスト成功の場合は暗黙的にNoneを返す
 
 def test_batch_importer(file_paths):
     """
@@ -144,7 +148,7 @@ def test_batch_importer(file_paths):
         print(f"バッチインポーター作成中にエラーが発生しました: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "バッチインポーター作成中にエラーが発生しました"
     
     # インポート実行
     try:
@@ -154,7 +158,7 @@ def test_batch_importer(file_paths):
         print(f"インポート実行中にエラーが発生しました: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "インポート実行中にエラーが発生しました"
     
     # 結果表示
     try:
@@ -168,7 +172,7 @@ def test_batch_importer(file_paths):
         print(f"結果表示中にエラーが発生しました: {e}")
         import traceback
         traceback.print_exc()
-        return False
+        assert False, "結果表示中にエラーが発生しました"
     
     # 成功したファイル
     try:
@@ -216,7 +220,8 @@ def test_batch_importer(file_paths):
             import traceback
             traceback.print_exc()
     
-    return summary['successful_count'] > 0
+    # テスト結果の検証
+    assert summary['successful_count'] > 0, "少なくとも1つのファイルのインポートが成功する必要があります"
 
 def main():
     # カレントディレクトリの確認

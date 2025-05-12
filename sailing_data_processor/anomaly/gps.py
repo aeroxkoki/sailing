@@ -94,8 +94,11 @@ class GPSAnomalyDetector(StandardAnomalyDetector):
         
         # 異常値フラグを初期化
         result_df['is_anomaly'] = False
-        result_df['anomaly_method'] = np.nan
+        result_df['anomaly_method'] = np.nan  # object型として初期化
         result_df['anomaly_score'] = 0.0
+        
+        # anomaly_methodカラムをobject型に変換（文字列を格納するため）
+        result_df['anomaly_method'] = result_df['anomaly_method'].astype('object')
         
         # 各検出方法を適用
         for method in methods:
