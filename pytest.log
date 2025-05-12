@@ -14,23 +14,16 @@ DEBUG    sailing_test:conftest.py:236 Python path: [
   "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/lib-dynload",
   "/Users/koki_air/Library/Python/3.9/lib/python/site-packages",
   "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer",
-  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages"
+  "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/lib/python3.9/site-packages",
+  "/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer"
 ]
 DEBUG    sailing_test:conftest.py:239 Environment variables:
 DEBUG    sailing_test:conftest.py:241   PATH: /Users/koki_air/.npm-global/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Library/Apple/usr/bin
 DEBUG    sailing_test:conftest.py:241   PYTHONPATH: /Users/koki_air/Documents/GitHub/sailing-strategy-analyzer:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor:/Users/koki_air/Documents/GitHub/sailing-strategy-analyzer/sailing_data_processor/strategy:
 DEBUG    sailing_test:conftest.py:241   PYTHONVERBOSE: 1
 INFO     sailing_test:conftest.py:243 ======== テスト開始 ========
-INFO     sailing_test:conftest.py:250 テスト開始: test_advanced_detector
-INFO     sailing_test:conftest.py:264 テスト終了: test_advanced_detector
-INFO     sailing_test:conftest.py:250 テスト開始: test_configurable_parameters
-INFO     sailing_test:conftest.py:264 テスト終了: test_configurable_parameters
-INFO     sailing_test:conftest.py:250 テスト開始: test_factory_function
-INFO     sailing_test:conftest.py:264 テスト終了: test_factory_function
-INFO     sailing_test:conftest.py:250 テスト開始: test_gps_detector
-INFO     sailing_test:conftest.py:264 テスト終了: test_gps_detector
-INFO     sailing_test:conftest.py:250 テスト開始: test_process_function
-INFO     sailing_test:conftest.py:264 テスト終了: test_process_function
-INFO     sailing_test:conftest.py:250 テスト開始: test_standard_detector
-INFO     sailing_test:conftest.py:264 テスト終了: test_standard_detector
+INFO     sailing_test:conftest.py:250 テスト開始: test_categorize_maneuver
+INFO     sailing_test:conftest.py:264 テスト終了: test_categorize_maneuver
+INFO     sailing_test:conftest.py:250 テスト開始: test_determine_point_state
+INFO     sailing_test:conftest.py:264 テスト終了: test_determine_point_state
 INFO     sailing_test:conftest.py:245 ======== テスト終了 ========
