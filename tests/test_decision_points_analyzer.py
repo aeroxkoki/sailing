@@ -289,8 +289,9 @@ class TestDecisionPointsAnalyzer(unittest.TestCase):
         df = pd.DataFrame({
             "timestamp": [now - timedelta(minutes=5), now, now + timedelta(minutes=5)]
         })
+        # now-30秒に最も近いのは「now」のはず（30秒 < 5分）
         nearest_idx = find_nearest_time(df, now - timedelta(seconds=30))
-        self.assertEqual(df.loc[nearest_idx, "timestamp"], df.iloc[0]["timestamp"])
+        self.assertEqual(df.loc[nearest_idx, "timestamp"], df.iloc[1]["timestamp"])
     
     def _create_test_track_data(self):
         """テスト用のトラックデータを作成"""
