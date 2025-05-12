@@ -187,7 +187,97 @@ class GPSAnomalyDetector(StandardAnomalyDetector):
         
         return result_df
     
-    def _detect_by_speed(self, latitudes: pd.Series, longitudes: pd.Series, timestamps: pd.Series) -> Tuple[List[int], List[float]]:
+    def _detect_by_speed_original(self, latitudes: pd.Series, longitudes: pd.Series, timestamps: pd.Series) -> Tuple[List[int], List[float]]:
+        """
+        速度ベースの異常値検出（オリジナル実装）
+        パフォーマンス比較用に残されている旧実装
+        
+        Parameters:
+        -----------
+        latitudes : pd.Series
+            緯度データ
+        longitudes : pd.Series
+            経度データ
+        timestamps : pd.Series
+            タイムスタンプデータ
+            
+        Returns:
+        --------
+        Tuple[List[int], List[float]]
+            異常値のインデックスリストとスコアリスト
+        """
+        # データポイント数が2未満の場合は空のリストを返す
+        if len(latitudes) < 2:
+            return [], []
+        
+        # インデックスのリストを保存
+        indices = latitudes.index.tolist()
+        positions = {idx: i for i, idx in enumerate(indices)}
+        
+        # タイムスタンプを数値化
+        try:
+            time_values = []
+            for ts in timestamps:
+                if isinstance(ts, (datetime, pd.Timestamp)):
+                    time_values.append(ts.timestamp())
+                else:
+                    time_values.append(float(ts))
+        except:
+            # 数値化できない場合はインデックスを時間とみなす
+            time_values = list(range(len(timestamps)))
+        
+        # 時間順にソート
+        sorted_indices = sorted(indices, key=lambda idx: time_values[positions[idx]])
+        
+        # 距離と時間差を計算
+        distances = []
+        time_diffs = []
+        
+        for i in range(1, len(sorted_indices)):
+            idx1 = sorted_indices[i-1]
+            idx2 = sorted_indices[i]
+            
+            lat1, lon1 = latitudes[idx1], longitudes[idx1]
+            lat2, lon2 = latitudes[idx2], longitudes[idx2]
+            
+            # Haversine距離を計算
+            distance = self._haversine_distance(lat1, lon1, lat2, lon2)
+            distances.append(distance)
+            
+            # 時間差を計算
+            time_diff = time_values[positions[idx2]] - time_values[positions[idx1]]
+            time_diff = max(0.1, time_diff)  # 0割り防止
+            time_diffs.append(time_diff)
+        
+        # 速度を計算
+        speeds = [d / t for d, t in zip(distances, time_diffs)]
+        
+        # 平均と標準偏差を計算
+        if speeds:
+            mean_speed = sum(speeds) / len(speeds)
+            squared_diffs = [(s - mean_speed) ** 2 for s in speeds]
+            variance = sum(squared_diffs) / len(squared_diffs) if squared_diffs else 0
+            std_speed = max(0.1, (variance ** 0.5))  # 小さな値の場合は最小値を設定
+        else:
+            mean_speed = 0
+            std_speed = 0.1
+        
+        # 閾値を計算
+        threshold = mean_speed + self.detection_config['speed_multiplier'] * std_speed
+        
+        # 異常値を検出
+        anomaly_indices = []
+        anomaly_scores = []
+        
+        for i in range(len(speeds)):
+            if speeds[i] > threshold:
+                idx = sorted_indices[i+1]  # 速度は2点間なので、2点目を異常とマーク
+                anomaly_indices.append(idx)
+                anomaly_scores.append(speeds[i] / threshold)
+        
+        return anomaly_indices, anomaly_scores
+        
+    def _detect_by_speed_optimized(self, latitudes: pd.Series, longitudes: pd.Series, timestamps: pd.Series) -> Tuple[List[int], List[float]]:
         """
         速度ベースの異常値検出（最適化版）
         
@@ -306,6 +396,28 @@ class GPSAnomalyDetector(StandardAnomalyDetector):
         anomaly_scores = [float(speeds[pos] / speed_threshold) for pos in anomaly_positions if pos < len(speeds)]
         
         return original_indices, anomaly_scores[:len(original_indices)]
+    
+    def _detect_by_speed(self, latitudes: pd.Series, longitudes: pd.Series, timestamps: pd.Series) -> Tuple[List[int], List[float]]:
+        """
+        速度ベースの異常値検出
+        
+        注: このメソッドは最適化バージョンを呼び出すためのラッパーです
+        
+        Parameters:
+        -----------
+        latitudes : pd.Series
+            緯度データ
+        longitudes : pd.Series
+            経度データ
+        timestamps : pd.Series
+            タイムスタンプデータ
+            
+        Returns:
+        --------
+        Tuple[List[int], List[float]]
+            異常値のインデックスリストとスコアリスト
+        """
+        return self._detect_by_speed_optimized(latitudes, longitudes, timestamps)
     
     def _detect_by_acceleration(self, latitudes: pd.Series, longitudes: pd.Series, timestamps: pd.Series) -> Tuple[List[int], List[float]]:
         """
