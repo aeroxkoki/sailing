@@ -14,9 +14,10 @@ from sailing_data_processor.reporting.data_processing.transforms import (
 from sailing_data_processor.reporting.data_processing.aggregators import (
     DataAggregator, TimeAggregator, SpatialAggregator, CategoryAggregator
 )
-from sailing_data_processor.reporting.data_processing.calculators import (
-    BaseCalculator, PerformanceCalculator, StatisticalCalculator, CustomFormulaCalculator
-)
+from sailing_data_processor.reporting.data_processing.base_calculator import BaseCalculator
+from sailing_data_processor.reporting.data_processing.performance_calculator import PerformanceCalculator
+from sailing_data_processor.reporting.data_processing.statistical_calculator import StatisticalCalculator
+from sailing_data_processor.reporting.data_processing.custom_formula_calculator import CustomFormulaCalculator
 
 
 class ProcessingStep:

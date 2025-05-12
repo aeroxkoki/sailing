@@ -6,7 +6,10 @@ This module provides functions for binding and data transformation between layer
 
 from sailing_data_processor.reporting.data_processing.transforms import DataTransformer, SmoothingTransform, ResamplingTransform, NormalizationTransform
 from sailing_data_processor.reporting.data_processing.aggregators import DataAggregator, TimeAggregator, SpatialAggregator, CategoryAggregator
-from sailing_data_processor.reporting.data_processing.calculators import PerformanceCalculator, StatisticalCalculator, CustomFormulaCalculator
+from sailing_data_processor.reporting.data_processing.base_calculator import BaseCalculator
+from sailing_data_processor.reporting.data_processing.performance_calculator import PerformanceCalculator
+from sailing_data_processor.reporting.data_processing.statistical_calculator import StatisticalCalculator
+from sailing_data_processor.reporting.data_processing.custom_formula_calculator import CustomFormulaCalculator
 
 __all__ = [
     'DataTransformer',
@@ -17,6 +20,7 @@ __all__ = [
     'TimeAggregator',
     'SpatialAggregator', 
     'CategoryAggregator',
+    'BaseCalculator',
     'PerformanceCalculator',
     'StatisticalCalculator',
     'CustomFormulaCalculator'
