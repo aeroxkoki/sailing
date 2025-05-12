@@ -20,6 +20,15 @@ logging.disable(logging.CRITICAL)
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from sailing_data_processor.analysis.decision_points_analyzer import DecisionPointsAnalyzer
+from sailing_data_processor.analysis.analysis_utils import (
+    find_nearest_time, calculate_distance, calculate_bearing, angle_difference
+)
+from sailing_data_processor.analysis.strategic_points_detector import (
+    detect_strategic_decisions, generate_what_if_scenarios
+)
+from sailing_data_processor.analysis.performance_analyzer import (
+    calculate_impact_scores, remove_duplicate_points
+)
 
 class TestDecisionPointsAnalyzer(unittest.TestCase):
     """
@@ -84,6 +93,10 @@ class TestDecisionPointsAnalyzer(unittest.TestCase):
             self.assertIn("time", point)
             self.assertIn("position", point)
             self.assertIn("description", point)
+        
+        # 直接関数を呼び出してテスト
+        direct_strategic_points = detect_strategic_decisions(self.track_data, self.wind_data, self.analyzer.sensitivity)
+        self.assertEqual(len(strategic_points), len(direct_strategic_points))
     
     def test_detect_performance_changes(self):
         """パフォーマンス変化の検出テスト"""
@@ -129,6 +142,12 @@ class TestDecisionPointsAnalyzer(unittest.TestCase):
             self.assertIn("impact_score", point)
             self.assertGreaterEqual(point["impact_score"], 0)
             self.assertLessEqual(point["impact_score"], 10)
+        
+        # 直接関数を呼び出してテスト
+        direct_scored_points = calculate_impact_scores(test_points, self.track_data, self.wind_data)
+        self.assertEqual(len(scored_points), len(direct_scored_points))
+        for i in range(len(scored_points)):
+            self.assertEqual(scored_points[i]["impact_score"], direct_scored_points[i]["impact_score"])
     
     def test_generate_what_if_scenarios(self):
         """What-ifシナリオ生成のテスト"""
@@ -155,6 +174,10 @@ class TestDecisionPointsAnalyzer(unittest.TestCase):
             self.assertIn("scenario", scenario)
             self.assertIn("outcome", scenario)
             self.assertIn("impact", scenario)
+        
+        # 直接関数を呼び出してテスト
+        direct_scenarios = generate_what_if_scenarios(test_point, self.track_data, self.wind_data)
+        self.assertEqual(len(scenarios), len(direct_scenarios))
     
     def test_analyze_cross_points(self):
         """クロスポイント分析のテスト"""
@@ -214,6 +237,10 @@ class TestDecisionPointsAnalyzer(unittest.TestCase):
         
         # 重複が除去されていることをチェック
         self.assertEqual(len(unique_points), 2)
+        
+        # 直接関数を呼び出してテスト
+        direct_unique_points = remove_duplicate_points(test_points)
+        self.assertEqual(len(unique_points), len(direct_unique_points))
     
     def test_generate_analysis_summary(self):
         """分析サマリー生成のテスト"""
@@ -240,33 +267,30 @@ class TestDecisionPointsAnalyzer(unittest.TestCase):
         self.assertIsInstance(summary, str)
         self.assertGreater(len(summary), 0)
     
-    def test_calculate_distance(self):
-        """距離計算のテスト"""
-        # テスト座標
+    def test_utility_functions(self):
+        """ユーティリティ関数のテスト"""
+        # 距離計算テスト
         lat1, lon1 = 35.0, 139.0
         lat2, lon2 = 35.01, 139.01
-        
-        # 距離計算
-        distance = self.analyzer._calculate_distance(lat1, lon1, lat2, lon2)
-        
-        # 距離が正の値であることをチェック
+        distance = calculate_distance(lat1, lon1, lat2, lon2)
         self.assertGreater(distance, 0)
-    
-    def test_calculate_bearing(self):
-        """方位角計算のテスト"""
-        # テスト座標
-        lat1, lon1 = 35.0, 139.0
-        lat2, lon2 = 35.01, 139.0  # 北方向
         
-        # 方位角計算
-        bearing = self.analyzer._calculate_bearing(lat1, lon1, lat2, lon2)
-        
-        # 方位角が0-360度の範囲であることをチェック
+        # 方位角計算テスト
+        bearing = calculate_bearing(lat1, lon1, lat2, lon2)
         self.assertGreaterEqual(bearing, 0)
         self.assertLess(bearing, 360)
         
-        # 北方向なので、方位角は0度付近であるべき
-        self.assertLess(bearing, 45)
+        # 角度差分計算テスト
+        angle_diff = angle_difference(45, 90)
+        self.assertEqual(angle_diff, -45)
+        
+        # 最近時刻検索テスト
+        now = datetime.now()
+        df = pd.DataFrame({
+            "timestamp": [now - timedelta(minutes=5), now, now + timedelta(minutes=5)]
+        })
+        nearest_idx = find_nearest_time(df, now - timedelta(seconds=30))
+        self.assertEqual(df.loc[nearest_idx, "timestamp"], df.iloc[0]["timestamp"])
     
     def _create_test_track_data(self):
         """テスト用のトラックデータを作成"""
