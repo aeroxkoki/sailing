@@ -14,14 +14,17 @@ export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
-  const handleFileSelect = (file: File) => {
-    setSelectedFile(file);
-    // 通常はここでAPIを呼び出して分析を開始します
-    setLoading(true);
-    // 分析処理をシミュレート
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+  const handleFileSelect = (files: File[]) => {
+    // 配列の最初のファイルを使用（複数ファイルは無視）
+    if (files.length > 0) {
+      setSelectedFile(files[0]);
+      // 通常はここでAPIを呼び出して分析を開始します
+      setLoading(true);
+      // 分析処理をシミュレート
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
+    }
   };
 
   const menuItems = [
