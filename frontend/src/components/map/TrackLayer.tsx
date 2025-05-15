@@ -315,6 +315,9 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
     showPoints,
     fitBounds,
     onPointClick,
+    getTrackGeoJSON,
+    getTrackPointsGeoJSON,
+    getCurrentPointGeoJSON
   ]);
 
   return null; // このコンポーネントは直接UIを描画しない

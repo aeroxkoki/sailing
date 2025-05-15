@@ -391,6 +391,8 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
     timeWindow,
     showLabels,
     onPointClick,
+    getStrategyPointsGeoJSON,
+    getCurrentStrategyPointGeoJSON
   ]);
 
   return null; // このコンポーネントは直接UIを描画しない

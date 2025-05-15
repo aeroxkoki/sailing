@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 function Error({ statusCode, hasGetInitialPropsRun, err }: any) {
   if (!hasGetInitialPropsRun && err) {
@@ -29,12 +30,11 @@ function Error({ statusCode, hasGetInitialPropsRun, err }: any) {
             </p>
           </div>
         )}
-        <a
-          href="/"
-          className="inline-block px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-        >
-          ホームに戻る
-        </a>
+        <Link href="/">
+          <span className="inline-block px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors cursor-pointer">
+            ホームに戻る
+          </span>
+        </Link>
       </div>
     </div>
   );

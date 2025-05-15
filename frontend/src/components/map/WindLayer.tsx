@@ -234,6 +234,8 @@ const WindLayer: React.FC<WindLayerProps> = ({
     heatmapRadius,
     selectedTime,
     timeWindow,
+    getWindVectorsGeoJSON,
+    getWindHeatmapGeoJSON
   ]);
 
   return null; // This component doesn't render anything on its own
