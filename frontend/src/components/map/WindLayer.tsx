@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import maplibregl from 'maplibre-gl';
 import { WindDataPoint } from '@/types/gps';
 
@@ -31,7 +31,7 @@ const WindLayer: React.FC<WindLayerProps> = ({
   const [heatmapLayerId] = useState(`wind-heatmap-layer-${Math.random().toString(36).substring(2, 9)}`);
 
   // Filter wind points by time if needed
-  const getFilteredWindPoints = () => {
+  const getFilteredWindPoints = useCallback(() => {
     if (selectedTime === undefined || !timeWindow) {
       return windPoints;
     }
@@ -41,10 +41,10 @@ const WindLayer: React.FC<WindLayerProps> = ({
       const diff = Math.abs(point.timestamp - selectedTime);
       return diff <= timeWindow / 2;
     });
-  };
+  }, [windPoints, selectedTime, timeWindow]);
 
   // Convert wind points to GeoJSON for vectors
-  const getWindVectorsGeoJSON = () => {
+  const getWindVectorsGeoJSON = useCallback(() => {
     const filteredPoints = getFilteredWindPoints();
     if (!filteredPoints || filteredPoints.length === 0) return null;
 
@@ -63,10 +63,10 @@ const WindLayer: React.FC<WindLayerProps> = ({
         },
       })),
     };
-  };
+  }, [getFilteredWindPoints]);
 
   // Convert wind points to GeoJSON for heatmap
-  const getWindHeatmapGeoJSON = () => {
+  const getWindHeatmapGeoJSON = useCallback(() => {
     const filteredPoints = getFilteredWindPoints();
     if (!filteredPoints || filteredPoints.length === 0) return null;
 
@@ -83,7 +83,7 @@ const WindLayer: React.FC<WindLayerProps> = ({
         },
       })),
     };
-  };
+  }, [getFilteredWindPoints]);
 
   // Create wind arrow images
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import maplibregl from 'maplibre-gl';
 import { StrategyPoint, StrategyPointType } from '@/types/gps';
 
@@ -26,7 +26,7 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
   const [currentPointLayerId] = useState(`current-strategy-layer-${Math.random().toString(36).substring(2, 9)}`);
 
   // 現在の時間ウィンドウに基づいて戦略ポイントをフィルタリング
-  const getFilteredStrategyPoints = () => {
+  const getFilteredStrategyPoints = useCallback(() => {
     if (selectedTime === undefined || !timeWindow) {
       return strategyPoints;
     }
@@ -35,7 +35,7 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
       const diff = Math.abs(point.timestamp - selectedTime);
       return diff <= timeWindow / 2;
     });
-  };
+  }, [strategyPoints, selectedTime, timeWindow]);
 
   // 戦略ポイント用の独自マーカーアイコンを設定
   useEffect(() => {
@@ -172,8 +172,8 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
     });
   }, [map]);
 
-  // 戦略ポイントをGeoJSONに変換
-  const getStrategyPointsGeoJSON = () => {
+  // getStrategyPointsGeoJSON の依存配列を更新
+  const getStrategyPointsGeoJSON = useCallback(() => {
     const filteredPoints = getFilteredStrategyPoints();
     if (!filteredPoints || filteredPoints.length === 0) return null;
 
@@ -197,10 +197,10 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
         },
       })),
     };
-  };
+  }, [getFilteredStrategyPoints, getPointName, getPointDescription]);
 
   // 現在時間に最も近い戦略ポイントを取得
-  const getCurrentStrategyPointGeoJSON = () => {
+  const getCurrentStrategyPointGeoJSON = useCallback(() => {
     if (!selectedTime || !strategyPoints || strategyPoints.length === 0) return null;
 
     // 選択時間に最も近いポイントを見つける
@@ -229,10 +229,10 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
         coordinates: [closestPoint.longitude, closestPoint.latitude],
       },
     };
-  };
+  }, [strategyPoints, selectedTime]);
 
   // ポイント名を取得
-  const getPointName = (point: StrategyPoint): string => {
+  const getPointName = useCallback((point: StrategyPoint): string => {
     if (point.details?.name) return point.details.name;
     
     // タイプに基づくデフォルト名
@@ -246,10 +246,10 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
       case StrategyPointType.FINISH: return 'フィニッシュ';
       default: return '戦略ポイント';
     }
-  };
+  }, []);
 
   // ポイント説明を取得
-  const getPointDescription = (point: StrategyPoint): string => {
+  const getPointDescription = useCallback((point: StrategyPoint): string => {
     // 評価コメントがある場合はそれを使用
     if (point.evaluation?.comments) return point.evaluation.comments;
     
@@ -258,7 +258,7 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
     
     // デフォルトの説明
     return '';
-  };
+  }, []);
 
   // レイヤーの初期化と更新
   useEffect(() => {

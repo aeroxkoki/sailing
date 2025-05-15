@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import maplibregl from 'maplibre-gl';
 import { GpsPoint } from '@/types/gps';
 
@@ -33,7 +33,7 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
   const [currentPointLayerId] = useState(`current-point-layer-${Math.random().toString(36).substring(2, 9)}`);
 
   // 現在の時間ウィンドウに基づいてGPSデータをフィルタリング
-  const getFilteredTrackData = () => {
+  const getFilteredTrackData = useCallback(() => {
     if (selectedTime === undefined || !timeWindow) {
       return trackData;
     }
@@ -42,10 +42,10 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
       const diff = Math.abs(point.timestamp - selectedTime);
       return diff <= timeWindow / 2;
     });
-  };
+  }, [trackData, selectedTime, timeWindow]);
 
   // トラックラインのGeoJSONを生成
-  const getTrackGeoJSON = () => {
+  const getTrackGeoJSON = useCallback(() => {
     if (!trackData || trackData.length === 0) return null;
 
     return {
@@ -56,10 +56,10 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
         coordinates: trackData.map(point => [point.longitude, point.latitude]),
       },
     };
-  };
+  }, [trackData]);
 
   // トラックポイントのGeoJSONを生成
-  const getTrackPointsGeoJSON = () => {
+  const getTrackPointsGeoJSON = useCallback(() => {
     if (!trackData || trackData.length === 0) return null;
 
     return {
@@ -80,10 +80,10 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
         },
       })),
     };
-  };
+  }, [trackData, selectedTime]);
 
   // 現在の時間に対応するポイントのGeoJSONを生成
-  const getCurrentPointGeoJSON = () => {
+  const getCurrentPointGeoJSON = useCallback(() => {
     if (!selectedTime || !trackData || trackData.length === 0) return null;
 
     // 選択された時間に最も近いポイントを見つける
@@ -109,10 +109,10 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
         coordinates: [closestPoint.longitude, closestPoint.latitude],
       },
     };
-  };
+  }, [trackData, selectedTime]);
 
   // 色分けの式を取得
-  const getColorExpression = (scheme: string): string | any[] => {
+  const getColorExpression = useCallback((scheme: string): string | any[] => {
     switch (scheme) {
       case 'speed':
         return [
@@ -147,7 +147,7 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
       default:
         return '#3B82F6';  // デフォルト青
     }
-  };
+  }, []);
 
   // トラックレイヤーの初期化と更新
   useEffect(() => {
@@ -317,7 +317,8 @@ const TrackLayer: React.FC<TrackLayerProps> = ({
     onPointClick,
     getTrackGeoJSON,
     getTrackPointsGeoJSON,
-    getCurrentPointGeoJSON
+    getCurrentPointGeoJSON,
+    getColorExpression
   ]);
 
   return null; // このコンポーネントは直接UIを描画しない
