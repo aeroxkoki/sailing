@@ -27,25 +27,11 @@ class BoatDataFusionModel(OriginalModel):
             
         Returns:
         --------
-        List[Dict]
-            各時間点の風場データ（テスト用にフォーマット調整）
+        Dict[datetime, Dict[str, Any]]
+            各時間点の風場データ
         """
         # 元の実装を呼び出し
-        orig_result = super().create_spatiotemporal_wind_field(time_points, grid_resolution)
+        return super().create_spatiotemporal_wind_field(time_points, grid_resolution)
         
-        # テスト用に出力形式を変換
-        result_list = []
-        for time_point, field_data in orig_result.items():
-            # テスト用フォーマットに変換
-            test_format = {
-                'time': time_point,
-                'grid': {
-                    'lat_grid': field_data.get('lat_grid'),
-                    'lon_grid': field_data.get('lon_grid')
-                },
-                'wind_directions': field_data.get('wind_direction'),
-                'wind_speeds': field_data.get('wind_speed')
-            }
-            result_list.append(test_format)
-        
-        return result_list
+        # 注：元のコードではList形式に変換していましたが、テストコードを
+        # Dict形式に対応させたので、ここでは変換せずにそのまま返します
