@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --no-cache",
     "test": "echo 'No tests yet, skipping...' && exit 0",
     "test:watch": "jest --watch",
     "test:ci": "echo 'No tests yet, skipping...' && exit 0",
