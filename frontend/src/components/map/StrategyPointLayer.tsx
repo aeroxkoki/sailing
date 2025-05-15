@@ -172,6 +172,35 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
     });
   }, [map]);
 
+  // ポイント名を取得
+  const getPointName = useCallback((point: StrategyPoint): string => {
+    if (point.details?.name) return point.details.name;
+    
+    // タイプに基づくデフォルト名
+    switch (point.type) {
+      case StrategyPointType.TACK: return 'タック';
+      case StrategyPointType.JIBE: return 'ジャイブ';
+      case StrategyPointType.MARK_ROUNDING: return 'マーク回航';
+      case StrategyPointType.WIND_SHIFT: return '風向シフト';
+      case StrategyPointType.LAYLINE: return 'レイライン';
+      case StrategyPointType.START: return 'スタート';
+      case StrategyPointType.FINISH: return 'フィニッシュ';
+      default: return '戦略ポイント';
+    }
+  }, []);
+
+  // ポイント説明を取得
+  const getPointDescription = useCallback((point: StrategyPoint): string => {
+    // 評価コメントがある場合はそれを使用
+    if (point.evaluation?.comments) return point.evaluation.comments;
+    
+    // 詳細説明がある場合はそれを使用
+    if (point.details?.description) return point.details.description;
+    
+    // デフォルトの説明
+    return '';
+  }, []);
+
   // getStrategyPointsGeoJSON の依存配列を更新
   const getStrategyPointsGeoJSON = useCallback(() => {
     const filteredPoints = getFilteredStrategyPoints();
@@ -230,35 +259,6 @@ const StrategyPointLayer: React.FC<StrategyPointLayerProps> = ({
       },
     };
   }, [strategyPoints, selectedTime]);
-
-  // ポイント名を取得
-  const getPointName = useCallback((point: StrategyPoint): string => {
-    if (point.details?.name) return point.details.name;
-    
-    // タイプに基づくデフォルト名
-    switch (point.type) {
-      case StrategyPointType.TACK: return 'タック';
-      case StrategyPointType.JIBE: return 'ジャイブ';
-      case StrategyPointType.MARK_ROUNDING: return 'マーク回航';
-      case StrategyPointType.WIND_SHIFT: return '風向シフト';
-      case StrategyPointType.LAYLINE: return 'レイライン';
-      case StrategyPointType.START: return 'スタート';
-      case StrategyPointType.FINISH: return 'フィニッシュ';
-      default: return '戦略ポイント';
-    }
-  }, []);
-
-  // ポイント説明を取得
-  const getPointDescription = useCallback((point: StrategyPoint): string => {
-    // 評価コメントがある場合はそれを使用
-    if (point.evaluation?.comments) return point.evaluation.comments;
-    
-    // 詳細説明がある場合はそれを使用
-    if (point.details?.description) return point.details.description;
-    
-    // デフォルトの説明
-    return '';
-  }, []);
 
   // レイヤーの初期化と更新
   useEffect(() => {
