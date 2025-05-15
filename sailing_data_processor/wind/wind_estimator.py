@@ -305,8 +305,8 @@ class WindEstimator:
         Dict[str, Any]
             風向風速の推定結果
         """
+        # データが空の場合
         if data.empty:
-            # 空のデータの場合、テスト用の構造を返す
             return {
                 "boat": {"boat_id": "none"},
                 "wind": {
@@ -321,8 +321,12 @@ class WindEstimator:
         wind_estimation = self.estimate_wind_from_single_boat(data)
         
         # 結果の構築
+        boat_id = "unknown"
+        if "boat_id" in data.columns:
+            boat_id = data["boat_id"].iloc[0]
+        
         result = {
-            "boat": {"boat_id": data.get("boat_id", ["unknown"])[0] if isinstance(data.get("boat_id"), list) else "unknown"},
+            "boat": {"boat_id": boat_id},
             "wind": {
                 "direction": 0.0,
                 "speed": 0.0,
@@ -338,9 +342,9 @@ class WindEstimator:
             best_estimate = wind_estimation.iloc[best_index]
             
             result["wind"] = {
-                "direction": best_estimate.get('wind_direction', 0.0),
-                "speed": best_estimate.get('wind_speed', 0.0),
-                "confidence": best_estimate.get('confidence', 0.0),
+                "direction": float(best_estimate.get('wind_direction', 0.0)),
+                "speed": float(best_estimate.get('wind_speed', 0.0)),
+                "confidence": float(best_estimate.get('confidence', 0.0)),
                 "wind_data": wind_estimation.to_dict('records')
             }
             
