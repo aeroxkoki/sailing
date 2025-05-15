@@ -30,6 +30,7 @@ testpaths = ["tests"]
 addopts = """
     --cov=sailing_data_processor
     --cov-report=term-missing
+    --cov-report=xml
     --cov-fail-under=20
 """
 python_files = ["test_*.py"]
