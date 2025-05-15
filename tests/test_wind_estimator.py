@@ -6,6 +6,7 @@ WindEstimatorクラスの包括的なテスト
 import sys
 import os
 import unittest
+import pytest
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -16,6 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from sailing_data_processor.wind_estimator import WindEstimator
 
 
+@pytest.mark.core
 class TestWindEstimator(unittest.TestCase):
     """WindEstimatorのテストケース"""
     

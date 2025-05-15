@@ -38,6 +38,7 @@ def create_test_data():
     }
     return data
 
+@pytest.mark.core
 @pytest.fixture
 def fusion_model():
     model = BoatDataFusionModel()

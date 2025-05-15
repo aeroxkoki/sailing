@@ -25,75 +25,42 @@ jobs:
         pip install -r requirements-dev.txt
         pip install -e .
     
-    - name: Debug - Check imports and modules
+    - name: Quick check - imports and modules
       run: |
-        echo "=== Current working directory ==="
-        pwd
-        echo "=== Python path ==="
-        python -c "import sys; print(sys.path)"
-        echo "=== Test directory contents ==="
-        ls -la tests/
-        echo "=== sailing_data_processor directory contents ==="
-        ls -la sailing_data_processor/
         echo "=== Check module imports ==="
         python -c "import sailing_data_processor"
         echo "Import successful"
-        
-    - name: Test with pytest (collect only - detailed)
+    
+    - name: Basic Test Collection Check
       run: |
-        echo "=== Detailed pytest collection with error information ==="
         python -m pytest --collect-only tests/ \
           --ignore=tests/project/ \
           --ignore=tests/validation/test_validation_dashboard_integration.py \
           --ignore=tests/integration/test_validation_integration.py \
           --ignore=tests/test_import_wizard.py \
-          -vv --tb=long -r A --capture=no --show-capture=no --maxfail=10 || echo "Test collection failed with exit code $?"
-        
-    - name: Show test collection errors with alternative approach
-      if: always()
-      run: |
-        echo "=== Collecting errors from individual test files ==="
-        for test_file in tests/test_*.py; do
-          if [[ -f "$test_file" ]]; then
-            echo "=== Testing $test_file ==="
-            python -m pytest --collect-only "$test_file" -vv --tb=long || echo "Error in $test_file with exit code $?"
-            echo "----------------------------------------"
-          fi
-        done
-        
-    - name: Run pytest with more verbose logging
-      if: always()
-      run: |
-        echo "=== Try collecting test with logging ==="
-        PYTHONPATH=. python -m pytest --collect-only tests/ \
-          --ignore=tests/project/ \
-          --ignore=tests/validation/test_validation_dashboard_integration.py \
-          --ignore=tests/integration/test_validation_integration.py \
-          --ignore=tests/test_import_wizard.py \
-          -vv --tb=long --log-cli-level=DEBUG --log-cli-format='%(asctime)s [%(levelname)s] %(message)s' || echo "Exit code: $?"
+          -q
 
-    - name: Add additional debugging for test errors
-      if: always()
+    - name: Run Core Tests Only
       run: |
-        echo "=== Directly check import of problematic modules ==="
-        echo "*** Checking validation module ***"
-        PYTHONPATH=. python -c "from sailing_data_processor import validation; print('Validation module imported successfully')" || echo "Failed to import validation module"
-        echo "*** Checking validation submodules ***"
-        PYTHONPATH=. python -c "from sailing_data_processor.validation import quality_metrics; print('quality_metrics imported successfully')" || echo "Failed to import quality_metrics"
-        PYTHONPATH=. python -c "from sailing_data_processor.validation import visualization; print('visualization imported successfully')" || echo "Failed to import visualization"
-        echo "*** Checking test_validation_dashboard_integration ***"
-        PYTHONPATH=. python -c "import tests.validation.test_validation_dashboard_integration; print('test_validation_dashboard_integration imported successfully')" || echo "Failed to import test_validation_dashboard_integration"
+        echo "=== Running Core MVP Tests ==="
+        python -m pytest tests/test_wind_estimator.py tests/test_wind_field_fusion.py tests/test_boat_fusion_basic.py tests/test_boat_data_fusion_refactored.py --cov=sailing_data_processor.wind,sailing_data_processor.boat_fusion -v
     
-    - name: Test with pytest
-      if: always()
+    - name: Run All Tests with Limited Output
+      if: success() || failure()
       run: |
-        python -m pytest --cov=sailing_data_processor tests/ -vv \
+        echo "=== Running Full Test Suite with Limited Output ==="
+        python -m pytest --cov=sailing_data_processor tests/ \
           --ignore=tests/project/ \
           --ignore=tests/validation/test_validation_dashboard_integration.py \
           --ignore=tests/integration/test_validation_integration.py \
           --ignore=tests/test_import_wizard.py \
-          --tb=long -r A --capture=no
+          -v --no-header --no-summary --tb=short
     
+    - name: Generate and Display Coverage Summary
+      run: |
+        echo "=== Coverage Summary ==="
+        coverage report --include="sailing_data_processor/wind/*,sailing_data_processor/boat_fusion/*" --precision=2
+        
     - name: Upload coverage report
       uses: codecov/codecov-action@v3
       with:

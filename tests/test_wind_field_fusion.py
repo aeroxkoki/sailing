@@ -137,6 +137,7 @@ class WindDataGenerator:
         
         return boats_data
 
+@pytest.mark.core
 def test_qhull_precision_error():
     """Qhull precision errorの対策テスト"""
     from sailing_data_processor.wind_field_fusion_system import WindFieldFusionSystem
