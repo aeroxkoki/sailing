@@ -31,6 +31,11 @@ exclude_lines =
     pragma: no cover
     def __repr__
     raise NotImplementedError
-    if __name__ == .__main__.:
+    if __name__ == .__main__.:\s
     pass
     raise ImportError
+
+[warnings]
+# カバレッジ警告を無視
+ignore_errors = True
+
