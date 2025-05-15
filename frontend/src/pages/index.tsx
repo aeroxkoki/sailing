@@ -6,6 +6,7 @@ import Button from '../components/common/Button';
 import Card from '../components/common/Card';
 import LoadingSpinner from '../components/common/LoadingSpinner';
 import FileUploader from '../components/upload/FileUploader';
+import FileList from '../components/upload/FileList';
 import Menu from '../components/common/Menu';
 import MobileMenu from '../components/common/MobileMenu';
 import { api } from '../lib/api';
@@ -14,20 +15,32 @@ import { useAnalysis } from '../context/AnalysisContext';
 export default function HomePage() {
   const router = useRouter();
   const { uploadFile } = useAnalysis();
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const handleFileSelect = async (file: File) => {
-    setSelectedFile(file);
+  const handleFileSelect = async (files: File[]) => {
+    setSelectedFiles(files);
     setError(null);
+  };
+  
+  const handleRemoveFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+  };
+  
+  const handleStartAnalysis = async () => {
+    if (selectedFiles.length === 0) {
+      setError('分析するファイルを選択してください。');
+      return;
+    }
+    
     setLoading(true);
     
     try {
-      // 実際にファイルをアップロードして分析
-      await uploadFile(file);
+      // 最初のファイルを分析（MVPでは1つのファイルのみサポート）
+      await uploadFile(selectedFiles[0]);
       
       // 分析ページに遷移
       router.push('/analysis');
@@ -124,10 +137,31 @@ export default function HomePage() {
                   <p className="mt-4 text-gray-400">データ分析中...</p>
                 </div>
               ) : (
-                <FileUploader
-                  onFileSelect={handleFileSelect}
-                  acceptedFileTypes=".gpx,.csv,.fit,.tcx"
-                />
+                <>
+                  <FileUploader
+                    onFileSelect={handleFileSelect}
+                    acceptedFileTypes=".gpx,.csv,.fit,.tcx"
+                    multiple={true}
+                  />
+                  
+                  <FileList 
+                    files={selectedFiles}
+                    onRemove={handleRemoveFile}
+                    disabled={loading}
+                  />
+                  
+                  {selectedFiles.length > 0 && (
+                    <div className="mt-4 flex justify-end">
+                      <Button
+                        variant="primary"
+                        onClick={handleStartAnalysis}
+                        disabled={loading}
+                      >
+                        分析開始
+                      </Button>
+                    </div>
+                  )}
+                </>
               )}
               
               {error && (

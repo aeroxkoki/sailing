@@ -1,7 +1,8 @@
 import React, { useState, useRef } from 'react';
 
 interface FileUploaderProps {
-  onFileSelect: (file: File) => void;
+  onFileSelect: (files: File[]) => void;
+  multiple?: boolean;
   acceptedFileTypes?: string;
   maxSize?: number; // MB
   className?: string;
@@ -12,48 +13,72 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   acceptedFileTypes = ".gpx,.csv,.fit,.tcx",
   maxSize = 10, // 10MB
   className = '',
+  multiple = false,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      validateAndProcessFile(file);
-    }
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+    
+    const selectedFiles = multiple ? Array.from(files) : [files[0]];
+    validateAndProcessFiles(selectedFiles);
   };
   
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setIsDragging(false);
     
-    const file = event.dataTransfer.files[0];
-    if (file) {
-      validateAndProcessFile(file);
-    }
+    const files = event.dataTransfer.files;
+    if (!files || files.length === 0) return;
+    
+    const selectedFiles = multiple ? Array.from(files) : [files[0]];
+    validateAndProcessFiles(selectedFiles);
   };
   
-  const validateAndProcessFile = (file: File) => {
-    // ファイルタイプチェック
-    const fileExt = file.name.split('.').pop()?.toLowerCase() || '';
-    const isValidType = acceptedFileTypes
-      .split(',')
-      .some(type => type.includes(fileExt));
-    
-    if (!isValidType) {
-      setError(`対応していないファイル形式です。${acceptedFileTypes}のファイルをアップロードしてください。`);
+  const validateAndProcessFiles = (files: File[]) => {
+    // ファイル数チェック
+    if (!multiple && files.length > 1) {
+      setError('複数ファイルの選択は無効です。1つのファイルを選択してください。');
       return;
     }
     
-    // サイズチェック
-    if (file.size > maxSize * 1024 * 1024) {
-      setError(`ファイルサイズが大きすぎます。${maxSize}MB以下のファイルをアップロードしてください。`);
+    // 各ファイルをバリデーション
+    const invalidFiles: string[] = [];
+    const oversizedFiles: string[] = [];
+    
+    files.forEach(file => {
+      // ファイルタイプチェック
+      const fileExt = file.name.split('.').pop()?.toLowerCase() || '';
+      const isValidType = acceptedFileTypes
+        .split(',')
+        .some(type => type.includes(fileExt));
+      
+      if (!isValidType) {
+        invalidFiles.push(file.name);
+      }
+      
+      // サイズチェック
+      if (file.size > maxSize * 1024 * 1024) {
+        oversizedFiles.push(file.name);
+      }
+    });
+    
+    // エラーを報告
+    if (invalidFiles.length > 0) {
+      setError(`対応していないファイル形式があります: ${invalidFiles.join(', ')}。${acceptedFileTypes}のファイルをアップロードしてください。`);
+      return;
+    }
+    
+    if (oversizedFiles.length > 0) {
+      setError(`ファイルサイズが大きすぎるものがあります: ${oversizedFiles.join(', ')}。${maxSize}MB以下のファイルをアップロードしてください。`);
       return;
     }
     
     setError(null);
-    onFileSelect(file);
+    onFileSelect(files);
   };
   
   const handleDragOver = (event: React.DragEvent) => {
@@ -111,6 +136,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
           className="hidden" 
           onChange={handleFileChange}
           accept={acceptedFileTypes}
+          multiple={multiple}
         />
       </div>
       
