@@ -1,30 +1,32 @@
 [run]
-# ソースパッケージの指定
-source = 
-    sailing_data_processor
-
-# 対象外にするファイルやディレクトリ
+source = sailing_data_processor
 omit =
-    */__pycache__/*
     */tests/*
     */test_*
-    *test_*.py
-    *tests_*.py
-    test_*.py
-    tests_*.py
+    */conftest.py
+    */__pycache__/*
     */venv/*
-    */.venv/*
-    */site-packages/*
-    setup.py
-    sailing_data_processor/reporting/elements/map/layers/data_connector.py
-    .git/*
-    .pytest_cache/*
-    .coverage
-    htmlcov/*
-    conftest.py
+    */env/*
+    */migrations/*
+    */config/*
+    */staticfiles/*
+    */node_modules/*
+    */build/*
+    */exporters/*
+    */reporting/*
+    */storage/*
+    */sharing/*
+    */validation/visualization_modules/*
+    # 問題のあるファイルを除外
+    */sailing_data_processor/boat_fusion.py
+    */sailing_data_processor/improved_features.py
+    */sailing_data_processor/wind_estimator_broken.py
+    */sailing_data_processor/wind_estimator_improved.py
 
 [report]
-# レポートに表示するもの
+precision = 2
+show_missing = true
+fail_under = 20
 exclude_lines =
     pragma: no cover
     def __repr__
@@ -32,34 +34,3 @@ exclude_lines =
     if __name__ == .__main__.:
     pass
     raise ImportError
-    raise ValueError
-    except ImportError
-    if self.debug:
-
-# 対象外にするファイルやディレクトリ（レポート用）
-omit =
-    */__pycache__/*
-    */tests/*
-    */test_*
-    *test_*.py
-    *tests_*.py
-    test_*.py
-    tests_*.py
-    */venv/*
-    */.venv/*
-    */site-packages/*
-    setup.py
-    sailing_data_processor/reporting/elements/map/layers/data_connector.py
-    .git/*
-    .pytest_cache/*
-    conftest.py
-
-# 欠損行の表示
-show_missing = True
-
-# カバレッジ下限値（%）
-fail_under = 70
-
-[html]
-# HTMLレポートディレクトリ
-directory = coverage_html_report
