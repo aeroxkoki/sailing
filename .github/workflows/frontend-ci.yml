@@ -42,6 +42,9 @@ jobs:
     needs: test
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./frontend  # フロントエンドディレクトリでコマンドを実行
     
     steps:
     - name: Checkout
@@ -61,6 +64,5 @@ jobs:
         VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
         VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
       run: |
-        # プロジェクトルートからデプロイを実行
-        # 必要なコマンドはvercel.jsonに定義
+        # frontendディレクトリ内でデプロイを実行
         vercel --prod --token ${VERCEL_TOKEN} --yes
