@@ -130,6 +130,52 @@ export const api = {
       params: { page, limit }
     });
   },
+  
+  // プロジェクト関連の機能
+  
+  // プロジェクト作成
+  createProject: async (projectData: {
+    name: string;
+    description?: string;
+    tags?: string[];
+    parentId?: string;
+  }): Promise<AxiosResponse> => {
+    return apiClient.post('/api/v1/projects', projectData);
+  },
+  
+  // プロジェクト一覧取得
+  getProjects: async (page = 1, limit = 20): Promise<AxiosResponse> => {
+    return apiClient.get('/api/v1/projects', {
+      params: { page, limit }
+    });
+  },
+  
+  // プロジェクト詳細取得
+  getProject: async (projectId: string): Promise<AxiosResponse> => {
+    return apiClient.get(`/api/v1/projects/${projectId}`);
+  },
+  
+  // プロジェクト更新
+  updateProject: async (projectId: string, projectData: {
+    name?: string;
+    description?: string;
+    tags?: string[];
+  }): Promise<AxiosResponse> => {
+    return apiClient.put(`/api/v1/projects/${projectId}`, projectData);
+  },
+  
+  // プロジェクト削除
+  deleteProject: async (projectId: string): Promise<AxiosResponse> => {
+    return apiClient.delete(`/api/v1/projects/${projectId}`);
+  },
+  
+  // プロジェクトにセッションを追加
+  addSessionToProject: async (projectId: string, sessionId: string, displayName?: string): Promise<AxiosResponse> => {
+    return apiClient.post(`/api/v1/projects/${projectId}/sessions`, {
+      sessionId,
+      displayName
+    });
+  },
 };
 
 // apiClientのエクスポート
