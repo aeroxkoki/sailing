@@ -1,9 +1,8 @@
-
 {
   "extends": ["next/core-web-vitals"],
   "rules": {
     // 初期開発中は警告レベルに設定し、ビルドが止まらないようにする
     "react/no-unescaped-entities": "warn",
-    "no-unused-vars": "warn"
+    "no-unused-vars": "off" // 一時的に未使用変数の警告を無効化
   }
 }
