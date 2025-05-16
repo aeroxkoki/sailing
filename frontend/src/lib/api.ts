@@ -74,6 +74,23 @@ apiClient.interceptors.response.use(
 
 // APIエンドポイント関数
 export const api = {
+  // API接続の健全性チェック
+  checkHealth: async (): Promise<{status: string; message?: string}> => {
+    try {
+      const response = await apiClient.get('/api/v1/health', { timeout: 5000 });
+      return { status: 'ok', message: response.data.message || 'APIサーバーに接続できました' };
+    } catch (error: any) {
+      console.error('Health check error:', error);
+      if (error.response) {
+        return { status: 'error', message: `APIサーバーからエラーレスポンス: ${error.response.status}` };
+      } else if (error.request) {
+        return { status: 'error', message: 'APIサーバーに接続できません。サーバーが停止しているか、ネットワーク接続を確認してください。' };
+      } else {
+        return { status: 'error', message: '接続リクエストの作成中にエラーが発生しました。' };
+      }
+    }
+  },
+  
   // データアップロードと分析
   analyzeGpsData: async (file: File, settings?: Partial<AppSettings>): Promise<AxiosResponse> => {
     const formData = new FormData();

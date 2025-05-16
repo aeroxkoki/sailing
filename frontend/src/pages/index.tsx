@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Button from '../components/common/Button';
 import Card from '../components/common/Card';
@@ -20,6 +20,34 @@ export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [apiStatus, setApiStatus] = useState<{status: string; message?: string} | null>(null);
+  const [checkingApi, setCheckingApi] = useState(false);
+
+  // ページロード時にAPIの健全性をチェック
+  useEffect(() => {
+    const checkApiHealth = async () => {
+      setCheckingApi(true);
+      try {
+        const health = await api.checkHealth();
+        setApiStatus(health);
+        // APIエラーの場合はエラーメッセージを表示
+        if (health.status === 'error') {
+          setError(health.message);
+        }
+      } catch (err) {
+        console.error('API health check failed:', err);
+        setApiStatus({
+          status: 'error',
+          message: 'APIサーバーの健全性チェックに失敗しました。'
+        });
+        setError('APIサーバーに接続できません。ネットワーク接続を確認してください。');
+      } finally {
+        setCheckingApi(false);
+      }
+    };
+
+    checkApiHealth();
+  }, []);
 
   const handleFileSelect = async (files: File[]) => {
     setSelectedFiles(files);
@@ -170,7 +198,31 @@ export default function HomePage() {
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
-                    <span>{error}</span>
+                    <div>
+                      <p>{error}</p>
+                      {apiStatus?.status === 'error' && (
+                        <div className="mt-2">
+                          <p className="text-sm">
+                            APIサーバー（{process.env.NEXT_PUBLIC_API_URL}）に接続できませんでした。
+                            以下の対処法をお試しください：
+                          </p>
+                          <ul className="list-disc list-inside text-sm mt-1 space-y-1">
+                            <li>インターネット接続を確認してください</li>
+                            <li>しばらく待ってからページを再読み込みしてください</li>
+                            <li>問題が続く場合は管理者に連絡してください</li>
+                          </ul>
+                          <p className="text-sm mt-2">
+                            または、接続不要のデモ分析を見ることもできます：{' '}
+                            <button 
+                              className="text-blue-400 underline" 
+                              onClick={() => router.push('/analysis/demo')}
+                            >
+                              デモを見る
+                            </button>
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
