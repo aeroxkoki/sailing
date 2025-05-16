@@ -1,22 +1,41 @@
-import React, { InputHTMLAttributes } from 'react';
+import React, { InputHTMLAttributes, TextareaHTMLAttributes } from 'react';
 
-interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+type BaseInputProps = {
   label?: string;
   helperText?: string;
   error?: string;
   fullWidth?: boolean;
+};
+
+export interface InputProps extends BaseInputProps, InputHTMLAttributes<HTMLInputElement> {
+  multiline?: false;
 }
 
-const Input: React.FC<InputProps> = ({
+export interface TextareaProps extends BaseInputProps, TextareaHTMLAttributes<HTMLTextAreaElement> {
+  multiline: true;
+  rows?: number;
+}
+
+type CombinedInputProps = InputProps | TextareaProps;
+
+const Input: React.FC<CombinedInputProps> = ({
   label,
   helperText,
   error,
   fullWidth = false,
   className = '',
   id,
+  multiline = false,
+  rows = 3,
   ...rest
 }) => {
   const inputId = id || `input-${Math.random().toString(36).substring(2, 9)}`;
+  const baseClasses = `
+    block px-3 py-2 bg-white border rounded-md shadow-sm focus:outline-none sm:text-sm
+    ${error ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'}
+    ${fullWidth ? 'w-full' : ''}
+    ${className}
+  `;
 
   return (
     <div className={`mb-4 ${fullWidth ? 'w-full' : ''}`}>
@@ -28,20 +47,28 @@ const Input: React.FC<InputProps> = ({
           {label}
         </label>
       )}
-      <input
-        id={inputId}
-        className={`
-          block px-3 py-2 bg-white border rounded-md shadow-sm focus:outline-none sm:text-sm
-          ${error ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'}
-          ${fullWidth ? 'w-full' : ''}
-          ${className}
-        `}
-        aria-invalid={!!error}
-        aria-describedby={
-          helperText ? `${inputId}-helper-text` : error ? `${inputId}-error` : undefined
-        }
-        {...rest}
-      />
+      {multiline ? (
+        <textarea
+          id={inputId}
+          className={baseClasses}
+          rows={rows}
+          aria-invalid={!!error}
+          aria-describedby={
+            helperText ? `${inputId}-helper-text` : error ? `${inputId}-error` : undefined
+          }
+          {...(rest as TextareaHTMLAttributes<HTMLTextAreaElement>)}
+        />
+      ) : (
+        <input
+          id={inputId}
+          className={baseClasses}
+          aria-invalid={!!error}
+          aria-describedby={
+            helperText ? `${inputId}-helper-text` : error ? `${inputId}-error` : undefined
+          }
+          {...(rest as InputHTMLAttributes<HTMLInputElement>)}
+        />
+      )}
       {helperText && !error && (
         <p
           id={`${inputId}-helper-text`}
