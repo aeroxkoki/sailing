@@ -1,12 +1,12 @@
 // モックデータファイル（APIが利用できない場合のデモ用）
-import { GpsPoint, WindDataPoint, StrategyPoint } from '../types';
+import { GpsPoint, WindDataPoint, StrategyPoint, StrategyPointType } from '../types';
 
 // GPSトラックのモックデータ
 export const mockGpsData: GpsPoint[] = [
   // サンプルGPSポイント（実際には200-300ポイントほど必要）
-  { timestamp: 1621500000000, latitude: 35.65, longitude: 139.76, speed: 5.2, heading: 120, position: [139.76, 35.65] },
-  { timestamp: 1621500010000, latitude: 35.651, longitude: 139.762, speed: 5.5, heading: 122, position: [139.762, 35.651] },
-  { timestamp: 1621500020000, latitude: 35.652, longitude: 139.764, speed: 5.3, heading: 125, position: [139.764, 35.652] },
+  { timestamp: 1621500000000, latitude: 35.65, longitude: 139.76, speed: 5.2, heading: 120 },
+  { timestamp: 1621500010000, latitude: 35.651, longitude: 139.762, speed: 5.5, heading: 122 },
+  { timestamp: 1621500020000, latitude: 35.652, longitude: 139.764, speed: 5.3, heading: 125 },
   // ... 他のポイント
 ];
 
@@ -27,7 +27,7 @@ export const mockStrategyPoints: StrategyPoint[] = [
     timestamp: 1621500050000, 
     latitude: 35.653, 
     longitude: 139.766, 
-    type: 'tack', 
+    type: StrategyPointType.TACK, 
     details: { efficiency: 0.85, timeLoss: 4.5 }, 
     evaluation: { score: 0.8, comments: '良好なタックパフォーマンス' } 
   },
@@ -36,7 +36,7 @@ export const mockStrategyPoints: StrategyPoint[] = [
     timestamp: 1621500150000, 
     latitude: 35.655, 
     longitude: 139.77, 
-    type: 'gybe', 
+    type: StrategyPointType.JIBE, 
     details: { efficiency: 0.75, timeLoss: 6.2 }, 
     evaluation: { score: 0.7, comments: '平均的なジャイブパフォーマンス' } 
   },
@@ -83,10 +83,13 @@ export const mockAnalysisResult = {
   performanceScore: 0.78
 };
 
-export default {
+// データのまとめ
+const mockData = {
   gpsData: mockGpsData,
   windData: mockWindData,
   strategyPoints: mockStrategyPoints,
   session: mockSession,
   analysisResult: mockAnalysisResult
 };
+
+export default mockData;
