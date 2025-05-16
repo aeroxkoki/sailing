@@ -3,7 +3,8 @@
   "rootDirectory": "frontend",
   "git": {
     "deploymentEnabled": {
-      "main": true
+      "main": true,
+      "dev": true
     }
   }
 }
