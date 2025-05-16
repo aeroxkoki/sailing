@@ -4,8 +4,15 @@ import { AppSettings, ApiError } from '../types';
 // APIレスポンス型定義
 export type ApiResponse<T = any> = AxiosResponse<T>;
 
+// オフラインモードかどうかの判定フラグ（ローカルストレージに保存）
+let isOfflineMode = false;
+if (typeof window !== 'undefined') {
+  isOfflineMode = localStorage.getItem('offlineMode') === 'true';
+}
+
 // APIクライアントの設定
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+console.log('API_BASE_URL:', API_BASE_URL); // デバッグ用
 
 // Axios インスタンスの作成
 const apiClient: AxiosInstance = axios.create({
@@ -75,12 +82,32 @@ apiClient.interceptors.response.use(
 // APIエンドポイント関数
 export const api = {
   // API接続の健全性チェック
-  checkHealth: async (): Promise<{status: string; message?: string}> => {
+  checkHealth: async (): Promise<{status: string; message?: string; offlineMode?: boolean}> => {
+    // オフラインモードの場合は強制的にエラーを返さない
+    if (isOfflineMode) {
+      return { 
+        status: 'warning', 
+        message: 'オフラインモードでの実行中',
+        offlineMode: true 
+      };
+    }
+    
     try {
-      const response = await apiClient.get('/api/v1/health', { timeout: 5000 });
+      // より短いタイムアウトを設定し、/api/v1/health/pingエンドポイントを試す
+      const response = await apiClient.get('/api/v1/health/ping', { timeout: 3000 });
       return { status: 'ok', message: response.data.message || 'APIサーバーに接続できました' };
     } catch (error: any) {
       console.error('Health check error:', error);
+      
+      // 詳細なエラー情報をログ出力
+      if (error.config) {
+        console.log('Request config:', {
+          url: error.config.url,
+          baseURL: error.config.baseURL,
+          timeout: error.config.timeout
+        });
+      }
+      
       if (error.response) {
         return { status: 'error', message: `APIサーバーからエラーレスポンス: ${error.response.status}` };
       } else if (error.request) {
@@ -89,6 +116,20 @@ export const api = {
         return { status: 'error', message: '接続リクエストの作成中にエラーが発生しました。' };
       }
     }
+  },
+  
+  // オフラインモードの切り替え
+  toggleOfflineMode: (enabled: boolean): void => {
+    if (typeof window !== 'undefined') {
+      isOfflineMode = enabled;
+      localStorage.setItem('offlineMode', enabled ? 'true' : 'false');
+      console.log(`オフラインモードを${enabled ? '有効' : '無効'}にしました`);
+    }
+  },
+  
+  // オフラインモード状態の取得
+  isOfflineMode: (): boolean => {
+    return isOfflineMode;
   },
   
   // データアップロードと分析

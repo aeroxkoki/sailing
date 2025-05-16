@@ -211,8 +211,17 @@ export default function HomePage() {
                             <li>しばらく待ってからページを再読み込みしてください</li>
                             <li>問題が続く場合は管理者に連絡してください</li>
                           </ul>
-                          <p className="text-sm mt-2">
-                            または、接続不要のデモ分析を見ることもできます：{' '}
+                          <p className="text-sm mt-2 flex flex-col space-y-2">
+                            <span>また、以下のオプションもあります：</span>
+                            <button 
+                              className="px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition w-full text-center"
+                              onClick={() => {
+                                api.toggleOfflineMode(true);
+                                window.location.reload();
+                              }}
+                            >
+                              オフラインモードに切り替える
+                            </button>
                             <button 
                               className="text-blue-400 underline" 
                               onClick={() => router.push('/analysis/demo')}

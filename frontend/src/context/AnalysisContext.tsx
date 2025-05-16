@@ -1,6 +1,7 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
 import { AnalysisData, ExportFormat, AppSettings, ApiError } from '../types';
 import api from '../lib/api';
+import mockData from '../lib/mock-data';
 
 // 初期データ
 const initialAnalysisData: AnalysisData = {
@@ -33,10 +34,14 @@ interface AnalysisContextType {
   data: AnalysisData;
   isAnalyzing: boolean;
   error: string | null;
+  isOfflineMode: boolean;
+  apiStatus: string;
   uploadFile: (file: File, settings?: Partial<AppSettings>) => Promise<void>;
+  loadDemoData: () => void;
   applySettings: (settings: Partial<AppSettings>) => Promise<void>;
   setCurrentTime: (time: number) => void;
   exportResults: (format: ExportFormat, includeSettings?: boolean) => Promise<Blob>;
+  toggleOfflineMode: (enabled: boolean) => void;
 }
 
 // コンテキスト作成
@@ -44,10 +49,14 @@ export const AnalysisContext = createContext<AnalysisContextType>({
   data: initialAnalysisData,
   isAnalyzing: false,
   error: null,
+  isOfflineMode: false,
+  apiStatus: 'unknown',
   uploadFile: async () => {},
+  loadDemoData: () => {},
   applySettings: async () => {},
   setCurrentTime: () => {},
   exportResults: async () => new Blob(),
+  toggleOfflineMode: () => {},
 });
 
 // コンテキストプロバイダーコンポーネント
@@ -59,11 +68,65 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
   const [data, setData] = useState<AnalysisData>(initialAnalysisData);
   const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [isOfflineMode, setIsOfflineMode] = useState<boolean>(api.isOfflineMode());
+  const [apiStatus, setApiStatus] = useState<string>('unknown');
+  
+  // 初期化時にAPIの状態をチェック
+  useEffect(() => {
+    const checkApiStatus = async () => {
+      try {
+        const health = await api.checkHealth();
+        setApiStatus(health.status);
+        if (health.offlineMode) {
+          setIsOfflineMode(true);
+        }
+      } catch (err) {
+        console.error('API status check failed:', err);
+        setApiStatus('error');
+      }
+    };
+    
+    checkApiStatus();
+  }, []);
+  
+  // オフラインモードの切り替え
+  const toggleOfflineMode = (enabled: boolean): void => {
+    api.toggleOfflineMode(enabled);
+    setIsOfflineMode(enabled);
+    setApiStatus(enabled ? 'offline' : 'unknown');
+    
+    // オフラインモードに切り替える場合はエラーをクリア
+    if (enabled) {
+      setError(null);
+    }
+  };
+  
+  // デモデータの読み込み
+  const loadDemoData = (): void => {
+    setIsAnalyzing(true);
+    
+    setTimeout(() => {
+      setData(mockData.analysisResult as AnalysisData);
+      setIsAnalyzing(false);
+    }, 1000); // 1秒後に読み込み完了（ローディング表示のため）
+  };
   
   // ファイルアップロードと分析
   const uploadFile = async (file: File, settings?: Partial<AppSettings>): Promise<void> => {
     setIsAnalyzing(true);
     setError(null);
+    
+    // オフラインモードの場合は、モックデータを使用
+    if (isOfflineMode) {
+      setTimeout(() => {
+        setData({
+          ...mockData.analysisResult as AnalysisData,
+          fileName: file.name
+        });
+        setIsAnalyzing(false);
+      }, 1500);
+      return;
+    }
     
     try {
       const response = await api.analyzeGpsData(file, settings);
@@ -152,10 +215,14 @@ export const AnalysisProvider: React.FC<AnalysisProviderProps> = ({ children }) 
     data,
     isAnalyzing,
     error,
+    isOfflineMode,
+    apiStatus,
     uploadFile,
+    loadDemoData,
     applySettings,
     setCurrentTime,
-    exportResults
+    exportResults,
+    toggleOfflineMode
   };
   
   return (
