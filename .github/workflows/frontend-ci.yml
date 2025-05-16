@@ -51,6 +51,11 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     
+    - name: Set Git User Info
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+        
     - name: Deploy to Vercel
       uses: amondnet/vercel-action@v20
       with:
@@ -59,3 +64,4 @@ jobs:
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
         working-directory: .
         vercel-args: '--prod'
+        github-comment: false
