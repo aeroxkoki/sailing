@@ -32,7 +32,7 @@ export default function HomePage() {
         setApiStatus(health);
         // APIエラーの場合はエラーメッセージを表示
         if (health.status === 'error') {
-          setError(health.message);
+          setError(health.message || 'APIサーバーに問題があります。');
         }
       } catch (err) {
         console.error('API health check failed:', err);
