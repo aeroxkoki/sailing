@@ -26,7 +26,7 @@ const Input: React.FC<CombinedInputProps> = ({
   className = '',
   id,
   multiline = false,
-  rows = 3,
+  rows,
   ...rest
 }) => {
   const inputId = id || `input-${Math.random().toString(36).substring(2, 9)}`;
@@ -51,7 +51,7 @@ const Input: React.FC<CombinedInputProps> = ({
         <textarea
           id={inputId}
           className={baseClasses}
-          rows={rows}
+          rows={rows || 3}
           aria-invalid={!!error}
           aria-describedby={
             helperText ? `${inputId}-helper-text` : error ? `${inputId}-error` : undefined
